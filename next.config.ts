@@ -5,6 +5,28 @@ import type { NextConfig } from "next";
 // and old links use.
 const CITIES = ["toronto", "montreal", "vancouver"] as const;
 
+// The fourteen posts this site inherited were all destination-wedding writing
+// set in Medellín, Cartagena, Tuscany and Dubai. That is armanarai.com's
+// business, not this one, so they are deleted rather than rewritten. Each URL
+// goes to the closest thing that now exists instead of 404ing.
+const RETIRED_POSTS: Record<string, string> = {
+  "most-beautiful-cities-destination-wedding": "/blog",
+  "destination-weddings-better-photography": "/blog",
+  "colombia-destination-wedding-guide": "/blog",
+  "medellin-wedding-photographer-guide": "/blog",
+  "destination-wedding-guide-canadian-couples": "/blog",
+  "destination-wedding-guide-american-couples": "/blog",
+  "biggest-wedding-photography-trends-2026": "/blog",
+  "documentary-wedding-photography-2026": "/portfolio",
+  "true-to-life-wedding-photo-editing-2026": "/portfolio",
+  "motion-blur-wedding-photography-trend-or-timeless": "/portfolio",
+  "editorial-vs-documentary-wedding-photography": "/portfolio",
+  "film-vs-digital-wedding-photography": "/portfolio",
+  "golden-hour-wedding-photography-guide": "/blog/wedding-day-timeline-that-survives-the-day",
+  // Renamed rather than retired: the replacement is Canada-specific.
+  "how-to-choose-a-wedding-photographer": "/blog/how-to-choose-a-wedding-photographer-canada",
+};
+
 const nextConfig: NextConfig = {
   outputFileTracingRoot: __dirname,
   // Inline the stylesheet into the HTML so the render-blocking CSS request is
@@ -44,6 +66,16 @@ const nextConfig: NextConfig = {
       // so claim it rather than leave it dead.
       { source: "/journal", destination: "/blog", permanent: true },
       { source: "/journal/:slug", destination: "/blog/:slug", permanent: true },
+      // /case-study is the singular a lot of people type, and /galleries is what
+      // the sister site calls the same thing.
+      { source: "/case-study", destination: "/case-studies", permanent: true },
+      { source: "/galleries", destination: "/case-studies", permanent: true },
+      { source: "/galleries/:slug", destination: "/case-studies/:slug", permanent: true },
+      ...Object.entries(RETIRED_POSTS).map(([slug, destination]) => ({
+        source: `/blog/${slug}`,
+        destination,
+        permanent: true,
+      })),
     ];
   },
 };

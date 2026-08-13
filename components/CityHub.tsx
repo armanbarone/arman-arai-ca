@@ -87,9 +87,27 @@ export default function CityHub({ market: m }: { market: Market }) {
         <span
           aria-hidden
           className="absolute inset-0 pointer-events-none"
-          style={{ background: "linear-gradient(to top, rgba(8,7,4,0.94) 3%, rgba(8,7,4,0.2) 48%, rgba(8,7,4,0.55))" }}
+          /* Two layers. A gentle top-down wash so the fixed nav has something to
+             sit on, and a heavy bottom scrim that is still near-opaque where the
+             eyebrow sits. A soft gradient was not enough: on the Niagara
+             glasshouse hero the eyebrow lands on the bride's white dress, which
+             is the brightest part of the frame, and bronze-on-white is
+             unreadable at any scrim strength short of this. */
+          style={{
+            background:
+              "linear-gradient(to bottom, rgba(8,7,4,0.55) 0%, rgba(8,7,4,0) 22%), " +
+              "linear-gradient(to top, rgba(8,7,4,0.97) 0%, rgba(8,7,4,0.93) 30%, rgba(8,7,4,0.72) 45%, rgba(8,7,4,0.25) 68%, rgba(8,7,4,0) 85%)",
+          }}
         />
-        <div className="absolute inset-x-0 bottom-0 page-w page-px pb-12 md:pb-16">
+        {/* A gradient alone cannot make small bronze type readable over an
+            unpredictable photograph: on the Niagara hero the eyebrow lands on
+            the bride's white dress. The text block carries its own shadow so it
+            stays legible over any frame, without putting a visible box on the
+            photograph. */}
+        <div
+          className="absolute inset-x-0 bottom-0 page-w page-px pb-12 md:pb-16"
+          style={{ textShadow: "0 1px 2px rgba(8,7,4,0.95), 0 2px 28px rgba(8,7,4,0.9)" }}
+        >
           <p className="text-[0.6rem] tracking-[0.32em] uppercase text-rose mb-4">
             {m.province} · from {money(m.tiers[0].price)} CAD
           </p>

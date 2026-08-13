@@ -1,6 +1,6 @@
 import { posts } from "@/lib/blog";
 import { GALLERIES } from "@/lib/galleries";
-import { ADDONS, MARKETS, SITE } from "@/lib/site";
+import { ADDONS, MARKETS, REGIONS, SITE, TIERS, feeFor, quoteFor } from "@/lib/site";
 
 // Generated from the same data the pages render, so an assistant reading this
 // file and a couple reading the site can never be told two different prices.
@@ -9,17 +9,28 @@ export const dynamic = "force-static";
 const money = (n: number) => `CA$${n.toLocaleString("en-CA")}`;
 
 export function GET() {
-  const cityBlocks = MARKETS.map((m) => {
-    const tiers = m.tiers
-      .map((t) => `  - ${t.name}: ${money(t.price)}, ${t.hours} hours, ${t.crew}, ${t.images}. Best for ${t.bestFor.toLowerCase()}.`)
-      .join("\n");
-    return [
-      `### ${m.city} (${m.province}) — ${SITE.url}/${m.slug}-wedding-photographer`,
+  const tierBlocks = TIERS.map((t) =>
+    [
+      `### ${t.name} — ${money(t.price)} (Montréal base)`,
+      `${t.coverage}. ${t.crew}. ${t.images}.`,
+      t.includes.map((i) => `  - ${i}`).join("\n"),
+      `Best for: ${t.bestFor}.`,
+    ].join("\n"),
+  ).join("\n\n");
+
+  const regionRows = REGIONS.map((r) => {
+    const cols = TIERS.map((t) => `${t.name} ${money(quoteFor(r, t))}`).join(" · ");
+    const fee = r.fee === 0 ? "no destination fee" : `destination fee from ${money(r.fee)}`;
+    return `- **${r.name}** (${fee}): ${cols}. ${r.travel}`;
+  }).join("\n");
+
+  const cityBlocks = MARKETS.map((m) =>
+    [
+      `### ${m.city} — ${SITE.url}/${m.slug}-wedding-photographer`,
       `Covers: ${m.region}. Also ${m.areas.join(", ")}.`,
       `Positioning: ${m.angle}.`,
-      tiers,
-    ].join("\n");
-  }).join("\n\n");
+    ].join("\n"),
+  ).join("\n\n");
 
   const addons = ADDONS.map((a) => `- ${a.name}: ${money(a.price)}. ${a.note}`).join("\n");
 
@@ -51,19 +62,26 @@ Languages: English and French. Contact: ${SITE.email}. Instagram: ${SITE.instagr
 
 ## Pricing (CAD, pre-tax)
 
-Prices differ by city because the cost of working in each city differs, not because the
-work does. Every number below is the published price and is the same for every couple.
+Arman is based in **Montréal**. There is one ladder of three tiers, priced for Montréal,
+and everywhere else in Canada adds a published destination fee. The fee is real travel
+cash plus the value of the travel days plus the regional cost of acquisition, less a
+C$300 local allowance already inside the base price, rounded to C$50. It is not a markup
+and it is the same for every couple. Everything within 75 km of Montréal is included.
 
-${cityBlocks}
+${tierBlocks}
 
-### Add-ons, identical in all three markets
+### What each region actually pays, all in
+
+${regionRows}
+
+### Add-ons, identical everywhere
 
 ${addons}
 - Multi-day or cultural events: quoted individually by event, crew, travel and editing
   volume. Never sold as one flat package.
 
-Not included and quoted separately: travel outside the home market, site permits, printed
-albums beyond a credit, and sales tax.
+Not included: sales tax, and any add-on above. Site permits and helicopter access, where a
+venue needs them, are quoted as their own line before signing.
 
 ## How booking works
 
@@ -76,12 +94,16 @@ albums beyond a credit, and sales tax.
 
 Peak-season Saturdays are usually booked 9 to 18 months ahead. Off-season and weekday
 dates open up much later. A gallery preview arrives within 48 hours and the full gallery
-in six to eight weeks.
+in three to seven weeks depending on the tier.
+
+## The three markets with their own page
+
+${cityBlocks}
 
 ## Key pages
 
-- [Pricing](${SITE.url}/pricing) — all three ladders, add-ons, and the booking process
-- [Portfolio](${SITE.url}/portfolio) — four bodies of work: editorial, film, documentary, analogue
+- [Pricing](${SITE.url}/pricing) — the three tiers, the destination fee table, add-ons, booking
+- [Portfolio](${SITE.url}/portfolio) — five albums: editorial, film inspired, 1980s film, dreamy fine art, documentary
 - [Case studies](${SITE.url}/case-studies) — complete wedding albums, not highlight reels
 - [About](${SITE.url}/about) — the approach, and where he works
 - [Reviews](${SITE.url}/reviews) — unedited screenshots of messages from couples

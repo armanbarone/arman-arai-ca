@@ -1,16 +1,11 @@
 // Custom next/image loader. Every photograph on armanarai.ca lives in the R2
-// bucket `canadian-wedding` and is served through Cloudflare Image
-// Transformations, which is what keeps the pages as fast as armanarai.com.
-//
-// CDN_HOST is deliberately the .com CDN for now: cdn.armanarai.com is already a
-// live Cloudflare custom domain over R2, and armanarai.ca is not on Cloudflare
-// yet. The identical objects exist under both `canadian-wedding/<key>` and
-// `website/ca/<key>`, so pointing this at a future cdn.armanarai.ca (mapped to
-// the canadian-wedding bucket) is a one-line change here plus dropping the
-// "/ca" prefix in lib/images.ts.
-//
-// Anything not on the CDN host passes through untouched.
-const CDN = "https://cdn.armanarai.com";
+// bucket `canadian-wedding`, served at the root of cdn.armanarai.ca and resized
+// on the fly by Cloudflare Image Transformations (enabled on the zone
+// 2026-08-13). TRANSFORMS exists so the site degrades to serving the original
+// object, which is already WebP and capped at 2400px, if that ever gets turned
+// off again rather than every image 404ing.
+const CDN = "https://cdn.armanarai.ca";
+const TRANSFORMS = true;
 
 export default function cloudflareLoader({
   src,
@@ -25,7 +20,8 @@ export default function cloudflareLoader({
 
   // A src that already baked in its own transform: rewrite the width to the one
   // next/image is asking for, otherwise every srcset entry resolves to the same
-  // file and responsive sizing silently does nothing.
+  // file and responsive sizing silently does nothing. With transforms off, the
+  // options segment is stripped back off instead.
   if (src.startsWith(`${CDN}${MARKER}`)) {
     const rest = src.slice(CDN.length + MARKER.length);
     const slash = rest.indexOf("/");
@@ -39,6 +35,7 @@ export default function cloudflareLoader({
       }
       // Only rewrite when this really is an options segment, never a path.
       if (kv.has("width") || kv.has("format") || kv.has("quality")) {
+        if (!TRANSFORMS) return `${CDN}${path}`;
         kv.set("format", kv.get("format") ?? "auto");
         kv.set("quality", String(quality || kv.get("quality") || 80));
         kv.set("width", String(width));
@@ -50,10 +47,10 @@ export default function cloudflareLoader({
     return src;
   }
 
-  if (src.startsWith(`${CDN}/`)) {
+  if (TRANSFORMS && src.startsWith(`${CDN}/`)) {
     const path = src.slice(CDN.length);
     const opts = `format=auto,quality=${quality || 80},width=${width},fit=scale-down`;
-    return `${CDN}/cdn-cgi/image/${opts}${path}`;
+    return `${CDN}${MARKER}${opts}${path}`;
   }
   return src;
 }

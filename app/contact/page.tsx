@@ -62,7 +62,7 @@ export default function Contact() {
               eighteen months out; off-season and weekday dates open up much later.
             </p>
             <p className="text-slate text-sm leading-relaxed mb-10">
-              Collections start at ${STARTING_FROM.toLocaleString("en-CA")} CAD.{" "}
+              Core is C${STARTING_FROM.toLocaleString("en-CA")} in Montréal, plus a published travel fee anywhere else.{" "}
               <Link href="/pricing" className="text-rose border-b border-dust hover:border-rose transition-colors">
                 The full ladder is published
               </Link>{" "}

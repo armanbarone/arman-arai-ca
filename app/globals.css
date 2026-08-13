@@ -311,7 +311,7 @@ img {
   --gz-ink:#E8E0D0; --gz-prose:#CEC4B2; --gz-dim:#7A6A58; --gz-label:#6A5F52;
   --gz-accent:#B8956A; --gz-gilt:#C4A46A; --gz-rule:#2E2820; --gz-rule2:#3A332A;
   --gz-scrim:rgba(5,4,3,0.6);
-  --gz-serif: var(--font-cormorant), "Cormorant", Georgia, serif;
+  --gz-serif: var(--font-cormorant-gz), "Cormorant", Georgia, serif;
   --gz-sans: var(--font-jost), "Jost", system-ui, sans-serif;
   --gz-black: var(--font-unifraktur), "UnifrakturMaguntia", serif;
   background: var(--gz-bg); color: var(--gz-ink);

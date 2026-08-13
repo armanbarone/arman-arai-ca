@@ -10,13 +10,13 @@
  * the same description everywhere it appears.
  */
 
-const CDN_BASE = "https://cdn.armanarai.com/ca";
+const CDN_BASE = "https://cdn.armanarai.ca";
 
 export type Photo = { src: string; alt: string };
 
 const p = (key: string, alt: string): Photo => ({ src: `${CDN_BASE}/${key}.webp`, alt });
 
-const CDN_HOST = "https://cdn.armanarai.com";
+const CDN_HOST = "https://cdn.armanarai.ca";
 
 /** A Cloudflare-transformed URL at a fixed width.
  *
@@ -25,6 +25,11 @@ const CDN_HOST = "https://cdn.armanarai.com";
  * cannot be used, so they ask for one size explicitly rather than downloading
  * a 2400px original into a 500px page. */
 export function at(src: string, width: number, quality = 80): string {
+  // Mirrors the TRANSFORMS switch in cloudflareLoader.ts. Image Transformations
+  // are not enabled on the armanarai.ca zone yet, so asking for one returns a
+  // 404 rather than a resized image. Serve the original until it is on.
+  const TRANSFORMS = true;
+  if (!TRANSFORMS) return src;
   if (!src.startsWith(`${CDN_HOST}/`)) return src;
   const path = src.slice(CDN_HOST.length);
   return `${CDN_HOST}/cdn-cgi/image/format=auto,quality=${quality},width=${width},fit=scale-down${path}`;

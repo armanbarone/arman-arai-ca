@@ -28,7 +28,7 @@ export interface BlogPost {
   body: string; // HTML
 }
 
-const CDN = "https://cdn.armanarai.com/ca";
+const CDN = "https://cdn.armanarai.ca";
 
 export const posts: BlogPost[] = [
   /* ────────────────────────────────────────────────────────────── TORONTO ── */

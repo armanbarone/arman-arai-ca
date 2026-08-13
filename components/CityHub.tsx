@@ -2,15 +2,29 @@ import Image from "next/image";
 import Link from "next/link";
 import InquireButton from "./InquireButton";
 import { CITY_PHOTOS } from "@/lib/images";
-import { MARKETS, SITE, type Market } from "@/lib/site";
+import {
+  CORE,
+  MARKETS,
+  SITE,
+  TIERS,
+  feeFor,
+  quoteFor,
+  regionBySlug,
+  type Market,
+} from "@/lib/site";
 
-const money = (n: number) => `$${n.toLocaleString("en-CA")}`;
+const money = (n: number) => `C$${n.toLocaleString("en-CA")}`;
+
+// Every market page quotes the Montréal ladder plus its own published
+// destination fee, so a couple never sees a base price they cannot actually book.
+const regionOf = (m: Market) => regionBySlug(m.regionSlug)!;
 
 export function cityMetadata(m: Market) {
   const title = `${m.city} Wedding Photographer — ${m.region}`;
+  const from = quoteFor(regionOf(m), CORE);
   return {
     title,
-    description: `${m.angle}. Wedding photography in ${m.region}, from ${money(m.tiers[0].price)} CAD. Prices, coverage and travel published up front.`,
+    description: `${m.angle}. Wedding photography in ${m.region}, from ${money(from)} all in. Coverage and travel are both published up front.`,
     alternates: { canonical: `/${m.slug}-wedding-photographer` },
     openGraph: {
       title: `${title} | Arman Arai`,
@@ -33,12 +47,13 @@ export function citySchema(m: Market) {
       url,
       provider: { "@id": `${SITE.url}/#business` },
       areaServed: m.areas.map((a) => ({ "@type": "Place", name: a })),
-      offers: m.tiers.map((t) => ({
+      offers: TIERS.map((t) => ({
         "@type": "Offer",
-        name: `${t.name} — ${t.hours} hours`,
-        price: t.price,
+        name: `${t.name} — ${t.coverage}`,
+        // The real number for this region: base plus the published travel fee.
+        price: quoteFor(regionOf(m), t),
         priceCurrency: "CAD",
-        url: `${SITE.url}/pricing#${m.slug}`,
+        url: `${SITE.url}/pricing#${t.slug}`,
       })),
     },
     {
@@ -64,6 +79,7 @@ export function citySchema(m: Market) {
 
 export default function CityHub({ market: m }: { market: Market }) {
   const photos = CITY_PHOTOS[m.slug];
+  const region = regionOf(m);
   const others = MARKETS.filter((x) => x.slug !== m.slug);
 
   return (
@@ -109,7 +125,7 @@ export default function CityHub({ market: m }: { market: Market }) {
           style={{ textShadow: "0 1px 2px rgba(8,7,4,0.95), 0 2px 28px rgba(8,7,4,0.9)" }}
         >
           <p className="text-[0.6rem] tracking-[0.32em] uppercase text-rose mb-4">
-            {m.province} · from {money(m.tiers[0].price)} CAD
+            {m.province} · from {money(quoteFor(region, CORE))} all in
           </p>
           <h1 className="font-serif font-light text-cream leading-[0.98] max-w-4xl" style={{ fontSize: "clamp(2.4rem,6vw,5.4rem)" }}>
             {m.city} wedding <em className="italic text-rose">photographer</em>
@@ -148,7 +164,7 @@ export default function CityHub({ market: m }: { market: Market }) {
               </h2>
             </div>
             <Link
-              href={`/pricing#${m.slug}`}
+              href="/pricing#travel"
               className="text-[0.62rem] tracking-[0.2em] uppercase text-slate hover:text-rose transition-colors border-b border-dust hover:border-rose pb-1.5 self-start md:self-auto"
             >
               Add-ons and the full breakdown →
@@ -156,18 +172,23 @@ export default function CityHub({ market: m }: { market: Market }) {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-dust/25">
-            {m.tiers.map((t, i) => (
-              <div key={t.name} className="bg-parchment px-7 py-9 md:px-8 md:py-11 flex flex-col relative">
-                {i === 1 && <span className="absolute top-0 left-0 right-0 h-px bg-rose" aria-hidden />}
+            {TIERS.map((t, i) => (
+              <div key={t.slug} className="bg-parchment px-7 py-9 md:px-8 md:py-11 flex flex-col relative">
+                {i === 0 && <span className="absolute top-0 left-0 right-0 h-px bg-rose" aria-hidden />}
                 <p className="text-[0.58rem] tracking-[0.28em] uppercase text-rose mb-4">{t.name}</p>
                 <div className="flex items-baseline gap-2 mb-1">
                   <span className="font-serif font-light text-cream" style={{ fontSize: "clamp(2.2rem,3.4vw,3rem)", lineHeight: 1 }}>
-                    {money(t.price)}
+                    {money(quoteFor(region, t))}
                   </span>
-                  <span className="text-[0.62rem] tracking-[0.18em] uppercase text-slate">CAD</span>
                 </div>
-                <p className="text-[0.7rem] tracking-[0.16em] uppercase text-slate mb-6">
-                  {t.hours} hours · {t.images}
+                <p className="text-[0.7rem] tracking-[0.16em] uppercase text-slate mb-2">
+                  {t.coverage} · {t.images}
+                </p>
+                {/* The split is shown rather than hidden: this is the whole point
+                    of pricing travel openly instead of inside a bigger base. */}
+                <p className="text-[0.68rem] text-slate mb-6">
+                  {money(t.price)} base
+                  {feeFor(region, t) > 0 ? ` + ${money(feeFor(region, t))} travel` : " · no travel fee"}
                 </p>
                 <p className="text-blush text-[0.82rem] leading-relaxed mb-5">{t.crew}</p>
                 <ul className="space-y-2.5 flex-1">
@@ -264,7 +285,7 @@ export default function CityHub({ market: m }: { market: Market }) {
                 href={`/${o.slug}-wedding-photographer`}
                 className="text-[0.62rem] tracking-[0.2em] uppercase text-blush border border-dust px-5 py-2.5 hover:border-rose hover:text-rose transition-colors"
               >
-                {o.city} · from {money(o.tiers[0].price)}
+                {o.city} · from {money(quoteFor(regionOf(o), CORE))}
               </Link>
             ))}
           </div>

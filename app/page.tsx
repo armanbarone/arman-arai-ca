@@ -4,16 +4,16 @@ import FilmStrip from "@/components/FilmStrip";
 import InquireButton from "@/components/InquireButton";
 import { HeroGallery, WorkGrid } from "@/components/PhotoGrid";
 import { HERO, HOME_GRID } from "@/lib/images";
-import { MARKETS, SITE, STARTING_FROM } from "@/lib/site";
+import { MARKETS, SITE, TIERS } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Canadian Wedding Photographer — Toronto, Montréal, Vancouver",
   description:
-    "Documentary and editorial wedding photography across Canada, coast to coast. Home markets in Toronto, Montréal and Vancouver. Collections from $3,200 CAD, published up front.",
+    "Bilingual documentary and editorial wedding photography, based in Montréal and working across Canada. Three tiers from C$4,200, with travel priced openly rather than hidden in a package.",
   alternates: { canonical: "/" },
 };
 
-const money = (n: number) => `$${n.toLocaleString("en-CA")}`;
+const money = (n: number) => `C$${n.toLocaleString("en-CA")}`;
 
 export default function Home() {
   return (
@@ -168,25 +168,29 @@ export default function Home() {
           </p>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-px max-w-3xl mx-auto mb-14 bg-dust/30">
-            {MARKETS.map((m) => (
+            {TIERS.map((tier) => (
               <Link
-                key={m.slug}
-                href={`/pricing#${m.slug}`}
+                key={tier.slug}
+                href={`/pricing#${tier.slug}`}
                 className="px-7 py-9 text-left block transition-colors"
                 style={{ background: "#141210" }}
               >
                 <p className="text-[0.58rem] tracking-[0.28em] uppercase text-rose mb-3" style={{ fontFamily: "var(--font-jost)" }}>
-                  {m.city}
+                  {tier.name}
                 </p>
                 <p className="font-serif font-light text-cream mb-2" style={{ fontSize: "1.9rem" }}>
-                  from {money(m.tiers[0].price)}
+                  {money(tier.price)}
                 </p>
-                <p className="text-blush text-xs leading-relaxed font-light">
-                  Six, eight and ten hour collections to {money(m.tiers[2].price)}.
-                </p>
+                <p className="text-blush text-xs leading-relaxed font-light">{tier.coverage}. {tier.crew}.</p>
               </Link>
             ))}
           </div>
+
+          <p className="text-slate text-[0.8rem] leading-relaxed max-w-xl mx-auto mb-12">
+            Those are Montréal prices, and everything within 75 km is included. Anywhere else in
+            Canada adds a destination fee that is published on the pricing page rather than produced
+            after you commit.
+          </p>
 
           <div className="flex flex-wrap items-center justify-center gap-8">
             <InquireButton className="inline-block bg-rose text-ivory text-[0.62rem] tracking-[0.2em] uppercase px-12 py-4 hover:bg-rose-dark transition-colors duration-300 cursor-pointer border-none">
@@ -217,9 +221,8 @@ export default function Home() {
             ))}
           </div>
           <p className="text-slate text-[0.78rem] leading-relaxed max-w-xl mx-auto">
-            And anywhere else in Canada, coast to coast. Collections start at{" "}
-            {money(STARTING_FROM)} CAD. Write to {SITE.email} or use the form and you will have an
-            answer inside two business hours.
+            And anywhere else in Canada. Write to {SITE.email} or use the form and you will
+            have an answer inside two business hours.
           </p>
         </div>
       </section>

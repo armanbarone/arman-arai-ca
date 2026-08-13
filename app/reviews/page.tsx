@@ -37,7 +37,7 @@ const PROOF = [
   { n: 12, w: 373, h: 154 },
 ];
 
-const src = (n: number) => `https://cdn.armanarai.com/ca/reviews/proof-${String(n).padStart(2, "0")}.png`;
+const src = (n: number) => `https://cdn.armanarai.ca/reviews/proof-${String(n).padStart(2, "0")}.png`;
 
 export default function Reviews() {
   return (

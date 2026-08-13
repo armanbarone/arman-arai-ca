@@ -6,29 +6,29 @@ import { GALLERIES } from "@/lib/galleries";
 import { SITE } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "Wedding Case Studies — Full Albums, Start to Finish",
+  title: "Galleries — Full Wedding Days, First Frame to Last",
   description:
-    "Four complete wedding albums, every one shown in full rather than as a highlight reel. Open a day and see how it was covered from the first frame to the last.",
-  alternates: { canonical: "/case-studies" },
+    "Complete wedding albums rather than highlight reels. Open a day and it runs in order, from the getting ready to the last dance, including the quiet parts.",
+  alternates: { canonical: "/galleries" },
   openGraph: {
-    title: "Wedding Case Studies | Arman Arai",
-    description: "Four complete wedding days, shown in full.",
-    url: `${SITE.url}/case-studies`,
+    title: "Galleries | Arman Arai",
+    description: "Complete wedding days, shown in full.",
+    url: `${SITE.url}/galleries`,
   },
 };
 
-export default function CaseStudies() {
+export default function Galleries() {
   const schema = {
     "@context": "https://schema.org",
     "@type": "CollectionPage",
-    name: "Wedding case studies",
-    url: `${SITE.url}/case-studies`,
+    name: "Wedding galleries",
+    url: `${SITE.url}/galleries`,
     description:
       "Complete wedding albums from Arman Arai, each shown in full from the first frame to the last.",
     hasPart: GALLERIES.map((g) => ({
       "@type": "ImageGallery",
       name: `${g.names} — ${g.location}`,
-      url: `${SITE.url}/case-studies/${g.slug}`,
+      url: `${SITE.url}/galleries/${g.slug}`,
       numberOfItems: g.frameCount,
     })),
   };
@@ -37,27 +37,30 @@ export default function CaseStudies() {
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
 
-      <section className="pt-36 md:pt-44 pb-14 text-center">
-        <div className="page-w page-px">
-          <p className="text-[0.6rem] tracking-[0.32em] uppercase text-rose mb-5">Case studies</p>
-          <h1 className="font-serif font-light text-cream leading-[1.02]" style={{ fontSize: "clamp(2.4rem,5.5vw,5rem)" }}>
-            Whole days, <em className="italic text-rose">first frame to last</em>
-          </h1>
-          <p className="text-blush text-[0.95rem] leading-relaxed max-w-2xl mx-auto mt-7 font-light">
-            Most photographers show you twelve photographs and call it a portfolio. These are four
-            complete albums, in the order the day happened, including the quiet parts. It is the
-            only honest way to judge whether someone can carry a whole wedding rather than land
-            twelve lucky frames.
-          </p>
-          <div className="divider mt-9">
-            <div className="divider-line" />
-            <span className="text-rose text-xs">✦</span>
-            <div className="divider-line" />
-          </div>
+      {/* ── MASTHEAD ── the same one the .com galleries hub uses ── */}
+      <section className="gx-masthead">
+        <p className="gx-eyebrow">Sample galleries</p>
+        <h1 className="gx-h1">
+          Full days, <em className="gx-script">from first frame to last</em>
+        </h1>
+        <p className="gx-lede">
+          Every wedding I photograph comes back as one continuous roll. These are the opening
+          frames. Choose a day and the whole album opens.
+        </p>
+        <div className="gx-divider">
+          <span className="gx-rule" />
+          <span className="gx-diamond" />
+          <span className="gx-rule" />
         </div>
       </section>
 
-      <AlbumStrips galleries={GALLERIES} basePath="/case-studies" />
+      <AlbumStrips galleries={GALLERIES} basePath="/galleries" />
+
+      <div className="gx-closing">
+        <Link href="/portfolio" className="gx-closing-link">
+          View the full portfolio →
+        </Link>
+      </div>
 
       <section className="bg-parchment py-16 md:py-24 text-center border-t border-dust/40">
         <div className="page-w page-px">

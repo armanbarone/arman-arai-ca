@@ -14,7 +14,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${SITE.url}/`, changeFrequency: "monthly", priority: 1.0 },
     { url: `${SITE.url}/pricing`, changeFrequency: "monthly", priority: 0.95 },
     { url: `${SITE.url}/portfolio`, changeFrequency: "monthly", priority: 0.85 },
-    { url: `${SITE.url}/case-studies`, changeFrequency: "monthly", priority: 0.85 },
+    { url: `${SITE.url}/galleries`, changeFrequency: "monthly", priority: 0.85 },
     { url: `${SITE.url}/about`, changeFrequency: "yearly", priority: 0.7 },
     { url: `${SITE.url}/reviews`, changeFrequency: "monthly", priority: 0.7 },
     { url: `${SITE.url}/contact`, changeFrequency: "yearly", priority: 0.8 },
@@ -28,7 +28,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   }));
 
   const albums: MetadataRoute.Sitemap = GALLERIES.map((g) => ({
-    url: `${SITE.url}/case-studies/${g.slug}`,
+    url: `${SITE.url}/galleries/${g.slug}`,
     changeFrequency: "yearly",
     priority: 0.6,
   }));

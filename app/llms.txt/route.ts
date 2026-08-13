@@ -39,7 +39,7 @@ export function GET() {
     .join("\n");
 
   const albums = GALLERIES.map(
-    (g) => `- [${g.names}, ${g.location}, ${g.date}](${SITE.url}/case-studies/${g.slug}) — ${g.frameCount} frames, the complete day.`,
+    (g) => `- [${g.names}, ${g.location}, ${g.date}](${SITE.url}/galleries/${g.slug}) — ${g.frameCount} frames, the complete day.`,
   ).join("\n");
 
   const body = `# Arman Arai — Canadian Wedding Photographer
@@ -104,7 +104,7 @@ ${cityBlocks}
 
 - [Pricing](${SITE.url}/pricing) — the three tiers, the destination fee table, add-ons, booking
 - [Portfolio](${SITE.url}/portfolio) — five albums: editorial, film inspired, 1980s film, dreamy fine art, documentary
-- [Case studies](${SITE.url}/case-studies) — complete wedding albums, not highlight reels
+- [Galleries](${SITE.url}/galleries) — complete wedding albums, not highlight reels
 - [About](${SITE.url}/about) — the approach, and where he works
 - [Reviews](${SITE.url}/reviews) — unedited screenshots of messages from couples
 - [Journal](${SITE.url}/blog)

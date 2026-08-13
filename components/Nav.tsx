@@ -1,34 +1,79 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
 import InquireButton from "./InquireButton";
-import { MARKETS } from "@/lib/site";
+import { MARKETS, REGIONS } from "@/lib/site";
 
-const links = [
-  { href: "/about",        label: "About" },
-  { href: "/portfolio",    label: "Portfolio" },
-  { href: "/case-studies", label: "Case Studies" },
-  { href: "/pricing",      label: "Pricing" },
-  { href: "/blog",         label: "Journal" },
-  { href: "/contact",      label: "Contact" },
+/* Same shape as the nav on armanarai.com: one plain link, a Portfolio
+   disclosure, a two-column mega menu for places, Pricing, and About/Reviews
+   tucked under FAQ so the top row stays short. Only the contents differ,
+   because this site sells weddings in Canada rather than elopements. */
+
+const linksBefore = [{ href: "/experience", label: "Experience" }];
+const portfolioLinks = [
+  { href: "/portfolio", label: "Portfolio" },
+  { href: "/galleries", label: "Galleries" },
+];
+const linksAfter = [{ href: "/pricing", label: "Pricing" }];
+const faqLinks = [
+  { href: "/faq", label: "FAQ" },
+  { href: "/about", label: "About" },
+  { href: "/reviews", label: "Reviews" },
 ];
 
-const cities = MARKETS.map((m) => ({
-  href: `/${m.slug}-wedding-photographer`,
-  label: m.city,
-}));
+// Column one of the mega menu: the three markets that have their own page,
+// then every other region I actually travel to and price.
+type MenuGroup = { name: string; slug: string; href?: string; places: { name: string; href: string }[] };
+
+const menuGroups: MenuGroup[] = [
+  ...MARKETS.map((m) => ({
+    name: m.city,
+    slug: m.slug,
+    href: `/${m.slug}-wedding-photographer`,
+    places: m.areas.slice(0, 10).map((a) => ({ name: a, href: `/${m.slug}-wedding-photographer` })),
+  })),
+  {
+    name: "Elsewhere in Canada",
+    slug: "elsewhere",
+    href: "/pricing#travel",
+    // Regions without a page of their own still get named, with the travel
+    // table as their destination. An honest entry beats a dead link.
+    places: REGIONS.filter((r) => !MARKETS.some((m) => m.regionSlug === r.slug)).map((r) => ({
+      name: r.name,
+      href: "/pricing#travel",
+    })),
+  },
+];
 
 export default function Nav() {
   const pathname = usePathname();
-  const [open, setOpen] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [placesOpen, setPlacesOpen] = useState(false);
+  const [portfolioOpen, setPortfolioOpen] = useState(false);
+  const [faqOpen, setFaqOpen] = useState(false);
+  const [hoverGroup, setHoverGroup] = useState<string | null>(null);
+  const [mobGroup, setMobGroup] = useState<string | null>(null);
 
-  // Close the mobile sheet whenever the route changes, otherwise it stays open
-  // over the page you just navigated to.
-  useEffect(() => setOpen(false), [pathname]);
+  const portfolioActive = portfolioLinks.some((l) => pathname.startsWith(l.href));
+  const faqActive = faqLinks.some((l) => pathname.startsWith(l.href));
+  const placesActive = /-wedding-photographer$/.test(pathname);
 
-  const cityActive = cities.some((c) => pathname === c.href);
+  const shownGroup = menuGroups.find((g) => g.slug === hoverGroup) ?? menuGroups[0];
+
+  const PANEL: React.CSSProperties = {
+    background: "rgba(8,7,4,0.98)",
+    backdropFilter: "blur(20px)",
+    WebkitBackdropFilter: "blur(20px)",
+    border: "0.5px solid #2A2520",
+    boxShadow: "0 20px 50px rgba(0,0,0,0.5)",
+  };
+
+  function closeMobile() {
+    setMobileOpen(false);
+    setMobGroup(null);
+  }
 
   return (
     <header
@@ -45,8 +90,8 @@ export default function Nav() {
           Arman Arai
         </Link>
 
-        <ul className="hidden lg:flex items-center gap-5 xl:gap-7">
-          {links.slice(0, 2).map(({ href, label }) => (
+        <ul className="hidden lg:flex items-center gap-6 xl:gap-8">
+          {linksBefore.map(({ href, label }) => (
             <li key={href}>
               <Link href={href} className={`nav-link ${pathname.startsWith(href) ? "active" : ""}`}>
                 {label}
@@ -54,32 +99,149 @@ export default function Nav() {
             </li>
           ))}
 
-          {/* Cities. CSS-only disclosure so the nav costs no JavaScript to open. */}
-          <li className="nav-drop">
-            <span className={`nav-link nav-drop-trigger ${cityActive ? "active" : ""}`} tabIndex={0}>
-              Cities
-              <svg width="7" height="4" viewBox="0 0 7 4" aria-hidden className="nav-caret">
-                <path d="M0 0l3.5 4L7 0z" fill="currentColor" />
-              </svg>
-            </span>
-            <ul className="nav-drop-menu">
-              {cities.map(({ href, label }) => (
-                <li key={href}>
-                  <Link href={href} className={`nav-drop-item ${pathname === href ? "active" : ""}`}>
-                    {label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
+          {/* Portfolio dropdown (Portfolio, Galleries) */}
+          <li
+            className="relative"
+            onMouseEnter={() => setPortfolioOpen(true)}
+            onMouseLeave={() => setPortfolioOpen(false)}
+          >
+            <button
+              className={`nav-link ${portfolioActive ? "active" : ""}`}
+              onClick={() => setPortfolioOpen((o) => !o)}
+              aria-haspopup="true"
+              aria-expanded={portfolioOpen}
+            >
+              Portfolio
+            </button>
+            {portfolioOpen && (
+              <div className="absolute left-0 top-full pt-3">
+                <div style={{ ...PANEL, minWidth: 170, padding: "6px 0" }}>
+                  {portfolioLinks.map(({ href, label }) => (
+                    <Link
+                      key={href}
+                      href={href}
+                      onClick={() => setPortfolioOpen(false)}
+                      className="block px-5 py-2.5 nav-link"
+                      style={{ letterSpacing: "0.14em" }}
+                    >
+                      {label}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
           </li>
 
-          {links.slice(2).map(({ href, label }) => (
+          {/* Weddings mega-dropdown: markets on the left, their places on the right */}
+          <li
+            className="relative"
+            onMouseEnter={() => setPlacesOpen(true)}
+            onMouseLeave={() => {
+              setPlacesOpen(false);
+              setHoverGroup(null);
+            }}
+          >
+            <button
+              className={`nav-link ${placesActive ? "active" : ""}`}
+              onClick={() => setPlacesOpen((o) => !o)}
+              aria-haspopup="true"
+              aria-expanded={placesOpen}
+            >
+              Weddings
+            </button>
+            {placesOpen && (
+              <div className="absolute left-0 top-full pt-3">
+                <div style={{ ...PANEL, display: "flex" }}>
+                  <div style={{ minWidth: 210, padding: "6px 0", borderRight: "0.5px solid #2A2520" }}>
+                    {menuGroups.map((g) => {
+                      const on = shownGroup.slug === g.slug;
+                      return (
+                        <Link
+                          key={g.slug}
+                          href={g.href ?? "/pricing"}
+                          onMouseEnter={() => setHoverGroup(g.slug)}
+                          onClick={() => setPlacesOpen(false)}
+                          className="flex items-center justify-between px-5 py-2.5"
+                          style={{ background: on ? "rgba(184,149,106,0.10)" : "transparent" }}
+                        >
+                          <span className="nav-link" style={on ? { color: "#B8956A" } : undefined}>
+                            {g.name}
+                          </span>
+                          <span aria-hidden style={{ fontSize: "0.6em", color: on ? "#B8956A" : "#5A5148" }}>
+                            ▸
+                          </span>
+                        </Link>
+                      );
+                    })}
+                    <div style={{ height: "0.5px", background: "#2A2520", margin: "4px 0" }} />
+                    <Link href="/pricing#travel" onClick={() => setPlacesOpen(false)} className="block px-5 py-2.5 nav-link">
+                      Travel &amp; fees
+                    </Link>
+                  </div>
+
+                  <div style={{ minWidth: 240, padding: "10px 0" }}>
+                    <p className="px-5 pb-2 text-[0.52rem] tracking-[0.28em] uppercase text-slate">
+                      {shownGroup.name}
+                    </p>
+                    {shownGroup.places.map((c) => (
+                      <Link
+                        key={c.name}
+                        href={c.href}
+                        onClick={() => setPlacesOpen(false)}
+                        className="block px-5 py-2 nav-link"
+                        style={{ letterSpacing: "0.12em" }}
+                      >
+                        {c.name}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+          </li>
+
+          {linksAfter.map(({ href, label }) => (
             <li key={href}>
               <Link href={href} className={`nav-link ${pathname.startsWith(href) ? "active" : ""}`}>
                 {label}
               </Link>
             </li>
           ))}
+
+          <li>
+            <Link href="/blog" className={`nav-link ${pathname.startsWith("/blog") ? "active" : ""}`}>
+              Journal
+            </Link>
+          </li>
+
+          {/* FAQ dropdown carries About and Reviews, as on the .com */}
+          <li className="relative" onMouseEnter={() => setFaqOpen(true)} onMouseLeave={() => setFaqOpen(false)}>
+            <button
+              className={`nav-link ${faqActive ? "active" : ""}`}
+              onClick={() => setFaqOpen((o) => !o)}
+              aria-haspopup="true"
+              aria-expanded={faqOpen}
+            >
+              FAQ
+            </button>
+            {faqOpen && (
+              <div className="absolute right-0 top-full pt-3">
+                <div style={{ ...PANEL, minWidth: 160, padding: "6px 0" }}>
+                  {faqLinks.map(({ href, label }) => (
+                    <Link
+                      key={href}
+                      href={href}
+                      onClick={() => setFaqOpen(false)}
+                      className="block px-5 py-2.5 nav-link"
+                      style={{ letterSpacing: "0.14em" }}
+                    >
+                      {label}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
+          </li>
         </ul>
 
         <InquireButton className="hidden lg:inline-block text-[0.62rem] tracking-[0.2em] uppercase text-rose border border-rose/40 px-5 py-2.5 transition-all duration-300 hover:bg-rose hover:text-ivory cursor-pointer shrink-0 bg-transparent">
@@ -89,8 +251,8 @@ export default function Nav() {
         <button
           className="lg:hidden flex flex-col gap-1.5 p-2"
           aria-label="Menu"
-          aria-expanded={open}
-          onClick={() => setOpen((v) => !v)}
+          aria-expanded={mobileOpen}
+          onClick={() => setMobileOpen((v) => !v)}
         >
           <span className="w-5 h-px bg-cream block" />
           <span className="w-5 h-px bg-cream block" />
@@ -98,19 +260,63 @@ export default function Nav() {
         </button>
       </nav>
 
-      {open && (
-        <div className="lg:hidden border-t border-dust" style={{ background: "rgba(8,7,4,0.97)" }}>
-          <ul className="page-px py-4 flex flex-col gap-4">
-            {[...links.slice(0, 2), ...cities, ...links.slice(2)].map(({ href, label }) => (
+      {mobileOpen && (
+        <div className="lg:hidden border-t border-dust max-h-[80vh] overflow-y-auto" style={{ background: "rgba(8,7,4,0.98)" }}>
+          <ul className="page-px py-4 flex flex-col gap-3">
+            {linksBefore.map(({ href, label }) => (
               <li key={href}>
-                <Link
-                  href={href}
-                  className="text-[0.65rem] tracking-[0.22em] uppercase text-blush hover:text-rose transition-colors block py-1"
-                >
+                <Link href={href} onClick={closeMobile} className="mob-link">
                   {label}
                 </Link>
               </li>
             ))}
+            {portfolioLinks.map(({ href, label }) => (
+              <li key={href}>
+                <Link href={href} onClick={closeMobile} className="mob-link">
+                  {label}
+                </Link>
+              </li>
+            ))}
+
+            {/* Places, as an accordion rather than a hover menu */}
+            {menuGroups.map((g) => (
+              <li key={g.slug}>
+                <button
+                  className="mob-link flex w-full items-center justify-between"
+                  onClick={() => setMobGroup((s) => (s === g.slug ? null : g.slug))}
+                  aria-expanded={mobGroup === g.slug}
+                >
+                  {g.name}
+                  <span aria-hidden className="text-slate text-[0.7em]">
+                    {mobGroup === g.slug ? "−" : "+"}
+                  </span>
+                </button>
+                {mobGroup === g.slug && (
+                  <div className="pl-4 pt-2 flex flex-col gap-2">
+                    {g.href && (
+                      <Link href={g.href} onClick={closeMobile} className="mob-sublink text-rose">
+                        {g.name} page →
+                      </Link>
+                    )}
+                    {g.places.map((c) => (
+                      <Link key={c.name} href={c.href} onClick={closeMobile} className="mob-sublink">
+                        {c.name}
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </li>
+            ))}
+
+            {[...linksAfter, { href: "/blog", label: "Journal" }, ...faqLinks, { href: "/contact", label: "Contact" }].map(
+              ({ href, label }) => (
+                <li key={href}>
+                  <Link href={href} onClick={closeMobile} className="mob-link">
+                    {label}
+                  </Link>
+                </li>
+              ),
+            )}
             <li>
               <InquireButton className="text-[0.62rem] tracking-[0.2em] uppercase text-rose border border-rose/40 px-4 py-2 hover:bg-rose hover:text-ivory transition-all cursor-pointer bg-transparent mt-1">
                 Inquire

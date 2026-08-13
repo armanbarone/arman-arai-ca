@@ -130,6 +130,29 @@ export const FILM: Photo[] = [
   p("portfolio/film/garden-stone-villa-ceremony", "Garden ceremony in front of a stone facade, guests standing"),
 ];
 
+export const DREAMY_FINE_ART: Photo[] = [
+  p("portfolio/dreamy-fine-art/01", "Veil lifted overhead and lit from behind so it glows gold"),
+  p("portfolio/dreamy-fine-art/02", "Bride in an off-shoulder gown with a white bouquet in a dark colonnade"),
+  p("portfolio/dreamy-fine-art/03", "Couple embracing in tall pampas grass with sea stacks behind them"),
+  p("portfolio/dreamy-fine-art/04", "Close portrait of a bride resting against her groom's navy lapel"),
+  p("portfolio/dreamy-fine-art/05", "Bride looking straight through her veil against a dark ground"),
+  p("portfolio/dreamy-fine-art/06", "Veiled bride in a pearl choker against dark foliage"),
+  p("portfolio/dreamy-fine-art/07", "Couple forehead to forehead, seen through out-of-focus pink blossom"),
+  p("portfolio/dreamy-fine-art/08", "Bride in a crystal tiara holding a large white bouquet against greenery"),
+  p("portfolio/dreamy-fine-art/09", "Couple walking a sunlit stone arcade, her train trailing behind"),
+  p("portfolio/dreamy-fine-art/10", "Bride on a curved marble staircase with a rainbow prism across the wall"),
+  p("portfolio/dreamy-fine-art/11", "Bride in profile looking up, palm shadows falling across a warm wall"),
+  p("portfolio/dreamy-fine-art/12", "Bride with a full bouquet, the sun flaring through the trees behind her"),
+  p("portfolio/dreamy-fine-art/13", "High-fashion portrait with the veil draped like a hood, direct gaze"),
+  p("portfolio/dreamy-fine-art/14", "A bouquet held against a lace gown in low warm light"),
+  p("portfolio/dreamy-fine-art/15", "Bride with pale roses in soft window light"),
+  p("portfolio/dreamy-fine-art/16", "Bride wrapped in a swirling veil against a dark ground"),
+  p("portfolio/dreamy-fine-art/17", "Bride in a glasshouse holding her veil wide against the panes"),
+  p("portfolio/dreamy-fine-art/18", "Groom lifting his bride as she raises her bouquet at sunset on a hillside"),
+  p("portfolio/dreamy-fine-art/19", "Couple silhouetted in a gothic triple window, veil streaming sideways"),
+  p("portfolio/dreamy-fine-art/20", "Overhead frame of a bride on a lit staircase, bouquet held out"),
+];
+
 export const DOCUMENTARY: Photo[] = [
   p("portfolio/documentary/morning-window-vows-read", "Bride reading at a window in the morning, her dress hanging behind her"),
   p("portfolio/documentary/bridesmaids-hotel-bed", "Bridesmaids getting ready across a hotel bed strewn with clothes"),

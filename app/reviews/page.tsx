@@ -105,7 +105,7 @@ export default function Reviews() {
           </h2>
           <div className="flex flex-wrap items-center justify-center gap-8">
             <Link
-              href="/case-studies"
+              href="/galleries"
               className="text-[0.62rem] tracking-[0.2em] uppercase text-slate hover:text-rose transition-colors border-b border-dust hover:border-rose pb-1.5"
             >
               Four complete albums →

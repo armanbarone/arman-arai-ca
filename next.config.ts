@@ -66,11 +66,12 @@ const nextConfig: NextConfig = {
       // so claim it rather than leave it dead.
       { source: "/journal", destination: "/blog", permanent: true },
       { source: "/journal/:slug", destination: "/blog/:slug", permanent: true },
-      // /case-study is the singular a lot of people type, and /galleries is what
-      // the sister site calls the same thing.
-      { source: "/case-study", destination: "/case-studies", permanent: true },
-      { source: "/galleries", destination: "/case-studies", permanent: true },
-      { source: "/galleries/:slug", destination: "/case-studies/:slug", permanent: true },
+      // The albums lived at /case-studies for one deploy before the route was
+      // renamed to /galleries, matching armanarai.com. Both spellings are
+      // claimed because people type both.
+      { source: "/case-study", destination: "/galleries", permanent: true },
+      { source: "/case-studies", destination: "/galleries", permanent: true },
+      { source: "/case-studies/:slug", destination: "/galleries/:slug", permanent: true },
       ...Object.entries(RETIRED_POSTS).map(([slug, destination]) => ({
         source: `/blog/${slug}`,
         destination,

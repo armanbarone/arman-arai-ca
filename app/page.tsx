@@ -138,7 +138,7 @@ export default function Home() {
             <Link href="/portfolio" className="text-[0.62rem] tracking-[0.2em] uppercase text-blush hover:text-rose transition-colors duration-300">
               View full portfolio →
             </Link>
-            <Link href="/case-studies" className="text-[0.62rem] tracking-[0.2em] uppercase text-blush hover:text-rose transition-colors duration-300">
+            <Link href="/galleries" className="text-[0.62rem] tracking-[0.2em] uppercase text-blush hover:text-rose transition-colors duration-300">
               Or a whole day, start to finish →
             </Link>
           </div>

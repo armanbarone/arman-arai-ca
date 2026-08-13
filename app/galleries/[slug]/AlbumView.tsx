@@ -138,8 +138,8 @@ export default function AlbumView({ gallery: g }: { gallery: Gallery }) {
           <Link href="/pricing" className="ga-back">
             See what a full day costs →
           </Link>
-          <Link href="/case-studies" className="ga-back">
-            ← All case studies
+          <Link href="/galleries" className="ga-back">
+            ← All galleries
           </Link>
         </div>
       </section>

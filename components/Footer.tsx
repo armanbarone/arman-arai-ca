@@ -41,7 +41,7 @@ export default function Footer() {
             <ul className="space-y-3">
               <li><Link href="/about" className="footer-link">About</Link></li>
               <li><Link href="/portfolio" className="footer-link">Portfolio</Link></li>
-              <li><Link href="/case-studies" className="footer-link">Case Studies</Link></li>
+              <li><Link href="/galleries" className="footer-link">Galleries</Link></li>
               <li><Link href="/blog" className="footer-link">Journal</Link></li>
               <li><Link href="/contact" className="footer-link">Contact</Link></li>
               <li>

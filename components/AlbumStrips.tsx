@@ -60,7 +60,7 @@ function buildFrames(g: Gallery, mobile: boolean): Frame[] {
 
 export default function AlbumStrips({
   galleries,
-  basePath = "/case-studies",
+  basePath = "/galleries",
 }: {
   galleries: Gallery[];
   basePath?: string;
@@ -278,6 +278,52 @@ function Day({
 }
 
 const CSS = `
+/* Masthead + closing, lifted from the armanarai.com galleries hub so the two
+   sites' album pages read as the same publication. */
+.gx-masthead { padding: 6rem 1.5rem 5rem; text-align: center; }
+.gx-h1 {
+  font-family: var(--font-cormorant), Georgia, serif; font-weight: 300;
+  font-size: clamp(38px, 6.4vw, 84px); line-height: 0.96; letter-spacing: -0.02em;
+  color: #E8E0D0; margin: 1.4rem 0 0;
+}
+.gx-h2 {
+  font-family: var(--font-cormorant), Georgia, serif; font-weight: 300;
+  font-size: clamp(30px, 4.4vw, 58px); line-height: 1; letter-spacing: -0.02em;
+  color: #E8E0D0; margin: 1.6rem 0 0;
+}
+.gx-script {
+  font-family: var(--font-great-vibes), cursive; font-size: 0.92em; font-style: normal;
+  color: #B8956A; letter-spacing: 0;
+}
+.gx-lede {
+  font-family: var(--font-cormorant), Georgia, serif; font-size: 1.06rem; line-height: 1.7;
+  color: #A08D7B; max-width: 44ch; margin: 2rem auto 0;
+}
+.gx-lede--tight { margin-top: 1.2rem; font-size: 1rem; }
+.gx-divider {
+  display: flex; align-items: center; justify-content: center; gap: 0.9rem;
+  max-width: 280px; margin: 3.2rem auto 0;
+}
+.gx-divider--wide { max-width: 560px; }
+.gx-rule { flex: 1; height: 0.5px; background: #2A2520; }
+.gx-diamond { width: 3px; height: 3px; background: #B8956A; transform: rotate(45deg); }
+.gx-kick {
+  font-family: var(--font-jost), sans-serif; font-size: 9px; text-transform: uppercase;
+  letter-spacing: 0.34em; color: #B8956A; white-space: nowrap;
+}
+.gx-sec-head { padding: 3rem 1.5rem 1rem; text-align: center; }
+.gx-closing { text-align: center; padding: 1rem 1.5rem 7rem; }
+.gx-closing-link {
+  font-family: var(--font-jost), sans-serif; font-size: 10px; text-transform: uppercase;
+  letter-spacing: 0.26em; color: #8E7A6A; text-decoration: none;
+  border-bottom: 0.5px solid #2A2520; padding-bottom: 6px;
+  transition: color 0.4s ${EASE}, border-color 0.4s ${EASE};
+}
+.gx-closing-link:hover { color: #B8956A; border-color: #B8956A; }
+@media (min-width: 768px)  { .gx-masthead, .gx-sec-head { padding-left: 2.5rem; padding-right: 2.5rem; } }
+@media (min-width: 1024px) { .gx-masthead, .gx-sec-head { padding-left: 4rem; padding-right: 4rem; } }
+@media (max-width: 859px)  { .gx-masthead { padding: 4.5rem 1.5rem 3.5rem; } }
+
 .gx-day { margin-bottom: 7.5rem; content-visibility: auto; contain-intrinsic-size: 1px 560px; }
 .gx-eyebrow {
   font-family: var(--font-jost), sans-serif; font-size: 10px; text-transform: uppercase;

@@ -17,11 +17,11 @@ export async function generateMetadata({
   const g = galleryBySlug(slug);
   if (!g) return {};
   const title = `${g.names} — ${g.location}`;
-  const url = `${SITE.url}/case-studies/${g.slug}`;
+  const url = `${SITE.url}/galleries/${g.slug}`;
   return {
     title,
     description: `${g.frameCount} frames from one wedding day: ${g.names} in ${g.location}, ${g.date}. A full album, start to finish, by Arman Arai.`,
-    alternates: { canonical: `/case-studies/${g.slug}` },
+    alternates: { canonical: `/galleries/${g.slug}` },
     openGraph: {
       title: `${title} | Arman Arai`,
       description: g.story.slice(0, 180),
@@ -37,7 +37,7 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ slug
   const g = galleryBySlug(slug);
   if (!g) notFound();
 
-  const url = `${SITE.url}/case-studies/${g.slug}`;
+  const url = `${SITE.url}/galleries/${g.slug}`;
   const schema = {
     "@context": "https://schema.org",
     "@type": "ImageGallery",
@@ -51,7 +51,7 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ slug
     image: g.chapters.flatMap((c) =>
       c.images.map((i) => ({ "@type": "ImageObject", contentUrl: i.url, caption: i.alt })),
     ),
-    isPartOf: { "@type": "CollectionPage", url: `${SITE.url}/case-studies` },
+    isPartOf: { "@type": "CollectionPage", url: `${SITE.url}/galleries` },
   };
 
   return (

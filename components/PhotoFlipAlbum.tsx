@@ -31,7 +31,7 @@ function coverLeft(title: string, sub: string, date: string): string {
   return `<div style="width:100%;height:100%;background:${BK};position:relative">
     <div style="position:absolute;right:24px;bottom:24px;width:1px;height:54px;background:${BR}.18)"></div>
     <div style="position:absolute;top:24px;left:24px;width:1px;height:40px;background:${BR}.1)"></div>
-    <div style="position:absolute;bottom:28px;left:30px;font-size:10px;letter-spacing:.3em;color:${BR}.22);text-transform:uppercase;font-family:var(--font-sans)">StillVows</div>
+    <div style="position:absolute;bottom:28px;left:30px;font-size:10px;letter-spacing:.3em;color:${BR}.22);text-transform:uppercase;font-family:var(--font-sans)">Arman Arai</div>
   </div>`;
 }
 

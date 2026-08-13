@@ -30,6 +30,32 @@ body { color: #E8E0D0; background: #080704; }
 .nav-link:hover::after { transform:scaleX(1); }
 .nav-link.active { color:#E8E0D0; }
 
+/* ══ NAV DROPDOWN — CSS only, so opening the Cities menu costs no JS ══ */
+.nav-drop { position:relative; }
+.nav-drop-trigger { display:inline-flex; align-items:center; gap:0.4rem; cursor:default; }
+.nav-caret { opacity:0.6; transition:transform 0.3s; }
+.nav-drop:hover .nav-caret, .nav-drop:focus-within .nav-caret { transform:rotate(180deg); }
+.nav-drop-menu {
+  position:absolute; top:100%; left:50%; transform:translateX(-50%) translateY(6px);
+  margin-top:0.9rem; min-width:190px; padding:0.5rem 0;
+  background:rgba(8,7,4,0.97); border:0.5px solid #2A2520;
+  backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);
+  opacity:0; visibility:hidden; pointer-events:none;
+  transition:opacity 0.25s, transform 0.25s, visibility 0.25s;
+}
+/* The gap between trigger and panel would drop the hover; bridge it. */
+.nav-drop-menu::before { content:""; position:absolute; left:0; right:0; top:-0.9rem; height:0.9rem; }
+.nav-drop:hover .nav-drop-menu, .nav-drop:focus-within .nav-drop-menu {
+  opacity:1; visibility:visible; pointer-events:auto; transform:translateX(-50%) translateY(0);
+}
+.nav-drop-item {
+  display:block; padding:0.6rem 1.25rem; color:#7A6A58; text-decoration:none;
+  font-family:var(--font-jost); font-size:0.65rem; letter-spacing:0.22em; text-transform:uppercase;
+  transition:color 0.25s, background 0.25s;
+}
+.nav-drop-item:hover { color:#B8956A; background:rgba(184,149,106,0.06); }
+.nav-drop-item.active { color:#E8E0D0; }
+
 /* ══ DIVIDER ══ */
 .divider { display:flex; align-items:center; gap:1rem; justify-content:center; margin:1.75rem auto 0; max-width:280px; }
 .divider-line { flex:1; height:0.5px; background:#2A2520; }

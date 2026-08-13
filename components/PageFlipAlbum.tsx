@@ -110,7 +110,7 @@ export default function PageFlipAlbum({ images }: Props) {
   const BlankPage = () => (
     <div style={{ width:"100%", height:"100%", background:"linear-gradient(145deg,#EDE8DF,#DDD5C5)", display:"flex", alignItems:"center", justifyContent:"center" }}>
       <div style={{ textAlign:"center" }}>
-        <span className="font-script text-blush/35" style={{ fontSize:"2.2rem", display:"block" }}>StillVows</span>
+        <span className="font-script text-blush/35" style={{ fontSize:"2.2rem", display:"block" }}>Arman Arai</span>
         <p className="text-[0.58rem] tracking-[0.2em] uppercase text-parchment mt-2">Wedding Photography</p>
       </div>
     </div>

@@ -22,7 +22,7 @@ async function sendViaResend(subject: string, html: string, replyTo: string) {
     const { Resend } = await import("resend");
     const resend = new Resend(apiKey);
     const { error } = await resend.emails.send({
-      from: "StillVows Website <onboarding@resend.dev>",
+      from: "Arman Arai <onboarding@resend.dev>",
       to: ["i@armanarai.com"],
       replyTo,
       subject,

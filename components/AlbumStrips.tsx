@@ -410,5 +410,9 @@ const CSS = `
 .gx-strip--m .gx-mark { font-size: 7px; }
 .gx-strip--m .gx-mark--tl { top: -14px; }
 
+.gx-clips { padding: 1rem 1.5rem 5rem; max-width: 1280px; margin: 0 auto; }
+.gx-clip-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.4rem; margin-top: 2.4rem; }
+@media (max-width: 859px) { .gx-clip-grid { grid-template-columns: 1fr; } }
+
 @media (max-width: 859px) { .gx-day { margin-bottom: 4.5rem; } }
 `;

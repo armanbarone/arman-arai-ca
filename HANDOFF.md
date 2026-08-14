@@ -185,6 +185,11 @@ Everything in this list is live and was verified with a real HTTP check.
 - **New skill** `wedding-image-generator` (in `.claude/skills/` and
   `.agents/skills/`): 2k Nano Banana Pro, staged-wedding register, writes to
   `canadian-wedding`.
+- **`<Clip>` video component**, on BOTH sites, `/galleries` only. Server
+  component, zero client JS, styles inside the component so they never reach
+  globals.css (which `inlineCss` puts on every route). `lib/clips.ts` is empty,
+  so the feature is currently inert: a before/after build diff showed **zero
+  route-size change on either site**. See §9 before adding a clip.
 
 ---
 
@@ -273,3 +278,42 @@ marks the deploy BLOCKED.
   photograph belongs.
 - Copy the .com exactly where he says copy: fonts, sizes, footer, layouts.
 - He serves Whistler, Vancouver Island and the areas outside Toronto. Say so.
+
+---
+
+## 9. Video clips on /galleries
+
+Arman asked about dropping 6–10 MB GIFs onto the galleries pages. Measured
+answer: one 8 MB GIF is ~32x this site's heaviest photograph and ~3x its entire
+homepage, and it decodes on the main thread. The same loop as WebM is
+200–600 KB with GPU decode. So this was built as video, not GIF.
+
+**The constraint he set: galleries pages only, and do not touch the speed of
+anything else, especially the .com.** How that is honoured:
+
+- `components/Clip.tsx` is a **server component**. A muted autoplaying loop
+  needs no JavaScript, so it contributes nothing to any client bundle. Do not
+  add `"use client"` and do not add an IntersectionObserver — the browser
+  already defers autoplay for offscreen video and `preload="none"` means only
+  the poster is fetched until the clip is on screen.
+- It is rendered from `app/galleries/page.tsx` (a server component) and **not**
+  from inside `AlbumStrips` / `GalleriesHub`, which are client components.
+  Rendering it there would pull it into the client bundle.
+- Its CSS lives in a `<style>` inside the component, not in `globals.css`. Both
+  sites run `experimental.inlineCss`, which inlines the entire stylesheet into
+  every page's HTML, so a rule in globals.css is paid for on every route.
+- `lib/clips.ts` exports an empty `CLIPS` map and `hasClips`, so the whole
+  section is absent until a clip is uploaded.
+
+**Verified:** a `git stash` before/after build diff of the full route table
+showed **no size change on any route of either site**, `/galleries` included.
+Re-run that check after adding real clips:
+
+```bash
+git stash -q -u && npm run build 2>&1 | grep -E "^[┌├└]" > /tmp/before.txt
+git stash pop -q && npm run build 2>&1 | grep -E "^[┌├└]" > /tmp/after.txt
+diff /tmp/before.txt /tmp/after.txt
+```
+
+Encoding and upload instructions are in the header comment of `lib/clips.ts`
+on each site. **Keep each clip under ~1 MB** or the whole exercise is pointless.

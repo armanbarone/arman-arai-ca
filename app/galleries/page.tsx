@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import AlbumStrips from "@/components/AlbumStrips";
+import Clip from "@/components/Clip";
 import InquireButton from "@/components/InquireButton";
+import { CLIPS, hasClips } from "@/lib/clips";
 import { GALLERIES } from "@/lib/galleries";
 import { SITE } from "@/lib/site";
 
@@ -55,6 +57,34 @@ export default function Galleries() {
       </section>
 
       <AlbumStrips galleries={GALLERIES} basePath="/galleries" />
+
+      {/* Moving frames. Rendered from the server page rather than from inside
+          AlbumStrips, which is a client component: keeping it out here means the
+          clips add no JavaScript to the bundle. The whole block disappears when
+          no clip has been uploaded yet, so the feature costs nothing until it
+          is used. */}
+      {hasClips && (
+        <section className="gx-clips">
+          <div className="gx-sec-head">
+            <div className="gx-divider gx-divider--wide">
+              <span className="gx-rule" />
+              <span className="gx-kick">In motion</span>
+              <span className="gx-rule" />
+            </div>
+            <h2 className="gx-h2">
+              A few seconds of <em className="gx-script">the day moving</em>
+            </h2>
+            <p className="gx-lede gx-lede--tight">
+              Silent, and they loop. Nothing loads until the clip is on screen.
+            </p>
+          </div>
+          <div className="gx-clip-grid">
+            {GALLERIES.filter((g) => CLIPS[g.slug]).map((g) => (
+              <Clip key={g.slug} {...CLIPS[g.slug]} />
+            ))}
+          </div>
+        </section>
+      )}
 
       <div className="gx-closing">
         <Link href="/portfolio" className="gx-closing-link">

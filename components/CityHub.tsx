@@ -2,6 +2,8 @@ import Image from "next/image";
 import Link from "next/link";
 import InquireButton from "./InquireButton";
 import { CITY_PHOTOS } from "@/lib/images";
+import { GALLERIES } from "@/lib/galleries";
+import { posts } from "@/lib/blog";
 import { hubBySlug } from "@/lib/hubs";
 import {
   CORE,
@@ -26,7 +28,9 @@ const SECTIONS = [
   { id: "venues", label: "Where" },
   { id: "season", label: "When" },
   { id: "day", label: "The day" },
+  { id: "albums", label: "Albums" },
   { id: "prices", label: "Prices" },
+  { id: "journal", label: "Reading" },
   { id: "faq", label: "Questions" },
 ];
 
@@ -105,6 +109,11 @@ export default function CityHub({ market: m }: { market: Market }) {
   const hub = hubBySlug(m.slug);
   const region = regionOf(m);
   const others = MARKETS.filter((x) => x.slug !== m.slug);
+  // This city's writing first, topped up with the guides that apply anywhere.
+  const cityPosts = [
+    ...posts.filter((post) => post.city === m.slug),
+    ...posts.filter((post) => post.city === null),
+  ].slice(0, 4);
 
   return (
     <div className="hub-sheet">
@@ -245,16 +254,53 @@ export default function CityHub({ market: m }: { market: Market }) {
         <h2 className="hub-section-h">How the day runs</h2>
         <p className="hub-section-intro">{hub.dayIntro}</p>
         <ol className="hub-timeline">
-          {hub.day.map((s) => (
-            <li key={s.time} className="hub-tl-row">
-              <span className="hub-tl-time">{s.time}</span>
-              <div className="hub-tl-body">
-                <h3 className="hub-tl-title">{s.title}</h3>
-                <p className="hub-tl-note">{s.body}</p>
-              </div>
+          {hub.day.map((s, i) => (
+            <li key={s.time} className="hub-tl-item">
+              <span className="hub-tl-when">{s.time}</span>
+              <span className="hub-tl-num" aria-hidden>{String(i + 1).padStart(2, "0")}</span>
+              <h3 className="hub-tl-title">{s.title}</h3>
+              <p className="hub-tl-body">{s.body}</p>
             </li>
           ))}
         </ol>
+      </section>
+
+
+      {/* -- ALBUMS -- */}
+      <section id="albums" className="hub-section">
+        <p className="hub-section-kicker">Whole days</p>
+        <h2 className="hub-section-h">Complete albums, not highlight reels</h2>
+        <p className="hub-section-intro">
+          Every wedding comes back as one continuous roll. These open on the first frame and run to
+          the last, including the quiet parts a portfolio leaves out. It is the only honest way to
+          judge whether someone can carry a whole day.
+        </p>
+        <div className="hub-album-grid">
+          {GALLERIES.slice(0, 3).map((g) => (
+            <Link key={g.slug} href={`/galleries/${g.slug}`} className="hub-album-card">
+              <span className="hub-album-photo">
+                <Image
+                  src={g.cover.url}
+                  alt={g.cover.alt}
+                  fill
+                  sizes="(max-width: 767px) 100vw, 33vw"
+                  quality={78}
+                  loading="lazy"
+                  className="object-cover"
+                />
+              </span>
+              <span className="hub-album-meta">
+                <span className="hub-album-names">{g.names}</span>
+                <span className="hub-album-where">{g.location} &middot; {g.date}</span>
+                <span className="hub-album-frames">{g.frameCount} frames &rarr;</span>
+              </span>
+            </Link>
+          ))}
+        </div>
+        <p className="hub-faq-more">
+          <Link href="/galleries">All the albums</Link>, or the{" "}
+          <Link href="/portfolio">five style albums</Link> in the portfolio.
+        </p>
       </section>
 
       {/* ── PRICES ── */}
@@ -284,6 +330,37 @@ export default function CityHub({ market: m }: { market: Market }) {
           <Link href="/pricing" className="hub-cta-alt">
             Add-ons and everywhere else →
           </Link>
+        </div>
+      </section>
+
+
+      {/* -- JOURNAL -- */}
+      <section id="journal" className="hub-section">
+        <p className="hub-section-kicker">Reading</p>
+        <h2 className="hub-section-h">Written for {m.city} couples</h2>
+        <p className="hub-section-intro">
+          What it costs, when to book, and how the day is built. Written to be useful before you
+          have decided anything, including whether to hire me.
+        </p>
+        <div className="hub-post-grid">
+          {cityPosts.map((post) => (
+            <Link key={post.slug} href={`/blog/${post.slug}`} className="hub-post-card">
+              <span className="hub-post-photo">
+                <Image
+                  src={post.coverImage}
+                  alt={post.coverAlt}
+                  fill
+                  sizes="(max-width: 767px) 100vw, 25vw"
+                  quality={76}
+                  loading="lazy"
+                  className="object-cover"
+                />
+              </span>
+              <span className="hub-post-topic">{post.topic}</span>
+              <span className="hub-post-title">{post.title}</span>
+              <span className="hub-post-read">{post.readTime} &rarr;</span>
+            </Link>
+          ))}
         </div>
       </section>
 

@@ -1622,3 +1622,62 @@ img {
   .hub-venue-note { grid-column: 2; }
   .hub-section-h { max-width: none; }
 }
+
+/* ══ CITY HUB: albums and journal rows ══ */
+.hub-album-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.4rem; }
+.hub-album-card { display: block; text-decoration: none; }
+.hub-album-photo {
+  display: block; position: relative; width: 100%; aspect-ratio: 3 / 2;
+  overflow: hidden; background: #050403; border: 0.5px solid #2A2520;
+}
+.hub-album-card img { transition: transform 0.9s cubic-bezier(.25,.46,.45,.94); }
+.hub-album-card:hover img { transform: scale(1.04); }
+.hub-album-meta { display: block; padding-top: 0.9rem; }
+.hub-album-names {
+  display: block; font-family: var(--font-cormorant), Georgia, serif;
+  font-size: 1.25rem; color: #E8E0D0; line-height: 1.2;
+}
+.hub-album-where {
+  display: block; font-family: var(--font-jost); font-size: 0.6rem;
+  letter-spacing: 0.2em; text-transform: uppercase; color: #857060; margin-top: 0.4rem;
+}
+.hub-album-frames {
+  display: block; font-family: var(--font-jost); font-size: 0.6rem;
+  letter-spacing: 0.22em; text-transform: uppercase; color: #B8956A; margin-top: 0.6rem;
+}
+
+.hub-post-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.2rem; }
+.hub-post-card { display: block; text-decoration: none; }
+.hub-post-photo {
+  display: block; position: relative; width: 100%; aspect-ratio: 4 / 3;
+  overflow: hidden; background: #050403; border: 0.5px solid #2A2520;
+}
+.hub-post-card img { transition: transform 0.9s cubic-bezier(.25,.46,.45,.94); }
+.hub-post-card:hover img { transform: scale(1.04); }
+.hub-post-topic {
+  display: block; font-family: var(--font-jost); font-size: 0.56rem;
+  letter-spacing: 0.24em; text-transform: uppercase; color: #B8956A; margin-top: 0.85rem;
+}
+.hub-post-title {
+  display: block; font-family: var(--font-cormorant), Georgia, serif;
+  font-size: 1.1rem; line-height: 1.28; color: #E8E0D0; margin-top: 0.4rem;
+  transition: color 0.3s;
+}
+.hub-post-card:hover .hub-post-title { color: #B8956A; }
+.hub-post-read {
+  display: block; font-family: var(--font-jost); font-size: 0.56rem;
+  letter-spacing: 0.2em; text-transform: uppercase; color: #857060; margin-top: 0.5rem;
+}
+
+/* The .com's timeline packs the hour label and the heading tight. At this
+   font size that reads as a collision, so give the label its own line. */
+.hub-tl-when { display: block; margin-bottom: 0.2rem; }
+.hub-tl-title { padding-right: 2.4rem; }
+
+@media (max-width: 1023px) {
+  .hub-album-grid { grid-template-columns: 1fr 1fr; }
+  .hub-post-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 639px) {
+  .hub-album-grid, .hub-post-grid { grid-template-columns: 1fr; }
+}

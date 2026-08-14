@@ -300,6 +300,15 @@ until curl -s -A 'Mozilla/5.0' https://www.armanarai.ca/pricing \
   | grep -q "Three collections"; do sleep 20; done
 ```
 
+Two things that make a live grep report a false failure:
+
+- `experimental.inlineCss` inlines the whole stylesheet into the HTML, so a
+  **class name matches on any deploy, including a stale one.**
+- React SSR inserts a comment between a literal and an expression, so JSX
+  written `On the day, in {m.city}` arrives as
+  `On the day, in <!-- -->Toronto`. **Grep a substring that lies entirely on
+  one side of the interpolation**, or match the `<!-- -->` explicitly.
+
 Commit as `Arman Arai <90718947+armanbarone@users.noreply.github.com>` or Vercel
 marks the deploy BLOCKED.
 

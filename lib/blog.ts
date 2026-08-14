@@ -54,7 +54,7 @@ export const posts: BlogPost[] = [
 <figure><img src="${CDN}/portfolio/documentary/reception-toast-raised-glass.webp" alt="A guest raising a glass mid-toast at a Toronto reception"><figcaption>Toronto is the densest wedding market in the country, which pushes both the ceiling and the floor.</figcaption></figure>
 <p>Toronto is the largest and most competitive wedding market in Canada, and competition does two things at once. It pushes the ceiling up, because there is enough demand to support photographers charging $6,000 and more for a single day. It also pushes the floor down, because there is enough supply that someone will always take your date for $1,800.</p>
 <p>The result is a range that looks wider than it is useful. A $2,200 package and a $5,500 package are frequently not the same product with different amounts of prestige attached. They are different amounts of time, different amounts of editing, and very often a different number of weddings that photographer is shooting that month.</p>
-<p><strong>The honest midpoint for an eight-hour Saturday with an experienced solo photographer in the GTA is between $4,000 and $5,000.</strong> Below that you are usually buying either less time, less experience, or a business model that needs volume to work.</p>
+<p><strong>The honest midpoint for an eight-hour Saturday with an experienced local solo photographer in the GTA is between $4,000 and $5,000.</strong> Below that you are usually buying either less time, less experience, or a business model that needs volume to work. Above it you are usually buying a second shooter, a faster gallery, or someone who is travelling in.</p>
 
 <h2>What sits underneath the number</h2>
 <figure><img src="${CDN}/portfolio/documentary/morning-window-vows-read.webp" alt="Bride reading at a window in the morning with her dress hanging behind her"><figcaption>The shooting day is a fraction of the hours a wedding actually takes.</figcaption></figure>
@@ -65,7 +65,7 @@ export const posts: BlogPost[] = [
 <h2>The specific ways a cheap quote gets expensive</h2>
 <figure><img src="${CDN}/portfolio/documentary/hotel-corridor-groom.webp" alt="Groom walking away down a hotel corridor"><figcaption>Coverage that ends before the dancing is the most common and most expensive economy.</figcaption></figure>
 <p><strong>Coverage that ends too early.</strong> A six-hour package on a wedding that runs from 11am preparation to a 10pm exit means the photographer leaves before the speeches. Couples then buy hours on the day at whatever the overtime rate is, which is always higher than it would have been in the contract.</p>
-<p><strong>A second photographer added late.</strong> If the two of you are getting ready in Mississauga and Scarborough, one photographer cannot be in both places. That is not a fact anyone can charm their way around. Booking a second at the start costs about $650; discovering the problem in the final month costs more and limits who is available.</p>
+<p><strong>A second photographer added late.</strong> If the two of you are getting ready in Mississauga and Scarborough, one photographer cannot be in both places. That is not a fact anyone can charm their way around. Booking a second at the start costs C$750 for six hours; discovering the problem in the final month costs more and limits who is available.</p>
 <p><strong>Travel that was never quoted.</strong> The GTA is enormous. A photographer whose base rate assumes a downtown venue and who then adds mileage for Burlington or Whitby has told you the truth late rather than early. Ask where the free radius ends before you sign, not after.</p>
 <p><strong>An album that turns out to be an upsell.</strong> "Album included" and "album credit of $750" are very different sentences. The second one has a ceiling you can see.</p>
 
@@ -77,7 +77,8 @@ export const posts: BlogPost[] = [
 
 <h2>What I charge, and why it is on the website</h2>
 <figure><img src="${CDN}/cities/toronto/muskoka.webp" alt="Couple on a dock in front of a float plane on a Muskoka lake"><figcaption>Muskoka, Niagara and Prince Edward County are all inside a reasonable Toronto radius.</figcaption></figure>
-<p>My Toronto collections are $3,500 for six hours, $4,800 for eight, and $6,400 for ten with a second photographer for eight of them. Multi-day weddings are quoted individually and always will be. Every add-on has a published price: a second photographer is $650, an extra hour is $450, an album credit is $750.</p>
+<p>My Toronto collections are C$6,450 for eight hours, C$8,150 for ten with a second photographer for six, and C$10,850 for twelve hours across two days. Those are whole numbers: I come in from Montréal and the flight and hotel nights are already inside them, so there is no travel line waiting at the end. Multi-day weddings are quoted individually and always will be, and an additional two-hour event is C$900.</p>
+<p>Every add-on has a published price: a second photographer is C$750 for six hours, an extra hour is C$450, an album credit is C$1,200. Vertical social clips are in every collection rather than sold separately, because the gap between the wedding and the gallery is exactly when everyone is asking to see something.</p>
 <p>Those numbers are on the pricing page because roughly three quarters of couples say price is the thing they most want to know before making contact, and most photographers make them ask for it anyway. Publishing it saves us both the two emails where we discover we were never in the same range.</p>
 <p><strong>It also means I cannot quietly quote you differently from the next couple</strong>, which is a discipline worth having.</p>
 
@@ -136,8 +137,9 @@ export const posts: BlogPost[] = [
 
 <h2>My Montréal numbers</h2>
 <figure><img src="${CDN}/cities/montreal/bic.webp" alt="Couple walking a snowy rocky shoreline at sunset"><figcaption>Winter weddings here photograph better than couples expect, because the light is low all day.</figcaption></figure>
-<p>Essential is $3,200 for six hours. Core is $4,200 for eight and includes an engagement session. Signature is $5,600 for ten with a second photographer for six of them. A second photographer on its own is $650, an extra hour is $450, an album credit is $750, and photo with video starts at $2,500 and is quoted from real crew cost.</p>
-<p><strong>I am not trying to win the bottom of the Montréal range and I would rather say that plainly.</strong> Below the Essential tier the arithmetic stops working, and what it produces is a photographer who is rushing. If your budget is genuinely under $3,000, there are good newer photographers in this city and I would rather point you at one than sell you a thin version of my own work.</p>
+<p>Core is C$4,200 for eight hours and includes an engagement session. Signature is C$5,900 for ten with a second photographer for six. Story Weekend is C$8,200 for twelve hours across two days, with a C$1,000 album credit and two rolls of film. Montréal is home, so everything within 75 km carries no travel charge at all.</p>
+<p>A second photographer on its own is C$750, an extra hour is C$450, a 10×10 album is C$1,200, and a dedicated videographer starts at C$3,500 for eight hours. Vertical social clips are included in every collection.</p>
+<p><strong>I am not trying to win the bottom of the Montréal range and I would rather say that plainly.</strong> Below about C$4,000 the arithmetic stops working, and what it produces is a photographer who is rushing. If your budget is genuinely under that, there are good newer photographers in this city and I would rather point you at one than sell you a thin version of my own work. A genuinely short weekday wedding is the exception; ask and I will scope it down honestly.</p>
 `,
   },
 
@@ -187,8 +189,9 @@ export const posts: BlogPost[] = [
 
 <h2>My Vancouver numbers</h2>
 <figure><img src="${CDN}/cities/vancouver/locations/lighthouse-park/01.webp" alt="Couple embracing on driftwood at Lighthouse Park with the lighthouse above them"><figcaption>Lighthouse Park, Whytecliff, Deep Cove and Cypress are all inside the normal radius.</figcaption></figure>
-<p>Essential is $3,500 for six hours and includes a scouted weather backup. Core is $4,800 for eight, with an engagement session and a location plan. Signature is $6,500 for ten with a second photographer for eight, Sea-to-Sky planning and permits handled.</p>
-<p>Travel up the corridor is quoted rather than absorbed. Permits are arranged before the date rather than hoped for. Helicopter access, transport and vendors are separate lines so you can see each one and decline any of them.</p>
+<p>Core is C$8,250 for eight hours, Signature C$9,950 for ten with a second photographer, and Story Weekend C$12,850 for twelve hours across two days. Those look higher than a local photographer&rsquo;s rate because they are whole numbers: I fly in from Montréal, and the airfare, three nights and ground transport are already inside them rather than appearing later as travel.</p>
+<p>Whistler, Squamish and Vancouver Island are the same numbers, because they are the same trip. Tofino is the one place I will tell you to take the two-day collection instead, because it genuinely needs the extra night. A scouted weather backup and any provincial-park permit are part of the work, not an add-on.</p>
+<p>Helicopter access, ground transport and vendors are the only separate lines, so you can see each one and decline any of them. Everything else is in the number on the pricing page.</p>
 `,
   },
 
@@ -359,6 +362,149 @@ export const posts: BlogPost[] = [
 <figure><img src="${CDN}/portfolio/film/golden-hour-bouquets-detail.webp" alt="Bouquets and a boutonnière held close in golden hour light"><figcaption>The planning, not the photographs, is what early booking buys.</figcaption></figure>
 <p>Booking a year out does not make the photographs better on its own. What it buys is planning time: an engagement session with no urgency attached, a venue visit at the right hour of the right season, a timeline built slowly rather than in the final fortnight, and a photographer who has had months to think about your specific day rather than weeks.</p>
 <p>That is a real benefit and it is worth having. It is just not the same as the panic the wedding industry sells about dates disappearing, which applies to roughly fifteen Saturdays a year.</p>
+`,
+  },
+
+  /* ────────────────────────────────────────────────────── LOCATION GUIDES ── */
+  {
+    slug: "whistler-wedding-photographer",
+    title: "Getting Married in Whistler and the Sea-to-Sky",
+    subtitle:
+      "What the corridor actually costs, which months work, and the permit nobody tells you about until it is late.",
+    date: "2026-08-13",
+    dateDisplay: "August 13, 2026",
+    readTime: "7 min read",
+    coverImage: `${CDN}/cities/vancouver/cypress.webp`,
+    coverAlt: "Couple in the snow among the conifers on Cypress Mountain",
+    excerpt:
+      "Whistler weddings are sold as all-inclusive packages starting around $8,500 once vendors are bundled in. Here is what the photography actually costs on its own, what the permits involve, and which months earn the drive.",
+    topic: "Places",
+    city: "vancouver",
+    body: `
+<p><strong>Whistler is the most expensive place in Canada to get married badly.</strong> Everything is a logistics problem before it is an aesthetic one: the road, the gondola, the weather, the permits, and lodging that swings by hundreds of dollars a night between February and July.</p>
+<p>Done properly it is also the best mountain wedding in the country, and it does not require the eight-and-a-half-thousand-dollar all-inclusive package the market keeps quoting. Here is the real shape of it.</p>
+
+<h2>What the all-inclusive numbers actually contain</h2>
+<figure><img src="${CDN}/cities/vancouver/whytecliff.webp" alt="Couple seated on the rocks at Whytecliff Park with the islands beyond"><figcaption>The published Whistler packages bundle vendors, not just a better photographer.</figcaption></figure>
+<p>All-inclusive Whistler packages advertised from about $8,500 typically bundle photography with an officiant, florals, hair and makeup, planning and travel. The photography inside that is not $8,500 of photography. It is roughly half of it, plus several thousand dollars of other people's work and the coordination to make them arrive in the right order.</p>
+<p><strong>If you want somebody to run the whole thing, that is a reasonable way to buy it.</strong> If you are booking your own officiant and florist, you should not pay a bundled price for a service you are performing yourself. My Whistler collections are the same as my Vancouver ones, because it is the same trip: C$8,250 for eight hours, C$9,950 for ten, C$12,850 for the two-day collection.</p>
+
+<h2>The permit is the part that goes wrong</h2>
+<figure><img src="${CDN}/cities/vancouver/locations/squamish-sea-to-sky-gondola/01.webp" alt="Valley view from the Sea-to-Sky gondola above Squamish"><figcaption>Crown land and provincial parks both want paperwork, and neither is fast.</figcaption></figure>
+<p>A ceremony on Crown land or inside a provincial park needs a permit. So does a commercial shoot in several of the places couples assume are simply outdoors. The process is not difficult but it is slow, and it is the single most common reason a Sea-to-Sky plan collapses in the final month.</p>
+<p><strong>Arrange it early and treat the confirmation as a real deadline rather than an administrative nicety.</strong> I handle this as part of the work rather than as an add-on, but I need to know your site months out, not weeks.</p>
+
+<h2>Which months earn the drive</h2>
+<figure><img src="${CDN}/cities/vancouver/locations/porteau-cove/01.webp" alt="Mountains and water at Porteau Cove on the Sea-to-Sky highway"><figcaption>July through September is dry and busy. February is the other good answer.</figcaption></figure>
+<p><strong>July to mid-September</strong> is the dry window and the reason the good dates vanish first. Long light, open alpine, and lodging at its most expensive.</p>
+<p><strong>Late September and early October</strong> is my preference: the crowds thin, the larches turn, and the light gets low enough to be interesting all afternoon rather than only at the end.</p>
+<p><strong>February</strong> is the underrated one. Real snow, blue hour arriving at four, and a completely different photograph from the summer version. It only works if you actually want winter rather than tolerating it, and if the wedding party owns proper boots.</p>
+<p><strong>May and November</strong> are the two months I would talk you out of. The alpine is neither snow nor open, and the odds of a grey, textureless day are the highest of the year.</p>
+
+<h2>The drive is a real number in the timeline</h2>
+<figure><img src="${CDN}/portfolio/documentary/car-back-seat-teal.webp" alt="Couple resting together in the back seat of a car in teal evening light"><figcaption>Ninety minutes each way, and that is before the highway has an opinion.</figcaption></figure>
+<p>Vancouver to Whistler is about ninety minutes without incident, and the Sea-to-Sky has incidents. If your guests are coming up from the city on the day, that is three hours of the schedule gone and a hard ceiling on how late the reception can run.</p>
+<p><strong>The fix is almost always to move people up the night before</strong>, which is also the argument for the two-day collection: a welcome dinner on the Friday is worth photographing, and it turns the travel from a cost into part of the wedding.</p>
+
+<h2>What to actually plan for</h2>
+<figure><img src="${CDN}/cities/vancouver/locations/deep-cove/01.webp" alt="A beach ceremony with guests standing and a sailboat on the water"><figcaption>A named indoor backup, decided in advance, is worth more than any lens.</figcaption></figure>
+<p>Cloud sits on the mountain for days at a time and no forecast tells you which days. So the plan is: a named indoor or covered location that I have already looked at, a gondola contingency if your ceremony is up top, and a timeline with enough slack that a delayed lift does not eat the portraits.</p>
+<p>Couples who plan for cloud get the day they wanted plus a bonus if it clears. Couples who plan for sun get a scramble. That is the whole difference, and it is decided months before anyone puts a dress on.</p>
+`,
+  },
+
+  {
+    slug: "vancouver-island-and-tofino-weddings",
+    title: "Weddings on Vancouver Island and in Tofino",
+    subtitle:
+      "The ferry, the drive, the storms, and why the west coast is one of the few places worth getting married in November.",
+    date: "2026-08-13",
+    dateDisplay: "August 13, 2026",
+    readTime: "7 min read",
+    coverImage: `${CDN}/cities/vancouver/locations/lighthouse-park/01.webp`,
+    coverAlt: "Couple embracing on driftwood with a lighthouse above them",
+    excerpt:
+      "Vancouver Island is a ferry and then a drive, and Tofino is a further three hours after that. Both are inside the same price as a Vancouver wedding. Here is what the travel really means for your day.",
+    topic: "Places",
+    city: "vancouver",
+    body: `
+<p><strong>Vancouver Island is not a day trip and Tofino is not on Vancouver Island in any way that matters logistically.</strong> Victoria is a ferry plus a drive. Tofino is that, plus three more hours of highway across the middle of the island, on a road that does not care about your schedule.</p>
+<p>Both sit inside the same price as a Vancouver wedding, because they are the same trip from Montréal: the flight, the nights and the ground transport are already in the number. What changes is how the day has to be built.</p>
+
+<h2>The ferry is a schedule, not a road</h2>
+<figure><img src="${CDN}/cities/vancouver/locations/porteau-cove/01.webp" alt="Mountains and water on the British Columbia coast"><figcaption>Sailings fill in summer. A missed one is two hours, not twenty minutes.</figcaption></figure>
+<p>In July and August the sailings fill, and a missed one is a two-hour problem rather than a twenty-minute one. If any part of your wedding party is crossing on the day, reserve. If your photographer is crossing on the day, something has gone wrong in the planning.</p>
+<p><strong>I come over the day before as a rule</strong>, which is part of why the travel is priced honestly rather than absorbed: that night is a real cost and pretending otherwise just moves it into a worse place.</p>
+
+<h2>Tofino wants the two-day collection</h2>
+<figure><img src="${CDN}/portfolio/documentary/rainy-arcade-umbrella-bw.webp" alt="Black and white frame of a couple under an umbrella in the rain"><figcaption>Three hours of highway each way makes a single ten-hour day very tight.</figcaption></figure>
+<p>This is the one place I will actively steer you. A ten-hour single-day wedding in Tofino means everyone arrives frayed and leaves early, and the light on the west coast is at its best in the hour almost nobody has scheduled for.</p>
+<p><strong>Story Weekend exists for exactly this:</strong> two hours of welcome or rehearsal coverage on the Friday, a full day on the Saturday, and social clips from both. It is C$12,850 all in, and on the west coast it is the honest recommendation rather than the upsell.</p>
+
+<h2>Storm season is a genuine reason to marry in November</h2>
+<figure><img src="${CDN}/cities/vancouver/cypress.webp" alt="Couple among snow-covered conifers on the coast mountains"><figcaption>The west coast in winter is dramatic in a way the summer version is not.</figcaption></figure>
+<p>Tofino built a tourism season out of watching weather hit the shore, and it photographs extraordinarily. Low cloud, spray, wet sand that mirrors everything, and a beach with nobody on it.</p>
+<p>The tradeoff is honest: you will be cold, the light goes by half past four, and there is a real chance of rain at the ceremony. <strong>If that sounds like a reason not to, choose July. If it sounds like the point, November is the best value date in British Columbia</strong> and the galleries do not look like anyone else's.</p>
+
+<h2>Victoria and the Gulf Islands are the softer option</h2>
+<figure><img src="${CDN}/cities/vancouver/locations/lighthouse-park/01.webp" alt="Couple embracing on driftwood at a coastal park"><figcaption>Gardens, heritage stone and calmer water, without the west-coast drive.</figcaption></figure>
+<p>Victoria gives you heritage architecture, formal gardens and an inner harbour, with none of the highway. The Gulf Islands give you a genuinely private day, at the cost of a second ferry and a much smaller guest list by necessity.</p>
+<p>Both are a shorter, easier version of the same trip, and both sit at the same price. If the drama of the west coast is not the reason you are going, they are usually the better answer.</p>
+
+<h2>What the island does to the photographs</h2>
+<figure><img src="${CDN}/portfolio/film/dim-colonnade-embrace.webp" alt="Couple embracing in soft directional light"><figcaption>Overcast is not a compromise here. It is the reason the frames look like this.</figcaption></figure>
+<p>The island is overcast more often than not, and overcast is the most flattering light there is: no squinting, no blown highlights, no hard shadow across half a face. Colours go deep rather than washing out, and green reads as green rather than yellow.</p>
+<p><strong>Couples arrive worrying about grey and leave with the gallery they actually wanted.</strong> The photographs people remember from this coast are disproportionately the wet ones, and that is not a consolation, it is the reason to come.</p>
+`,
+  },
+
+  {
+    slug: "wedding-venues-outside-toronto",
+    title: "Getting Married Outside Toronto: Niagara, Muskoka and the County",
+    subtitle:
+      "Three regions within three hours of the city, what each does to a photograph, and what the travel really costs.",
+    date: "2026-08-13",
+    dateDisplay: "August 13, 2026",
+    readTime: "8 min read",
+    coverImage: `${CDN}/cities/toronto/muskoka.webp`,
+    coverAlt: "Couple on a dock in front of a float plane on a Muskoka lake",
+    excerpt:
+      "Most of the best wedding locations near Toronto are not in Toronto. Niagara, Muskoka and Prince Edward County each solve a different problem, and each carries a different set of logistics.",
+    topic: "Places",
+    city: "toronto",
+    body: `
+<p><strong>Most of the wedding locations worth photographing near Toronto are not in Toronto.</strong> The city has good rooms and a handful of genuinely great ones, but within three hours in three directions there are regions that do things the city physically cannot: water, vineyards, granite, old growth, and horizon.</p>
+<p>They are not interchangeable. Each solves a different problem and each brings a different logistical cost. Here is how I would choose between them.</p>
+
+<h2>Niagara: architecture and a guaranteed rain plan</h2>
+<figure><img src="${CDN}/cities/toronto/niagara/floral-showhouse/01.webp" alt="Bride and groom in the glasshouse of the Niagara Floral Showhouse"><figcaption>The Floral Showhouse is the most reliable wet-weather room within two hours of Toronto.</figcaption></figure>
+<p>Ninety minutes south, and the only one of the three regions where a downpour is not a crisis. The Floral Showhouse is a working glasshouse full of hydrangeas that photographs beautifully in flat light, which is precisely when you need it. Mother Arch Park gives you stone and ceremony chairs with the parkway behind.</p>
+<p>Add the wineries around Niagara-on-the-Lake and you have a region that works from May to late October and does not collapse if the forecast turns. <strong>If your anxiety is weather, this is the answer.</strong></p>
+
+<h2>Muskoka: water, granite and float planes</h2>
+<figure><img src="${CDN}/cities/toronto/muskoka/cover-and-overview/01.webp" alt="Couple in summer greenery in Muskoka"><figcaption>Two hours north, and the only place near Toronto that looks like the Shield.</figcaption></figure>
+<p>Two to three hours north depending on which lake and which Friday. Docks, pink granite, dark water and pine. It is the only landscape within reach of the city that reads unmistakably as the Canadian Shield rather than as generic countryside.</p>
+<p>The costs are real: a car per family, venues that are frequently forty minutes from the nearest hotel, and Highway 400 on a July Friday, which can turn two hours into four. <strong>Build the timeline around when guests can actually arrive, not when the map says they can.</strong></p>
+
+<h2>Prince Edward County: fields, light and the shortest guest list</h2>
+<figure><img src="${CDN}/cities/toronto/prince-edward-county/cover/01.webp" alt="Couple laughing in a golden grass field in Prince Edward County"><figcaption>Long grass, low light and horizon. The County photographs like nowhere else in Ontario.</figcaption></figure>
+<p>Two and a half hours east, and visually the most distinctive of the three: open fields, long grass, dune beaches and a horizon you can actually see. Late-day light there is unobstructed in a way it never is around the lakes, which is why the golden-hour frames from the County look like they were shot somewhere else entirely.</p>
+<p>The constraint is beds. Accommodation is limited and it books out a year ahead in summer, which quietly caps your guest list whether or not you intended to cap it. <strong>Sort lodging before you fall in love with a venue.</strong></p>
+
+<h2>Killarney, if you are willing to drive</h2>
+<figure><img src="${CDN}/cities/toronto/killarney-1.webp" alt="Circular floral arch set on a dock above a lake in Killarney"><figcaption>White quartzite and turquoise water, about five hours from the city.</figcaption></figure>
+<p>Five hours northwest, white quartzite ridges and water that goes genuinely turquoise. It is the most beautiful of the four and the least practical: almost nobody's grandmother is making that drive, and the accommodation situation is thinner than the County's.</p>
+<p>It works for a small wedding of people who would have gone camping together anyway. For anything above forty guests it is a fight.</p>
+
+<h2>What the travel actually costs</h2>
+<figure><img src="${CDN}/cities/toronto/niagara/mother-arch-park/01.webp" alt="Couple under a stone arch with rows of white ceremony chairs"><figcaption>Niagara, Muskoka and the County are one region on my pricing, not three surprises.</figcaption></figure>
+<p>All three sit in the same band on my pricing page: C$6,850 for Core, C$8,550 for Signature and C$11,300 for the two-day collection. That is the whole number, with the transport and the nights already in it.</p>
+<p><strong>Ask any photographer where their included radius ends before you sign rather than after.</strong> A Toronto base rate that quietly assumes a downtown venue and then adds mileage for Muskoka is not a cheaper quote, it is a later one.</p>
+
+<h2>How to choose between them</h2>
+<figure><img src="${CDN}/cities/toronto/niagara.webp" alt="Bride holding an orange bouquet among ferns in a conservatory"><figcaption>Pick for the constraint you actually have, not the photograph you saw once.</figcaption></figure>
+<p>Choose <strong>Niagara</strong> if weather is what you are worried about, or if half your guests are flying into Toronto and will not drive far. Choose <strong>Muskoka</strong> if the water and the rock are the point and your people already know the drive. Choose <strong>the County</strong> if you want the light and you are content with a smaller wedding.</p>
+<p>And if none of that is decided yet, send me the date and roughly how many people. Which region is right falls out of the guest count faster than it falls out of the photographs.</p>
 `,
   },
 ];

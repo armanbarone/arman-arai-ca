@@ -5,11 +5,15 @@ import InquireButton from "@/components/InquireButton";
 import { ARMAN_PORTRAIT, DOCUMENTARY, DREAMY_FINE_ART, EDITORIAL, FILM } from "@/lib/images";
 import { CORE, PRIMARY_REGIONS, SITE, TIERS, quoteFor } from "@/lib/site";
 
-/* The hero has to survive being cropped to a wide band. An earlier version used
-   a tight two-face close-up, which at 1920x640 came out as half a face. This one
-   is a whole room with the couple small in it: it reads at any crop, and the
-   foreground is dark enough to carry the headline. */
-const HERO = FILM[12]; // dim-ballroom-candle-foreground
+/* A tight, high-key, backlit close-up. Two things it needs to work as a
+   full-bleed hero, both settled by screenshotting the real browser rather than
+   by computing the crop, which I got wrong twice:
+     - objectPosition 25%. The default centre cut his face in half. 15% loses
+       her mouth, 35% starts cutting his. 25% holds his lips at her temple, her
+       closed eye and the earring.
+     - a heavy bottom scrim. The frame is bright, so cream text needs real
+       darkness under it rather than the light gradient a dark photo can take. */
+const HERO = EDITORIAL[2]; // backlit-tender-close
 
 export const metadata: Metadata = {
   title: "The Experience: First Call to Finished Album",
@@ -130,34 +134,35 @@ export default function Experience() {
           quality={84}
           priority
           fetchPriority="high"
-          /* The couple stands large and dead centre in this frame, so no vertical
-             crop puts them clear of a centred headline: at 38% the text sat on
-             them, at 62% their heads went off the top. 45% keeps them whole and
-             the headline moves left instead, onto the empty floor. */
-          style={{ objectFit: "cover", objectPosition: "center 45%" }}
+          style={{ objectFit: "cover", objectPosition: "center 25%" }}
         />
+        {/* This frame is high-key, so the text needs real darkness under it
+            rather than the light gradient a dark photograph can carry. The scrim
+            is still transparent by two thirds up, which keeps both faces clear. */}
         <span
           aria-hidden
           className="absolute inset-0"
           style={{
             background:
-              "linear-gradient(to bottom, rgba(8,7,4,0.55) 0%, rgba(8,7,4,0) 26%), " +
-              "linear-gradient(to top, rgba(8,7,4,0.96) 0%, rgba(8,7,4,0.72) 26%, rgba(8,7,4,0.12) 55%, rgba(8,7,4,0) 100%)",
+              "linear-gradient(to bottom, rgba(8,7,4,0.5) 0%, rgba(8,7,4,0) 20%), " +
+              "linear-gradient(to top, rgba(8,7,4,0.95) 0%, rgba(8,7,4,0.9) 20%, rgba(8,7,4,0.66) 40%, rgba(8,7,4,0.2) 66%, rgba(8,7,4,0) 100%)",
           }}
         />
         <div
           className="absolute inset-x-0 bottom-0 page-w page-px pb-14 md:pb-20"
-          style={{ textShadow: "0 1px 2px rgba(8,7,4,0.95), 0 2px 28px rgba(8,7,4,0.9)" }}
+          style={{ textShadow: "0 1px 3px rgba(8,7,4,0.98), 0 2px 34px rgba(8,7,4,0.95)" }}
         >
           <div className="max-w-2xl">
-            <p className="text-[0.62rem] tracking-[0.32em] uppercase text-rose mb-5">The experience</p>
+            <p className="text-[0.7rem] tracking-[0.3em] uppercase text-cream/95 mb-5">
+              The experience
+            </p>
             <h1
               className="font-serif font-light text-cream leading-[1.04]"
               style={{ fontSize: "clamp(2.2rem,4.2vw,3.8rem)", textWrap: "balance" }}
             >
               From the first call to the <em className="italic text-rose">finished album</em>
             </h1>
-            <p className="text-blush text-[1rem] leading-relaxed mt-7 font-light max-w-xl">
+            <p className="text-cream/90 text-[1.08rem] leading-[1.75] mt-7 font-light max-w-xl">
               Six chapters, in the order you will live them. Everything below is decided before your
               date rather than on it, which is the entire point of writing it down.
             </p>

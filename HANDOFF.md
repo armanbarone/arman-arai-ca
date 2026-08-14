@@ -84,6 +84,23 @@ These cost real time and the owner had to catch most of them.
     size to the tallest cell, so short cells leave gaps. Uniform aspect or
     proper masonry.
 
+11. **I said "no fee" on the pricing page and left the word everywhere else.**
+    After he rejected the base-plus-fee framing I fixed `/pricing` and stopped.
+    The hub prose, the contact page and `llms.txt` still said a "C$2,250
+    destination fee" for months. **When a framing is rejected, grep the whole
+    repo for it, not just the page he was looking at.** `lib/site.ts` now
+    carries that rule at the top of the file.
+
+12. **The Toronto hero and the Toronto body copy were the same paragraph.**
+    `hubs.ts lead[0]` and `site.ts MARKETS.body[0]` opened with identical
+    sentences, so the page said the same thing twice, four screens apart. Those
+    two files are edited separately and nothing checks them against each other.
+
+13. **Prose in a `max-width` column inside a full-width section.** The hub body
+    copy sat in 68ch with the right half of the section empty, which is exactly
+    the "half-assed" look he objected to. Anything full-width needs either a
+    second column or a photograph beside it.
+
 ---
 
 ## 3. Architecture
@@ -179,12 +196,31 @@ Everything in this list is live and was verified with a real HTTP check.
 - Homepage: hero, philosophy, film strip, selected work, why-this-way,
   how-the-day-runs, what-comes-back, in-their-words, three photographic city
   cards. **No pricing block** — that was removed on request.
-- 9 journal posts incl. Whistler, Vancouver Island/Tofino, outside-Toronto.
+- **15 journal posts, 22,000 words**, every one over 1,280 words with a figure
+  per `<h2>` and no image repeated inside a post. The six added on 2026-08-14
+  are: twenty Vancouver photo locations (with the permit rules), Prince Edward
+  County venues, Niagara Parks venues, Muskoka, a winter Montréal wedding, and
+  what a multi-day South Asian wedding costs in the GTA. All 106 referenced
+  images were HTTP-verified against the bucket.
 - SEO: sitemap, robots, llms.txt, and schema across every page type.
 - Every bilingual/French claim removed.
 - **New skill** `wedding-image-generator` (in `.claude/skills/` and
   `.agents/skills/`): 2k Nano Banana Pro, staged-wedding register, writes to
   `canadian-wedding`.
+- Legal pages reconciled with this business: `/terms-of-service` no longer
+  sells destination weddings, the Adventuremoon or a cinematic film, and its
+  delivery table is generated from the real per-collection times. The privacy
+  policy no longer claims Calendly, Meta Pixel, GA4, Google Ads or Tag Manager,
+  none of which this site loads; the real stack is Resend, Vercel and Cloudflare
+  and the site sets no analytics or advertising cookies.
+- **IndexNow**, ported from the .com: `app/api/indexnow/route.ts` derives its
+  URL list from `sitemap.ts` so the two cannot drift, the key file is at
+  `public/86ecaa26c9f0918385223cda4b676d95.txt`, and
+  `.github/workflows/indexnow.yml` fires on a successful production deployment.
+  Needs `INDEXNOW_SECRET`; see §6.
+- Archivo and IBM Plex Mono dropped. On the .com they are used only by the
+  `promo/` components, which do not exist here, so they were two font families
+  downloading on every page for nothing.
 - **`<Clip>` video component**, on BOTH sites, `/galleries` only. Server
   component, zero client JS, styles inside the component so they never reach
   globals.css (which `inlineCss` puts on every route). `lib/clips.ts` is empty,
@@ -196,18 +232,6 @@ Everything in this list is live and was verified with a real HTTP check.
 ## 6. What still needs doing
 
 Roughly in priority order.
-
-### Known-wrong content (fix first, these contradict the live site)
-
-- **`app/about/page.tsx:42`** still promises "the full gallery in six to eight
-  weeks". The real times are 5–7 weeks Core, 4 Signature, 3 Story Weekend.
-- **`app/terms-of-service/page.tsx`** was ported from the .com and never
-  reconciled: it promises "sneak peek within 5 days", "full gallery within 3
-  weeks" and a "cinematic film within 6 to 8 weeks". This site has no film
-  product, and the previews are 48h / next-day / 24h. **This is a contract
-  page; it is the worst place on the site to be wrong.**
-- `/privacy-policy` had a blunt find-and-replace of elopement→wedding applied.
-  Re-read it for nonsense.
 
 ### Owner input needed (blocked on Arman)
 
@@ -223,16 +247,31 @@ Roughly in priority order.
 
 - **The wedding image skill has never been run.** Every photograph on the site
   is inherited from the .com or from GoHighLevel. Generating genuinely Canadian
-  wedding imagery per city is the biggest remaining quality win.
-- **Archivo and IBM Plex Mono are loaded and never used** (1 reference each,
-  both in the layout comment). Either use them or drop them; they are two
-  font families on every page load for nothing.
-- More journal posts. Toronto neighbourhoods/venues, Montréal venues, and
-  per-venue guides are the obvious SEO gaps.
-- No IndexNow on the .ca. The .com has it automated via a GitHub Action; worth
-  porting.
+  wedding imagery per city is the biggest remaining quality win. Two gaps in
+  the bucket are conspicuous: **there is no photograph of Toronto or Montréal
+  the city** (Toronto's `cities/` folder is Niagara, Muskoka, PEC and Killarney
+  only), so both hubs lean on portfolio frames for anything urban.
+- Journal gaps that remain: Toronto neighbourhoods, Montréal venue guides,
+  Québec City / Charlevoix, and the Eastern Townships.
+- **`INDEXNOW_SECRET` is not set anywhere yet.** The route and the Action are
+  in place but inert until it exists in two places: as an env var on the
+  `canadian-weddings` Vercel project, and as a repo secret on `arman-arai-ca`.
+  Use the same value as the .com. Until then POST /api/indexnow returns 401 and
+  the Action skips itself rather than failing.
 - `/stories` still exists as a redirect stub to `/blog`.
 - Off-page SEO entirely untouched.
+
+### Legal copy that a lawyer, not I, should confirm
+
+`/terms-of-service` was rewritten on 2026-08-14 to match this business rather
+than the .com's. Two changes were judgement calls:
+
+- **Governing law is now Québec** (it said British Columbia for Canadians and
+  Colombia for everyone else, which was the .com's clause). Québec follows from
+  `SITE.base`. It should be confirmed rather than assumed.
+- **Payment is now the 30% retainer** with the balance before the date. The page
+  had said full payment upfront, which contradicted `/pricing`, `/faq` and
+  `llms.txt`, all three of which say 30%. The three agreeing pages won.
 
 ---
 

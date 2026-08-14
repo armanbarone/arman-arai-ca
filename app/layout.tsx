@@ -5,8 +5,6 @@ import {
   Jost,
   Great_Vibes,
   UnifrakturMaguntia,
-  Archivo,
-  IBM_Plex_Mono,
 } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
@@ -42,17 +40,10 @@ const unifraktur = UnifrakturMaguntia({
   subsets: ["latin"], weight: ["400"],
   variable: "--font-unifraktur", display: "swap",
 });
-// Archivo body + IBM Plex Mono labels, the pair the .com uses on its
-// founding-rate landing pages. next/font hashes the family name, so these are
-// only ever referenced as var(--font-archivo) / var(--font-plex-mono).
-const archivo = Archivo({
-  subsets: ["latin"], weight: ["300", "400", "500", "600"],
-  variable: "--font-archivo", display: "swap",
-});
-const plexMono = IBM_Plex_Mono({
-  subsets: ["latin"], weight: ["400", "500"],
-  variable: "--font-plex-mono", display: "swap",
-});
+// Archivo and IBM Plex Mono were carried over from the .com and dropped again:
+// over there they are used only by the promo/ landing components, which do not
+// exist on this site. They were two font families downloaded on every page for
+// nothing. If a promo page is ever ported here, add them back with it.
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),
@@ -105,8 +96,8 @@ const ORG_LD = {
     ...MARKETS.map((m) => ({ "@type": "City", name: m.city })),
   ],
   sameAs: [SITE.instagram, SITE.pinterest],
-  // One offer per tier per region: the price a couple in that region actually
-  // pays, base plus the published destination fee.
+  // One offer per tier per region: the single all-in figure a couple in that
+  // region actually pays. Travel is inside it; nothing is added afterwards.
   makesOffer: REGIONS.flatMap((r) =>
     TIERS.map((t) => ({
       "@type": "Offer",
@@ -122,7 +113,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html
       lang="en-CA"
-      className={`${cormorant.variable} ${jost.variable} ${greatVibes.variable} ${cormorantGz.variable} ${unifraktur.variable} ${archivo.variable} ${plexMono.variable}`}
+      className={`${cormorant.variable} ${jost.variable} ${greatVibes.variable} ${cormorantGz.variable} ${unifraktur.variable}`}
     >
       <head>
         {/* Photographs come from the CDN on every page; warming the connection

@@ -188,10 +188,26 @@ export default function CityHub({ market: m }: { market: Market }) {
             </article>
           ))}
         </div>
-        <div className="hub-body-copy">
-          {m.body.map((para) => (
-            <p key={para.slice(0, 30)}>{para}</p>
-          ))}
+        {/* Prose alone across a full-width section leaves half the page empty,
+            so this runs as a two-column read against a frame of the work. */}
+        <div className="hub-body-split">
+          <div className="hub-body-copy">
+            {m.body.map((para) => (
+              <p key={para.slice(0, 30)}>{para}</p>
+            ))}
+          </div>
+          <figure className="hub-body-fig">
+            <Image
+              src={photos.working.src}
+              alt={photos.working.alt}
+              fill
+              sizes="(max-width: 899px) 100vw, 38vw"
+              quality={78}
+              loading="lazy"
+              className="object-cover"
+            />
+            <figcaption className="hub-body-cap">On the day, in {m.city}</figcaption>
+          </figure>
         </div>
       </section>
 

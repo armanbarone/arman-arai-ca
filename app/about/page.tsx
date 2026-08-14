@@ -39,7 +39,7 @@ const APPROACH = [
   {
     n: "IV",
     title: "The return",
-    body: "A preview inside 48 hours, the full gallery in six to eight weeks. Edited to what the room felt like, not to a preset that will date in three years.",
+    body: "A preview inside 48 hours, vertical clips in the first week, and the full gallery in five to seven weeks on Core, sooner on the tiers above it. Edited to what the room felt like, not to a preset that will date in three years.",
   },
 ];
 

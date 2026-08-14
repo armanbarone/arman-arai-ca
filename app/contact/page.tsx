@@ -62,7 +62,8 @@ export default function Contact() {
               eighteen months out; off-season and weekday dates open up much later.
             </p>
             <p className="text-slate text-sm leading-relaxed mb-10">
-              Core is C${STARTING_FROM.toLocaleString("en-CA")} in Montréal, plus a published travel fee anywhere else.{" "}
+              Core is C${STARTING_FROM.toLocaleString("en-CA")} in Montréal, and every other region has its own
+              whole number with the travel already inside it.{" "}
               <Link href="/pricing" className="text-rose border-b border-dust hover:border-rose transition-colors">
                 The full ladder is published
               </Link>{" "}

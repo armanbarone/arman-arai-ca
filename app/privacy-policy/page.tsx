@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Privacy Policy | Arman Arai",
-  description: "Privacy policy for armanarai.com: how your information is collected, used, and protected.",
+  description: "Privacy policy for armanarai.ca: what this site collects, what it does not, and how your information is used and protected.",
   robots: { index: true, follow: true },
   alternates: { canonical: "https://www.armanarai.ca/privacy-policy" },
 };
@@ -30,13 +30,13 @@ export default function PrivacyPolicy() {
           Privacy Policy
         </h1>
         <p style={{ color: "var(--label)", fontSize: "0.78rem", letterSpacing: ".1em", fontFamily: "var(--font-jost)", marginBottom: 48 }}>
-          Last updated: June 2026
+          Last updated: August 2026
         </p>
 
         <div style={{ height: "0.5px", background: "var(--hairline)", marginBottom: 48 }} />
 
         <Section title="Who We Are">
-          <p>This website is operated by Arman Arai, an wedding planner, curator, photographer and filmmaker based in Medellín, Colombia and Vancouver, Canada. References to "I", "me", or "my" throughout this policy refer to Arman Arai Photography.</p>
+          <p>This website, armanarai.ca, is operated by Arman Arai, a wedding photographer based in Montréal and working across Canada. References to "I", "me", or "my" throughout this policy refer to Arman Arai Photography.</p>
           <p style={{ marginTop: 12 }}>Contact: <a href="mailto:i@armanarai.com" style={{ color: "var(--accent)" }}>i@armanarai.com</a></p>
         </Section>
 
@@ -49,8 +49,7 @@ export default function PrivacyPolicy() {
             <li>Guest count and how you found me</li>
             <li>Any message or story you choose to share</li>
           </ul>
-          <p style={{ marginTop: 12 }}>When you book a call through Calendly, Calendly collects your name, email address, and scheduling preferences according to their own privacy policy.</p>
-          <p style={{ marginTop: 12 }}>I also collect standard technical data through analytics tools (see Third Party Services below), including pages visited, time on site, browser type, and approximate location based on IP address.</p>
+          <p style={{ marginTop: 12 }}>I also collect aggregate traffic data: which pages are visited, roughly how long for, the type of device, and the country the request came from. It is measured without cookies and it is not tied to you as an individual. See Third Party Services below.</p>
         </Section>
 
         <Section title="How I Use Your Information">
@@ -67,29 +66,21 @@ export default function PrivacyPolicy() {
         <Section title="Third Party Services">
           <p>This website uses the following third party tools. Each is governed by its own privacy policy:</p>
           <ul style={{ paddingLeft: "1.25rem", marginTop: 10, display: "flex", flexDirection: "column", gap: 10 }}>
-            <li><strong style={{ color: "var(--text)" }}>Resend</strong>: used to deliver inquiry form submissions to my inbox. Your submitted information is transmitted through Resend's infrastructure.</li>
-            <li><strong style={{ color: "var(--text)" }}>Calendly</strong>: used for scheduling consultations. When you book a call, Calendly's privacy policy governs that interaction.</li>
-            <li><strong style={{ color: "var(--text)" }}>Meta Pixel (Facebook)</strong>: used to measure the effectiveness of advertising on Facebook and Instagram. This tool may set cookies and collect data about your visit.</li>
-            <li><strong style={{ color: "var(--text)" }}>Google Analytics (GA4)</strong>: used to understand how visitors interact with this website. Data is anonymized and aggregated.</li>
-            <li><strong style={{ color: "var(--text)" }}>Google Ads</strong>: used to measure conversions from advertising campaigns. A conversion event is recorded when you complete a booking on the thank-you page.</li>
-            <li><strong style={{ color: "var(--text)" }}>Google Tag Manager</strong>: used to manage tracking scripts on this website.</li>
-            <li><strong style={{ color: "var(--text)" }}>Vercel</strong>: this website is hosted on Vercel's infrastructure. Vercel may collect standard server logs.</li>
+            <li><strong style={{ color: "var(--text)" }}>Resend</strong>: delivers inquiry form submissions to my inbox. What you type into the form is transmitted through Resend's infrastructure.</li>
+            <li><strong style={{ color: "var(--text)" }}>Vercel</strong>: hosts this website and provides its traffic analytics. Vercel keeps standard server logs. Vercel Analytics is cookieless and does not build a profile of you across sites.</li>
+            <li><strong style={{ color: "var(--text)" }}>Cloudflare</strong>: serves the photographs on this site from cdn.armanarai.ca and sits in front of it as a CDN. Cloudflare keeps standard request logs.</li>
           </ul>
+          <p style={{ marginTop: 12 }}>That is the complete list. This site runs no advertising pixel, no Google Analytics, no tag manager, and no third-party scheduling widget.</p>
         </Section>
 
         <Section title="Cookies">
-          <p>This website uses cookies and similar tracking technologies, primarily through the third party services listed above. These may include:</p>
-          <ul style={{ paddingLeft: "1.25rem", marginTop: 10, display: "flex", flexDirection: "column", gap: 6 }}>
-            <li>Analytics cookies (Google Analytics) to understand site usage</li>
-            <li>Advertising cookies (Meta Pixel, Google Ads) to measure ad performance</li>
-            <li>Functional cookies (Calendly) to enable booking functionality</li>
-          </ul>
-          <p style={{ marginTop: 12 }}>You can control or disable cookies through your browser settings. Disabling cookies may affect the functionality of certain features on this site.</p>
+          <p><strong style={{ color: "var(--text)" }}>This website sets no advertising or analytics cookies.</strong> Traffic measurement here is cookieless, and there is no Meta pixel, Google Ads tag, or cross-site tracker on any page.</p>
+          <p style={{ marginTop: 12 }}>Cloudflare may set a strictly necessary cookie for security and bot mitigation. You can control or block cookies through your browser settings; doing so will not break anything on this site.</p>
         </Section>
 
         <Section title="Data Retention">
           <p>Inquiry form submissions are retained in my email inbox for as long as reasonably necessary to manage our correspondence. If we enter into a contract, your information is retained for the duration of our working relationship and for a period of up to 3 years after delivery of your final gallery, in accordance with standard business record-keeping practices.</p>
-          <p style={{ marginTop: 12 }}>Analytics data collected through Google and Meta is retained according to those platforms' data retention settings.</p>
+          <p style={{ marginTop: 12 }}>Aggregate traffic data is retained by Vercel according to their platform retention settings. It contains nothing that identifies you.</p>
         </Section>
 
         <Section title="Your Rights">
@@ -99,10 +90,9 @@ export default function PrivacyPolicy() {
             <li>Request correction of inaccurate information</li>
             <li>Request deletion of your information</li>
             <li>Withdraw consent to processing where consent is the legal basis</li>
-            <li>Opt out of advertising tracking through your browser or device settings</li>
           </ul>
           <p style={{ marginTop: 12 }}>To exercise any of these rights, contact me at <a href="mailto:i@armanarai.com" style={{ color: "var(--accent)" }}>i@armanarai.com</a>. I will respond within 30 days.</p>
-          <p style={{ marginTop: 12 }}>For Canadian residents, this policy is intended to comply with the Personal Information Protection and Electronic Documents Act (PIPEDA). For visitors in the European Economic Area, your rights are governed by the General Data Protection Regulation (GDPR).</p>
+          <p style={{ marginTop: 12 }}>This policy is intended to comply with the Personal Information Protection and Electronic Documents Act (PIPEDA), and, for residents of Québec, with the province's Law 25. If you are visiting from the European Economic Area, your rights are governed by the General Data Protection Regulation (GDPR).</p>
         </Section>
 
         <Section title="Children's Privacy">
@@ -115,12 +105,12 @@ export default function PrivacyPolicy() {
 
         <Section title="Contact">
           <p>Questions about this privacy policy can be directed to:</p>
-          <p style={{ marginTop: 10 }}>Arman Arai Photography<br /><a href="mailto:i@armanarai.com" style={{ color: "var(--accent)" }}>i@armanarai.com</a><br />Medellín, Colombia / Vancouver, Canada</p>
+          <p style={{ marginTop: 10 }}>Arman Arai Photography<br /><a href="mailto:i@armanarai.com" style={{ color: "var(--accent)" }}>i@armanarai.com</a><br />Montréal, Québec, Canada</p>
         </Section>
 
         <div style={{ height: "0.5px", background: "var(--hairline)", marginTop: 48, marginBottom: 24 }} />
         <p style={{ fontSize: 9, color: "color-mix(in srgb, var(--text) 20%, transparent)", letterSpacing: ".18em", textTransform: "uppercase", fontFamily: "var(--font-jost)" }}>
-          Arman Arai Photography · Medellín · Vancouver · Worldwide
+          Arman Arai Photography · Montréal · Toronto · Vancouver
         </p>
       </div>
     </div>

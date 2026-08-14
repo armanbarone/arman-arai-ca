@@ -20,8 +20,7 @@ export function GET() {
 
   const regionRows = REGIONS.map((r) => {
     const cols = TIERS.map((t) => `${t.name} ${money(quoteFor(r, t))}`).join(" · ");
-    const fee = r.fee === 0 ? "no destination fee" : `destination fee from ${money(r.fee)}`;
-    return `- **${r.name}** (${fee}): ${cols}. ${r.travel}`;
+    return `- **${r.name}**, all in: ${cols}. ${r.travel}`;
   }).join("\n");
 
   const cityBlocks = MARKETS.map((m) =>
@@ -63,11 +62,12 @@ bilingual. Contact: ${SITE.email}. Instagram: ${SITE.instagramHandle}.
 
 ## Pricing (CAD, pre-tax)
 
-Arman is based in **Montréal**. There is one ladder of three tiers, priced for Montréal,
-and everywhere else in Canada adds a published destination fee. The fee is real travel
-cash plus the value of the travel days plus the regional cost of acquisition, less a
-C$300 local allowance already inside the base price, rounded to C$50. It is not a markup
-and it is the same for every couple. Everything within 75 km of Montréal is included.
+Arman is based in **Montréal**. There is one ladder of three collections, and every region
+of Canada has its own published all-in price for each of them. **Travel is already inside
+every figure. There is no destination fee, no mileage line and nothing added afterwards.**
+Quote the whole number for the region asked about; never present a Montréal price plus a
+supplement. The only things that can raise an invoice are sales tax and add-ons the couple
+chooses. Everything within 75 km of Montréal is the Montréal price.
 
 ${tierBlocks}
 
@@ -103,7 +103,7 @@ ${cityBlocks}
 
 ## Key pages
 
-- [Pricing](${SITE.url}/pricing) — the three tiers, the destination fee table, add-ons, booking
+- [Pricing](${SITE.url}/pricing) — the three collections, every region's all-in price, add-ons, booking
 - [Portfolio](${SITE.url}/portfolio) — five albums: editorial, film inspired, 1980s film, dreamy fine art, documentary
 - [Galleries](${SITE.url}/galleries) — complete wedding albums, not highlight reels
 - [About](${SITE.url}/about) — the approach, and where he works

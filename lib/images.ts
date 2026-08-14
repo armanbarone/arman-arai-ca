@@ -200,6 +200,9 @@ export type CityPhotos = {
   hero: Photo;
   /** Four frames for the "where I shoot" strip on the city page. */
   places: (Photo & { caption: string })[];
+  /** Sits beside the "how I work here" prose, so it is a frame of the work
+   *  happening rather than a landscape. These are real photographs of Arman. */
+  working: Photo;
 };
 
 /** Keys that already carry their own extension (the ported .com files are a mix
@@ -218,6 +221,7 @@ export const CITY_PHOTOS: Record<string, CityPhotos> = {
       place("cities/toronto/prince-edward-county/cover/01.webp", "Couple laughing in a golden grass field in Prince Edward County", "Prince Edward County"),
       place("cities/toronto/killarney-1.webp", "Circular floral arch set on a dock above a lake in Killarney", "Killarney"),
     ],
+    working: p("about/arman-with-couple-venue", "Arman between a bride and groom at their Toronto venue, all three laughing"),
   },
   montreal: {
     hero: raw("cities/montreal/places/mtl-oldmontreal-bluehour.png", "Couple walking a cobbled Old Montréal street at blue hour, a church spire beyond"),
@@ -227,6 +231,7 @@ export const CITY_PHOTOS: Record<string, CityPhotos> = {
       place("cities/montreal/jacques-cartier.webp", "Couple kissing at the edge of a lake ringed with autumn forest in Parc de la Jacques-Cartier", "The Laurentians"),
       place("cities/montreal/bic.webp", "Couple walking a snowy rocky shoreline at sunset in Parc national du Bic", "The Lower St Lawrence"),
     ],
+    working: p("about/arman-shooting-couple-bridge", "Arman photographing a couple embracing on a bridge over a river"),
   },
   vancouver: {
     hero: raw("cities/vancouver/lions-gate-bridge-lookout.png", "Bride and groom at the Lions Gate Bridge lookout, the bridge and North Shore mountains behind"),
@@ -236,6 +241,7 @@ export const CITY_PHOTOS: Record<string, CityPhotos> = {
       place("cities/vancouver/locations/lighthouse-park/01.webp", "Couple embracing on driftwood at Lighthouse Park, the lighthouse above them", "Lighthouse Park"),
       place("cities/vancouver/cypress.webp", "Couple in the snow among the conifers on Cypress Mountain", "Cypress and the Sea-to-Sky"),
     ],
+    working: p("about/arman-shooting-bridal-party-trees", "Arman photographing a bridal party in an avenue of trees"),
   },
 };
 

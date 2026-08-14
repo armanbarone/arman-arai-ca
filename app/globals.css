@@ -1518,8 +1518,30 @@ img {
   font-size: 1.4rem; line-height: 1.24; color: #E8E0D0; margin: 0 0 0.9rem;
 }
 .hub-diff-body { font-size: 0.9rem; line-height: 1.75; color: #857060; margin: 0; }
-.hub-body-copy { margin-top: 2.8rem; max-width: 68ch; }
-.hub-body-copy p { font-size: 0.95rem; line-height: 1.9; color: #857060; margin: 0 0 1.3rem; }
+/* The "how I work here" read: prose against a frame of the work. Without the
+   grid the copy sat in a 68ch column with the right half of the section empty. */
+.hub-body-split {
+  margin-top: 3.2rem;
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 0.62fr);
+  gap: clamp(2rem, 4vw, 4rem); align-items: start;
+}
+.hub-body-copy { max-width: 62ch; }
+.hub-body-copy p { font-size: 0.95rem; line-height: 1.9; color: #A89480; margin: 0 0 1.3rem; }
+.hub-body-copy p:last-child { margin-bottom: 0; }
+.hub-body-fig {
+  position: relative; margin: 0; aspect-ratio: 4 / 5;
+  overflow: hidden; background: #050403; border: 0.5px solid #221D17;
+}
+.hub-body-cap {
+  position: absolute; left: 0; bottom: 0; width: 100%; padding: 0.9rem 1rem;
+  font-family: var(--font-jost); font-size: 0.58rem; letter-spacing: 0.22em;
+  text-transform: uppercase; color: #E8E0D0;
+  background: linear-gradient(to top, rgba(8,7,4,0.85), transparent);
+}
+@media (max-width: 899px) {
+  .hub-body-split { grid-template-columns: 1fr; }
+  .hub-body-fig { aspect-ratio: 3 / 2; }
+}
 
 /* Venues: a photo row, then the reasoning. */
 .hub-venue-media { display: grid; grid-template-columns: repeat(4, 1fr); gap: 3px; margin-bottom: 2.6rem; }

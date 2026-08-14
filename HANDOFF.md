@@ -101,6 +101,23 @@ These cost real time and the owner had to catch most of them.
     the "half-assed" look he objected to. Anything full-width needs either a
     second column or a photograph beside it.
 
+14. **I picked a hero from its alt text and never looked at the crop.**
+    `/experience` used a tight two-face close-up as a full-bleed hero. Cropped
+    to a wide band it was half a face. **Before using any photograph as a wide
+    hero, render the actual `object-fit: cover` crop and look at it.** The
+    contact-sheet script that does this is in the scratchpad pattern: fetch at
+    width=900, crop to 1920/640, tile the candidates, read the PNG.
+
+    The second half of the same lesson: a subject standing large and centred
+    cannot be cleared by any vertical `objectPosition`. Move the headline off
+    centre instead. Three crop positions were tried and photographed before
+    that was obvious.
+
+15. **A headline that describes nothing.** "What it is like to be photographed"
+    survived on `/experience` for weeks. The page is six chapters from the first
+    call to the delivered gallery, and the headline now says so. If a headline
+    would fit on any photographer's site, it is not a headline.
+
 ---
 
 ## 3. Architecture

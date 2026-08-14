@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import FilmStrip from "@/components/FilmStrip";
 import InquireButton from "@/components/InquireButton";
 import { HeroGallery, WorkGrid } from "@/components/PhotoGrid";
-import { HERO, HOME_GRID } from "@/lib/images";
-import { MARKETS, SITE, TIERS } from "@/lib/site";
+import { HERO, HOME_GRID, HOME_SEQUENCE } from "@/lib/images";
+import { MARKETS, SITE } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Canadian Wedding Photographer — Toronto, Montréal, Vancouver",
@@ -13,7 +14,27 @@ export const metadata: Metadata = {
   alternates: { canonical: "/" },
 };
 
-const money = (n: number) => `C$${n.toLocaleString("en-CA")}`;
+const WHY = [
+  {
+    t: "The room is half the picture",
+    b: "A wedding happens in front of people, in a place chosen on purpose. I photograph the room and the people in it, not only the two of you against a good wall.",
+  },
+  {
+    t: "Direction only where it helps",
+    b: "Twenty minutes of real direction for the portraits. The rest of the day I stay out of the way, because a ceremony interrupted for a better angle is a worse ceremony.",
+  },
+  {
+    t: "Bilingual, and it matters",
+    b: "Half the room francophone and half anglophone is a normal Quebec wedding. Nobody gets spoken to in their second language on the day that counts.",
+  },
+];
+
+const DELIVERY = [
+  { n: "I", t: "Social clips, first", b: "Vertical videos cut from the day, in every collection, in the first week. Something to post while everyone is still asking." },
+  { n: "II", t: "A preview in 48 hours", b: "Forty frames while the day is still in your head. Next-day or 24-hour on the higher collections." },
+  { n: "III", t: "The full gallery", b: "Five to seven weeks on Core, four on Signature, three on Story Weekend. The date is in the contract." },
+  { n: "IV", t: "Something printed", b: "An album credit on the top two collections, because a hard drive is not an heirloom." },
+];
 
 export default function Home() {
   return (
@@ -145,61 +166,97 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── INVESTMENT ── */}
+      {/* -- WHY IT IS PHOTOGRAPHED THIS WAY -- */}
       <section className="py-20 md:py-28" style={{ background: "#0E0C0A" }}>
-        <div className="page-w page-px text-center">
-          <p className="text-[0.6rem] tracking-[0.32em] uppercase text-rose mb-4" style={{ fontFamily: "var(--font-jost)" }}>
-            Investment
-          </p>
-          <h2 className="font-serif font-light text-cream mb-4" style={{ fontSize: "clamp(2rem,3.5vw,3.5rem)" }}>
-            The price is
-            <br />
-            <em className="italic text-rose">on the website</em>
-          </h2>
-          <div className="divider mb-12 md:mb-16">
-            <div className="divider-line" />
-            <span className="text-rose text-xs">✦</span>
-            <div className="divider-line" />
+        <div className="page-w page-px">
+          <div className="text-center mb-12 md:mb-16">
+            <p className="text-[0.62rem] tracking-[0.32em] uppercase text-rose mb-4" style={{ fontFamily: "var(--font-jost)" }}>
+              Why this way
+            </p>
+            <h2 className="font-serif font-light text-cream" style={{ fontSize: "clamp(2rem,3.5vw,3.4rem)" }}>
+              A wedding is <em className="italic text-rose">witnessed</em>
+            </h2>
           </div>
-
-          <p className="font-serif italic text-cream/70 text-lg md:text-xl leading-relaxed mb-12 max-w-2xl mx-auto">
-            &ldquo;Most couples say price is the first thing they want to know and the last thing
-            photographers publish. Here it is, before you have to ask.&rdquo;
-          </p>
-
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-px max-w-3xl mx-auto mb-14 bg-dust/30">
-            {TIERS.map((tier) => (
-              <Link
-                key={tier.slug}
-                href={`/pricing#${tier.slug}`}
-                className="px-7 py-9 text-left block transition-colors"
-                style={{ background: "#141210" }}
-              >
-                <p className="text-[0.58rem] tracking-[0.28em] uppercase text-rose mb-3" style={{ fontFamily: "var(--font-jost)" }}>
-                  {tier.name}
-                </p>
-                <p className="font-serif font-light text-cream mb-2" style={{ fontSize: "1.9rem" }}>
-                  {money(tier.price)}
-                </p>
-                <p className="text-blush text-xs leading-relaxed font-light">{tier.coverage}. {tier.crew}.</p>
-              </Link>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-dust/25">
+            {WHY.map(({ t: h, b }) => (
+              <div key={h} className="px-7 py-9 md:px-8 md:py-11" style={{ background: "#0E0C0A" }}>
+                <h3 className="font-serif font-light text-cream text-2xl mb-4">{h}</h3>
+                <p className="text-slate text-[0.92rem] leading-relaxed">{b}</p>
+              </div>
             ))}
           </div>
+        </div>
+      </section>
 
-          <p className="text-slate text-[0.8rem] leading-relaxed max-w-xl mx-auto mb-12">
-            Those are Montréal prices, and everything within 75 km is included. Anywhere else in
-            Canada adds a destination fee that is published on the pricing page rather than produced
-            after you commit.
-          </p>
-
-          <div className="flex flex-wrap items-center justify-center gap-8">
-            <InquireButton className="inline-block bg-rose text-ivory text-[0.62rem] tracking-[0.2em] uppercase px-12 py-4 hover:bg-rose-dark transition-colors duration-300 cursor-pointer border-none">
-              Check your date
-            </InquireButton>
-            <Link href="/pricing" className="text-[0.62rem] tracking-[0.2em] uppercase text-blush hover:text-rose transition-colors duration-300">
-              Full pricing and add-ons →
+      {/* -- HOW THE DAY IS SEQUENCED -- */}
+      <section className="py-20 md:py-28" style={{ background: "#080704" }}>
+        <div className="page-w page-px grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+          <div className="lg:col-span-5">
+            <p className="text-[0.62rem] tracking-[0.32em] uppercase text-rose mb-5" style={{ fontFamily: "var(--font-jost)" }}>
+              How the day runs
+            </p>
+            <h2 className="font-serif font-light text-cream mb-6" style={{ fontSize: "clamp(2rem,3.2vw,3rem)" }}>
+              Built backwards from <em className="italic text-rose">the light</em>
+            </h2>
+            <p className="text-slate text-[0.95rem] leading-[1.85] mb-6">
+              Sunset is the only fixed point in a wedding day. Everything else can move, and on most
+              weddings something has to. We set the portrait window first and build the schedule
+              around it, with one deliberate block of slack before the ceremony that absorbs the
+              whole morning&rsquo;s drift.
+            </p>
+            <Link
+              href="/blog/wedding-day-timeline-that-survives-the-day"
+              className="text-[0.68rem] tracking-[0.2em] uppercase text-rose border-b border-dust hover:border-rose transition-colors pb-1.5"
+            >
+              The timeline, in full &rarr;
             </Link>
           </div>
+          <div className="lg:col-span-7 grid grid-cols-2 gap-3">
+            {HOME_SEQUENCE.map((ph, i) => (
+              <div key={ph.src} className="relative overflow-hidden" style={{ aspectRatio: i % 3 === 0 ? "4 / 5" : "1 / 1" }}>
+                <Image src={ph.src} alt={ph.alt} fill sizes="(max-width:1023px) 50vw, 30vw" quality={78} loading="lazy" style={{ objectFit: "cover" }} />
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* -- WHAT COMES BACK -- */}
+      <section className="py-20 md:py-28" style={{ background: "#0E0C0A" }}>
+        <div className="page-w page-px">
+          <div className="text-center mb-12 md:mb-16">
+            <p className="text-[0.62rem] tracking-[0.32em] uppercase text-rose mb-4" style={{ fontFamily: "var(--font-jost)" }}>
+              What comes back
+            </p>
+            <h2 className="font-serif font-light text-cream" style={{ fontSize: "clamp(2rem,3.5vw,3.4rem)" }}>
+              And <em className="italic text-rose">when</em>
+            </h2>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-px bg-dust/25">
+            {DELIVERY.map(({ n, t: h, b }) => (
+              <div key={n} className="px-6 md:px-8 py-9 md:py-11" style={{ background: "#0E0C0A" }}>
+                <div className="font-serif font-light text-rose mb-5" style={{ fontSize: "2.6rem", lineHeight: 1 }}>{n}</div>
+                <h3 className="font-serif font-light text-cream text-xl mb-3">{h}</h3>
+                <p className="text-slate text-[0.88rem] leading-relaxed">{b}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* -- IN THEIR WORDS -- */}
+      <section className="py-20 md:py-28 text-center" style={{ background: "#080704" }}>
+        <div className="page-w page-px">
+          <p className="text-[0.62rem] tracking-[0.32em] uppercase text-rose mb-8" style={{ fontFamily: "var(--font-jost)" }}>
+            In their words
+          </p>
+          <p className="font-serif italic text-cream/80 leading-relaxed max-w-3xl mx-auto mb-8" style={{ fontSize: "clamp(1.3rem,2.2vw,1.9rem)" }}>
+            I do not publish invented pull quotes. The reviews page is screenshots of what couples
+            actually sent, in the app they sent it in.
+          </p>
+          <Link href="/reviews" className="text-[0.68rem] tracking-[0.2em] uppercase text-rose border-b border-dust hover:border-rose transition-colors pb-1.5">
+            Read them &rarr;
+          </Link>
         </div>
       </section>
 

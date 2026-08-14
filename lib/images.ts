@@ -72,6 +72,14 @@ export const FILM_STRIP: (Photo & { label: string | null })[] = [
   { ...p("home/grid-cathedral-train-dome", "Bride and her cathedral train laid out on the tiled floor of a domed church"), label: "GOLD 200 · EXP. 2024" },
 ];
 
+// Four frames for the "how the day runs" row on the homepage.
+export const HOME_SEQUENCE: Photo[] = [
+  p("portfolio/documentary/morning-window-vows-read", "Bride reading at a window in the morning, her dress hanging behind her"),
+  p("portfolio/film/taper-candle-ceremony", "Ceremony lit by a row of tall taper candles"),
+  p("portfolio/film/golden-hour-bouquets-detail", "Bouquets and a boutonniere held close in golden hour light"),
+  p("portfolio/documentary/guests-laughing-champagne", "Guests laughing together with champagne at the reception"),
+];
+
 /* ── About ──────────────────────────────────────────────────────────────── */
 
 export const ARMAN_PORTRAIT = p(

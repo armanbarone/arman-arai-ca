@@ -46,6 +46,8 @@ export type Tier = {
   delivery: string;
   album: string;
   film: string;
+  /** Vertical clips for the couple to post while the gallery is still in edit. */
+  social: string;
   includes: string[];
   bestFor: string;
   /** Destination-fee key: Story Weekend travels a day longer than the rest. */
@@ -68,8 +70,10 @@ export const TIERS: Tier[] = [
     delivery: "Full gallery in 5 to 7 weeks",
     album: "Available as an add-on",
     film: "Available as an add-on",
+    social: "A set of vertical social clips, delivered in the first week",
     includes: [
       "8 continuous hours, one lead photographer",
+      "Vertical social clips in the first week, so you have something to post while the gallery is still being edited",
       "550+ edited images, high resolution with print permission",
       "Montréal engagement session or destination welcome session",
       "Timeline review and family-photo planning",
@@ -94,8 +98,10 @@ export const TIERS: Tier[] = [
     delivery: "Full gallery in 4 weeks",
     album: "C$750 album credit",
     film: "Available as an add-on",
+    social: "An expanded set of vertical social clips, delivered in 72 hours",
     includes: [
       "10 continuous hours",
+      "An expanded set of vertical social clips within 72 hours",
       "Lead plus a second photographer for six hours",
       "800+ edited images",
       "Engagement or welcome session",
@@ -122,7 +128,9 @@ export const TIERS: Tier[] = [
     delivery: "Full gallery in 3 weeks",
     album: "C$1,000 album credit",
     film: "Two rolls included",
+    social: "Social clips from both days, the first set the morning after",
     includes: [
+      "Social clips from both days, the first set delivered the morning after",
       "12 hours split across two days: 2-hour welcome or rehearsal, plus a 10-hour wedding",
       "Lead plus a second photographer for eight hours",
       "1,000+ edited images",
@@ -150,6 +158,8 @@ export type Region = {
   slug: string;
   name: string;
   short: string;
+  /** The three markets that get their own price card and their own page. */
+  primary?: boolean;
   /** Destination fee on Core and Signature. */
   fee: number;
   /** Story Weekend travels an extra night, so it carries its own fee. */
@@ -165,6 +175,7 @@ export type Region = {
 export const REGIONS: Region[] = [
   {
     slug: "montreal",
+    primary: true,
     name: "Montréal and Old Montréal",
     short: "Montréal",
     fee: 0,
@@ -199,6 +210,7 @@ export const REGIONS: Region[] = [
   },
   {
     slug: "toronto",
+    primary: true,
     name: "Toronto and the GTA",
     short: "Toronto / GTA",
     fee: 2250,
@@ -221,6 +233,7 @@ export const REGIONS: Region[] = [
   },
   {
     slug: "vancouver",
+    primary: true,
     name: "Vancouver, Whistler and Vancouver Island",
     short: "Vancouver / Whistler",
     fee: 4050,
@@ -229,6 +242,28 @@ export const REGIONS: Region[] = [
     promise: "Coastal and mountain expertise, with weather and permits handled before the date.",
     travel: "Airfare, three nights and ground transport. Ferries to the Island are in the same fee.",
     risk: "Peak-season lodging on the Sea-to-Sky is the single biggest cost swing in the country.",
+  },
+  {
+    slug: "whistler",
+    name: "Whistler and the Sea-to-Sky",
+    short: "Whistler",
+    fee: 4050,
+    weekendFee: 4650,
+    bestTier: "Signature",
+    promise: "Mountain weddings with the permits, the access and the weather planned in advance.",
+    travel: "Same trip as Vancouver, so the same number.",
+    risk: "Peak-season lodging on the corridor is the biggest cost swing in the country.",
+  },
+  {
+    slug: "vancouver-island",
+    name: "Vancouver Island and Tofino",
+    short: "Vancouver Island",
+    fee: 4050,
+    weekendFee: 4650,
+    bestTier: "Story Weekend",
+    promise: "Coastal weddings, with the ferry and the drive west already accounted for.",
+    travel: "Ferry and the highway out to the coast are inside the same number as Vancouver.",
+    risk: "Tofino is not a day trip; it wants the two-day tier.",
   },
   {
     slug: "banff",
@@ -244,6 +279,11 @@ export const REGIONS: Region[] = [
 ];
 
 export const regionBySlug = (slug: string) => REGIONS.find((r) => r.slug === slug);
+
+/** The three cities with their own price card and their own page. */
+export const PRIMARY_REGIONS = REGIONS.filter((r) => r.primary);
+/** Everywhere else I work, listed once at the bottom of the pricing page. */
+export const OTHER_REGIONS = REGIONS.filter((r) => !r.primary);
 
 /** The destination fee for a given tier in a given region. */
 export function feeFor(region: Region, tier: Tier): number {

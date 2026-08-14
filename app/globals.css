@@ -14,8 +14,8 @@ body::after {
   background-size: 256px;
 }
 
-html { scroll-behavior: smooth; }
-body { color: #E8E0D0; background: #080704; }
+html { scroll-behavior: smooth; font-size: 17px; }
+body { color: #E8E0D0; background: #080704; font-size: 16px; -webkit-font-smoothing: antialiased; }
 
 /* CONSISTENT WIDTH */
 .page-w  { max-width: 1280px; margin-left: auto; margin-right: auto; }
@@ -24,29 +24,38 @@ body { color: #E8E0D0; background: #080704; }
 @media(min-width:1024px) { .page-px { padding-left: 4rem; padding-right: 4rem; } }
 
 /* ══ NAV — darkroom glass ══ */
-.nav-link { position:relative; color:#5A5148; font-size:0.65rem; letter-spacing:0.22em; text-transform:uppercase; text-decoration:none; transition:color 0.3s; font-family:var(--font-jost); }
+.nav-link { position:relative; color:#C4A46A; font-size:0.72rem; letter-spacing:0.22em; text-transform:uppercase; text-decoration:none; transition:color 0.3s; font-family:var(--font-jost); }
 .nav-link::after { content:""; position:absolute; bottom:-3px; left:0; right:0; height:0.5px; background:#B8956A; transform:scaleX(0); transition:transform 0.3s; transform-origin:left; }
-.nav-link:hover { color:#B8956A; }
+.nav-link:hover { color:#E8E0D0; }
 .nav-link:hover::after { transform:scaleX(1); }
 .nav-link.active { color:#E8E0D0; }
 
 /* ══ NAV: mobile sheet links ══ */
 .mob-link {
-  display:block; padding:0.3rem 0; color:#A08D7B; text-decoration:none;
-  font-family:var(--font-jost); font-size:0.68rem; letter-spacing:0.22em;
+  display:block; padding:0.35rem 0; color:#C4A46A; text-decoration:none;
+  font-family:var(--font-jost); font-size:0.78rem; letter-spacing:0.2em;
   text-transform:uppercase; background:none; border:0; text-align:left; width:100%;
   transition:color 0.25s;
 }
 .mob-link:hover { color:#B8956A; }
 .mob-sublink {
   display:block; color:#8E7A6A; text-decoration:none;
-  font-family:var(--font-jost); font-size:0.62rem; letter-spacing:0.16em;
+  font-family:var(--font-jost); font-size:0.72rem; letter-spacing:0.14em;
   text-transform:uppercase; transition:color 0.25s;
 }
 .mob-sublink:hover { color:#B8956A; }
 /* The nav dropdown triggers are <button>, which Tailwind's reset leaves with a
    default cursor and no inherited font; nav-link covers the rest. */
 .nav-link { background:none; border:0; cursor:pointer; font-family:var(--font-jost); }
+
+/* ══ READABILITY, copied from armanarai.com ══
+   .com resolves these through its theme tokens; this site is dark-only, so the
+   dark values are inlined. --dim #857060, --dim-soft #A89480, --prose #D8CEBF. */
+.text-slate { color:#857060 !important; }
+.text-blush { color:#A89480 !important; }
+.prose-arman p { color:#D8CEBF; margin-bottom:1.4em; }
+.prose-arman h2 { color:#E8DDD0; }
+.prose-arman strong { color:#E8E0D0; }
 
 /* ══ DIVIDER ══ */
 .divider { display:flex; align-items:center; gap:1rem; justify-content:center; margin:1.75rem auto 0; max-width:280px; }

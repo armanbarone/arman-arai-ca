@@ -19,18 +19,16 @@ const config: Config = {
         cream:        "#E8E0D0",   // bone: main text / light accent
 
         // Accent — muted bronze (sole accent)
-        // blush and slate carry nearly all the body copy on this site. The
-        // inherited values (#7A6A58 and #5A5148) measured 3.87:1 and 2.60:1
-        // against the page background, both under the 4.5:1 WCAG AA floor, and
-        // the pricing page in particular is unreadable at a glance because of
-        // it. These are the dimmest warm tones that clear AA on all three
-        // surfaces (#080704, #0E0C0A, #141210).
-        blush:        "#A08D7B",   // secondary copy and ledes — 6.5:1
+        // These are armanarai.com's --dim-soft and --dim, so body copy is the
+        // same colour on both sites. The values this site shipped with
+        // (#7A6A58 and #5A5148) measured 3.87:1 and 2.60:1 against the page and
+        // were under the WCAG AA floor.
+        blush:        "#A89480",   // --dim-soft on armanarai.com
         rose:         "#B8956A",   // muted bronze — THE accent, 7.2:1
         "rose-dark":  "#9A7A54",
 
         // Utility
-        slate:        "#8E7A6A",   // body copy — 4.9:1
+        slate:        "#857060",   // --dim on armanarai.com
         ink:          "#1A1612",   // near-black (button bg, contrast)
         dust:         "#2A2520",   // borders / dividers
       },

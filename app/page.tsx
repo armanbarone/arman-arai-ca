@@ -4,7 +4,7 @@ import Link from "next/link";
 import FilmStrip from "@/components/FilmStrip";
 import InquireButton from "@/components/InquireButton";
 import { HeroGallery, WorkGrid } from "@/components/PhotoGrid";
-import { HERO, HOME_GRID, HOME_SEQUENCE } from "@/lib/images";
+import { CITY_PHOTOS, HERO, HOME_GRID, HOME_SEQUENCE } from "@/lib/images";
 import { MARKETS, SITE } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -212,8 +212,8 @@ export default function Home() {
             </Link>
           </div>
           <div className="lg:col-span-7 grid grid-cols-2 gap-3">
-            {HOME_SEQUENCE.map((ph, i) => (
-              <div key={ph.src} className="relative overflow-hidden" style={{ aspectRatio: i % 3 === 0 ? "4 / 5" : "1 / 1" }}>
+            {HOME_SEQUENCE.map((ph) => (
+              <div key={ph.src} className="relative overflow-hidden" style={{ aspectRatio: "1 / 1" }}>
                 <Image src={ph.src} alt={ph.alt} fill sizes="(max-width:1023px) 50vw, 30vw" quality={78} loading="lazy" style={{ objectFit: "cover" }} />
               </div>
             ))}
@@ -260,29 +260,71 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── WHERE ── */}
-      <section className="py-14 md:py-20" style={{ background: "#080704", borderTop: "0.5px solid #2A2520" }}>
-        <div className="page-w page-px text-center">
-          <p className="text-[0.58rem] tracking-[0.28em] uppercase text-rose mb-6" style={{ fontFamily: "var(--font-jost)" }}>
-            Where I work
-          </p>
-          <div className="flex flex-wrap items-center justify-center gap-4 mb-6">
-            {MARKETS.map((m) => (
-              <Link
-                key={m.slug}
-                href={`/${m.slug}-wedding-photographer`}
-                className="text-[0.68rem] tracking-[0.15em] uppercase text-blush border border-dust px-5 py-2.5 hover:border-rose hover:text-rose transition-colors"
-              >
-                {m.region}
-              </Link>
-            ))}
+      {/* -- WHERE I WORK -- three photographs, not three text pills -- */}
+      <section className="py-20 md:py-28" style={{ background: "#080704", borderTop: "0.5px solid #2A2520" }}>
+        <div className="page-w page-px">
+          <div className="text-center mb-12 md:mb-16">
+            <p className="text-[0.62rem] tracking-[0.32em] uppercase text-rose mb-4" style={{ fontFamily: "var(--font-jost)" }}>
+              Where I work
+            </p>
+            <h2 className="font-serif font-light text-cream" style={{ fontSize: "clamp(2rem,3.5vw,3.4rem)" }}>
+              Three cities, <em className="italic text-rose">one photographer</em>
+            </h2>
           </div>
-          <p className="text-slate text-[0.78rem] leading-relaxed max-w-xl mx-auto">
-            And anywhere else in Canada. Write to {SITE.email} or use the form and you will
-            have an answer inside two business hours.
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-6">
+            {MARKETS.map((m, i) => {
+              const photo = CITY_PHOTOS[m.slug];
+              return (
+                <Link key={m.slug} href={`/${m.slug}-wedding-photographer`} className="group block relative overflow-hidden">
+                  <div className="relative w-full" style={{ aspectRatio: "3 / 4" }}>
+                    <Image
+                      src={photo.hero.src}
+                      alt={photo.hero.alt}
+                      fill
+                      sizes="(max-width: 767px) 100vw, 33vw"
+                      quality={80}
+                      loading="lazy"
+                      className="transition-transform duration-[900ms] group-hover:scale-[1.04]"
+                      style={{ objectFit: "cover" }}
+                    />
+                    <span
+                      aria-hidden
+                      className="absolute inset-0 pointer-events-none"
+                      style={{
+                        background:
+                          "linear-gradient(to top, rgba(8,7,4,0.92) 0%, rgba(8,7,4,0.55) 30%, rgba(8,7,4,0.08) 65%, rgba(8,7,4,0.25) 100%)",
+                      }}
+                    />
+                    <div
+                      className="absolute inset-x-0 bottom-0 p-6 lg:p-7"
+                      style={{ textShadow: "0 1px 2px rgba(8,7,4,0.95), 0 2px 24px rgba(8,7,4,0.9)" }}
+                    >
+                      <p className="text-[0.58rem] tracking-[0.3em] uppercase text-rose mb-2">
+                        {["I", "II", "III"][i]} &middot; {m.province}
+                      </p>
+                      <h3 className="font-serif font-light text-cream leading-none mb-3" style={{ fontSize: "clamp(1.9rem,2.6vw,2.5rem)" }}>
+                        {m.city}
+                      </h3>
+                      <p className="text-blush text-[0.84rem] leading-snug mb-4">{m.region}</p>
+                      <span className="text-[0.6rem] tracking-[0.24em] uppercase text-cream border-b border-cream/30 group-hover:border-rose group-hover:text-rose transition-colors pb-1">
+                        See {m.city} &rarr;
+                      </span>
+                    </div>
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
+
+          <p className="text-slate text-[0.9rem] leading-relaxed max-w-xl mx-auto mt-12 text-center">
+            And anywhere else in Canada, with the price for each place published rather than quoted
+            after you commit. Write to {SITE.email} and you will have an answer inside two business
+            hours.
           </p>
         </div>
       </section>
+
     </>
   );
 }

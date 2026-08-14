@@ -2,22 +2,33 @@ import Image from "next/image";
 import Link from "next/link";
 import InquireButton from "./InquireButton";
 import { CITY_PHOTOS } from "@/lib/images";
+import { hubBySlug } from "@/lib/hubs";
 import {
   CORE,
   MARKETS,
   SITE,
   TIERS,
-  feeFor,
   quoteFor,
   regionBySlug,
   type Market,
 } from "@/lib/site";
 
-const money = (n: number) => `C$${n.toLocaleString("en-CA")}`;
+/* The city hub, built on the hub- section vocabulary ported from
+   armanarai.com's service-place pages: a stat hero, a sticky section index,
+   the differentiators, the venues, the season table, the shape of the day,
+   the prices and the FAQ. Content lives in lib/hubs.ts, prices in lib/site.ts. */
 
-// Every market page quotes the Montréal ladder plus its own published
-// destination fee, so a couple never sees a base price they cannot actually book.
+const money = (n: number) => `C$${n.toLocaleString("en-CA")}`;
 const regionOf = (m: Market) => regionBySlug(m.regionSlug)!;
+
+const SECTIONS = [
+  { id: "different", label: "The difference" },
+  { id: "venues", label: "Where" },
+  { id: "season", label: "When" },
+  { id: "day", label: "The day" },
+  { id: "prices", label: "Prices" },
+  { id: "faq", label: "Questions" },
+];
 
 export function cityMetadata(m: Market) {
   const title = `${m.city} Wedding Photographer — ${m.region}`;
@@ -37,6 +48,7 @@ export function cityMetadata(m: Market) {
 
 export function citySchema(m: Market) {
   const url = `${SITE.url}/${m.slug}-wedding-photographer`;
+  const hub = hubBySlug(m.slug);
   return [
     {
       "@context": "https://schema.org",
@@ -50,7 +62,6 @@ export function citySchema(m: Market) {
       offers: TIERS.map((t) => ({
         "@type": "Offer",
         name: `${t.name} — ${t.coverage}`,
-        // The real number for this region: base plus the published travel fee.
         price: quoteFor(regionOf(m), t),
         priceCurrency: "CAD",
         url: `${SITE.url}/pricing#${t.slug}`,
@@ -68,6 +79,18 @@ export function citySchema(m: Market) {
     },
     {
       "@context": "https://schema.org",
+      "@type": "ItemList",
+      "@id": `${url}#venues`,
+      name: `Wedding locations in ${m.region}`,
+      itemListElement: hub.venues.map((v, i) => ({
+        "@type": "ListItem",
+        position: i + 1,
+        name: v.name,
+        description: v.note,
+      })),
+    },
+    {
+      "@context": "https://schema.org",
       "@type": "BreadcrumbList",
       itemListElement: [
         { "@type": "ListItem", position: 1, name: "Home", item: SITE.url },
@@ -79,218 +102,226 @@ export function citySchema(m: Market) {
 
 export default function CityHub({ market: m }: { market: Market }) {
   const photos = CITY_PHOTOS[m.slug];
+  const hub = hubBySlug(m.slug);
   const region = regionOf(m);
   const others = MARKETS.filter((x) => x.slug !== m.slug);
 
   return (
-    <>
+    <div className="hub-sheet">
       {citySchema(m).map((s, i) => (
         <script key={i} type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(s) }} />
       ))}
 
       {/* ── HERO ── */}
-      <section className="relative" style={{ height: "min(86vh, 780px)", minHeight: 480 }}>
-        <Image
-          src={photos.hero.src}
-          alt={photos.hero.alt}
-          fill
-          sizes="100vw"
-          quality={82}
-          priority
-          fetchPriority="high"
-          style={{ objectFit: "cover" }}
-        />
-        <span
-          aria-hidden
-          className="absolute inset-0 pointer-events-none"
-          /* Two layers. A gentle top-down wash so the fixed nav has something to
-             sit on, and a heavy bottom scrim that is still near-opaque where the
-             eyebrow sits. A soft gradient was not enough: on the Niagara
-             glasshouse hero the eyebrow lands on the bride's white dress, which
-             is the brightest part of the frame, and bronze-on-white is
-             unreadable at any scrim strength short of this. */
-          style={{
-            background:
-              "linear-gradient(to bottom, rgba(8,7,4,0.55) 0%, rgba(8,7,4,0) 22%), " +
-              "linear-gradient(to top, rgba(8,7,4,0.97) 0%, rgba(8,7,4,0.93) 30%, rgba(8,7,4,0.72) 45%, rgba(8,7,4,0.25) 68%, rgba(8,7,4,0) 85%)",
-          }}
-        />
-        {/* A gradient alone cannot make small bronze type readable over an
-            unpredictable photograph: on the Niagara hero the eyebrow lands on
-            the bride's white dress. The text block carries its own shadow so it
-            stays legible over any frame, without putting a visible box on the
-            photograph. */}
-        <div
-          className="absolute inset-x-0 bottom-0 page-w page-px pb-12 md:pb-16"
-          style={{ textShadow: "0 1px 2px rgba(8,7,4,0.95), 0 2px 28px rgba(8,7,4,0.9)" }}
-        >
-          <p className="text-[0.6rem] tracking-[0.32em] uppercase text-rose mb-4">
-            {m.province} · from {money(quoteFor(region, CORE))} all in
-          </p>
-          <h1 className="font-serif font-light text-cream leading-[0.98] max-w-4xl" style={{ fontSize: "clamp(2.4rem,6vw,5.4rem)" }}>
-            {m.city} wedding <em className="italic text-rose">photographer</em>
-          </h1>
-          <p className="text-blush text-[0.95rem] leading-relaxed max-w-xl mt-6 font-light">{m.lede}</p>
+      <header className="hub-hero" id="top">
+        <p className="hub-hero-kicker">{hub.kicker}</p>
+        <h1 className="hub-hero-title">{m.city}</h1>
+        <div className="hub-hero-coord">
+          <span className="hub-seg" />
+          <span>{hub.coord}</span>
+          <span className="hub-seg" />
         </div>
-      </section>
+        <p className="hub-hero-tag">{hub.tagline}</p>
 
-      {/* ── THE ANGLE ── */}
-      <section className="py-16 md:py-24 bg-ivory">
-        <div className="page-w page-px grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16">
-          <div className="lg:col-span-4">
-            <p className="text-[0.58rem] tracking-[0.32em] uppercase text-rose mb-5">How I work here</p>
-            <h2 className="font-serif font-light text-cream leading-tight" style={{ fontSize: "clamp(1.6rem,2.6vw,2.4rem)" }}>
-              {m.angle}
-            </h2>
-          </div>
-          <div className="lg:col-span-8 space-y-6">
-            {m.body.map((para) => (
-              <p key={para.slice(0, 40)} className="text-slate text-[0.9rem] leading-[1.85]">
+        <div className="hub-hero-photo">
+          <Image
+            src={photos.hero.src}
+            alt={photos.hero.alt}
+            fill
+            className="object-cover"
+            sizes="100vw"
+            quality={82}
+            priority
+            fetchPriority="high"
+          />
+        </div>
+
+        <div className="hub-hero-grid">
+          <div className="hub-hero-intro">
+            {hub.lead.map((para, i) => (
+              <p key={para.slice(0, 30)} className={i === 0 ? "hub-lead-cap" : undefined}>
                 {para}
               </p>
             ))}
           </div>
-        </div>
-      </section>
-
-      {/* ── PRICES ── */}
-      <section className="py-16 md:py-24 bg-parchment">
-        <div className="page-w page-px">
-          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-11">
-            <div>
-              <p className="text-[0.58rem] tracking-[0.32em] uppercase text-rose mb-4">The {m.city} ladder</p>
-              <h2 className="font-serif font-light text-cream" style={{ fontSize: "clamp(1.8rem,3vw,2.8rem)" }}>
-                What a day <em className="italic text-rose">costs</em>
-              </h2>
-            </div>
-            <Link
-              href="/pricing#travel"
-              className="text-[0.62rem] tracking-[0.2em] uppercase text-slate hover:text-rose transition-colors border-b border-dust hover:border-rose pb-1.5 self-start md:self-auto"
-            >
-              Add-ons and the full breakdown →
-            </Link>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-dust/25">
-            {TIERS.map((t, i) => (
-              <div key={t.slug} className="bg-parchment px-7 py-9 md:px-8 md:py-11 flex flex-col relative">
-                {i === 0 && <span className="absolute top-0 left-0 right-0 h-px bg-rose" aria-hidden />}
-                <p className="text-[0.58rem] tracking-[0.28em] uppercase text-rose mb-4">{t.name}</p>
-                <div className="flex items-baseline gap-2 mb-1">
-                  <span className="font-serif font-light text-cream" style={{ fontSize: "clamp(2.2rem,3.4vw,3rem)", lineHeight: 1 }}>
-                    {money(quoteFor(region, t))}
-                  </span>
-                </div>
-                <p className="text-[0.7rem] tracking-[0.16em] uppercase text-slate mb-2">
-                  {t.coverage} · {t.images}
-                </p>
-                {/* The split is shown rather than hidden: this is the whole point
-                    of pricing travel openly instead of inside a bigger base. */}
-                <p className="text-[0.68rem] text-slate mb-6">
-                  {money(t.price)} base
-                  {feeFor(region, t) > 0 ? ` + ${money(feeFor(region, t))} travel` : " · no travel fee"}
-                </p>
-                <p className="text-blush text-[0.82rem] leading-relaxed mb-5">{t.crew}</p>
-                <ul className="space-y-2.5 flex-1">
-                  {t.includes.map((inc) => (
-                    <li key={inc} className="text-slate text-[0.8rem] leading-relaxed flex gap-3">
-                      <span className="text-rose text-[0.6rem] mt-1.5 shrink-0" aria-hidden>✦</span>
-                      {inc}
-                    </li>
-                  ))}
-                </ul>
+          <div className="hub-hero-stats">
+            {hub.stats.map((s) => (
+              <div className="hub-hero-stat" key={s.k}>
+                <span className="hub-stat-k">{s.k}</span>
+                <span className="hub-stat-v">{s.v}</span>
               </div>
             ))}
           </div>
         </div>
+      </header>
+
+      {/* ── SECTION INDEX ── */}
+      <nav className="hub-toc" aria-label="Page sections">
+        <div className="hub-toc-inner">
+          {SECTIONS.map((s) => (
+            <a key={s.id} href={`#${s.id}`} className="hub-toc-link">
+              {s.label}
+            </a>
+          ))}
+        </div>
+      </nav>
+
+      {/* ── WHAT MAKES IT DIFFERENT HERE ── */}
+      <section id="different" className="hub-section">
+        <p className="hub-section-kicker">How I work here</p>
+        <h2 className="hub-section-h">{m.angle}</h2>
+        <p className="hub-section-intro">{m.lede}</p>
+        <div className="hub-diff-grid">
+          {hub.different.map((d) => (
+            <article key={d.title} className="hub-diff-card">
+              <h3 className="hub-diff-title">{d.title}</h3>
+              <p className="hub-diff-body">{d.body}</p>
+            </article>
+          ))}
+        </div>
+        <div className="hub-body-copy">
+          {m.body.map((para) => (
+            <p key={para.slice(0, 30)}>{para}</p>
+          ))}
+        </div>
       </section>
 
-      {/* ── WHERE ── */}
-      <section className="py-16 md:py-24 bg-ivory">
-        <div className="page-w page-px">
-          <div className="max-w-2xl mb-11">
-            <p className="text-[0.58rem] tracking-[0.32em] uppercase text-rose mb-4">The radius</p>
-            <h2 className="font-serif font-light text-cream mb-5" style={{ fontSize: "clamp(1.8rem,3vw,2.8rem)" }}>
-              Where {m.city} <em className="italic text-rose">reaches</em>
-            </h2>
-            <p className="text-blush text-[0.9rem] leading-relaxed font-light">
-              {m.region}, and the places couples here actually get married. Anything past this is a
-              travel line on the quote rather than a surprise on the invoice.
-            </p>
-          </div>
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-            {photos.places.map((ph) => (
-              <figure key={ph.src} className="relative overflow-hidden" style={{ aspectRatio: "4 / 5" }}>
-                <Image
-                  src={ph.src}
-                  alt={ph.alt}
-                  fill
-                  sizes="(max-width: 1023px) 50vw, 25vw"
-                  quality={78}
-                  loading="lazy"
-                  style={{ objectFit: "cover" }}
-                />
-                <span
-                  aria-hidden
-                  className="absolute inset-0 pointer-events-none"
-                  style={{ background: "linear-gradient(to top, rgba(8,7,4,0.8), transparent 55%)" }}
-                />
-                <figcaption className="absolute left-0 bottom-0 p-4 text-[0.6rem] tracking-[0.22em] uppercase text-cream">
-                  {ph.caption}
-                </figcaption>
-              </figure>
-            ))}
-          </div>
-          <p className="text-slate text-[0.8rem] leading-relaxed mt-7">
-            Also covered without a travel line: {m.areas.join(", ")}.
-          </p>
+      {/* ── VENUES ── */}
+      <section id="venues" className="hub-section">
+        <p className="hub-section-kicker">The ground</p>
+        <h2 className="hub-section-h">Where {m.city} weddings happen</h2>
+        <p className="hub-section-intro">{hub.venuesIntro}</p>
+
+        <div className="hub-venue-media">
+          {photos.places.map((ph) => (
+            <figure key={ph.src} className="hub-venue-fig">
+              <Image
+                src={ph.src}
+                alt={ph.alt}
+                fill
+                sizes="(max-width: 767px) 50vw, 25vw"
+                quality={78}
+                loading="lazy"
+                className="object-cover"
+              />
+              <figcaption className="hub-venue-cap">{ph.caption}</figcaption>
+            </figure>
+          ))}
+        </div>
+
+        <ol className="hub-venue-list">
+          {hub.venues.map((v, i) => (
+            <li key={v.name} className="hub-venue-row">
+              <span className="hub-venue-n">{String(i + 1).padStart(2, "0")}</span>
+              <div>
+                <h3 className="hub-venue-name">{v.name}</h3>
+                <p className="hub-venue-where">{v.where}</p>
+              </div>
+              <p className="hub-venue-note">{v.note}</p>
+            </li>
+          ))}
+        </ol>
+      </section>
+
+      {/* ── SEASON ── */}
+      <section id="season" className="hub-section">
+        <p className="hub-section-kicker">The calendar</p>
+        <h2 className="hub-section-h">When to get married in {m.city}</h2>
+        <p className="hub-section-intro">{hub.seasonIntro}</p>
+        <div className="hub-season-grid">
+          {hub.seasons.map((s) => (
+            <article key={s.months} className="hub-season-card">
+              <p className="hub-season-months">{s.months}</p>
+              <p className="hub-season-light">{s.light}</p>
+              <p className="hub-season-note">{s.note}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      {/* ── THE DAY ── */}
+      <section id="day" className="hub-section">
+        <p className="hub-section-kicker">The shape of it</p>
+        <h2 className="hub-section-h">How the day runs</h2>
+        <p className="hub-section-intro">{hub.dayIntro}</p>
+        <ol className="hub-timeline">
+          {hub.day.map((s) => (
+            <li key={s.time} className="hub-tl-row">
+              <span className="hub-tl-time">{s.time}</span>
+              <div className="hub-tl-body">
+                <h3 className="hub-tl-title">{s.title}</h3>
+                <p className="hub-tl-note">{s.body}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
+      </section>
+
+      {/* ── PRICES ── */}
+      <section id="prices" className="hub-section">
+        <p className="hub-section-kicker">The whole number</p>
+        <h2 className="hub-section-h">What a {m.city} wedding costs</h2>
+        <p className="hub-section-intro">
+          Travel is already inside every figure below. Sales tax is the only thing on top, and
+          add-ons are the only thing that can raise it.
+        </p>
+        <div className="hub-price-grid">
+          {TIERS.map((t, i) => (
+            <article key={t.slug} className={`hub-price-card${i === 0 ? " hub-price-card--lead" : ""}`}>
+              <p className="hub-price-name">{t.name}</p>
+              <p className="hub-price-value">{money(quoteFor(region, t))}</p>
+              <p className="hub-price-meta">{t.coverage} · {t.images}</p>
+              <ul className="hub-price-list">
+                {t.includes.slice(0, 5).map((inc) => (
+                  <li key={inc}>{inc}</li>
+                ))}
+              </ul>
+            </article>
+          ))}
+        </div>
+        <div className="hub-price-actions">
+          <InquireButton className="hub-cta">Check a {m.city} date</InquireButton>
+          <Link href="/pricing" className="hub-cta-alt">
+            Add-ons and everywhere else →
+          </Link>
         </div>
       </section>
 
       {/* ── FAQ ── */}
-      <section className="py-16 md:py-24 bg-parchment">
-        <div className="page-w page-px max-w-3xl">
-          <h2 className="font-serif font-light text-cream mb-11 text-center" style={{ fontSize: "clamp(1.8rem,3vw,2.8rem)" }}>
-            {m.city} <em className="italic text-rose">questions</em>
-          </h2>
-          <div className="divide-y divide-dust/50 border-y border-dust/50">
-            {m.faqs.map(({ q, a }) => (
-              <details key={q} className="py-6 group">
-                <summary className="font-serif text-cream text-lg cursor-pointer list-none flex justify-between items-start gap-6">
-                  {q}
-                  <span className="text-rose text-sm mt-1 shrink-0 transition-transform group-open:rotate-45" aria-hidden>+</span>
-                </summary>
-                <p className="text-slate text-[0.85rem] leading-relaxed mt-4 pr-10">{a}</p>
-              </details>
-            ))}
-          </div>
+      <section id="faq" className="hub-section">
+        <p className="hub-section-kicker">Questions</p>
+        <h2 className="hub-section-h">{m.city}, specifically</h2>
+        <div className="hub-faq">
+          {m.faqs.map(({ q, a }) => (
+            <details key={q} className="hub-faq-item">
+              <summary className="hub-faq-q">
+                {q}
+                <span className="hub-faq-mark" aria-hidden>+</span>
+              </summary>
+              <p className="hub-faq-a">{a}</p>
+            </details>
+          ))}
         </div>
+        <p className="hub-faq-more">
+          More in the <Link href="/faq">general FAQ</Link>, and in the{" "}
+          <Link href="/blog">journal</Link>.
+        </p>
       </section>
 
-      {/* ── CTA + the other two markets ── */}
-      <section className="py-16 md:py-24 bg-ivory border-t border-dust/40 text-center">
-        <div className="page-w page-px">
-          <p className="text-[0.6rem] tracking-[0.32em] uppercase text-blush mb-5">{m.city} dates</p>
-          <h2 className="font-serif font-light text-cream mb-8" style={{ fontSize: "clamp(1.8rem,3vw,3rem)" }}>
-            Is yours <em className="italic text-rose">open?</em>
-          </h2>
-          <InquireButton className="inline-block bg-rose text-ivory text-[0.62rem] tracking-[0.2em] uppercase px-10 py-4 hover:bg-rose-dark transition-colors duration-300 cursor-pointer border-none">
-            Check your date
-          </InquireButton>
-          <p className="text-slate text-[0.72rem] tracking-[0.18em] uppercase mt-12 mb-5">Getting married elsewhere?</p>
-          <div className="flex flex-wrap items-center justify-center gap-4">
-            {others.map((o) => (
-              <Link
-                key={o.slug}
-                href={`/${o.slug}-wedding-photographer`}
-                className="text-[0.62rem] tracking-[0.2em] uppercase text-blush border border-dust px-5 py-2.5 hover:border-rose hover:text-rose transition-colors"
-              >
-                {o.city} · from {money(quoteFor(regionOf(o), CORE))}
-              </Link>
-            ))}
-          </div>
+      {/* ── CLOSING ── */}
+      <section className="hub-section hub-section--close">
+        <p className="hub-section-kicker">{m.city} dates</p>
+        <h2 className="hub-section-h">Is yours open?</h2>
+        <InquireButton className="hub-cta hub-cta--big">Check your date</InquireButton>
+        <p className="hub-colophon">{hub.colophon}</p>
+        <div className="hub-other">
+          {others.map((o) => (
+            <Link key={o.slug} href={`/${o.slug}-wedding-photographer`} className="hub-other-link">
+              {o.city} · from {money(quoteFor(regionOf(o), CORE))}
+            </Link>
+          ))}
         </div>
       </section>
-    </>
+    </div>
   );
 }

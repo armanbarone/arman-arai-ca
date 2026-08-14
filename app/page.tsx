@@ -10,7 +10,7 @@ import { MARKETS, SITE } from "@/lib/site";
 export const metadata: Metadata = {
   title: "Canadian Wedding Photographer — Toronto, Montréal, Vancouver",
   description:
-    "Bilingual documentary and editorial wedding photography, based in Montréal and working across Canada. Three tiers from C$4,200, with travel priced openly rather than hidden in a package.",
+    "Documentary and editorial wedding photography, based in Montréal and working across Canada. Three tiers from C$4,200, with travel priced openly rather than hidden in a package.",
   alternates: { canonical: "/" },
 };
 
@@ -24,8 +24,8 @@ const WHY = [
     b: "Twenty minutes of real direction for the portraits. The rest of the day I stay out of the way, because a ceremony interrupted for a better angle is a worse ceremony.",
   },
   {
-    t: "Bilingual, and it matters",
-    b: "Half the room francophone and half anglophone is a normal Quebec wedding. Nobody gets spoken to in their second language on the day that counts.",
+    t: "One photographer, every frame",
+    b: "No studio, no assigned shooter, no portfolio built from three people's work. The person you speak to on the call is the person standing in the aisle.",
   },
 ];
 
@@ -121,7 +121,7 @@ export default function Home() {
             <div className="grid grid-cols-3 gap-6 md:gap-10">
               {[
                 { n: "3", label: "Home markets" },
-                { n: "2", label: "Languages" },
+                { n: "48h", label: "To reply" },
                 { n: "48h", label: "To your preview" },
               ].map(({ n, label }) => (
                 <div key={label} className="text-center">

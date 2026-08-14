@@ -34,7 +34,7 @@ export const HUBS: Record<string, HubContent> = {
     kicker: "Québec · Canada · Wedding Photographer",
     coord: "45.50°N · 73.57°W",
     tagline:
-      "Home. Bilingual documentary and editorial coverage, everything within 75 km included, and a photographer who already knows your venue's light.",
+      "Home. Everything within 75 km included, no travel line on the quote, and a photographer who has already seen your venue's light.",
     lead: [
       "Montréal is the easiest city in the country to photograph a wedding in and the hardest to photograph well. Easy because it is compact: a Griffintown getting-ready, an Old Montréal ceremony and a Mile End reception are fifteen minutes apart, not an hour on a highway. Hard because the light changes character four times a year and the buildings that make the city beautiful are the same ones that put your ceremony in deep shade at four in the afternoon.",
       "I live here, which mostly means I have already made the mistakes. I know which side of Place d'Armes is lit at five in July and which at five in October, that the Plateau's exterior staircases photograph best in falling snow, and that a January wedding has better light all day than a July one because the sun never gets high enough to go harsh.",
@@ -42,13 +42,13 @@ export const HUBS: Record<string, HubContent> = {
     stats: [
       { k: "Best months", v: "May to Oct, and January" },
       { k: "Travel", v: "75 km included" },
-      { k: "Languages", v: "French and English" },
+      { k: "Working language", v: "English" },
       { k: "Core collection", v: "C$4,200" },
     ],
     different: [
       {
-        title: "Actually bilingual, not bilingual on the website",
-        body: "Half the room francophone and half anglophone is a normal Québec wedding. Calling family groups, working with a notaire, getting a grandmother to look up: all of it happens faster in the language the person is comfortable in. Nothing is translated after the fact, including the planning guide.",
+        title: "I live here, which is the whole difference",
+        body: "I have already made the mistakes at your venue. Which side of the courtyard is lit at five in July and which at five in October, which rooms lose the light an hour before anyone expects, and which street is worth the ten-minute walk in falling snow. A photographer flying in cannot have that, and it is why this is the only market with no travel charge.",
       },
       {
         title: "No travel line, ever, inside 75 km",

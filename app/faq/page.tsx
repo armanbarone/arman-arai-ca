@@ -74,8 +74,8 @@ const GROUPS = [
         a: "Anywhere in Canada. Whistler, Vancouver Island, Québec City, the Eastern Townships, Niagara, Muskoka and the Rockies are all listed with prices. Anything not listed gets quoted from the same arithmetic rather than a number invented on the spot.",
       },
       {
-        q: "Do you work in French?",
-        a: "Oui, entièrement. Planning calls, the guide, the emails and the day itself run in French or English, whichever suits you and your families. Nothing is translated after the fact.",
+        q: "Do you speak French?",
+        a: "No, I work in English. I would rather say so here than have you discover it on the day. In practice your planner, venue and officiant carry the French side of a Québec wedding, and photography direction is mostly gesture and a few words. If a French-speaking photographer genuinely matters to you, tell me and I will point you at one.",
       },
     ],
   },

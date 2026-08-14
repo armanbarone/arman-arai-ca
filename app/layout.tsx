@@ -61,7 +61,7 @@ export const metadata: Metadata = {
     template: "%s | Arman Arai",
   },
   description:
-    "Bilingual documentary and editorial wedding photography, based in Montréal and working across Canada. Three tiers from C$4,200, with travel priced openly rather than hidden in a package.",
+    "Documentary and editorial wedding photography, based in Montréal and working across Canada. Three tiers from C$4,200, with travel priced openly rather than hidden in a package.",
   alternates: { canonical: "/" },
   openGraph: {
     type: "website",
@@ -104,7 +104,6 @@ const ORG_LD = {
     { "@type": "Country", name: "Canada" },
     ...MARKETS.map((m) => ({ "@type": "City", name: m.city })),
   ],
-  knowsLanguage: ["en-CA", "fr-CA"],
   sameAs: [SITE.instagram, SITE.pinterest],
   // One offer per tier per region: the price a couple in that region actually
   // pays, base plus the published destination fee.

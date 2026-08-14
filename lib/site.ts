@@ -23,7 +23,7 @@ export const SITE = {
   pinterest: "https://pinterest.com/iarmanarai",
   base: "Montréal",
   blurb:
-    "Bilingual documentary and editorial wedding photography, based in Montréal and working across Canada, with travel priced openly rather than hidden in a package.",
+    "Documentary and editorial wedding photography, based in Montréal and working across Canada, with travel priced openly rather than hidden in a package.",
 } as const;
 
 /* ── The ladder ─────────────────────────────────────────────────────────────
@@ -181,7 +181,7 @@ export const REGIONS: Region[] = [
     fee: 0,
     weekendFee: 0,
     bestTier: "Core",
-    promise: "Bilingual, calm, editorial-documentary coverage with local fluency.",
+    promise: "Calm, editorial-documentary coverage from a photographer who lives here.",
     travel: "Everything within 75 km of Montréal is included. There is no destination fee.",
     risk: "",
   },
@@ -350,18 +350,18 @@ export const MARKETS: Market[] = [
       "Montréal", "Vieux-Montréal", "Laval", "Longueuil", "Westmount", "Outremont",
       "the Plateau", "Mont-Tremblant", "the Laurentians", "the Eastern Townships",
     ],
-    angle: "Bilingual documentary coverage with calm timeline guidance",
+    angle: "Documentary coverage from a photographer who actually lives here",
     lede:
       "This is home. Everything within 75 km of Montréal carries no travel fee, no overnight and no surprise line on the invoice.",
     body: [
       "The work here is documentary and editorial: I photograph what happens rather than staging a version of it, then I direct properly for the twenty minutes of portraits where direction is what you actually want. That distinction matters more in Montréal than anywhere else I work, because the market is full of packages that promise a number of images and say nothing about how the day will feel.",
-      "I work in French and in English. Your grandmother gets spoken to in the language she is comfortable in, the notaire gets understood, and the vendor emails do not need translating. In a city where half the room may be francophone and half anglophone, that is not a nice extra. It is the job.",
+      "Living here is the whole difference. I have already made the mistakes: I know which side of Place d'Armes is lit at five in July and which at five in October, that the Plateau photographs best in falling snow, and which venues lose the light an hour earlier than the couple expects. That is not something a photographer flying in can have, and it is why Montréal is the only market where I charge no travel at all.",
       "Old Montréal, the Plateau, Mont-Royal and the whole island are inside the included radius. The Laurentians and the Eastern Townships are a drive and one night, which is a C$950 destination fee rather than a destination wedding. Québec City and Charlevoix are further and priced accordingly.",
     ],
     faqs: [
       {
-        q: "Travaillez-vous en français ?",
-        a: "Oui, entièrement. Planning calls, the guide, the emails and the day itself run in French or in English, whichever suits you and your families. Nothing is translated after the fact.",
+        q: "Do you speak French?",
+        a: "No. I work in English, and I want to be straightforward about that rather than let you find out on the day. In practice it has not been a problem: your planner, your venue and your officiant handle the French side of the day, and photography direction is mostly gesture and a handful of words. If a fully French-language photographer matters to you, say so and I will point you at someone rather than talk you out of it.",
       },
       {
         q: "What exactly does the 75 km radius include?",

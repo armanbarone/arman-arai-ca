@@ -95,14 +95,14 @@ export const posts: BlogPost[] = [
     slug: "wedding-photography-cost-montreal",
     title: "What Wedding Photography Costs in Montréal",
     subtitle:
-      "The widest price spread of any Canadian city, and how to read it. Ce que la photographie de mariage coûte vraiment à Montréal.",
+      "The widest price spread of any Canadian city, and how to read what sits at each end of it.",
     date: "2026-08-12",
     dateDisplay: "August 12, 2026",
     readTime: "7 min read",
     coverImage: `${CDN}/cities/montreal/places/mtl-oldmontreal-bluehour.png`,
     coverAlt: "Couple walking a cobbled Old Montréal street at blue hour",
     excerpt:
-      "Montréal has the widest visible price dispersion in Canada: published packages run from about $1,550 to $5,000. Here is what separates the ends of that range, and what bilingual coverage actually changes on the day.",
+      "Montréal has the widest visible price dispersion in Canada: published packages run from about $1,550 to $5,000. Here is what separates the ends of that range, and what hiring locally actually changes on the day.",
     topic: "Money",
     city: "montreal",
     body: `
@@ -114,10 +114,11 @@ export const posts: BlogPost[] = [
 <p>The work is the same. The cost of doing it is not. Montréal is geographically compact in a way the GTA is not, so travel between a Griffintown getting-ready and an Old Montréal ceremony is fifteen minutes rather than an hour on the 401. Studio and living costs are lower. Reaching couples costs less, because the market is less crowded with photographers bidding for the same search terms.</p>
 <p><strong>That difference is real and I pass it on</strong>, which is why my Montréal collections start at $3,200 rather than the $3,500 I charge in Toronto. Charging Toronto prices for a Montréal wedding would just be arbitrage.</p>
 
-<h2>Working in two languages is not a bonus feature</h2>
-<figure><img src="${CDN}/portfolio/documentary/guests-laughing-champagne.webp" alt="Guests laughing together with champagne at the reception"><figcaption>Half the room francophone, half anglophone, and both need to be spoken to properly.</figcaption></figure>
-<p>A great many Montréal weddings have a francophone family on one side and an anglophone family on the other. On the day this shows up constantly: calling family groups for formals, getting a grandmother to look up, telling a room to hold still for thirty seconds, working with a notaire, coordinating with a venue whose staff work in French.</p>
-<p>A photographer who only operates in English will get through the day. They will also, quietly, be slightly slower at every one of those moments, and slightly further outside the conversations that are actually happening. <strong>I work in French and in English, and nothing gets translated after the fact.</strong> The planning guide, the emails, the day itself: whichever you prefer.</p>
+<h2>What living here actually buys you</h2>
+<figure><img src="${CDN}/portfolio/documentary/guests-laughing-champagne.webp" alt="Guests laughing together with champagne at the reception"><figcaption>The advantage is not access. It is having already made the mistakes at your venue.</figcaption></figure>
+<p>Every photographer in this city will tell you they know it. What that should mean, concretely, is that they have already been wrong about your venue and corrected it. I know which side of Place d'Armes is lit at five in July and which at five in October. I know which reception rooms lose the window an hour before the couple expects, and which streets are worth a ten-minute walk in falling snow.</p>
+<p><strong>That is the entire argument for hiring locally, and it is worth more than it sounds.</strong> A photographer flying in for your date is scouting on the morning of, or from photographs, or not at all. It is also why Montréal is the only market where I charge nothing for travel: there is nothing to charge for.</p>
+<p>One thing I will say plainly rather than let you discover it: <strong>I work in English.</strong> In practice your planner, your venue and your officiant carry the French side of a Québec wedding, and directing a portrait is mostly gesture and a handful of words. If having a French-speaking photographer genuinely matters to you, tell me at the enquiry and I will point you toward someone instead of talking you out of it.</p>
 
 <h2>What the low end of the range is really selling</h2>
 <figure><img src="${CDN}/portfolio/film/dim-colonnade-embrace.webp" alt="Couple embracing in a dim colonnade with light coming from the far end"><figcaption>Below about $2,500 in Montréal, something is being economised. It is worth knowing what.</figcaption></figure>

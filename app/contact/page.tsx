@@ -21,7 +21,7 @@ const FACTS = [
   { label: "Pinterest", value: "iarmanarai", href: SITE.pinterest },
   { label: "Home markets", value: "Toronto · Montréal · Vancouver" },
   { label: "Also", value: "Anywhere in Canada, coast to coast" },
-  { label: "Languages", value: "English and French" },
+  { label: "Working language", value: "English" },
 ];
 
 export default function Contact() {

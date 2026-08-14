@@ -53,7 +53,6 @@ export default function About() {
     image: ARMAN_PORTRAIT.src,
     email: SITE.email,
     sameAs: [SITE.instagram, SITE.pinterest],
-    knowsLanguage: ["en-CA", "fr-CA"],
     worksFor: { "@id": `${SITE.url}/#business` },
     areaServed: { "@type": "Country", name: "Canada" },
   };
@@ -156,7 +155,7 @@ export default function About() {
                 {[
                   { n: "3", label: "Home markets" },
                   { n: "10", label: "Provinces served" },
-                  { n: "2", label: "Languages" },
+                  { n: "1", label: "Photographer" },
                   { n: "48h", label: "To your preview" },
                 ].map(({ n, label }) => (
                   <div key={label}>
@@ -206,7 +205,7 @@ export default function About() {
           </div>
           <p className="text-slate text-[0.8rem] leading-relaxed mt-7 max-w-3xl">
             Everywhere else in Canada is a travel quote, given before you sign rather than added
-            after. I work in English and in French.
+            after. I work in English.
           </p>
         </div>
       </section>

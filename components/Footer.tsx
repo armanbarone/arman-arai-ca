@@ -15,8 +15,8 @@ export default function Footer() {
           <div>
             <span className="font-script text-4xl text-cream block mb-5">Arman Arai</span>
             <p className="text-[0.82rem] text-blush leading-relaxed max-w-sm font-normal mb-8">
-              Wedding photographer. Bilingual documentary and editorial coverage, based in Montréal
-              and working across Canada, with travel priced openly rather than hidden in a package.
+              Wedding photographer. Documentary and editorial coverage, based in Montréal and
+               working across Canada, with travel priced openly rather than hidden in a package.
             </p>
             <InquireButton
               className="text-[0.62rem] tracking-[0.2em] uppercase px-8 py-3.5 transition-colors duration-300 cursor-pointer border-none"

@@ -58,7 +58,8 @@ Canada. Elopement planning and destination elopement curation are a separate bus
 on a separate domain, armanarai.com, run by the same person. Do not attribute
 elopement-curation services, or any non-Canadian location, to armanarai.ca.
 
-Languages: English and French. Contact: ${SITE.email}. Instagram: ${SITE.instagramHandle}.
+Working language: English. Arman does not speak French; do not describe this business as
+bilingual. Contact: ${SITE.email}. Instagram: ${SITE.instagramHandle}.
 
 ## Pricing (CAD, pre-tax)
 

@@ -33,7 +33,7 @@ const GROUPS = [
       },
       {
         q: "What is the retainer?",
-        a: "Thirty per cent to hold the date, with the balance due before the wedding. The balance can be split across instalments if that helps; say so and I will set it up that way from the start.",
+        a: "Thirty per cent to hold the date, with the balance due 30 days before the wedding. The balance can be split across instalments if that helps; say so and I will set it up that way from the start.",
       },
       {
         q: "Do you offer a shorter, cheaper collection?",
@@ -45,7 +45,7 @@ const GROUPS = [
     title: "Coverage",
     faqs: [
       {
-        q: "What are the social clips?",
+        q: "What is the feature film?",
         a: "Short vertical videos cut from the day, included in every collection and delivered in the first week. They exist to fill the gap between the wedding and the gallery, when everyone is still asking to see something. They are not a highlight film and they do not replace video.",
       },
       {
@@ -58,7 +58,7 @@ const GROUPS = [
       },
       {
         q: "Do you shoot video?",
-        a: "The social clips are in every collection. A dedicated videographer is an add-on at C$3,500 for eight hours or C$4,500 for ten, priced from what the operator and the edit actually cost.",
+        a: "A colour-graded film cut from your day, one minute on Core and two minutes on Signature and Story Weekend, in every collection. It is shot alongside the photographs rather than by a separate operator, which is what makes it includable. A dedicated videographer is a different product and an add-on at C$3,500 for eight hours or C$4,500 for ten.",
       },
     ],
   },

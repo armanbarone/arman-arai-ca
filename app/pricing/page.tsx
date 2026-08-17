@@ -7,7 +7,7 @@ import {
   ADDONS,
   ADDON_GROUPS,
   CORE,
-  OTHER_REGIONS,
+  OUTER_REGIONS_NOTE,
   PRIMARY_REGIONS,
   SITE,
   TIERS,
@@ -17,7 +17,7 @@ import {
 export const metadata: Metadata = {
   title: "Wedding Photography Pricing — Montréal, Toronto, Vancouver",
   description:
-    "Three collections, and the whole price for each city. Montréal from C$4,200, Toronto from C$6,450, Vancouver from C$8,250. Social clips included in every collection.",
+    "Three collections, and the whole price for each region. Montréal from C$4,000, Toronto from C$4,000, Vancouver from C$4,500. A feature film and film prints included in every collection.",
   alternates: { canonical: "/pricing" },
   openGraph: {
     title: "Wedding Photography Pricing — Arman Arai",
@@ -38,7 +38,7 @@ const PROCESS = [
   { n: "03", t: "A twenty minute call", b: "Not a sales call. I need to hear the shape of the day before I can quote it properly." },
   { n: "04", t: "One recommended collection", b: "With the one either side of it, and the whole price rather than a starting figure." },
   { n: "05", t: "A 48-hour hold on the date", b: "Free, and I will tell you if someone else asks about it in the meantime." },
-  { n: "06", t: "Contract and retainer", b: "Thirty per cent to book. The balance is due before the wedding and it can be split." },
+  { n: "06", t: "Contract and retainer", b: "Thirty per cent to book. The balance is due 30 days before the wedding and it can be split." },
 ];
 
 const FAQS = [
@@ -51,7 +51,7 @@ const FAQS = [
     a: "Because I am based in Montréal and a Vancouver wedding is a flight, three nights and ground transport before I have taken a single frame. Rather than charging Montréal couples a national average that quietly subsidises that, each city carries its own real cost. The photography is identical.",
   },
   {
-    q: "What are the social clips, exactly?",
+    q: "What is the feature film, exactly?",
     a: "Short vertical videos cut from the day, in every collection. You get them in the first week, long before the gallery is finished, so there is something to post while people are still asking. They are not a highlight film and they are not a substitute for video, they are the thing that fills the gap between the wedding and the album.",
   },
   {
@@ -68,7 +68,7 @@ const FAQS = [
   },
   {
     q: "Do you offer photo and video?",
-    a: "The social clips are in every collection. Full videography is an add-on, priced from what a dedicated operator and the edit actually cost: C$3,500 for eight hours, C$4,500 for ten. I will not quietly bundle a videographer into a collection at a number that guarantees one of us does bad work.",
+    a: "A short colour-graded film cut from the day: one minute on Core, two minutes on Signature and Story Weekend. I shoot it alongside the photographs rather than bringing a second operator, which is why it is included rather than sold. Full videography is a different product and an add-on, priced from what a dedicated operator and the edit actually cost: C$3,500 for eight hours, C$4,500 for ten. I will not quietly bundle a videographer into a collection at a number that guarantees one of us does bad work.",
   },
 ];
 
@@ -327,52 +327,42 @@ export default function Pricing() {
         </div>
       </section>
 
-      {/* ── EVERYWHERE ELSE ── */}
+      {/* ── WHAT EACH PRICE COVERS ── */}
       <section id="elsewhere" className="py-16 md:py-24 bg-parchment scroll-mt-16">
         <div className="page-w page-px">
           <div className="max-w-2xl mb-11">
-            <p className="text-[0.6rem] tracking-[0.32em] uppercase text-rose mb-4">Everywhere else</p>
+            <p className="text-[0.6rem] tracking-[0.32em] uppercase text-rose mb-4">What each price covers</p>
             <h2 className="font-serif font-light text-cream mb-5" style={{ fontSize: "clamp(1.9rem,3vw,2.9rem)" }}>
-              I also work <em className="italic text-rose">here</em>
+              One number, <em className="italic text-rose">a whole region</em>
             </h2>
             <p className="text-blush text-[0.95rem] leading-relaxed font-light">
-              Whistler, Vancouver Island, Québec City, the Townships, Niagara and the Rockies. Same
-              three collections, same everything in them, and again the number is the whole number.
+              Each figure above buys the same collection anywhere in that region. Québec City costs
+              what Montréal costs. Whistler costs what Vancouver costs. Niagara costs what Toronto
+              costs. Travel and accommodation are already inside the number.
             </p>
           </div>
 
-          <div className="overflow-x-auto -mx-6 px-6 md:mx-0 md:px-0">
-            <table className="w-full min-w-[620px] border-collapse text-left">
-              <thead>
-                <tr className="border-y border-dust">
-                  <th className="py-4 pr-6 text-[0.62rem] tracking-[0.24em] uppercase text-rose font-normal">Where</th>
-                  {TIERS.map((t) => (
-                    <th key={t.slug} className="py-4 px-4 text-[0.62rem] tracking-[0.24em] uppercase text-rose font-normal whitespace-nowrap">
-                      {t.name}
-                    </th>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-dust/25">
+            {PRIMARY_REGIONS.map((r) => (
+              <div key={r.slug} className="px-7 py-9 bg-parchment">
+                <p className="text-[0.6rem] tracking-[0.28em] uppercase text-rose mb-3">
+                  {r.short} &middot; from {money(quoteFor(r, CORE))}
+                </p>
+                <h3 className="font-serif font-light text-cream text-[1.35rem] mb-4 leading-snug">{r.name}</h3>
+                <ul className="flex flex-wrap gap-x-2 gap-y-1.5 mb-5">
+                  {r.covers.map((c) => (
+                    <li key={c} className="text-blush text-[0.82rem] leading-snug after:content-['·'] after:ml-2 after:text-dust last:after:content-['']">
+                      {c}
+                    </li>
                   ))}
-                </tr>
-              </thead>
-              <tbody>
-                {OTHER_REGIONS.map((r) => (
-                  <tr key={r.slug} className="border-b border-dust/50">
-                    <td className="py-4 pr-6">
-                      <span className="font-serif text-cream text-[1.08rem] block leading-snug">{r.name}</span>
-                      <span className="text-slate text-[0.8rem]">{r.travel}</span>
-                    </td>
-                    {TIERS.map((t) => (
-                      <td key={t.slug} className="py-4 px-4 align-top whitespace-nowrap">
-                        <span className="text-cream text-[1.02rem] font-serif">{money(quoteFor(r, t))}</span>
-                      </td>
-                    ))}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                </ul>
+                <p className="text-slate text-[0.82rem] leading-relaxed">{r.tax} on top.</p>
+              </div>
+            ))}
           </div>
-          <p className="text-slate text-[0.85rem] leading-relaxed mt-6 max-w-2xl">
-            Somewhere not on either table? Tell me where and I will price it from the same
-            arithmetic rather than a number I made up. I do travel anywhere in Canada.
+
+          <p className="text-slate text-[0.88rem] leading-relaxed mt-8 max-w-2xl">
+            {OUTER_REGIONS_NOTE}
           </p>
         </div>
       </section>

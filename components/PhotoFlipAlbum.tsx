@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect, useMemo } from "react";
 
 interface Props {
   albumTitle: string;
@@ -66,31 +66,29 @@ function closingRight(): string {
 }
 
 export default function PhotoFlipAlbum({ albumTitle, albumSubtitle, albumDate, images }: Props) {
-  // Build spreads: cover, image pairs, closing
-  const spreads: { L: string; R: string; lbl: string }[] = [];
-
-  // Cover
-  spreads.push({
-    L: coverLeft(albumTitle, albumSubtitle, albumDate),
-    R: coverRight(albumTitle, albumSubtitle, albumDate),
-    lbl: "Cover",
-  });
-
-  // Image spreads — 2 per spread
-  for (let i = 0; i < images.length; i += 2) {
-    const n = Math.floor(i / 2) + 1;
-    const hasRight = i + 1 < images.length;
-    spreads.push({
-      L: imagePage(images[i]),
-      R: hasRight
-        ? imagePage(images[i + 1])
-        : closingRight(),
-      lbl: `${n} of ${Math.ceil(images.length / 2)}`,
-    });
-  }
-
-  // Closing
-  spreads.push({ L: closingLeft(), R: closingRight(), lbl: "Fin" });
+  // Memoised so `paint` keeps a stable identity and the effect below does not
+  // re-run on every render.
+  const spreads = useMemo(() => {
+    const out: { L: string; R: string; lbl: string }[] = [
+      {
+        L: coverLeft(albumTitle, albumSubtitle, albumDate),
+        R: coverRight(albumTitle, albumSubtitle, albumDate),
+        lbl: "Cover",
+      },
+    ];
+    // Image spreads, two per spread
+    for (let i = 0; i < images.length; i += 2) {
+      const n = Math.floor(i / 2) + 1;
+      const hasRight = i + 1 < images.length;
+      out.push({
+        L: imagePage(images[i]),
+        R: hasRight ? imagePage(images[i + 1]) : closingRight(),
+        lbl: `${n} of ${Math.ceil(images.length / 2)}`,
+      });
+    }
+    out.push({ L: closingLeft(), R: closingRight(), lbl: "Fin" });
+    return out;
+  }, [albumTitle, albumSubtitle, albumDate, images]);
 
   const [cur, setCur] = useState(0);
   const [busy, setBusy] = useState(false);
@@ -157,12 +155,19 @@ export default function PhotoFlipAlbum({ albumTitle, albumSubtitle, albumDate, i
     setTimeout(() => setBusy(false), 460);
   }, [busy, cur, spreads]);
 
-  // Paint initial spread
-  const initialized = useRef(false);
-  if (!initialized.current) {
-    initialized.current = true;
-    setTimeout(() => paint(0), 0);
-  }
+  /* Paint the current spread AFTER commit.
+   *
+   * This used to be a setTimeout scheduled during render, guarded by a ref. Both
+   * pages are filled imperatively through innerHTML, so the server sends two
+   * empty divs; if that timer fired before hydration attached the refs, paint()
+   * wrote to null and the album stayed blank until goFwd repainted it. That is
+   * exactly the bug: the book was empty on /portfolio until you clicked next.
+   *
+   * An effect cannot run before the refs exist, so this is correct by
+   * construction. It also repaints if the album's images ever change. */
+  useEffect(() => {
+    paint(cur);
+  }, [paint, cur]);
 
   const btnStyle: React.CSSProperties = {
     background: "transparent", border: "0.5px solid rgba(150,120,90,.3)",

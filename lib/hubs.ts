@@ -41,9 +41,9 @@ export const HUBS: Record<string, HubContent> = {
     ],
     stats: [
       { k: "Best months", v: "May to Oct, and January" },
-      { k: "Travel", v: "75 km included" },
+      { k: "Travel", v: "Included to Québec City" },
       { k: "Working language", v: "English" },
-      { k: "Core collection", v: "C$4,200" },
+      { k: "Core collection", v: "C$4,000" },
     ],
     different: [
       {
@@ -66,7 +66,7 @@ export const HUBS: Record<string, HubContent> = {
       { name: "Mont-Royal", where: "Plateau / Outremont", note: "The city skyline behind you at dusk. Twenty minutes from almost any downtown venue and the single most reliable portrait spot in the city." },
       { name: "The Plateau", where: "Plateau Mont-Royal", note: "Exterior staircases, brick, murals. It photographs best in weather, so it is the winter backup that is actually better than the plan." },
       { name: "Jean-Talon and Little Italy", where: "Rosemont", note: "Colour and crowds. For couples who want the day to look like the city rather than a set." },
-      { name: "The Laurentians", where: "90 minutes north", note: "Lakes, chalets and hard autumn colour in late September. A drive and a night, priced as C$5,150 for Core." },
+      { name: "The Laurentians", where: "90 minutes north", note: "Lakes, chalets and hard autumn colour in late September. A drive and a night, and inside the Montréal price rather than beside it." },
       { name: "Eastern Townships", where: "Sutton, Bromont, Knowlton", note: "Vineyards and low hills. Same drive, same number, and a very different palette from the Laurentians." },
     ],
     seasonIntro: "When to get married here, judged only on what it does to the photographs.",
@@ -103,7 +103,7 @@ export const HUBS: Record<string, HubContent> = {
       { k: "Best months", v: "May to Oct" },
       { k: "Multi-day", v: "Quoted by event" },
       { k: "Second shooter", v: "Included on Signature" },
-      { k: "Core collection", v: "C$6,450" },
+      { k: "Core collection", v: "C$4,000" },
     ],
     different: [
       {
@@ -126,7 +126,7 @@ export const HUBS: Record<string, HubContent> = {
       { name: "Evergreen Brick Works", where: "Don Valley", note: "Industrial frames and real green in the middle of the city. The best rain backup in Toronto." },
       { name: "The Aga Khan Museum", where: "Don Mills", note: "White stone and hard geometry. Extraordinary at midday, which is when almost nothing else works." },
       { name: "Casa Loma and Spadina House", where: "Midtown", note: "For the couples who want the day to look like a period film. Book the light, not the room." },
-      { name: "Niagara-on-the-Lake", where: "90 minutes south", note: "Vineyards and the Floral Showhouse glasshouse. Its own region at C$6,850 for Core." },
+      { name: "Niagara-on-the-Lake", where: "90 minutes south", note: "Vineyards and the Floral Showhouse glasshouse. Inside the Toronto price, so a winery Saturday costs what a downtown one costs." },
       { name: "Muskoka and Prince Edward County", where: "2 to 3 hours out", note: "Docks, lakes, float planes and long grass. Same region, same number, and worth the drive." },
     ],
     seasonIntro: "Ontario gives you a long season and one genuinely difficult month.",
@@ -163,7 +163,7 @@ export const HUBS: Record<string, HubContent> = {
       { k: "Best months", v: "Jun to Sep" },
       { k: "Rain plan", v: "Scouted, not improvised" },
       { k: "Island and Whistler", v: "Same price" },
-      { k: "Core collection", v: "C$8,250" },
+      { k: "Core collection", v: "C$4,500" },
     ],
     different: [
       {

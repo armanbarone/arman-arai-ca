@@ -52,7 +52,7 @@ export const metadata: Metadata = {
     template: "%s | Arman Arai",
   },
   description:
-    "Documentary and editorial wedding photography, based in Montréal and working across Canada. Three tiers from C$4,200, with travel priced openly rather than hidden in a package.",
+    "Documentary and editorial wedding photography, based in Montréal and working across Canada. Three collections from C$4,000, each region one whole number with travel already inside it.",
   alternates: { canonical: "/" },
   openGraph: {
     type: "website",
@@ -88,7 +88,7 @@ const ORG_LD = {
   email: SITE.email,
   image: "https://cdn.armanarai.ca/about/arman-portrait-camera-window.webp",
   description: SITE.blurb,
-  priceRange: "CA$4,200–CA$12,900",
+  priceRange: "CA$4,000–CA$9,000",
   currenciesAccepted: "CAD",
   address: { "@type": "PostalAddress", addressCountry: "CA" },
   areaServed: [

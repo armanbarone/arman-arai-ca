@@ -45,7 +45,8 @@ export default function TermsOfService() {
           <ul style={{ paddingLeft: "1.25rem", marginTop: 10, display: "flex", flexDirection: "column", gap: 6 }}>
             <li>Wedding day photography, in the three collections published on the pricing page</li>
             <li>Engagement and welcome sessions, included in the collections or booked standalone</li>
-            <li>Vertical social clips, included in every collection, shot alongside the photography rather than by a separate operator</li>
+            <li>A colour-graded feature film, included in every collection, shot alongside the photography rather than by a separate operator</li>
+            <li>Film prints handed to guests on the night, included in every collection</li>
             <li>Timeline planning and a written family-photograph plan</li>
             <li>Optional add-ons at published prices: additional hours and events, a second photographer, albums, film, drone, dedicated video and content-creator coverage</li>
           </ul>
@@ -55,7 +56,7 @@ export default function TermsOfService() {
 
         <Section title="Booking and Payment">
           <p>Your date is not reserved until a signed contract and the retainer have both been received. I will hold a date informally for 48 hours as a courtesy while you decide, and that hold is not a booking.</p>
-          <p style={{ marginTop: 12 }}><strong style={{ color: "var(--text)" }}>The retainer is 30% of the collection price.</strong> It is refundable only under the cancellation schedule below. The balance is due before the wedding date and can be split across instalments if you ask for that at the outset. Payment methods are specified in your contract. Once the contract is signed and the retainer has cleared, the date is yours.</p>
+          <p style={{ marginTop: 12 }}><strong style={{ color: "var(--text)" }}>The retainer is 30% of the collection price.</strong> It is refundable only under the cancellation schedule below. The balance is due 30 days before the wedding date and can be split across instalments if you ask for that at the outset. Payment methods are specified in your contract. Once the contract is signed and the retainer has cleared, the date is yours.</p>
           <p style={{ marginTop: 12 }}>All prices are quoted in Canadian dollars and are subject to applicable sales tax. The figure on your proposal already contains my travel to your region; there is no separate travel or destination charge added later.</p>
         </Section>
 
@@ -112,7 +113,7 @@ export default function TermsOfService() {
               ))}
             </tbody>
           </table>
-          <p style={{ marginTop: 14 }}>Where you have purchased the seven-day gallery rush, the full gallery is delivered within seven days of your wedding. Film add-ons are returned once the lab has processed and scanned them, which is typically four to six weeks and is outside my control. I do not produce a cinematic wedding film in-house; where you have booked the dedicated videographer add-on, that operator's delivery timeline is stated separately in your contract.</p>
+          <p style={{ marginTop: 14 }}>Where you have purchased the seven-day gallery rush, the full gallery is delivered within seven days of your wedding. The included feature film is delivered with or before the full gallery. Rolls of real film are returned once the lab has processed and scanned them, which is typically four to six weeks and is outside my control. Where you have booked the dedicated videographer add-on, that operator is a separate supplier and their delivery timeline is stated separately in your contract.</p>
           <p style={{ marginTop: 12 }}>Galleries are delivered via a private, password-protected online gallery. Download links are active for a minimum of 90 days after delivery. I strongly recommend downloading and backing up your images promptly upon receipt.</p>
         </Section>
 

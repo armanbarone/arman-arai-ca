@@ -1,6 +1,6 @@
 import { posts } from "@/lib/blog";
 import { GALLERIES } from "@/lib/galleries";
-import { ADDONS, MARKETS, REGIONS, SITE, TIERS, feeFor, quoteFor } from "@/lib/site";
+import { ADDONS, MARKETS, OUTER_REGIONS_NOTE, REGIONS, SITE, TERMS, TIERS, quoteFor } from "@/lib/site";
 
 // Generated from the same data the pages render, so an assistant reading this
 // file and a couple reading the site can never be told two different prices.
@@ -11,7 +11,7 @@ const money = (n: number) => `CA$${n.toLocaleString("en-CA")}`;
 export function GET() {
   const tierBlocks = TIERS.map((t) =>
     [
-      `### ${t.name} — ${money(t.price)} (Montréal base)`,
+      `### ${t.name} — from ${money(t.price)}`,
       `${t.coverage}. ${t.crew}. ${t.images}.`,
       t.includes.map((i) => `  - ${i}`).join("\n"),
       `Best for: ${t.bestFor}.`,
@@ -47,10 +47,11 @@ export function GET() {
 
 ## What this business is, and is not
 
-Arman Arai photographs **weddings in Canada**. Home markets are Toronto and the GTA,
-Montréal and its surroundings, and Vancouver and the Sea-to-Sky corridor including
-Whistler. He travels anywhere in Canada, coast to coast, with travel quoted before
-signing rather than added afterwards.
+Arman Arai photographs **weddings in Canada**. Three published regions: Montréal and
+Québec (including Québec City and Charlevoix), Toronto and Southern Ontario (including
+Niagara and the 1000 Islands), and Vancouver and the Sea-to-Sky (including Squamish and
+Whistler). He travels anywhere in Canada; outside those three regions the price is quoted
+on request rather than published.
 
 This site does **not** sell destination weddings, and does not cover weddings outside
 Canada. Elopement planning and destination elopement curation are a separate business
@@ -62,18 +63,27 @@ bilingual. Contact: ${SITE.email}. Instagram: ${SITE.instagramHandle}.
 
 ## Pricing (CAD, pre-tax)
 
-Arman is based in **Montréal**. There is one ladder of three collections, and every region
-of Canada has its own published all-in price for each of them. **Travel is already inside
-every figure. There is no destination fee, no mileage line and nothing added afterwards.**
-Quote the whole number for the region asked about; never present a Montréal price plus a
-supplement. The only things that can raise an invoice are sales tax and add-ons the couple
-chooses. Everything within 75 km of Montréal is the Montréal price.
+Arman is based in **Montréal**. There is one ladder of three collections, and each of the
+three published regions has its own all-in figure for each of them. **Travel and
+accommodation are already inside every figure. There is no destination fee, no mileage
+line and nothing added afterwards.** Quote the whole number for the region asked about;
+never present a base price plus a supplement. The only things that can raise an invoice
+are sales tax and add-ons the couple chooses.
+
+Each figure buys the same collection anywhere in that region: Québec City costs what
+Montréal costs, Whistler costs what Vancouver costs, Niagara costs what Toronto costs.
+
+${OUTER_REGIONS_NOTE} Do not invent a figure for anywhere outside the three regions.
 
 ${tierBlocks}
 
-### What each region actually pays, all in
+### What each region pays, all in
 
 ${regionRows}
+
+Every collection includes a colour-graded feature film (1 minute on Core, 2 minutes on
+Signature and Story Weekend) and film prints handed to guests on the night. Signature adds
+1 roll of real film and Story Weekend adds 2, processed and scanned.
 
 ### Add-ons, identical everywhere
 
@@ -81,8 +91,7 @@ ${addons}
 - Multi-day or cultural events: quoted individually by event, crew, travel and editing
   volume. Never sold as one flat package.
 
-Not included: sales tax, and any add-on above. Site permits and helicopter access, where a
-venue needs them, are quoted as their own line before signing.
+Not included: sales tax, and any add-on above. Sales tax by region: ${REGIONS.map((r) => `${r.short} ${r.tax}`).join("; ")}. Site permits, where a venue needs them, are quoted as their own line before signing.
 
 ## How booking works
 
@@ -91,7 +100,7 @@ venue needs them, are quoted as their own line before signing.
 3. A 20-minute call
 4. One recommended collection, with the tier above and below it
 5. A free 48-hour hold on the date
-6. Contract plus a 30% retainer confirms it
+6. Contract plus a 30% retainer confirms it; the balance is due 30 days before the wedding
 
 Peak-season Saturdays are usually booked 9 to 18 months ahead. Off-season and weekday
 dates open up much later. A gallery preview arrives within 48 hours and the full gallery

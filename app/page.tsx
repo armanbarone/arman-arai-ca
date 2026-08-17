@@ -40,7 +40,7 @@ import { CORE, MARKETS, PRIMARY_REGIONS, SITE, TIERS, quoteFor } from "@/lib/sit
 export const metadata: Metadata = {
   title: "Canadian Wedding Photographer — Toronto, Montréal, Vancouver",
   description:
-    "Documentary and editorial wedding photography, based in Montréal and working across Canada. Three collections from C$4,200, each one whole number with the travel already inside it.",
+    "Documentary and editorial wedding photography, based in Montréal and working across Canada. Three collections from C$4,000, each region one whole number with the travel already inside it.",
   alternates: { canonical: "/" },
 };
 
@@ -97,7 +97,8 @@ const steps = [
 /* What is in every collection. The .com's "eight things you will never touch". */
 const carried = [
   { t: "Eight continuous hours", d: "The floor of every collection. Ten on Signature, twelve across two days on Story Weekend." },
-  { t: "Vertical social clips", d: "In every collection, in the first week. Not an add-on, because the gap between the wedding and the gallery is when everyone is asking." },
+  { t: "A feature film", d: "Colour graded, one minute on Core and two above it. In every collection, not an add-on." },
+  { t: "Film prints on the night", d: "Real prints handed to your guests before they go home, while the gallery is still weeks away." },
   { t: "An engagement session", d: "Included. Not for the photographs, for the hour where you stop performing and I learn how you actually stand." },
   { t: "A timeline that survives", d: "Built backwards from sunset, with one deliberate block of slack that absorbs the whole morning's drift." },
   { t: "A written family-photo plan", d: "Twelve groups and two callers, agreed before the day. This is the single largest block of time a big wedding gets back." },
@@ -177,9 +178,9 @@ export default function Home() {
 
               <p className="dr-lede" style={{ marginBottom: "2.2rem", maxWidth: "30rem" }}>
                 <strong>Documentary and editorial wedding photography, across Canada.</strong>{" "}
-                Three collections, each one whole number with the travel already inside
-                it, and social clips in the first week so you have something to post
-                while the gallery is still being edited.
+                Three collections, each region one whole number with the travel already
+                inside it, a colour-graded feature film in every one, and film prints
+                handed to your guests on the night.
               </p>
 
               <div className="dr-cta-row">
@@ -333,12 +334,12 @@ export default function Home() {
             <div className="dr-duo-rule" />
             <div className="dr-stack">
               <p className="dr-eyebrow dr-eyebrow--accent">In motion</p>
-              <h3 className="dr-h3">Social clips</h3>
+              <h3 className="dr-h3">Film</h3>
               <p className="dr-p">
-                Vertical clips cut from the day and delivered in the first week, in every
-                collection. They exist because there is a real gap between the wedding and
-                the gallery, and it is the exact window in which everyone you know is
-                asking to see something.
+                A colour-graded feature film in every collection: one minute on Core, two
+                minutes above it. Real film too, a roll on Signature and two on Story
+                Weekend, processed and scanned. And prints handed to your guests on the
+                night, so people leave holding something from the day.
               </p>
             </div>
           </div>

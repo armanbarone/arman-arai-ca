@@ -4,17 +4,16 @@
  * no elopement curation: that is armanarai.com, a separate business on a
  * separate domain. Email and social handles are shared between the two.
  *
- * The commercial model is Montréal-based. One ladder of three collections, and
- * every region carries its own all-in price for each of them.
+ * THE PRICE IS ONE WHOLE NUMBER. Each of the three regions publishes its own
+ * figure for each collection and that figure already contains travel and
+ * accommodation. Never describe anything as a fee, supplement, mileage or
+ * destination charge. The owner was explicit: "There is no additional fee to
+ * the price." Only sales tax and chosen add-ons can raise an invoice.
  *
- * THE PRICE IS ONE WHOLE NUMBER. Travel lives inside it. `region.fee` below is
- * an internal input to `quoteFor()` and must never be shown to a couple, named
- * in prose, or described as a fee, supplement, mileage or destination charge.
- * The owner was explicit about this: "There is no additional fee to the price."
- * Only sales tax and chosen add-ons can ever raise an invoice.
+ * Anywhere outside the three published regions is quoted on request rather
+ * than guessed at. Do not invent a number for it.
  *
- * Source: Arman_Arai_Canadian_Wedding_Model_Montreal_Base_2026.xlsx
- * (Package Catalog, Add-ons, Region Cost Inputs, Regional Positioning).
+ * Source: Arman Arai {Montreal,Toronto,Vancouver} Wedding Prices 2027.pdf.
  */
 
 export const SITE = {
@@ -31,8 +30,9 @@ export const SITE = {
 } as const;
 
 /* ── The ladder ─────────────────────────────────────────────────────────────
- * Three public collections. `price` is the Montréal figure; every other region's
- * figure comes out of quoteFor(). Pre-tax. Core is the default recommendation.
+ * Three collections. Hours, crew and deliverables are identical in every
+ * region; only the price differs, and it lives on the region. `price` here is
+ * the lowest published figure for that collection, used for honest "from" copy.
  */
 
 export type Tier = {
@@ -41,6 +41,7 @@ export type Tier = {
   strap: string;
   coverage: string;
   hours: number;
+  /** The lowest published figure across the three regions. For "from" copy. */
   price: number;
   crew: string;
   images: string;
@@ -49,73 +50,76 @@ export type Tier = {
   preview: string;
   delivery: string;
   album: string;
+  /** The colour-graded feature film included in this collection. */
   film: string;
-  /** Vertical clips for the couple to post while the gallery is still in edit. */
-  social: string;
+  /** Rolls of real film, processed and scanned. */
+  rolls: string;
+  /** Prints handed to guests on the night. In every collection. */
+  prints: string;
   includes: string[];
   bestFor: string;
-  /** Internal travel-arithmetic key: Story Weekend travels a day longer. */
-  feeKey: "standard" | "weekend";
 };
 
 export const TIERS: Tier[] = [
   {
     slug: "core",
     name: "Core",
-    strap: "Recommended",
+    strap: "Full day",
     coverage: "8 continuous hours",
     hours: 8,
-    price: 4200,
+    price: 4000,
     crew: "One lead photographer",
     images: "550+ edited images",
-    session: "Montréal engagement session, or a welcome session on location",
+    session: "Engagement session, or a welcome session on location",
     planning: "Timeline review and a family-photo plan",
     preview: "40 images within 48 hours",
     delivery: "Full gallery in 5 to 7 weeks",
     album: "Available as an add-on",
-    film: "Available as an add-on",
-    social: "A set of vertical social clips, delivered in the first week",
+    film: "A 1-minute feature film, colour graded",
+    rolls: "",
+    prints: "Film prints handed to guests on the night",
     includes: [
       "8 continuous hours, one lead photographer",
-      "Vertical social clips in the first week, so you have something to post while the gallery is still being edited",
       "550+ edited images, high resolution with print permission",
-      "Montréal engagement session or destination welcome session",
-      "Timeline review and family-photo planning",
+      "A 1-minute feature film, colour graded",
+      "Film prints handed to guests on the night",
+      "An engagement session, or a welcome session on location",
+      "Timeline review and a family-photo plan",
       "40-image preview within 48 hours",
       "Full gallery in 5 to 7 weeks",
     ],
     bestFor: "The primary full-wedding offer, and the right answer for most days",
-    feeKey: "standard",
   },
   {
     slug: "signature",
     name: "Signature",
-    strap: "One tier above Core",
+    strap: "Most booked",
     coverage: "10 continuous hours",
     hours: 10,
-    price: 5900,
+    price: 5500,
     crew: "Lead plus a second photographer for 6 hours",
     images: "800+ edited images",
-    session: "Engagement or welcome session",
-    planning: "90-minute planning session and a family-photo plan",
+    session: "Engagement session, or a welcome session on location",
+    planning: "90-minute planning call and a family-photo plan",
     preview: "60 images next day",
     delivery: "Full gallery in 4 weeks",
-    album: "C$750 album credit",
-    film: "Available as an add-on",
-    social: "An expanded set of vertical social clips, delivered in 72 hours",
+    album: "C$750 credit toward an heirloom album",
+    film: "A 2-minute feature film, colour graded",
+    rolls: "1 roll of film, processed and scanned",
+    prints: "Film prints handed to guests on the night",
     includes: [
-      "10 continuous hours",
-      "An expanded set of vertical social clips within 72 hours",
-      "Lead plus a second photographer for six hours",
-      "800+ edited images",
-      "Engagement or welcome session",
-      "90-minute planning session and family-photo plan",
-      "C$750 album credit",
-      "60-image next-day preview",
+      "10 continuous hours, lead plus a second photographer for six",
+      "800+ edited images, high resolution with print permission",
+      "A 2-minute feature film, colour graded",
+      "1 roll of film, processed and scanned",
+      "Film prints handed to guests on the night",
+      "An engagement session, or a welcome session on location",
+      "90-minute planning call and a family-photo plan",
+      "60-image preview next day",
       "Full gallery in 4 weeks",
+      "C$750 credit toward an heirloom album",
     ],
     bestFor: "Full days with a large guest count or split morning logistics",
-    feeKey: "standard",
   },
   {
     slug: "story-weekend",
@@ -123,29 +127,30 @@ export const TIERS: Tier[] = [
     strap: "Two days",
     coverage: "12 hours across two days",
     hours: 12,
-    price: 8200,
+    price: 7000,
     crew: "Lead plus a second photographer for 8 hours",
     images: "1,000+ edited images",
-    session: "Engagement or welcome session",
+    session: "Engagement session included",
     planning: "Two planning calls and a location scout",
     preview: "80 images within 24 hours",
     delivery: "Full gallery in 3 weeks",
-    album: "C$1,000 album credit",
-    film: "Two rolls included",
-    social: "Social clips from both days, the first set the morning after",
+    album: "C$1,000 credit toward an heirloom album",
+    film: "A 2-minute feature film, colour graded",
+    rolls: "2 rolls of film, processed and scanned",
+    prints: "Film prints handed to guests on the night",
     includes: [
-      "Social clips from both days, the first set delivered the morning after",
-      "12 hours split across two days: 2-hour welcome or rehearsal, plus a 10-hour wedding",
-      "Lead plus a second photographer for eight hours",
-      "1,000+ edited images",
-      "Engagement or welcome session",
+      "12 hours across two days: a 2-hour welcome or rehearsal, plus a 10-hour wedding",
+      "1,000+ edited images, high resolution with print permission",
+      "A 2-minute feature film, colour graded",
+      "2 rolls of film, processed and scanned",
+      "Film prints handed to guests on the night",
+      "Engagement session included",
       "Two planning calls and a location scout",
-      "C$1,000 album credit and two rolls of film",
       "80-image preview within 24 hours",
       "Full gallery in 3 weeks",
+      "C$1,000 credit toward an heirloom album",
     ],
-    bestFor: "Two-day celebrations and destination weekends",
-    feeKey: "weekend",
+    bestFor: "Two-day celebrations, and any wedding whose guests travel in",
   },
 ];
 
@@ -153,153 +158,135 @@ export const tierBySlug = (slug: string) => TIERS.find((t) => t.slug === slug);
 export const CORE = TIERS[0];
 
 /* ── Regions ────────────────────────────────────────────────────────────────
- * `fee` and `weekendFee` are INTERNAL ARITHMETIC, never shown. They exist so
- * quoteFor() can produce each region's whole number, and they were derived from
- * real travel cash + the value of the travel time + the regional cost-per-
- * booking premium over Montréal, less a C$300 local allowance already inside
- * the base, rounded up to C$50. Print quoteFor(), never these.
+ * Three published regions. Each `prices` figure is what a couple there pays,
+ * with travel and accommodation already inside it. `covers` is the list of
+ * places that share that price. Anywhere else is quoted on request; there is
+ * no formula to fall back on and inventing one is how this went wrong before.
  */
 
 export type Region = {
   slug: string;
   name: string;
   short: string;
-  /** The three markets that get their own price card and their own page. */
-  primary?: boolean;
-  /** Internal only: never rendered. Feeds quoteFor() for Core and Signature. */
-  fee: number;
-  /** Internal only: Story Weekend travels an extra night, so it computes higher. */
-  weekendFee: number;
-  /** Signature occasionally needs an extra night on the longer drives. */
-  signatureFee?: number;
+  primary: true;
+  /** Keyed by tier slug. This IS the price. Nothing is added to it. */
+  prices: Record<string, number>;
+  /** Everywhere that shares this price. */
+  covers: string[];
+  /** Sales tax on top, stated per province. */
+  tax: string;
+  /** Published market range for context on the pricing page. */
+  marketRange: string;
+  season: string;
   bestTier: string;
   promise: string;
   travel: string;
   risk: string;
+  /** Venues from the 2027 sheet. Real rooms, not a wish list. */
+  venues: string[];
+  /** Where portraits actually happen in this region. */
+  portraits: string[];
 };
 
 export const REGIONS: Region[] = [
   {
     slug: "montreal",
     primary: true,
-    name: "Montréal and Old Montréal",
+    name: "Montréal and Québec",
     short: "Montréal",
-    fee: 0,
-    weekendFee: 0,
+    prices: { core: 4000, signature: 5500, "story-weekend": 7000 },
+    covers: [
+      "Montréal", "Vieux-Montréal", "Laval", "the South Shore",
+      "the Laurentians", "the Eastern Townships", "Québec City", "Charlevoix",
+    ],
+    tax: "QST 9.975% plus GST 5%, about 14.975% combined",
+    marketRange: "CAD 3,000 to 8,000+ for a full day across the market",
+    season: "May to October, peaking June to September, with October foliage",
     bestTier: "Core",
     promise: "Calm, editorial-documentary coverage from a photographer who lives here.",
-    travel: "Everything within 75 km of Montréal is the same price: the island, Laval, the South Shore, out past Saint-Jérôme.",
+    travel: "Montréal, the surrounding region, Québec City and Charlevoix all share this price.",
     risk: "",
-  },
-  {
-    slug: "eastern-townships",
-    name: "Eastern Townships and the Laurentians",
-    short: "Townships / Laurentians",
-    fee: 950,
-    weekendFee: 1350,
-    bestTier: "Core",
-    promise: "Montréal-quality coverage with vineyard and chalet logistics handled.",
-    travel: "A drive and, realistically, one night. Both are already inside the number.",
-    risk: "Late-night drives and seasonal lodging are the two things that go wrong here.",
-  },
-  {
-    slug: "quebec-city",
-    name: "Québec City and Charlevoix",
-    short: "Québec City / Charlevoix",
-    fee: 1350,
-    signatureFee: 1750,
-    weekendFee: 2100,
-    bestTier: "Signature",
-    promise: "Historic architecture or landscape storytelling, with the route planned in advance.",
-    travel: "A long drive, an overnight, and the travel time itself, all priced.",
-    risk: "A multi-location timeline over that distance needs a real plan, not optimism.",
+    venues: [
+      "Château Ramezay", "Windsor Ballrooms", "Le Gesù", "Fairmont Queen Elizabeth",
+      "Terrasse Nelligan", "Château Frontenac", "Eastern Townships wineries",
+    ],
+    portraits: ["Vieux-Montréal", "Mont-Royal", "the Old Port", "Old Québec"],
   },
   {
     slug: "toronto",
     primary: true,
-    name: "Toronto and the GTA",
-    short: "Toronto / GTA",
-    fee: 2250,
-    weekendFee: 2650,
+    name: "Toronto and Southern Ontario",
+    short: "Toronto",
+    prices: { core: 4000, signature: 6000, "story-weekend": 8500 },
+    covers: [
+      "Toronto", "the GTA", "Mississauga", "Vaughan", "Markham", "Oakville",
+      "Hamilton", "Niagara", "Niagara-on-the-Lake", "the 1000 Islands",
+    ],
+    tax: "13% HST",
+    marketRange: "CAD 2,700 to 5,500 for a full day across the GTA",
+    season: "May to October, peaking June to September, with October foliage",
     bestTier: "Core or Signature",
     promise: "Cultural fluency, reliable team logistics, and multi-day scope defined in writing.",
-    travel: "Rail or air, two hotel nights and ground transport.",
-    risk: "Unbounded multi-day scope. This is why events are quoted individually here.",
-  },
-  {
-    slug: "niagara-muskoka",
-    name: "Niagara and Muskoka",
-    short: "Niagara / Muskoka",
-    fee: 2650,
-    weekendFee: 3100,
-    bestTier: "Signature",
-    promise: "Winery and lake storytelling with transport and timing under control.",
-    travel: "Ontario transport, a rental car and hotel nights.",
-    risk: "Scattered venues and total car dependency between them.",
+    travel: "Travel and accommodation from Montréal are already inside this price.",
+    risk: "Unbounded multi-day scope. This is why multi-day events are quoted by event.",
+    venues: [
+      "Casa Loma", "The Fermenting Cellar and Archeo", "Graydon Hall Manor",
+      "Liberty Grand", "Omni King Edward",
+    ],
+    portraits: [
+      "the Distillery District", "the Toronto Islands", "High Park",
+      "Evergreen Brick Works", "the Scarborough Bluffs",
+    ],
   },
   {
     slug: "vancouver",
     primary: true,
-    name: "Vancouver, Whistler and Vancouver Island",
-    short: "Vancouver / Whistler",
-    fee: 4050,
-    weekendFee: 4650,
+    name: "Vancouver and the Sea-to-Sky",
+    short: "Vancouver",
+    prices: { core: 4500, signature: 6500, "story-weekend": 9000 },
+    covers: [
+      "Vancouver", "North Vancouver", "West Vancouver", "Burnaby", "Richmond",
+      "Squamish", "Whistler", "the Sea-to-Sky corridor",
+    ],
+    tax: "5% GST, plus 7% PST where applicable",
+    marketRange: "CAD 5,800 to 7,500 for premium local coverage",
+    season: "April to October, peaking June to September, plus a Whistler winter season",
     bestTier: "Signature",
     promise: "Coastal and mountain expertise, with weather and permits handled before the date.",
-    travel: "Airfare, three nights and ground transport, all inside the price. Ferries to the Island too.",
-    risk: "Peak-season lodging on the Sea-to-Sky is the single biggest cost swing in the country.",
-  },
-  {
-    slug: "whistler",
-    name: "Whistler and the Sea-to-Sky",
-    short: "Whistler",
-    fee: 4050,
-    weekendFee: 4650,
-    bestTier: "Signature",
-    promise: "Mountain weddings with the permits, the access and the weather planned in advance.",
-    travel: "Same trip as Vancouver, so the same number.",
-    risk: "Peak-season lodging on the corridor is the biggest cost swing in the country.",
-  },
-  {
-    slug: "vancouver-island",
-    name: "Vancouver Island and Tofino",
-    short: "Vancouver Island",
-    fee: 4050,
-    weekendFee: 4650,
-    bestTier: "Story Weekend",
-    promise: "Coastal weddings, with the ferry and the drive west already accounted for.",
-    travel: "Ferry and the highway out to the coast are inside the same number as Vancouver.",
-    risk: "Tofino is not a day trip; it wants the two-day tier.",
-  },
-  {
-    slug: "banff",
-    name: "Banff and Canmore",
-    short: "Banff / Canmore",
-    fee: 4100,
-    weekendFee: 4700,
-    bestTier: "Signature or Story Weekend",
-    promise: "Mountain wedding storytelling with explicit weather, park and transport planning.",
-    travel: "Airfare, three nights, a rental car and high-season lodging.",
-    risk: "Parks Canada permits, weather, and hotel rates north of C$450 a night in summer.",
+    travel: "Vancouver, the North Shore, Squamish and Whistler all share this price.",
+    risk: "Rain between October and April, and permits on Crown land or in a provincial park.",
+    venues: [
+      "Stanley Park Pavilion", "Hycroft, University Women's Club", "Fairmont Pacific Rim",
+      "Grouse Mountain", "Fairmont Chateau Whistler", "Nita Lake Lodge",
+      "Audain Art Museum", "Sea to Sky Gondola",
+    ],
+    portraits: [
+      "Jericho and Kitsilano beaches", "VanDusen", "Queen Elizabeth Park",
+      "the Squamish valley",
+    ],
   },
 ];
 
 export const regionBySlug = (slug: string) => REGIONS.find((r) => r.slug === slug);
 
-/** The three cities with their own price card and their own page. */
-export const PRIMARY_REGIONS = REGIONS.filter((r) => r.primary);
-/** Everywhere else I work, listed once at the bottom of the pricing page. */
-export const OTHER_REGIONS = REGIONS.filter((r) => !r.primary);
+/** All three regions are primary now. Kept for the call sites that ask. */
+export const PRIMARY_REGIONS = REGIONS;
 
-/** Internal travel arithmetic for a tier in a region. Never render this. */
-export function feeFor(region: Region, tier: Tier): number {
-  if (tier.feeKey === "weekend") return region.weekendFee;
-  if (tier.slug === "signature" && region.signatureFee !== undefined) return region.signatureFee;
-  return region.fee;
-}
+/** Everywhere outside the three published regions. */
+export const OUTER_REGIONS_NOTE =
+  "Anywhere else in Canada, including Muskoka, Prince Edward County, " +
+  "Vancouver Island and the Rockies, is quoted on request rather than " +
+  "guessed at. Send the date and the venue and you will have a real number.";
 
-/** What a couple in this region actually pays, before tax. */
-export const quoteFor = (region: Region, tier: Tier) => tier.price + feeFor(region, tier);
+/** What a couple in this region pays for this collection, before tax. */
+export const quoteFor = (region: Region, tier: Tier) => region.prices[tier.slug];
+
+/** Booking terms, identical in every region. */
+export const TERMS = {
+  retainer: "30% retainer secures your date",
+  balance: "Balance due 30 days before the wedding",
+  extraHour: 450,
+} as const;
 
 /* ── Add-ons ───────────────────────────────────────────────────────────────*/
 
@@ -362,7 +349,7 @@ export const MARKETS: Market[] = [
     body: [
       "The work here is documentary and editorial: I photograph what happens rather than staging a version of it, then I direct properly for the twenty minutes of portraits where direction is what you actually want. That distinction matters more in Montréal than anywhere else I work, because the market is full of packages that promise a number of images and say nothing about how the day will feel.",
       "Living here is the whole difference. I have already made the mistakes: I know which side of Place d'Armes is lit at five in July and which at five in October, that the Plateau photographs best in falling snow, and which venues lose the light an hour earlier than the couple expects. That is not something a photographer flying in can have, and it is why Montréal is the only market where I charge no travel at all.",
-      "Old Montréal, the Plateau, Mont-Royal and the whole island are inside the included radius, so a Core wedding here is C$4,200 and that is the entire number. The Laurentians and the Eastern Townships are a drive and a night, which makes Core C$5,150 there. Québec City and Charlevoix are further out at C$5,550. Each of those is one figure with the drive, the night and the diesel already inside it, published before you ask rather than calculated after you commit.",
+      "One price covers the whole province's worth of ground I work here. Old Montréal, the Plateau, Mont-Royal and the island, then the Laurentians and the Eastern Townships, then Québec City and Charlevoix, all cost the same: Core is C$4,000, Signature is C$5,500, and the two-day Story Weekend is C$7,000. A vineyard in Sutton is not a more expensive wedding than one on Saint-Paul, because the drive and the night are already inside the figure rather than added to it.",
     ],
     faqs: [
       {
@@ -371,7 +358,7 @@ export const MARKETS: Market[] = [
       },
       {
         q: "What exactly does the 75 km radius include?",
-        a: "The island, Laval, the South Shore, and out past Saint-Jérôme and Saint-Hyacinthe. If your venue is inside that, Core is C$4,200 and there is no travel line at all. Outside it, the region has its own whole number on the pricing page, already carrying the drive and the night. Either way you are looking at one figure, not a base plus something.",
+        a: "Further than most photographers include. The island, Laval and the South Shore obviously, but also the Laurentians, the Eastern Townships, Québec City and Charlevoix, all at the same price: C$4,000 for Core. There is no travel line on any of them. Somewhere further out than that gets quoted before you commit rather than calculated after.",
       },
       {
         q: "We are having a civil ceremony with a notaire. Is that too small?",
@@ -397,7 +384,7 @@ export const MARKETS: Market[] = [
     body: [
       "So I scope by event rather than by package. How many days, how many venues, how far apart, whether any two events share a day, how many people are in each room, and which twenty minutes of the whole thing you would be heartbroken to lose. Those six answers decide crew, travel and editing volume, which is where the cost actually lives. They also produce a timeline that survives contact with Highway 401 traffic on a Saturday in June, which no flat package has ever done.",
       "The part that gets underestimated is editing capacity rather than shooting capacity. A three-day celebration produces something like fifteen to twenty thousand frames. A photographer whose workflow is built for one Saturday will take four or five months to return that gallery and will quote you eight weeks when you ask. I would rather tell you the real number at the start, which is why the delivery date goes in the contract as a date.",
-      "I come in from Montréal, and that is already paid for. A Core wedding in Toronto or anywhere in the GTA is C$6,450, Signature is C$8,150, and the two-day Story Weekend is C$10,850. Rail or air, two hotel nights and ground transport are inside those figures, which is why nothing arrives at the end of the invoice. Niagara, Muskoka and Prince Edward County have their own numbers, starting at C$6,850 for Core, because scattered venues and a rental car cost more than a subway pass.",
+      "I come in from Montréal, and that is already paid for. A Core wedding in Toronto or anywhere in the GTA is C$4,000, Signature is C$6,000, and the two-day Story Weekend is C$8,500. Rail or air, the hotel nights and ground transport are inside those figures, which is why nothing arrives at the end of the invoice. Niagara, Niagara-on-the-Lake and the 1000 Islands are the same price as downtown. Muskoka and Prince Edward County sit outside the published region, so those get quoted on request rather than guessed at.",
     ],
     faqs: [
       {
@@ -406,11 +393,11 @@ export const MARKETS: Market[] = [
       },
       {
         q: "You are based in Montréal. Is that a problem?",
-        a: "It costs you nothing extra, because the flight and the hotel nights are already inside the C$6,450. What it buys is that I arrive the day before, rested, having walked your venue in daylight. Toronto photographers who live twenty minutes away frequently do neither.",
+        a: "It costs you nothing extra, because the travel and the hotel nights are already inside the C$4,000. What it buys is that I arrive the day before, rested, having walked your venue in daylight. Toronto photographers who live twenty minutes away frequently do neither.",
       },
       {
         q: "How far outside the GTA do you go?",
-        a: "Niagara-on-the-Lake, Muskoka and Prince Edward County are all regularly worked and all priced as one region. Anywhere else in Southern Ontario I will quote from the same formula rather than inventing a number.",
+        a: "Niagara, Niagara-on-the-Lake and the 1000 Islands are inside the published Toronto price, so they cost what a downtown wedding costs. Muskoka and Prince Edward County are outside it and are quoted on request. I work in both regularly; I just will not print a number for them that I have not costed against your actual venue.",
       },
     ],
   },
@@ -431,8 +418,8 @@ export const MARKETS: Market[] = [
       "Three products in one region: a Lower Mainland wedding, a Sea-to-Sky or Whistler day, and Vancouver Island. They differ by access and weather, not by how the photographs are made.",
     body: [
       "For a city wedding the work is the same as anywhere: a timeline that respects the light, coverage that does not run out before the dancing, and portraits that take twenty minutes rather than an hour and a half. The local difference is rain. Between October and April a wet ceremony is not the exception, so every timeline I build has a covered plan that is a real plan, scouted in advance, not a shrug on the day.",
-      "Sea-to-Sky is a different job. Whistler and Squamish need travel time counted properly, and anything on Crown land or in a provincial park needs its permit sorted well before the date. Vancouver Island adds a ferry and, for Tofino, a further three hours of highway. None of that appears on your invoice: Core is C$8,250 whether the day happens in Kitsilano, in Whistler or in Tofino, and the flight, the three nights, the ground transport and the ferry are already inside that figure.",
-      "The all-inclusive mountain packages in this market start around C$8,500 once vendors and travel are bundled together. If that is the day you want, I will tell you what it actually costs to build. If you want photography, the number on this page is the whole price.",
+      "Sea-to-Sky is a different job. Whistler and Squamish need travel time counted properly, and anything on Crown land or in a provincial park needs its permit sorted well before the date. None of that appears on your invoice: Core is C$4,500 whether the day happens in Kitsilano, in Squamish or up at Whistler, and the flight, the nights and the ground transport are already inside that figure. Vancouver Island and Tofino sit outside the published region, because a ferry and three more hours of highway are a different trip; those are quoted on request.",
+      "Premium local photography in this market runs roughly C$5,800 to C$7,500 for a full day, and multi-service mountain packages start around C$8,500 once vendors are bundled in. If that bundled day is what you want, I will tell you honestly what it costs to build. If you want the photography, the number on this page is the whole price and it already contains the flight.",
     ],
     faqs: [
       {
@@ -441,7 +428,7 @@ export const MARKETS: Market[] = [
       },
       {
         q: "Do you cover Vancouver Island and Tofino?",
-        a: "Yes, and they carry the same price as Vancouver and Whistler: C$8,250 for Core, with the ferry and the drive out to the west coast already inside it. What I will not do is pretend Tofino is a day trip. It needs an extra night, which is why Story Weekend at C$12,850 is often the honest collection there.",
+        a: "Yes, and they are the one part of this coast I quote rather than publish. Vancouver, the North Shore, Squamish and Whistler all share the C$4,500 Core price. The Island adds a ferry and Tofino adds three hours of highway beyond that, which is a genuinely different trip, so I price it against your actual venue and date. What I will not do is pretend Tofino is a day trip: it wants the two-day collection.",
       },
       {
         q: "Are permits really necessary?",

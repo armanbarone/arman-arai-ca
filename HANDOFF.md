@@ -126,21 +126,25 @@ These cost real time and the owner had to catch most of them.
 areas, market copy, FAQs. `/pricing`, the hubs, footer, nav, `llms.txt` and
 `sitemap.xml` all read from it. **Never hard-code a price anywhere else.**
 
-- `TIERS` — three collections, Montréal base: Core C$4,200 / 8h, Signature
-  C$5,900 / 10h, Story Weekend C$8,200 / 12h over two days. An Essential 6h at
-  C$3,200 exists in the workbook but is deliberately **off the public site**;
-  quote on request only.
-- `REGIONS` — seven, each with a travel cost folded into `quoteFor(region, tier)`.
-  `PRIMARY_REGIONS` (Montréal, Toronto, Vancouver) get cards and their own page.
-  `OTHER_REGIONS` go in one table at the bottom of `/pricing`.
-- `ADDONS` — fifteen, grouped. **Social clips are NOT an add-on**; they are in
-  every collection.
+- `TIERS` — three collections, identical everywhere. Core 8h, Signature 10h
+  with a second shooter for six, Story Weekend 12h over two days.
+- `REGIONS` — **three** published regions, each with its own `prices` map and a
+  `covers` list. Each figure already contains travel and accommodation.
+  Everything outside them is `OUTER_REGIONS_NOTE`: quoted on request, never
+  guessed. Muskoka, Prince Edward County, Vancouver Island and the Rockies are
+  all outer.
+- `ADDONS` — fifteen. **A feature film and film prints are NOT add-ons**; they
+  are in every collection.
 
-Live all-in prices (Core / Signature / Story Weekend):
+Live prices (Core / Signature / Story Weekend), from the 2027 sheets:
 
-| Montréal | Toronto | Vancouver+Whistler+Island | Townships | Québec City | Niagara/Muskoka | Banff |
-|---|---|---|---|---|---|---|
-| 4,200 / 5,900 / 8,200 | 6,450 / 8,150 / 10,850 | 8,250 / 9,950 / 12,850 | 5,150 / 6,850 / 9,550 | 5,550 / 7,650 / 10,300 | 6,850 / 8,550 / 11,300 | 8,300 / 10,000 / 12,900 |
+| Montréal + Québec | Toronto + S. Ontario | Vancouver + Sea-to-Sky |
+|---|---|---|
+| 4,000 / 5,500 / 7,000 | 4,000 / 6,000 / 8,500 | 4,500 / 6,500 / 9,000 |
+
+Montréal's price also buys the Laurentians, the Townships, Québec City and
+Charlevoix. Toronto's also buys Niagara and the 1000 Islands. Vancouver's also
+buys the North Shore, Squamish and Whistler.
 
 **Other key files**
 
@@ -251,6 +255,15 @@ Everything in this list is live and was verified with a real HTTP check.
 Roughly in priority order.
 
 ### Owner input needed (blocked on Arman)
+
+- **The three new galleries have no dates.** `luca-lauren`, `nicole-js` and
+  `parsa-marjan` carry a season rather than a month and year, because the files
+  have no EXIF and inventing a date on a client's gallery is not acceptable.
+  Send the real ones and they drop straight into `lib/galleries.ts`.
+- **Social clips are gone from every collection**, replaced by the feature film
+  and the film prints, because that is what the 2027 sheets say. He had
+  previously insisted social clips be in every package. If both are meant to be
+  included, say so and they go back.
 
 - **`/reviews` has no written testimonials**, only the real screenshots. I will
   not invent them. Ask for 3–5 real wedding quotes with names/locations, then

@@ -130,6 +130,59 @@ export const HOME_SEQUENCE: Photo[] = [
   p("portfolio/documentary/guests-laughing-champagne", "Guests laughing together with champagne at the reception"),
 ];
 
+/* ── Recent work, by city ───────────────────────────────────────────────────
+ * Real coverage rather than location scouting frames, shown on each city hub.
+ * Montréal draws from the three complete albums in lib/galleries.ts instead,
+ * which is why it is not listed here.
+ */
+export const CITY_WORK: Record<string, Photo[]> = {
+  vancouver: [
+    p("cities/vancouver/work/11-storm-rainbow-ceremony", "A rainbow breaking over an outdoor ceremony as a storm clears"),
+    p("cities/vancouver/work/09-mountain-veil-bride", "Bride throwing her veil up against the mountains"),
+    p("cities/vancouver/work/40-hatley-castle-grand-front", "Couple seated on the lawn in front of Hatley Castle"),
+    p("cities/vancouver/work/32-pink-cherry-blossom-street", "Couple under heavy pink cherry blossom on a Vancouver street"),
+    p("cities/vancouver/work/52-ocean-sunset-string-light-platform", "A platform strung with lights on the water at sunset"),
+    p("cities/vancouver/work/10-alpine-garden-kiss", "Couple kissing on an alpine outlook above the trees"),
+    p("cities/vancouver/work/12-downtown-bride-white-dog", "Bride walking a downtown Vancouver street with a white dog"),
+    p("cities/vancouver/work/58-silhouette-profiles-monochrome", "Two profiles silhouetted against a bright ground, black and white"),
+    p("cities/vancouver/work/23-waterfront-lighthouse-walk", "Couple walking the waterfront past a red and white lighthouse"),
+    p("cities/vancouver/work/34-formal-fountain-garden-high-angle", "Couple beside a formal garden fountain seen from above"),
+    p("cities/vancouver/work/64-south-asian-conservatory-couple", "South Asian couple in red and gold inside a glass conservatory"),
+    p("cities/vancouver/work/56-cliff-road-stone-overhang", "Couple on a coastal road beneath a stone overhang"),
+    p("cities/vancouver/work/08-vintage-car-monochrome", "Couple beside a vintage car, black and white"),
+    p("cities/vancouver/work/36-japanese-garden-separated-couple", "Couple apart from each other in a green Japanese garden"),
+    p("cities/vancouver/work/47-sunset-marina-motorboat", "Bride reclining across the bow of a motorboat at sunset"),
+    p("cities/vancouver/work/65-pixel-sculpture-umbrella-monochrome", "Couple with an umbrella beside a pixelated orca sculpture, black and white"),
+  ],
+  toronto: [
+    p("cities/toronto/prince-edward-county/cover", "Couple walking through long grass in Prince Edward County at golden hour"),
+    p("cities/toronto/niagara/2023-weddings-np-fsh-outdoor-1-edited-e1724180541582", "An outdoor ceremony set in the Niagara Parks gardens"),
+    p("cities/toronto/prince-edward-county/drake-devonshire", "The Drake Devonshire lit at dusk on the Wellington shore"),
+    p("cities/toronto/niagara/2018-weddings-nelson-floralshowhouse-09-e1724180596696", "Couple among the blooms inside the Niagara Parks Floral Showhouse"),
+    p("cities/toronto/prince-edward-county/the-merrill-house", "The Merrill House in Picton, its verandah set for dinner"),
+    p("cities/toronto/niagara/2023-weddings-np-ramblersrest-1-edited-e1724685906888", "The stone pavilion at Rambler's Rest above the Niagara River"),
+    p("cities/toronto/prince-edward-county/waupoos-estates-winery", "Vineyard rows running down toward the bay at Waupoos"),
+    p("cities/toronto/niagara/2023-weddings-np-ramblersrest-7-edited-e1724685922414", "Guests gathered under the stone pavilion at Rambler's Rest"),
+    p("cities/toronto/prince-edward-county/the-cape", "The restored mansion at The Cape behind mature trees"),
+    p("cities/toronto/niagara/2018-weddings-nelson-floralshowhouse-14-e1724180569802", "Detail of the glasshouse planting at the Floral Showhouse"),
+    p("cities/toronto/prince-edward-county/the-eddie-hotel-and-farm", "The red brick farmhouse and gardens at The Eddie, Bloomfield"),
+    p("cities/toronto/prince-edward-county/lakecroft", "A tented reception on the shoreline lawn at Lakecroft"),
+  ],
+};
+
+/** Whistler and the Sea-to-Sky, shown on the Vancouver hub. */
+export const WHISTLER_WORK: Photo[] = [
+  p("cities/vancouver/whistler/23-elevated-lakeside-ceremony", "An elevated ceremony deck above a Whistler lake"),
+  p("cities/vancouver/whistler/09-windblown-veil-overlook", "Bride's veil caught by the wind at a mountain overlook"),
+  p("cities/vancouver/whistler/05-snowy-dock-aerial", "A snow-covered dock on a frozen lake seen from above"),
+  p("cities/vancouver/whistler/17-rustic-confetti-exit", "Confetti thrown over the couple as they leave a rustic barn"),
+  p("cities/vancouver/whistler/24-vows-with-wedding-party", "Vows read with the wedding party standing close behind"),
+  p("cities/vancouver/whistler/20-stone-steps-recessional", "The recessional down wide stone steps"),
+  p("cities/vancouver/whistler/21-east-asian-family-toast", "A family toast raised around a long table"),
+  p("cities/vancouver/whistler/12-snowy-birch-turnaround", "Bride turning in the snow among bare birch trunks"),
+  p("cities/vancouver/whistler/07-mountain-puddle-symmetry", "The couple mirrored in a mountain puddle"),
+];
+
 /* ── About ──────────────────────────────────────────────────────────────── */
 
 export const ARMAN_PORTRAIT = p(

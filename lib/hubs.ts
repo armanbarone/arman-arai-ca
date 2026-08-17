@@ -187,7 +187,7 @@ export const HUBS: Record<string, HubContent> = {
       { name: "Whytecliff Park", where: "West Vancouver", note: "Rock shelves and islands offshore. The most reliable sunset in the Lower Mainland." },
       { name: "Deep Cove", where: "North Vancouver", note: "A working cove with boats and mountains. Good for a real ceremony with guests standing on sand." },
       { name: "Sea-to-Sky and Whistler", where: "60 to 100 minutes north", note: "Gondolas, alpine and glacier light. Same price as Vancouver, and permits arranged in advance." },
-      { name: "Vancouver Island and Tofino", where: "Ferry, then the highway", note: "Storm season on the west coast is a genuine reason to get married in November. Wants the two-day collection." },
+      { name: "Vancouver Island and Tofino", where: "Ferry, then the highway", note: "Storm season on the west coast is a genuine reason to get married in November. Outside the published region, so quoted against your venue." },
     ],
     seasonIntro:
       "The one market in Canada where the season question is really a rain question.",

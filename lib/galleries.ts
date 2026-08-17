@@ -38,6 +38,1305 @@ export type Gallery = {
 
 export const GALLERIES: Gallery[] = [
   {
+    "slug": "luca-lauren",
+    "names": "Luca & Lauren",
+    "location": "Old Montréal and the Old Port",
+    "date": "Summer",
+    "stock": "Portra 400",
+    "frameCount": 54,
+    "story": "A city wedding that used all of Montréal: a basilica for the ceremony, neoclassical stone for the portraits, and a glass room high over the water for dinner, hung with coral blossom. Two registers in one day, the grave and the bright, and the whole point was not letting either one flatten the other.",
+    "cover": {
+      "url": "https://cdn.armanarai.ca/galleries/luca-lauren/011.webp",
+      "alt": "Luca and Lauren's Montréal wedding: the bride on a spiral staircase, her train spread down the steps",
+      "w": 1535,
+      "h": 1024,
+      "orientation": "l"
+    },
+    "hero": {
+      "url": "https://cdn.armanarai.ca/galleries/luca-lauren/001.webp",
+      "alt": "Luca and Lauren on a terrace above the Old Port, the city behind them",
+      "w": 1831,
+      "h": 859,
+      "orientation": "l"
+    },
+    "teasers": [
+      {
+        "url": "https://cdn.armanarai.ca/galleries/luca-lauren/011.webp",
+        "alt": "The bride on a spiral staircase, her train falling down the stone steps in black and white",
+        "w": 1535,
+        "h": 1024,
+        "orientation": "l"
+      },
+      {
+        "url": "https://cdn.armanarai.ca/galleries/luca-lauren/018.webp",
+        "alt": "The ceremony room set with coral blossom and the river beyond the glass",
+        "w": 1536,
+        "h": 1024,
+        "orientation": "l"
+      },
+      {
+        "url": "https://cdn.armanarai.ca/galleries/luca-lauren/039.webp",
+        "alt": "The basilica interior in blue and gold as the bride's train follows her up the aisle",
+        "w": 1023,
+        "h": 1537,
+        "orientation": "p"
+      },
+      {
+        "url": "https://cdn.armanarai.ca/galleries/luca-lauren/030.webp",
+        "alt": "Luca and Lauren close together with the Montréal skyline behind them",
+        "w": 1536,
+        "h": 1024,
+        "orientation": "l"
+      }
+    ],
+    "chapters": [
+      {
+        "numeral": "I",
+        "title": "The morning",
+        "range": "Getting ready",
+        "images": [
+          {
+            "url": "https://cdn.armanarai.ca/galleries/luca-lauren/005.webp",
+            "alt": "Luca & Lauren, Old Montréal and the Old Port: the morning, frame 1",
+            "w": 1024,
+            "h": 1536,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/luca-lauren/006.webp",
+            "alt": "Luca & Lauren, Old Montréal and the Old Port: the morning, frame 2",
+            "w": 1023,
+            "h": 1537,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/luca-lauren/007.webp",
+            "alt": "Luca & Lauren, Old Montréal and the Old Port: the morning, frame 3",
+            "w": 1024,
+            "h": 1536,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/luca-lauren/045.webp",
+            "alt": "Luca & Lauren, Old Montréal and the Old Port: the morning, frame 4",
+            "w": 1536,
+            "h": 1024,
+            "orientation": "l"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/luca-lauren/046.webp",
+            "alt": "Luca & Lauren, Old Montréal and the Old Port: the morning, frame 5",
+            "w": 1536,
+            "h": 1024,
+            "orientation": "l"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/luca-lauren/009.webp",
+            "alt": "Luca & Lauren, Old Montréal and the Old Port: the morning, frame 6",
+            "w": 1024,
+            "h": 1536,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/luca-lauren/008.webp",
+            "alt": "Luca & Lauren, Old Montréal and the Old Port: the morning, frame 7",
+            "w": 1024,
+            "h": 1536,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/luca-lauren/028.webp",
+            "alt": "Luca & Lauren, Old Montréal and the Old Port: the morning, frame 8",
+            "w": 1535,
+            "h": 1024,
+            "orientation": "l"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/luca-lauren/029.webp",
+            "alt": "Luca & Lauren, Old Montréal and the Old Port: the morning, frame 9",
+            "w": 1024,
+            "h": 1536,
+            "orientation": "p"
+          }
+        ]
+      },
+      {
+        "numeral": "II",
+        "title": "The basilica",
+        "range": "The ceremony",
+        "images": [
+          {
+            "url": "https://cdn.armanarai.ca/galleries/luca-lauren/038.webp",
+            "alt": "Luca & Lauren, Old Montréal and the Old Port: the basilica, frame 1",
+            "w": 1024,
+            "h": 1536,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/luca-lauren/039.webp",
+            "alt": "Luca & Lauren, Old Montréal and the Old Port: the basilica, frame 2",
+            "w": 1023,
+            "h": 1537,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/luca-lauren/040.webp",
+            "alt": "Luca & Lauren, Old Montréal and the Old Port: the basilica, frame 3",
+            "w": 1024,
+            "h": 1536,
+            "orientation": "p"
+          }
+        ]
+      },
+      {
+        "numeral": "III",
+        "title": "Stone and stair",
+        "range": "Portraits",
+        "images": [
+          {
+            "url": "https://cdn.armanarai.ca/galleries/luca-lauren/010.webp",
+            "alt": "Luca & Lauren, Old Montréal and the Old Port: stone and stair, frame 1",
+            "w": 1024,
+            "h": 1536,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/luca-lauren/011.webp",
+            "alt": "Luca & Lauren, Old Montréal and the Old Port: stone and stair, frame 2",
+            "w": 1535,
+            "h": 1024,
+            "orientation": "l"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/luca-lauren/012.webp",
+            "alt": "Luca & Lauren, Old Montréal and the Old Port: stone and stair, frame 3",
+            "w": 1024,
+            "h": 1536,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/luca-lauren/013.webp",
+            "alt": "Luca & Lauren, Old Montréal and the Old Port: stone and stair, frame 4",
+            "w": 1536,
+            "h": 1024,
+            "orientation": "l"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/luca-lauren/014.webp",
+            "alt": "Luca & Lauren, Old Montréal and the Old Port: stone and stair, frame 5",
+            "w": 1023,
+            "h": 1537,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/luca-lauren/015.webp",
+            "alt": "Luca & Lauren, Old Montréal and the Old Port: stone and stair, frame 6",
+            "w": 1023,
+            "h": 1537,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/luca-lauren/016.webp",
+            "alt": "Luca & Lauren, Old Montréal and the Old Port: stone and stair, frame 7",
+            "w": 1024,
+            "h": 1536,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/luca-lauren/037.webp",
+            "alt": "Luca & Lauren, Old Montréal and the Old Port: stone and stair, frame 8",
+            "w": 1024,
+            "h": 1536,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/luca-lauren/047.webp",
+            "alt": "Luca & Lauren, Old Montréal and the Old Port: stone and stair, frame 9",
+            "w": 1023,
+            "h": 1537,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/luca-lauren/049.webp",
+            "alt": "Luca & Lauren, Old Montréal and the Old Port: stone and stair, frame 10",
+            "w": 1024,
+            "h": 1536,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/luca-lauren/035.webp",
+            "alt": "Luca & Lauren, Old Montréal and the Old Port: stone and stair, frame 11",
+            "w": 1024,
+            "h": 1536,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/luca-lauren/036.webp",
+            "alt": "Luca & Lauren, Old Montréal and the Old Port: stone and stair, frame 12",
+            "w": 1024,
+            "h": 1536,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/luca-lauren/052.webp",
+            "alt": "Luca & Lauren, Old Montréal and the Old Port: stone and stair, frame 13",
+            "w": 1023,
+            "h": 1537,
+            "orientation": "p"
+          }
+        ]
+      },
+      {
+        "numeral": "IV",
+        "title": "The room",
+        "range": "Reception",
+        "images": [
+          {
+            "url": "https://cdn.armanarai.ca/galleries/luca-lauren/018.webp",
+            "alt": "Luca & Lauren, Old Montréal and the Old Port: the room, frame 1",
+            "w": 1536,
+            "h": 1024,
+            "orientation": "l"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/luca-lauren/019.webp",
+            "alt": "Luca & Lauren, Old Montréal and the Old Port: the room, frame 2",
+            "w": 1535,
+            "h": 1024,
+            "orientation": "l"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/luca-lauren/020.webp",
+            "alt": "Luca & Lauren, Old Montréal and the Old Port: the room, frame 3",
+            "w": 1536,
+            "h": 1024,
+            "orientation": "l"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/luca-lauren/021.webp",
+            "alt": "Luca & Lauren, Old Montréal and the Old Port: the room, frame 4",
+            "w": 1535,
+            "h": 1024,
+            "orientation": "l"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/luca-lauren/022.webp",
+            "alt": "Luca & Lauren, Old Montréal and the Old Port: the room, frame 5",
+            "w": 1024,
+            "h": 1536,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/luca-lauren/023.webp",
+            "alt": "Luca & Lauren, Old Montréal and the Old Port: the room, frame 6",
+            "w": 1024,
+            "h": 1536,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/luca-lauren/024.webp",
+            "alt": "Luca & Lauren, Old Montréal and the Old Port: the room, frame 7",
+            "w": 1025,
+            "h": 1534,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/luca-lauren/025.webp",
+            "alt": "Luca & Lauren, Old Montréal and the Old Port: the room, frame 8",
+            "w": 1023,
+            "h": 1537,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/luca-lauren/031.webp",
+            "alt": "Luca & Lauren, Old Montréal and the Old Port: the room, frame 9",
+            "w": 1536,
+            "h": 1024,
+            "orientation": "l"
+          }
+        ]
+      },
+      {
+        "numeral": "V",
+        "title": "The two of them",
+        "range": "Through the day",
+        "images": [
+          {
+            "url": "https://cdn.armanarai.ca/galleries/luca-lauren/001.webp",
+            "alt": "Luca & Lauren, Old Montréal and the Old Port: the two of them, frame 1",
+            "w": 1831,
+            "h": 859,
+            "orientation": "l"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/luca-lauren/002.webp",
+            "alt": "Luca & Lauren, Old Montréal and the Old Port: the two of them, frame 2",
+            "w": 1024,
+            "h": 1536,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/luca-lauren/003.webp",
+            "alt": "Luca & Lauren, Old Montréal and the Old Port: the two of them, frame 3",
+            "w": 1024,
+            "h": 1536,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/luca-lauren/004.webp",
+            "alt": "Luca & Lauren, Old Montréal and the Old Port: the two of them, frame 4",
+            "w": 1024,
+            "h": 1536,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/luca-lauren/017.webp",
+            "alt": "Luca & Lauren, Old Montréal and the Old Port: the two of them, frame 5",
+            "w": 1024,
+            "h": 1536,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/luca-lauren/026.webp",
+            "alt": "Luca & Lauren, Old Montréal and the Old Port: the two of them, frame 6",
+            "w": 1537,
+            "h": 1023,
+            "orientation": "l"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/luca-lauren/027.webp",
+            "alt": "Luca & Lauren, Old Montréal and the Old Port: the two of them, frame 7",
+            "w": 1537,
+            "h": 1023,
+            "orientation": "l"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/luca-lauren/030.webp",
+            "alt": "Luca & Lauren, Old Montréal and the Old Port: the two of them, frame 8",
+            "w": 1536,
+            "h": 1024,
+            "orientation": "l"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/luca-lauren/032.webp",
+            "alt": "Luca & Lauren, Old Montréal and the Old Port: the two of them, frame 9",
+            "w": 1023,
+            "h": 1537,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/luca-lauren/033.webp",
+            "alt": "Luca & Lauren, Old Montréal and the Old Port: the two of them, frame 10",
+            "w": 1024,
+            "h": 1536,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/luca-lauren/034.webp",
+            "alt": "Luca & Lauren, Old Montréal and the Old Port: the two of them, frame 11",
+            "w": 1024,
+            "h": 1536,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/luca-lauren/041.webp",
+            "alt": "Luca & Lauren, Old Montréal and the Old Port: the two of them, frame 12",
+            "w": 1536,
+            "h": 1024,
+            "orientation": "l"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/luca-lauren/042.webp",
+            "alt": "Luca & Lauren, Old Montréal and the Old Port: the two of them, frame 13",
+            "w": 1537,
+            "h": 1023,
+            "orientation": "l"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/luca-lauren/043.webp",
+            "alt": "Luca & Lauren, Old Montréal and the Old Port: the two of them, frame 14",
+            "w": 1536,
+            "h": 1024,
+            "orientation": "l"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/luca-lauren/044.webp",
+            "alt": "Luca & Lauren, Old Montréal and the Old Port: the two of them, frame 15",
+            "w": 1537,
+            "h": 1023,
+            "orientation": "l"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/luca-lauren/048.webp",
+            "alt": "Luca & Lauren, Old Montréal and the Old Port: the two of them, frame 16",
+            "w": 1024,
+            "h": 1536,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/luca-lauren/050.webp",
+            "alt": "Luca & Lauren, Old Montréal and the Old Port: the two of them, frame 17",
+            "w": 1024,
+            "h": 1536,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/luca-lauren/051.webp",
+            "alt": "Luca & Lauren, Old Montréal and the Old Port: the two of them, frame 18",
+            "w": 1024,
+            "h": 1536,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/luca-lauren/053.webp",
+            "alt": "Luca & Lauren, Old Montréal and the Old Port: the two of them, frame 19",
+            "w": 1024,
+            "h": 1536,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/luca-lauren/054.webp",
+            "alt": "Luca & Lauren, Old Montréal and the Old Port: the two of them, frame 20",
+            "w": 1023,
+            "h": 1537,
+            "orientation": "p"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "slug": "nicole-js",
+    "names": "Nicole & JS",
+    "location": "A vineyard in the Eastern Townships",
+    "date": "Summer",
+    "stock": "Portra 800",
+    "frameCount": 54,
+    "story": "It rained, and the day was better for it. Low cloud sitting on the vineyard, wet stone, a chapel appearing and disappearing in the mist, and a stone hall lit entirely by candles once everyone came in out of the weather. Nobody moved the ceremony and nobody apologised for the sky.",
+    "cover": {
+      "url": "https://cdn.armanarai.ca/galleries/nicole-js/001.webp",
+      "alt": "Nicole and JS in the vineyard rows, the hills behind them under low cloud",
+      "w": 1024,
+      "h": 1536,
+      "orientation": "p"
+    },
+    "hero": {
+      "url": "https://cdn.armanarai.ca/galleries/nicole-js/053.webp",
+      "alt": "Nicole and JS walking a wet path, her veil lifting across the frame",
+      "w": 1536,
+      "h": 1024,
+      "orientation": "l"
+    },
+    "teasers": [
+      {
+        "url": "https://cdn.armanarai.ca/galleries/nicole-js/001.webp",
+        "alt": "The couple in the vineyard rows under low cloud",
+        "w": 1024,
+        "h": 1536,
+        "orientation": "p"
+      },
+      {
+        "url": "https://cdn.armanarai.ca/galleries/nicole-js/054.webp",
+        "alt": "The couple under a clear umbrella on a rainy vineyard road",
+        "w": 1003,
+        "h": 1568,
+        "orientation": "p"
+      },
+      {
+        "url": "https://cdn.armanarai.ca/galleries/nicole-js/022.webp",
+        "alt": "A coral and cream arrangement being finished by the florist's hands",
+        "w": 1024,
+        "h": 1536,
+        "orientation": "p"
+      },
+      {
+        "url": "https://cdn.armanarai.ca/galleries/nicole-js/049.webp",
+        "alt": "The stone reception hall lit entirely by candles",
+        "w": 1536,
+        "h": 1024,
+        "orientation": "l"
+      }
+    ],
+    "chapters": [
+      {
+        "numeral": "I",
+        "title": "Weather",
+        "range": "The vineyard in rain",
+        "images": [
+          {
+            "url": "https://cdn.armanarai.ca/galleries/nicole-js/001.webp",
+            "alt": "Nicole & JS, A vineyard in the Eastern Townships: weather, frame 1",
+            "w": 1024,
+            "h": 1536,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/nicole-js/002.webp",
+            "alt": "Nicole & JS, A vineyard in the Eastern Townships: weather, frame 2",
+            "w": 1024,
+            "h": 1536,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/nicole-js/003.webp",
+            "alt": "Nicole & JS, A vineyard in the Eastern Townships: weather, frame 3",
+            "w": 1024,
+            "h": 1536,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/nicole-js/004.webp",
+            "alt": "Nicole & JS, A vineyard in the Eastern Townships: weather, frame 4",
+            "w": 1024,
+            "h": 1536,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/nicole-js/005.webp",
+            "alt": "Nicole & JS, A vineyard in the Eastern Townships: weather, frame 5",
+            "w": 1024,
+            "h": 1536,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/nicole-js/006.webp",
+            "alt": "Nicole & JS, A vineyard in the Eastern Townships: weather, frame 6",
+            "w": 1024,
+            "h": 1536,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/nicole-js/053.webp",
+            "alt": "Nicole & JS, A vineyard in the Eastern Townships: weather, frame 7",
+            "w": 1536,
+            "h": 1024,
+            "orientation": "l"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/nicole-js/054.webp",
+            "alt": "Nicole & JS, A vineyard in the Eastern Townships: weather, frame 8",
+            "w": 1003,
+            "h": 1568,
+            "orientation": "p"
+          }
+        ]
+      },
+      {
+        "numeral": "II",
+        "title": "Her people",
+        "range": "The bridal party",
+        "images": [
+          {
+            "url": "https://cdn.armanarai.ca/galleries/nicole-js/007.webp",
+            "alt": "Nicole & JS, A vineyard in the Eastern Townships: her people, frame 1",
+            "w": 1536,
+            "h": 1024,
+            "orientation": "l"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/nicole-js/008.webp",
+            "alt": "Nicole & JS, A vineyard in the Eastern Townships: her people, frame 2",
+            "w": 1536,
+            "h": 1024,
+            "orientation": "l"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/nicole-js/009.webp",
+            "alt": "Nicole & JS, A vineyard in the Eastern Townships: her people, frame 3",
+            "w": 1537,
+            "h": 1023,
+            "orientation": "l"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/nicole-js/010.webp",
+            "alt": "Nicole & JS, A vineyard in the Eastern Townships: her people, frame 4",
+            "w": 1023,
+            "h": 1537,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/nicole-js/011.webp",
+            "alt": "Nicole & JS, A vineyard in the Eastern Townships: her people, frame 5",
+            "w": 1024,
+            "h": 1536,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/nicole-js/012.webp",
+            "alt": "Nicole & JS, A vineyard in the Eastern Townships: her people, frame 6",
+            "w": 1023,
+            "h": 1537,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/nicole-js/013.webp",
+            "alt": "Nicole & JS, A vineyard in the Eastern Townships: her people, frame 7",
+            "w": 1024,
+            "h": 1536,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/nicole-js/014.webp",
+            "alt": "Nicole & JS, A vineyard in the Eastern Townships: her people, frame 8",
+            "w": 1024,
+            "h": 1536,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/nicole-js/015.webp",
+            "alt": "Nicole & JS, A vineyard in the Eastern Townships: her people, frame 9",
+            "w": 1024,
+            "h": 1536,
+            "orientation": "p"
+          }
+        ]
+      },
+      {
+        "numeral": "III",
+        "title": "The house",
+        "range": "Stone and mist",
+        "images": [
+          {
+            "url": "https://cdn.armanarai.ca/galleries/nicole-js/016.webp",
+            "alt": "Nicole & JS, A vineyard in the Eastern Townships: the house, frame 1",
+            "w": 1024,
+            "h": 1536,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/nicole-js/017.webp",
+            "alt": "Nicole & JS, A vineyard in the Eastern Townships: the house, frame 2",
+            "w": 1024,
+            "h": 1536,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/nicole-js/018.webp",
+            "alt": "Nicole & JS, A vineyard in the Eastern Townships: the house, frame 3",
+            "w": 1024,
+            "h": 1536,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/nicole-js/051.webp",
+            "alt": "Nicole & JS, A vineyard in the Eastern Townships: the house, frame 4",
+            "w": 1537,
+            "h": 1023,
+            "orientation": "l"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/nicole-js/052.webp",
+            "alt": "Nicole & JS, A vineyard in the Eastern Townships: the house, frame 5",
+            "w": 1122,
+            "h": 1402,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/nicole-js/049.webp",
+            "alt": "Nicole & JS, A vineyard in the Eastern Townships: the house, frame 6",
+            "w": 1536,
+            "h": 1024,
+            "orientation": "l"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/nicole-js/050.webp",
+            "alt": "Nicole & JS, A vineyard in the Eastern Townships: the house, frame 7",
+            "w": 1536,
+            "h": 1024,
+            "orientation": "l"
+          }
+        ]
+      },
+      {
+        "numeral": "IV",
+        "title": "Flowers",
+        "range": "Detail",
+        "images": [
+          {
+            "url": "https://cdn.armanarai.ca/galleries/nicole-js/019.webp",
+            "alt": "Nicole & JS, A vineyard in the Eastern Townships: flowers, frame 1",
+            "w": 1024,
+            "h": 1536,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/nicole-js/020.webp",
+            "alt": "Nicole & JS, A vineyard in the Eastern Townships: flowers, frame 2",
+            "w": 1023,
+            "h": 1537,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/nicole-js/021.webp",
+            "alt": "Nicole & JS, A vineyard in the Eastern Townships: flowers, frame 3",
+            "w": 1024,
+            "h": 1536,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/nicole-js/022.webp",
+            "alt": "Nicole & JS, A vineyard in the Eastern Townships: flowers, frame 4",
+            "w": 1024,
+            "h": 1536,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/nicole-js/023.webp",
+            "alt": "Nicole & JS, A vineyard in the Eastern Townships: flowers, frame 5",
+            "w": 1024,
+            "h": 1536,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/nicole-js/024.webp",
+            "alt": "Nicole & JS, A vineyard in the Eastern Townships: flowers, frame 6",
+            "w": 1024,
+            "h": 1536,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/nicole-js/027.webp",
+            "alt": "Nicole & JS, A vineyard in the Eastern Townships: flowers, frame 7",
+            "w": 1024,
+            "h": 1536,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/nicole-js/028.webp",
+            "alt": "Nicole & JS, A vineyard in the Eastern Townships: flowers, frame 8",
+            "w": 1024,
+            "h": 1536,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/nicole-js/029.webp",
+            "alt": "Nicole & JS, A vineyard in the Eastern Townships: flowers, frame 9",
+            "w": 1024,
+            "h": 1536,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/nicole-js/030.webp",
+            "alt": "Nicole & JS, A vineyard in the Eastern Townships: flowers, frame 10",
+            "w": 1024,
+            "h": 1536,
+            "orientation": "p"
+          }
+        ]
+      },
+      {
+        "numeral": "V",
+        "title": "Candles",
+        "range": "Dinner",
+        "images": [
+          {
+            "url": "https://cdn.armanarai.ca/galleries/nicole-js/025.webp",
+            "alt": "Nicole & JS, A vineyard in the Eastern Townships: candles, frame 1",
+            "w": 1024,
+            "h": 1536,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/nicole-js/026.webp",
+            "alt": "Nicole & JS, A vineyard in the Eastern Townships: candles, frame 2",
+            "w": 1122,
+            "h": 1402,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/nicole-js/031.webp",
+            "alt": "Nicole & JS, A vineyard in the Eastern Townships: candles, frame 3",
+            "w": 1024,
+            "h": 1536,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/nicole-js/032.webp",
+            "alt": "Nicole & JS, A vineyard in the Eastern Townships: candles, frame 4",
+            "w": 1024,
+            "h": 1536,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/nicole-js/033.webp",
+            "alt": "Nicole & JS, A vineyard in the Eastern Townships: candles, frame 5",
+            "w": 1024,
+            "h": 1536,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/nicole-js/034.webp",
+            "alt": "Nicole & JS, A vineyard in the Eastern Townships: candles, frame 6",
+            "w": 1024,
+            "h": 1536,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/nicole-js/035.webp",
+            "alt": "Nicole & JS, A vineyard in the Eastern Townships: candles, frame 7",
+            "w": 1024,
+            "h": 1536,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/nicole-js/036.webp",
+            "alt": "Nicole & JS, A vineyard in the Eastern Townships: candles, frame 8",
+            "w": 1024,
+            "h": 1536,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/nicole-js/037.webp",
+            "alt": "Nicole & JS, A vineyard in the Eastern Townships: candles, frame 9",
+            "w": 1122,
+            "h": 1402,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/nicole-js/038.webp",
+            "alt": "Nicole & JS, A vineyard in the Eastern Townships: candles, frame 10",
+            "w": 1122,
+            "h": 1402,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/nicole-js/039.webp",
+            "alt": "Nicole & JS, A vineyard in the Eastern Townships: candles, frame 11",
+            "w": 1536,
+            "h": 1024,
+            "orientation": "l"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/nicole-js/040.webp",
+            "alt": "Nicole & JS, A vineyard in the Eastern Townships: candles, frame 12",
+            "w": 1122,
+            "h": 1402,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/nicole-js/041.webp",
+            "alt": "Nicole & JS, A vineyard in the Eastern Townships: candles, frame 13",
+            "w": 1122,
+            "h": 1402,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/nicole-js/042.webp",
+            "alt": "Nicole & JS, A vineyard in the Eastern Townships: candles, frame 14",
+            "w": 1537,
+            "h": 1023,
+            "orientation": "l"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/nicole-js/043.webp",
+            "alt": "Nicole & JS, A vineyard in the Eastern Townships: candles, frame 15",
+            "w": 1254,
+            "h": 1254,
+            "orientation": "l"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/nicole-js/044.webp",
+            "alt": "Nicole & JS, A vineyard in the Eastern Townships: candles, frame 16",
+            "w": 1254,
+            "h": 1254,
+            "orientation": "l"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/nicole-js/045.webp",
+            "alt": "Nicole & JS, A vineyard in the Eastern Townships: candles, frame 17",
+            "w": 1254,
+            "h": 1254,
+            "orientation": "l"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/nicole-js/046.webp",
+            "alt": "Nicole & JS, A vineyard in the Eastern Townships: candles, frame 18",
+            "w": 1536,
+            "h": 1024,
+            "orientation": "l"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/nicole-js/047.webp",
+            "alt": "Nicole & JS, A vineyard in the Eastern Townships: candles, frame 19",
+            "w": 1536,
+            "h": 1024,
+            "orientation": "l"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/nicole-js/048.webp",
+            "alt": "Nicole & JS, A vineyard in the Eastern Townships: candles, frame 20",
+            "w": 887,
+            "h": 1774,
+            "orientation": "p"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "slug": "parsa-marjan",
+    "names": "Parsa & Marjan",
+    "location": "A hilltop estate in the Townships",
+    "date": "Late summer",
+    "stock": "Ektar 100",
+    "frameCount": 39,
+    "story": "A Persian wedding on a hill, with the sofreh laid inside a manor of red rooms and the guests gathered in a ring on the lawn outside. Green to the horizon, a lake at the bottom of the property, and an aghd carried out properly while everybody leaned in to watch.",
+    "cover": {
+      "url": "https://cdn.armanarai.ca/galleries/parsa-marjan/004.webp",
+      "alt": "Marjan and Parsa at sunset, her veil lifted across the frame, the manor behind",
+      "w": 1023,
+      "h": 1537,
+      "orientation": "p"
+    },
+    "hero": {
+      "url": "https://cdn.armanarai.ca/galleries/parsa-marjan/005.webp",
+      "alt": "The couple on the lawn below the manor, the veil carried out full length",
+      "w": 1536,
+      "h": 1024,
+      "orientation": "l"
+    },
+    "teasers": [
+      {
+        "url": "https://cdn.armanarai.ca/galleries/parsa-marjan/004.webp",
+        "alt": "The couple at sunset with the veil lifted, the manor behind them",
+        "w": 1023,
+        "h": 1537,
+        "orientation": "p"
+      },
+      {
+        "url": "https://cdn.armanarai.ca/galleries/parsa-marjan/022.webp",
+        "alt": "The whole party gathered in a ring on the lawn, seen from above",
+        "w": 1537,
+        "h": 1023,
+        "orientation": "l"
+      },
+      {
+        "url": "https://cdn.armanarai.ca/galleries/parsa-marjan/037.webp",
+        "alt": "The sofreh laid with mirror, candles and blossom",
+        "w": 1023,
+        "h": 1537,
+        "orientation": "p"
+      },
+      {
+        "url": "https://cdn.armanarai.ca/galleries/parsa-marjan/031.webp",
+        "alt": "The lake at the bottom of the property at dusk",
+        "w": 1537,
+        "h": 1023,
+        "orientation": "l"
+      }
+    ],
+    "chapters": [
+      {
+        "numeral": "I",
+        "title": "The ground",
+        "range": "The estate",
+        "images": [
+          {
+            "url": "https://cdn.armanarai.ca/galleries/parsa-marjan/001.webp",
+            "alt": "Parsa & Marjan, A hilltop estate in the Townships: the ground, frame 1",
+            "w": 1023,
+            "h": 1537,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/parsa-marjan/007.webp",
+            "alt": "Parsa & Marjan, A hilltop estate in the Townships: the ground, frame 2",
+            "w": 1536,
+            "h": 1024,
+            "orientation": "l"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/parsa-marjan/008.webp",
+            "alt": "Parsa & Marjan, A hilltop estate in the Townships: the ground, frame 3",
+            "w": 1023,
+            "h": 1537,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/parsa-marjan/009.webp",
+            "alt": "Parsa & Marjan, A hilltop estate in the Townships: the ground, frame 4",
+            "w": 1536,
+            "h": 1024,
+            "orientation": "l"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/parsa-marjan/022.webp",
+            "alt": "Parsa & Marjan, A hilltop estate in the Townships: the ground, frame 5",
+            "w": 1537,
+            "h": 1023,
+            "orientation": "l"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/parsa-marjan/031.webp",
+            "alt": "Parsa & Marjan, A hilltop estate in the Townships: the ground, frame 6",
+            "w": 1537,
+            "h": 1023,
+            "orientation": "l"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/parsa-marjan/032.webp",
+            "alt": "Parsa & Marjan, A hilltop estate in the Townships: the ground, frame 7",
+            "w": 1537,
+            "h": 1023,
+            "orientation": "l"
+          }
+        ]
+      },
+      {
+        "numeral": "II",
+        "title": "Before",
+        "range": "Getting ready",
+        "images": [
+          {
+            "url": "https://cdn.armanarai.ca/galleries/parsa-marjan/010.webp",
+            "alt": "Parsa & Marjan, A hilltop estate in the Townships: before, frame 1",
+            "w": 864,
+            "h": 1821,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/parsa-marjan/011.webp",
+            "alt": "Parsa & Marjan, A hilltop estate in the Townships: before, frame 2",
+            "w": 1024,
+            "h": 1536,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/parsa-marjan/016.webp",
+            "alt": "Parsa & Marjan, A hilltop estate in the Townships: before, frame 3",
+            "w": 1023,
+            "h": 1537,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/parsa-marjan/017.webp",
+            "alt": "Parsa & Marjan, A hilltop estate in the Townships: before, frame 4",
+            "w": 1023,
+            "h": 1537,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/parsa-marjan/018.webp",
+            "alt": "Parsa & Marjan, A hilltop estate in the Townships: before, frame 5",
+            "w": 1023,
+            "h": 1537,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/parsa-marjan/019.webp",
+            "alt": "Parsa & Marjan, A hilltop estate in the Townships: before, frame 6",
+            "w": 1023,
+            "h": 1537,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/parsa-marjan/020.webp",
+            "alt": "Parsa & Marjan, A hilltop estate in the Townships: before, frame 7",
+            "w": 1536,
+            "h": 1024,
+            "orientation": "l"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/parsa-marjan/021.webp",
+            "alt": "Parsa & Marjan, A hilltop estate in the Townships: before, frame 8",
+            "w": 1024,
+            "h": 1536,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/parsa-marjan/024.webp",
+            "alt": "Parsa & Marjan, A hilltop estate in the Townships: before, frame 9",
+            "w": 1024,
+            "h": 1536,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/parsa-marjan/033.webp",
+            "alt": "Parsa & Marjan, A hilltop estate in the Townships: before, frame 10",
+            "w": 1536,
+            "h": 1024,
+            "orientation": "l"
+          }
+        ]
+      },
+      {
+        "numeral": "III",
+        "title": "The aghd",
+        "range": "The ceremony",
+        "images": [
+          {
+            "url": "https://cdn.armanarai.ca/galleries/parsa-marjan/026.webp",
+            "alt": "Parsa & Marjan, A hilltop estate in the Townships: the aghd, frame 1",
+            "w": 1536,
+            "h": 1024,
+            "orientation": "l"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/parsa-marjan/035.webp",
+            "alt": "Parsa & Marjan, A hilltop estate in the Townships: the aghd, frame 2",
+            "w": 1537,
+            "h": 1023,
+            "orientation": "l"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/parsa-marjan/036.webp",
+            "alt": "Parsa & Marjan, A hilltop estate in the Townships: the aghd, frame 3",
+            "w": 1537,
+            "h": 1023,
+            "orientation": "l"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/parsa-marjan/037.webp",
+            "alt": "Parsa & Marjan, A hilltop estate in the Townships: the aghd, frame 4",
+            "w": 1023,
+            "h": 1537,
+            "orientation": "p"
+          }
+        ]
+      },
+      {
+        "numeral": "IV",
+        "title": "The hill",
+        "range": "Portraits",
+        "images": [
+          {
+            "url": "https://cdn.armanarai.ca/galleries/parsa-marjan/002.webp",
+            "alt": "Parsa & Marjan, A hilltop estate in the Townships: the hill, frame 1",
+            "w": 1024,
+            "h": 1536,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/parsa-marjan/003.webp",
+            "alt": "Parsa & Marjan, A hilltop estate in the Townships: the hill, frame 2",
+            "w": 1536,
+            "h": 1024,
+            "orientation": "l"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/parsa-marjan/004.webp",
+            "alt": "Parsa & Marjan, A hilltop estate in the Townships: the hill, frame 3",
+            "w": 1023,
+            "h": 1537,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/parsa-marjan/005.webp",
+            "alt": "Parsa & Marjan, A hilltop estate in the Townships: the hill, frame 4",
+            "w": 1536,
+            "h": 1024,
+            "orientation": "l"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/parsa-marjan/006.webp",
+            "alt": "Parsa & Marjan, A hilltop estate in the Townships: the hill, frame 5",
+            "w": 1023,
+            "h": 1537,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/parsa-marjan/012.webp",
+            "alt": "Parsa & Marjan, A hilltop estate in the Townships: the hill, frame 6",
+            "w": 1023,
+            "h": 1537,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/parsa-marjan/013.webp",
+            "alt": "Parsa & Marjan, A hilltop estate in the Townships: the hill, frame 7",
+            "w": 1023,
+            "h": 1537,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/parsa-marjan/014.webp",
+            "alt": "Parsa & Marjan, A hilltop estate in the Townships: the hill, frame 8",
+            "w": 1023,
+            "h": 1537,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/parsa-marjan/015.webp",
+            "alt": "Parsa & Marjan, A hilltop estate in the Townships: the hill, frame 9",
+            "w": 1537,
+            "h": 1023,
+            "orientation": "l"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/parsa-marjan/023.webp",
+            "alt": "Parsa & Marjan, A hilltop estate in the Townships: the hill, frame 10",
+            "w": 1023,
+            "h": 1537,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/parsa-marjan/027.webp",
+            "alt": "Parsa & Marjan, A hilltop estate in the Townships: the hill, frame 11",
+            "w": 1536,
+            "h": 1024,
+            "orientation": "l"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/parsa-marjan/028.webp",
+            "alt": "Parsa & Marjan, A hilltop estate in the Townships: the hill, frame 12",
+            "w": 1023,
+            "h": 1537,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/parsa-marjan/029.webp",
+            "alt": "Parsa & Marjan, A hilltop estate in the Townships: the hill, frame 13",
+            "w": 1023,
+            "h": 1537,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/parsa-marjan/030.webp",
+            "alt": "Parsa & Marjan, A hilltop estate in the Townships: the hill, frame 14",
+            "w": 1023,
+            "h": 1537,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/parsa-marjan/034.webp",
+            "alt": "Parsa & Marjan, A hilltop estate in the Townships: the hill, frame 15",
+            "w": 1023,
+            "h": 1537,
+            "orientation": "p"
+          }
+        ]
+      },
+      {
+        "numeral": "V",
+        "title": "After",
+        "range": "The night",
+        "images": [
+          {
+            "url": "https://cdn.armanarai.ca/galleries/parsa-marjan/025.webp",
+            "alt": "Parsa & Marjan, A hilltop estate in the Townships: after, frame 1",
+            "w": 1023,
+            "h": 1537,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/parsa-marjan/038.webp",
+            "alt": "Parsa & Marjan, A hilltop estate in the Townships: after, frame 2",
+            "w": 1535,
+            "h": 1024,
+            "orientation": "l"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/parsa-marjan/039.webp",
+            "alt": "Parsa & Marjan, A hilltop estate in the Townships: after, frame 3",
+            "w": 1023,
+            "h": 1537,
+            "orientation": "p"
+          }
+        ]
+      }
+    ]
+  },
+  {
     "slug": "anastasia-daniil",
     "names": "Anastasia & Daniil",
     "location": "A House by the Sea",

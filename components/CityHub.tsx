@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import InquireButton from "./InquireButton";
-import { CITY_PHOTOS } from "@/lib/images";
+import { CITY_PHOTOS, CITY_WORK, WHISTLER_WORK } from "@/lib/images";
 import { GALLERIES } from "@/lib/galleries";
 import { posts } from "@/lib/blog";
 import { hubBySlug } from "@/lib/hubs";
@@ -26,6 +26,7 @@ const regionOf = (m: Market) => regionBySlug(m.regionSlug)!;
 const SECTIONS = [
   { id: "different", label: "The difference" },
   { id: "venues", label: "Where" },
+  { id: "work", label: "The work" },
   { id: "season", label: "When" },
   { id: "day", label: "The day" },
   { id: "albums", label: "Albums" },
@@ -33,6 +34,28 @@ const SECTIONS = [
   { id: "journal", label: "Reading" },
   { id: "faq", label: "Questions" },
 ];
+
+/* Real coverage from the region, as a masonry wall rather than four thumbnails.
+   Montréal has no CITY_WORK entry because its three complete albums carry it. */
+function WorkWall({ photos }: { photos: { src: string; alt: string }[] }) {
+  return (
+    <div className="hub-work-grid">
+      {photos.map((ph, i) => (
+        <figure key={ph.src} className={`hub-work-cell${i % 5 === 0 ? " hub-work-cell--wide" : ""}`}>
+          <Image
+            src={ph.src}
+            alt={ph.alt}
+            fill
+            sizes="(max-width: 767px) 50vw, (max-width: 1279px) 33vw, 25vw"
+            quality={76}
+            loading="lazy"
+            className="object-cover"
+          />
+        </figure>
+      ))}
+    </div>
+  );
+}
 
 export function cityMetadata(m: Market) {
   const title = `${m.city} Wedding Photographer — ${m.region}`;
@@ -246,6 +269,59 @@ export default function CityHub({ market: m }: { market: Market }) {
             </li>
           ))}
         </ol>
+      </section>
+
+      {/* ── THE WORK ── */}
+      <section id="work" className="hub-section">
+        <p className="hub-section-kicker">The work</p>
+        <h2 className="hub-section-h">
+          {m.slug === "montreal" ? "Three complete Montréal weddings" : `Recent ${m.city} coverage`}
+        </h2>
+        <p className="hub-section-intro">
+          {m.slug === "montreal"
+            ? "Not a selection of the best frames. Three whole days, opening on the first photograph and running to the last, including the quiet parts a portfolio leaves out."
+            : `Frames from real ${m.region} weddings rather than location scouting. Every one of these was a day with guests in it.`}
+        </p>
+
+        {m.slug === "montreal" ? (
+          <div className="hub-album-grid">
+            {GALLERIES.slice(0, 3).map((g) => (
+              <Link key={g.slug} href={`/galleries/${g.slug}`} className="hub-album-card">
+                <span className="hub-album-photo">
+                  <Image
+                    src={g.hero.url}
+                    alt={g.hero.alt}
+                    fill
+                    sizes="(max-width: 767px) 100vw, 33vw"
+                    quality={78}
+                    loading="lazy"
+                    className="object-cover"
+                  />
+                </span>
+                <span className="hub-album-meta">
+                  <span className="hub-album-names">{g.names}</span>
+                  <span className="hub-album-where">{g.location}</span>
+                  <span className="hub-album-frames">{g.frameCount} frames &rarr;</span>
+                </span>
+              </Link>
+            ))}
+          </div>
+        ) : (
+          <WorkWall photos={CITY_WORK[m.slug] ?? []} />
+        )}
+
+        {m.slug === "vancouver" && (
+          <>
+            <h3 className="hub-section-h" style={{ fontSize: "clamp(1.4rem,2.2vw,2rem)", marginTop: "3.2rem" }}>
+              And up the Sea-to-Sky
+            </h3>
+            <p className="hub-section-intro">
+              Whistler and Squamish are inside the same price as a Kitsilano Saturday, because they
+              are the same trip.
+            </p>
+            <WorkWall photos={WHISTLER_WORK} />
+          </>
+        )}
       </section>
 
       {/* ── SEASON ── */}

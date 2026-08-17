@@ -40,7 +40,7 @@ export const posts: BlogPost[] = [
     date: "2026-08-12",
     dateDisplay: "August 12, 2026",
     readTime: "7 min read",
-    coverImage: `${CDN}/cities/toronto/niagara/floral-showhouse/01.webp`,
+    coverImage: `${CDN}/cities/toronto/niagara/2018-weddings-nelson-floralshowhouse-09-e1724180596696.webp`,
     coverAlt: "Bride and groom in the glasshouse of the Niagara Floral Showhouse",
     excerpt:
       "Toronto wedding photography runs from about $2,200 to $5,500 in published packages, with a median near $3,475. Here is what each band of that range actually buys, and where the money goes once it leaves your account.",
@@ -180,7 +180,7 @@ export const posts: BlogPost[] = [
 <p>The genuine local difference is weather. Between October and April, a wet ceremony is not the exception here, it is the base case. <strong>Every timeline I build names a specific covered location that I have already looked at</strong>, and I carry the lighting to make an indoor room work when the sky does not cooperate. Rain days frequently produce the better gallery, but only when the backup was decided in advance rather than in a parking lot at 3pm.</p>
 
 <h2>Product two: Sea-to-Sky, Squamish and Whistler</h2>
-<figure><img src="${CDN}/cities/vancouver/cypress.webp" alt="Couple in the snow among the conifers on Cypress Mountain"><figcaption>Up the corridor, access and permits stop being details and become the plan.</figcaption></figure>
+<figure><img src="${CDN}/cities/vancouver/whistler/12-snowy-birch-turnaround.webp" alt="Couple in the snow among the conifers on Cypress Mountain"><figcaption>Up the corridor, access and permits stop being details and become the plan.</figcaption></figure>
 <p>The corridor is a different job. Travel time has to be counted properly rather than absorbed. Anything on Crown land or in a provincial park needs its permit arranged well before the date, and the process is not fast. Helicopter access, ground transport, and getting a wedding party up a mountain in dresses are all real logistics with real costs.</p>
 <p>My answer is that the corridor costs the same as the city: <strong>Core is C$4,500 whether the day happens in Kitsilano, in Squamish or up at Whistler</strong>, because those are one published region and the flight, the nights and the ground transport are already inside that figure. What sits outside it is anything that is genuinely somebody else's invoice: a helicopter, a shuttle for guests, a vendor. Those are quoted as their own lines so you can see each one and decline any of them.</p>
 
@@ -396,7 +396,7 @@ export const posts: BlogPost[] = [
 <p><strong>A Friday in July, a Sunday in August, or anything between November and April is a completely different market.</strong> Photographers whose Saturdays vanished eighteen months out will often have those dates open eight weeks before. If your date is not a peak Saturday, the received wisdom about booking a year ahead simply does not apply to you.</p>
 
 <h2>Book the venue first, then the photographer</h2>
-<figure><img src="${CDN}/cities/toronto/prince-edward-county/cover/01.webp" alt="Couple laughing in a golden grass field in Prince Edward County"><figcaption>The venue sets the date. Everything else follows from it.</figcaption></figure>
+<figure><img src="${CDN}/cities/toronto/prince-edward-county/cover.webp" alt="Couple laughing in a golden grass field in Prince Edward County"><figcaption>The venue sets the date. Everything else follows from it.</figcaption></figure>
 <p>The sensible order is venue, then photographer, then everything else. The venue is what actually fixes your date, and a photographer cannot hold a date that does not exist yet. Photographers are usually the second or third vendor booked, roughly alongside the caterer if the venue does not include one.</p>
 <p>The one exception is if there is a specific photographer whose work you want more than you want any particular venue. In that case ask them for their open dates and choose your venue from that list. Couples do this more often than you would think and it is not unreasonable.</p>
 
@@ -454,7 +454,7 @@ export const posts: BlogPost[] = [
     date: "2026-08-13",
     dateDisplay: "August 13, 2026",
     readTime: "8 min read",
-    coverImage: `${CDN}/cities/vancouver/cypress.webp`,
+    coverImage: `${CDN}/cities/vancouver/whistler/12-snowy-birch-turnaround.webp`,
     coverAlt: "Couple in the snow among the conifers on Cypress Mountain",
     excerpt:
       "Whistler weddings are sold as all-inclusive packages starting around $8,500 once vendors are bundled in. Here is what the photography actually costs on its own, what the permits involve, and which months earn the drive.",
@@ -491,17 +491,17 @@ export const posts: BlogPost[] = [
 <p>Cloud sits on the mountain for days at a time and no forecast tells you which days. So the plan is: a named indoor or covered location that I have already looked at, a gondola contingency if your ceremony is up top, and a timeline with enough slack that a delayed lift does not eat the portraits.</p>
 <p>Couples who plan for cloud get the day they wanted plus a bonus if it clears. Couples who plan for sun get a scramble. That is the whole difference, and it is decided months before anyone puts a dress on.</p>
 <h2>Where in Whistler couples actually get married</h2>
-<figure><img src="${CDN}/cities/vancouver/whistler/hero.webp" alt="Mountain peaks above Whistler catching the last of the evening light"><figcaption>The village, the alpine and the lakes are three different weddings with three different timelines.</figcaption></figure>
+<figure><img src="${CDN}/cities/vancouver/whistler/23-elevated-lakeside-ceremony.webp" alt="Mountain peaks above Whistler catching the last of the evening light"><figcaption>The village, the alpine and the lakes are three different weddings with three different timelines.</figcaption></figure>
 <p><strong>There are three distinct Whistler weddings and they are not interchangeable.</strong> A village wedding happens at a hotel or restaurant with everything walkable, which is the easiest version and the one that survives bad weather. An alpine wedding puts the ceremony at the top of a lift, which is the most spectacular version and the one most exposed to cloud. A lake wedding at Lost Lake or Green Lake sits between the two: outdoors, reachable by road, and low enough to stay under the weather most days.</p>
 <p>Choose on your guest list before you choose on the photograph. Getting forty people up a mountain in formal wear takes an hour of lift capacity and produces at least one person who cannot do it. Getting forty people to a lakeshore takes ten minutes and a shuttle.</p>
 
 <h2>The gondola is a timeline item, not a detail</h2>
-<figure><img src="${CDN}/cities/vancouver/whistler/act-gondola.webp" alt="Gondola cabin rising above the trees on the mountain"><figcaption>Lift capacity, closing time and wind holds all belong in the schedule.</figcaption></figure>
+<figure><img src="${CDN}/cities/vancouver/whistler/09-windblown-veil-overlook.webp" alt="Gondola cabin rising above the trees on the mountain"><figcaption>Lift capacity, closing time and wind holds all belong in the schedule.</figcaption></figure>
 <p>If any part of your day is above a lift, three facts have to be in the timeline. <strong>Capacity is the number of people per cabin multiplied by the number of cabins you can realistically fill in sequence</strong>, which for a wedding party is longer than it sounds. Lifts close, and the closing time is a hard stop rather than a suggestion. And lifts hold for wind, without warning, on days that look fine from the valley.</p>
 <p>So the plan is: everybody up earlier than feels necessary, portraits done before the ceremony rather than after, and a valley-level ceremony site named in advance that we switch to if the lift is held. That last item is the one couples skip and the one that saves the day.</p>
 
 <h2>Helicopters, and what they actually buy</h2>
-<figure><img src="${CDN}/cities/vancouver/whistler/real-heli.webp" alt="Helicopter parked on a glacier with the peaks beyond"><figcaption>A glacier landing is thirty minutes of flying for about twenty minutes of standing.</figcaption></figure>
+<figure><img src="${CDN}/cities/vancouver/whistler/05-snowy-dock-aerial.webp" alt="Helicopter parked on a glacier with the peaks beyond"><figcaption>A glacier landing is thirty minutes of flying for about twenty minutes of standing.</figcaption></figure>
 <p>A glacier landing gives you a location nobody else has and it is a real experience rather than a gimmick. What it costs beyond the charter is time and certainty. <strong>Budget the whole thing at two hours door to door for roughly twenty minutes on the ice</strong>, and accept that it is weather-dependent in a way nothing else on the day is.</p>
 <p>Charters are quoted per aircraft, so it is usually the two of you and me rather than the wedding party. That is worth knowing before anyone gets attached to the idea of the whole group up there. I quote the charter as its own line so you can see exactly what it costs and decline it without unpicking anything else.</p>
 
@@ -511,7 +511,7 @@ export const posts: BlogPost[] = [
 <p>For guests coming from Vancouver it is a materially easier day. <strong>Forty minutes each way, across every car in the wedding, is close to an hour of everybody's evening returned to them.</strong> If the reason you chose Whistler is the mountains rather than the resort, look at Squamish before you commit.</p>
 
 <h2>What the collections cost on the Sea-to-Sky</h2>
-<figure><img src="${CDN}/cities/vancouver/whistler/real-lostlake.webp" alt="Still water and forest at Lost Lake in Whistler in the evening"><figcaption>The same numbers as Vancouver, because it is the same trip.</figcaption></figure>
+<figure><img src="${CDN}/cities/vancouver/whistler/24-vows-with-wedding-party.webp" alt="Still water and forest at Lost Lake in Whistler in the evening"><figcaption>The same numbers as Vancouver, because it is the same trip.</figcaption></figure>
 <p><strong>Core is C$4,500 for eight hours, Signature C$6,500 for ten with a second photographer, and Story Weekend C$9,000 for twelve hours across two days.</strong> Those are the same figures as a Vancouver city wedding, because Vancouver, the North Shore, Squamish and Whistler are one published region. The flight, the nights and the drive up the corridor are inside them.</p>
 <p>Signature is the collection I recommend most here, for a specific reason: a corridor wedding almost always has the getting-ready in one place and the ceremony somewhere the light is better, and one photographer cannot be in two places on a road that slow. Story Weekend earns its price when guests are already up for the weekend, which in Whistler is nearly always.</p>
 <p>The <a href="/pricing">full ladder is published</a>, the region sits on the <a href="/vancouver-wedding-photographer">Vancouver page</a>, and if you want the locations rather than the logistics, <a href="/blog/vancouver-wedding-photo-locations">twenty of them are listed here</a>.</p>
@@ -547,7 +547,7 @@ export const posts: BlogPost[] = [
 <p><strong>Story Weekend exists for exactly this:</strong> two hours of welcome or rehearsal coverage on the Friday, a full day on the Saturday, and a feature film cut from both. On the west coast it is the honest recommendation rather than the upsell, and it is the collection I quote first for anything past Nanaimo.</p>
 
 <h2>Storm season is a genuine reason to marry in November</h2>
-<figure><img src="${CDN}/cities/vancouver/cypress.webp" alt="Couple among snow-covered conifers on the coast mountains"><figcaption>The west coast in winter is dramatic in a way the summer version is not.</figcaption></figure>
+<figure><img src="${CDN}/cities/vancouver/whistler/12-snowy-birch-turnaround.webp" alt="Couple among snow-covered conifers on the coast mountains"><figcaption>The west coast in winter is dramatic in a way the summer version is not.</figcaption></figure>
 <p>Tofino built a tourism season out of watching weather hit the shore, and it photographs extraordinarily. Low cloud, spray, wet sand that mirrors everything, and a beach with nobody on it.</p>
 <p>The tradeoff is honest: you will be cold, the light goes by half past four, and there is a real chance of rain at the ceremony. <strong>If that sounds like a reason not to, choose July. If it sounds like the point, November is the best value date in British Columbia</strong> and the galleries do not look like anyone else's.</p>
 
@@ -604,7 +604,7 @@ export const posts: BlogPost[] = [
 <p>They are not interchangeable. Each solves a different problem and each brings a different logistical cost. Here is how I would choose between them.</p>
 
 <h2>Niagara: architecture and a guaranteed rain plan</h2>
-<figure><img src="${CDN}/cities/toronto/niagara/floral-showhouse/01.webp" alt="Bride and groom in the glasshouse of the Niagara Floral Showhouse"><figcaption>The Floral Showhouse is the most reliable wet-weather room within two hours of Toronto.</figcaption></figure>
+<figure><img src="${CDN}/cities/toronto/niagara/2018-weddings-nelson-floralshowhouse-09-e1724180596696.webp" alt="Bride and groom in the glasshouse of the Niagara Floral Showhouse"><figcaption>The Floral Showhouse is the most reliable wet-weather room within two hours of Toronto.</figcaption></figure>
 <p>Ninety minutes south, and the only one of the three regions where a downpour is not a crisis. The Floral Showhouse is a working glasshouse full of hydrangeas that photographs beautifully in flat light, which is precisely when you need it. Mather Arch, down at Fort Erie, gives you stone and ceremony chairs with the parkway behind.</p>
 <p>Add the wineries around Niagara-on-the-Lake and you have a region that works from May to late October and does not collapse if the forecast turns. <strong>If your anxiety is weather, this is the answer.</strong></p>
 
@@ -614,7 +614,7 @@ export const posts: BlogPost[] = [
 <p>The costs are real: a car per family, venues that are frequently forty minutes from the nearest hotel, and Highway 400 on a July Friday, which can turn two hours into four. <strong>Build the timeline around when guests can actually arrive, not when the map says they can.</strong></p>
 
 <h2>Prince Edward County: fields, light and the shortest guest list</h2>
-<figure><img src="${CDN}/cities/toronto/prince-edward-county/cover/01.webp" alt="Couple laughing in a golden grass field in Prince Edward County"><figcaption>Long grass, low light and horizon. The County photographs like nowhere else in Ontario.</figcaption></figure>
+<figure><img src="${CDN}/cities/toronto/prince-edward-county/cover.webp" alt="Couple laughing in a golden grass field in Prince Edward County"><figcaption>Long grass, low light and horizon. The County photographs like nowhere else in Ontario.</figcaption></figure>
 <p>Two and a half hours east, and visually the most distinctive of the three: open fields, long grass, dune beaches and a horizon you can actually see. Late-day light there is unobstructed in a way it never is around the lakes, which is why the golden-hour frames from the County look like they were shot somewhere else entirely.</p>
 <p>The constraint is beds. Accommodation is limited and it books out a year ahead in summer, which quietly caps your guest list whether or not you intended to cap it. <strong>Sort lodging before you fall in love with a venue.</strong></p>
 
@@ -624,7 +624,7 @@ export const posts: BlogPost[] = [
 <p>It works for a small wedding of people who would have gone camping together anyway. For anything above forty guests it is a fight.</p>
 
 <h2>What the travel actually costs</h2>
-<figure><img src="${CDN}/cities/toronto/niagara/mother-arch-park/01.webp" alt="Couple under a stone arch with rows of white ceremony chairs"><figcaption>Niagara, Muskoka and the County are one region on my pricing, not three surprises.</figcaption></figure>
+<figure><img src="${CDN}/cities/toronto/niagara/2023-weddings-np-ramblersrest-14-edited-e1724685930816.webp" alt="Couple under a stone arch with rows of white ceremony chairs"><figcaption>Niagara, Muskoka and the County are one region on my pricing, not three surprises.</figcaption></figure>
 <p>They no longer sit in one band. <strong>Niagara is inside the published Toronto price</strong>, so a Core wedding at a Niagara-on-the-Lake winery is C$4,000, exactly what a downtown Toronto Saturday costs. <strong>Muskoka and Prince Edward County sit outside it</strong> and are quoted on request, because the drive, the scattered venues and the accommodation genuinely differ by property.</p>
 <p><strong>Ask any photographer where their included radius ends before you sign rather than after.</strong> A Toronto base rate that quietly assumes a downtown venue and then adds mileage for Muskoka is not a cheaper quote, it is a later one.</p>
 
@@ -646,7 +646,7 @@ export const posts: BlogPost[] = [
 <p>If the answer is a weekend and you would rather have forty of the right people than a hundred obligated ones, choose <strong>the County</strong>. The light there is the best in Ontario and the small guest list is a feature you were going to have anyway.</p>
 
 <h2>Read the region in detail before you book</h2>
-<figure><img src="${CDN}/cities/toronto/niagara/floral-showhouse/05.webp" alt="Glasshouse interior full of blooms with soft light through the roof"><figcaption>Each of these three has its own piece, with the venues and the seasons in full.</figcaption></figure>
+<figure><img src="${CDN}/cities/toronto/niagara/2023-weddings-np-fsh-show-house-6-edited-e1724180551623.webp" alt="Glasshouse interior full of blooms with soft light through the roof"><figcaption>Each of these three has its own piece, with the venues and the seasons in full.</figcaption></figure>
 <p>This piece is the comparison. Each region has its own longer guide once you have narrowed it down.</p>
 <p><a href="/blog/niagara-wedding-venues-and-photo-locations">Niagara</a> covers the Niagara Parks ceremony sites, including the Floral Showhouse and its twenty-person capacity limit, Rambler's Rest, and how to build a day around the wet plan.</p>
 <p><a href="/blog/prince-edward-county-wedding-venues">Prince Edward County</a> goes property by property from Wellington to Milford, with the light, the shelter and the lodging problem for each.</p>
@@ -750,7 +750,7 @@ export const posts: BlogPost[] = [
     date: "2026-08-14",
     dateDisplay: "August 14, 2026",
     readTime: "8 min read",
-    coverImage: `${CDN}/cities/toronto/prince-edward-county/cover/01.webp`,
+    coverImage: `${CDN}/cities/toronto/prince-edward-county/cover.webp`,
     coverAlt: "Couple laughing in a golden grass field in Prince Edward County at dusk",
     excerpt:
       "Prince Edward County has the best late light in Ontario and the worst bed supply. Nine venues from Wellington to Milford, what each does to a photograph, and how the lodging shortage caps your guest list.",
@@ -761,50 +761,50 @@ export const posts: BlogPost[] = [
 <p>The beds are the constraint. Accommodation across the County is limited and books roughly a year ahead for summer Saturdays, which means your guest list is capped by lodging whether or not you intended to cap it. Sort where people sleep before you fall in love with a barn.</p>
 
 <h2>Where exactly is the County, and how far is it from Toronto?</h2>
-<figure><img src="${CDN}/cities/toronto/prince-edward-county/the-meadows/01.webp" alt="Open meadow ceremony site in Prince Edward County with long grass in evening light"><figcaption>Two and a half hours from Toronto, and visually nothing like anywhere else within that radius.</figcaption></figure>
+<figure><img src="${CDN}/cities/toronto/prince-edward-county/the-meadows.webp" alt="Open meadow ceremony site in Prince Edward County with long grass in evening light"><figcaption>Two and a half hours from Toronto, and visually nothing like anywhere else within that radius.</figcaption></figure>
 <p><strong>Prince Edward County is an island in Lake Ontario about two and a half hours east of Toronto</strong>, reached from the 401 and joined to the mainland by bridges and a small ferry. Picton is the largest town, with Wellington, Bloomfield, Milford and Cherry Valley the other names you will see attached to venues.</p>
 <p>The drive matters for two reasons. Guests coming from Toronto will not do it twice in a day, so a County wedding is a weekend rather than an afternoon, and that changes your Friday. And the last stretch is rural two-lane road, so the difference between arriving at 4pm and 6pm on a summer Friday is larger than the map suggests.</p>
 
 <h2>Drake Devonshire, Wellington</h2>
-<figure><img src="${CDN}/cities/toronto/prince-edward-county/drake-devonshire/01.webp" alt="Couple beside the water at the Drake Devonshire in Wellington"><figcaption>A restored 19th-century inn sitting directly on Lake Ontario. The water is the whole argument.</figcaption></figure>
+<figure><img src="${CDN}/cities/toronto/prince-edward-county/drake-devonshire.webp" alt="Couple beside the water at the Drake Devonshire in Wellington"><figcaption>A restored 19th-century inn sitting directly on Lake Ontario. The water is the whole argument.</figcaption></figure>
 <p>The Drake Devonshire is a restored nineteenth-century inn turned boutique hotel on the shore at Wellington, and it is the most recognisable wedding address in the County. What it gives a photographer is a lawn that ends in open water, which means the ceremony can face a horizon rather than a fence.</p>
 <p>The trade is scale. It is a boutique property, so it suits a wedding of people who all fit rather than a three-hundred-guest event, and its own rooms will not house everyone. Its advantage over the farm venues is that guests can walk from bed to ceremony, which on a rural weekend is worth more than it sounds.</p>
 
 <h2>The Merrill House and The Cape</h2>
-<figure><img src="${CDN}/cities/toronto/prince-edward-county/the-merrill-house/01.webp" alt="Couple in a panelled room at the Merrill House in Picton"><figcaption>Historic interiors are the County's answer to a wet forecast.</figcaption></figure>
+<figure><img src="${CDN}/cities/toronto/prince-edward-county/the-merrill-house.webp" alt="Couple in a panelled room at the Merrill House in Picton"><figcaption>Historic interiors are the County's answer to a wet forecast.</figcaption></figure>
 <p><strong>The Merrill House</strong> in Picton is a design-forward boutique hotel in a historic manor, built for small and considered weddings. <strong>The Cape</strong> is a restored historic mansion with a similar proposition. Both matter for the same reason: they are the County's supply of genuinely good interior rooms.</p>
 <p>Almost every other venue on this list depends on the outdoors. When the forecast turns, a barn with the sides open becomes a barn with the sides closed, and a field becomes mud. A historic house with panelled rooms and real windows is a wedding either way, and it photographs at a level a tent cannot reach.</p>
 <p>If your date is in May or October, or if you are constitutionally unable to enjoy a day you have not weatherproofed, start here.</p>
 
 <h2>Waupoos Estates Winery and Lakecroft</h2>
-<figure><img src="${CDN}/cities/toronto/prince-edward-county/waupoos-estates-winery/01.webp" alt="Vineyard rows at Waupoos Estates Winery above Prince Edward Bay"><figcaption>Waupoos looks south over the bay, so its rows run into water rather than into a road.</figcaption></figure>
+<figure><img src="${CDN}/cities/toronto/prince-edward-county/waupoos-estates-winery.webp" alt="Vineyard rows at Waupoos Estates Winery above Prince Edward Bay"><figcaption>Waupoos looks south over the bay, so its rows run into water rather than into a road.</figcaption></figure>
 <p><strong>Waupoos Estates Winery</strong> sits on the water at Prince Edward Bay, east of Picton, and is the County's most photographically generous winery because the vineyard rows and the lake are in the same view. Vineyard weddings elsewhere in Ontario tend to give you rows and a horizon of more rows.</p>
 <p><strong>Lakecroft</strong>, at Cherry Valley, is a private waterfront property of roughly fifteen forested acres with about seven hundred feet of shoreline. It is the one to look at if you want the day to feel like a family place rather than a venue, and if you want the reception and the water to be the same location.</p>
 <p>Both are exposed. There is no substantial covered space at either that is not brought in, so the tent conversation happens early or it happens in a panic.</p>
 
 <h2>The Eddie Hotel and Farm, Bloomfield</h2>
-<figure><img src="${CDN}/cities/toronto/prince-edward-county/the-eddie-hotel-and-farm/01.webp" alt="Red barn and open field at the Eddie Hotel and Farm in Bloomfield"><figcaption>A red barn on roughly eighty acres, with rooms on the same property.</figcaption></figure>
+<figure><img src="${CDN}/cities/toronto/prince-edward-county/the-eddie-hotel-and-farm.webp" alt="Red barn and open field at the Eddie Hotel and Farm in Bloomfield"><figcaption>A red barn on roughly eighty acres, with rooms on the same property.</figcaption></figure>
 <p>The Eddie is a historic farm property and inn on about eighty acres at Bloomfield, with a red barn as its centrepiece. It solves the County's central problem better than most: there are beds on site, so the getting-ready, the ceremony, the reception and the sleeping all happen without a car.</p>
 <p>For photographs, a red barn is a strong and slightly domineering element. It will be in your frames whether or not you want it there, and it throws warm reflected colour onto anything standing near it in the afternoon. That is either the look you came for or a thing to plan around.</p>
 
 <h2>Compass Rose Suites and 100 Acre Wood</h2>
-<figure><img src="${CDN}/cities/toronto/prince-edward-county/compass-rose-suites/01.webp" alt="Greenhouse and garden ceremony setting at Compass Rose Suites in Milford"><figcaption>A hundred acres of forest, field and garden, with a greenhouse as the wet-weather answer.</figcaption></figure>
+<figure><img src="${CDN}/cities/toronto/prince-edward-county/compass-rose-suites.webp" alt="Greenhouse and garden ceremony setting at Compass Rose Suites in Milford"><figcaption>A hundred acres of forest, field and garden, with a greenhouse as the wet-weather answer.</figcaption></figure>
 <p><strong>Compass Rose Suites</strong> at Milford spreads across roughly a hundred acres of forest, field and garden, with a greenhouse, a barn and several distinct ceremony sites. That variety is unusual and genuinely useful: it means the portraits, the ceremony and the reception can look like three different places without anyone getting into a car.</p>
 <p><strong>100 Acre Wood</strong> near Picton offers a comparable hundred-acre proposition with a chapel, barn and tent arrangement. Both are properties where the walking distances are real, so the timeline needs to count them. Ten minutes between a ceremony site and a reception site is ten minutes multiplied by every guest who needs help crossing a field.</p>
 
 <h2>The Brighthouse Farm, Wellington</h2>
-<figure><img src="${CDN}/cities/toronto/prince-edward-county/the-brighthouse-farm/01.webp" alt="Modern barn interior at the Brighthouse Farm in Wellington"><figcaption>A modern barn is a cleaner room to light than a heritage one, and it photographs colder.</figcaption></figure>
+<figure><img src="${CDN}/cities/toronto/prince-edward-county/the-brighthouse-farm.webp" alt="Modern barn interior at the Brighthouse Farm in Wellington"><figcaption>A modern barn is a cleaner room to light than a heritage one, and it photographs colder.</figcaption></figure>
 <p>The Brighthouse Farm is a hundred-acre farm venue at Wellington built around a modern barn. Modern barns behave differently from heritage ones in a photograph: cleaner lines, more consistent surfaces, less warm bounce, and generally better electrical supply, which matters more than couples expect once the sun is down.</p>
 <p>It is a good choice for a wedding with a defined design direction, because it does not impose as much character as an old barn does. It is a poorer choice if what you actually wanted was patina.</p>
 
 <h2>When to get married in the County</h2>
-<figure><img src="${CDN}/cities/toronto/prince-edward-county/lakecroft/01.webp" alt="Shoreline and trees at Lakecroft in Cherry Valley in late light"><figcaption>Early September is the County's best fortnight, and everyone in Ontario has noticed.</figcaption></figure>
+<figure><img src="${CDN}/cities/toronto/prince-edward-county/lakecroft.webp" alt="Shoreline and trees at Lakecroft in Cherry Valley in late light"><figcaption>Early September is the County's best fortnight, and everyone in Ontario has noticed.</figcaption></figure>
 <p><strong>The best two weeks in the County are the first half of September.</strong> The water still holds summer temperature, the fields have gone gold, the crowds have thinned after Labour Day, and sunset has pulled back to a time that fits a normal dinner. That combination does not exist in July, when the light is high until seven and the roads are full.</p>
 <p>June is beautiful and busy. July and August are hot, and the exposure that makes the County's light so good also means there is nowhere to stand in shade at two in the afternoon. October is a real gamble that pays extremely well when it pays: hard colour, low sun, and a genuine chance of a day nobody can be outdoors in.</p>
 <p>Winter is not a County proposition. Most of the venues here are seasonal and the region substantially closes.</p>
 
 <h2>What a County wedding costs, and where the money goes</h2>
-<figure><img src="${CDN}/cities/toronto/prince-edward-county/the-cape/01.webp" alt="Restored historic mansion exterior at the Cape in Prince Edward County"><figcaption>The County is priced in the same band as Niagara and Muskoka. One number, travel inside it.</figcaption></figure>
+<figure><img src="${CDN}/cities/toronto/prince-edward-county/the-cape.webp" alt="Restored historic mansion exterior at the Cape in Prince Edward County"><figcaption>The County is priced in the same band as Niagara and Muskoka. One number, travel inside it.</figcaption></figure>
 <p>Prince Edward County sits outside my three published regions, so <strong>it is quoted on request rather than printed</strong>. For scale: the published Toronto region, which reaches as far as Niagara and the 1000 Islands, is C$4,000 for Core, C$6,000 for Signature and C$8,500 for the two-day Story Weekend. The County adds a longer drive and two nights against a specific property, so I cost it against your venue rather than publishing an average that would be wrong for half of the properties on this page.</p>
 <p>Story Weekend is the collection I recommend here more than anywhere else in Ontario, and not for the upsell. A County wedding is already a two-day event for everybody attending it. Guests arrive Friday, there is almost always a welcome dinner, and the best light of the whole weekend frequently happens on Friday evening rather than Saturday. Covering only Saturday means the two-day event you actually held comes back as a one-day gallery.</p>
 <p>The other honest note: <strong>bring the accommodation forward in your planning ahead of everything else.</strong> More County weddings get reshaped by bed supply than by budget. Book the block, then choose the venue, then talk to me. The <a href="/pricing">full ladder is published</a>, the <a href="/toronto-wedding-photographer">Toronto and Southern Ontario page</a> covers the region, and the <a href="/blog/wedding-venues-outside-toronto">comparison with Niagara and Muskoka</a> is worth reading before you commit to the drive.</p>
@@ -820,7 +820,7 @@ export const posts: BlogPost[] = [
     date: "2026-08-14",
     dateDisplay: "August 14, 2026",
     readTime: "7 min read",
-    coverImage: `${CDN}/cities/toronto/niagara/floral-showhouse/02.webp`,
+    coverImage: `${CDN}/cities/toronto/niagara/2023-weddings-np-fsh-show-house-6-edited-e1724180551623.webp`,
     coverAlt: "Couple among hydrangeas inside the Niagara Parks Floral Showhouse glasshouse",
     excerpt:
       "Niagara is the only wedding region near Toronto where rain is not a crisis. The Niagara Parks ceremony sites, the Floral Showhouse capacity limit, and how to build a day that survives the forecast.",
@@ -831,46 +831,46 @@ export const posts: BlogPost[] = [
 <p>The reason is Niagara Parks, the provincial agency that runs the parkland along the river. It operates a set of ceremony venues that most couples never find because they are searching for banquet halls, and one of them is a heated glasshouse full of flowers that works in January.</p>
 
 <h2>What ceremony venues does Niagara Parks actually run?</h2>
-<figure><img src="${CDN}/cities/toronto/niagara/floral-showhouse/01.webp" alt="Bride and groom standing among potted hydrangeas in the Niagara Parks Floral Showhouse"><figcaption>The Floral Showhouse is a year-round venue, which is a rare sentence in Ontario.</figcaption></figure>
+<figure><img src="${CDN}/cities/toronto/niagara/2018-weddings-nelson-floralshowhouse-09-e1724180596696.webp" alt="Bride and groom standing among potted hydrangeas in the Niagara Parks Floral Showhouse"><figcaption>The Floral Showhouse is a year-round venue, which is a rare sentence in Ontario.</figcaption></figure>
 <p>Niagara Parks lists several ceremony sites along the river corridor. <strong>The Floral Showhouse is a year-round wedding venue, with ceremonies possible in the rose garden, the Artist's Garden or inside the Showhouse foyer, and a stated capacity of up to twenty.</strong> That number is the thing to notice: it is a genuinely small venue, and it is not a fallback for a hundred and forty guests.</p>
 <p><strong>Rambler's Rest</strong> is a stone heritage pavilion built in 1907, overlooking the Niagara River. <strong>Oakes Garden Theatre</strong> is a separate ceremony site overlooking the falls themselves. <strong>Mather Arch</strong> sits down at Fort Erie, at the other end of the parkway. The current list and the booking process live at <a href="https://www.niagaraparks.com/weddings/our-venues/" rel="nofollow">niagaraparks.com</a>, and it changes, so check it rather than trusting a blog post including this one.</p>
 
 <h2>Why the Floral Showhouse is worth planning around</h2>
-<figure><img src="${CDN}/cities/toronto/niagara/floral-showhouse/03.webp" alt="Couple in soft diffused light under the glass roof of the Floral Showhouse"><figcaption>Glass roof, flat light, no shadows to fight. This is what an overcast day should look like.</figcaption></figure>
+<figure><img src="${CDN}/cities/toronto/niagara/2018-weddings-nelson-floralshowhouse-14-e1724180569802.webp" alt="Couple in soft diffused light under the glass roof of the Floral Showhouse"><figcaption>Glass roof, flat light, no shadows to fight. This is what an overcast day should look like.</figcaption></figure>
 <p>A glasshouse is close to a perfect photographic room. The glass diffuses the sky into an enormous even source, so there are no hard shadows, no colour cast from a coloured ceiling, and no need for flash. The light that comes through a glasshouse on a grey day is the light photographers spend money on modifiers trying to imitate.</p>
 <p>It is also warm in February and dry in June, which makes it the single most reliable ceremony room in the region. <strong>If your anxiety about the whole wedding is the weather, this venue removes it.</strong></p>
 <p>The constraint is the twenty-person capacity, which makes it a venue for an intimate ceremony rather than a full guest list. Couples who want both frequently do the small ceremony here and the large celebration elsewhere, which is a good structure and one I would recommend independently of the weather.</p>
 
 <h2>Rambler's Rest, and what a 1907 stone pavilion gives you</h2>
-<figure><img src="${CDN}/cities/toronto/niagara/ramblers-rest/01.webp" alt="Stone heritage pavilion at Rambler's Rest overlooking the Niagara River"><figcaption>Stone, columns and the river below. The pavilion is covered without being indoors.</figcaption></figure>
+<figure><img src="${CDN}/cities/toronto/niagara/2023-weddings-np-ramblersrest-1-edited-e1724685906888.webp" alt="Stone heritage pavilion at Rambler's Rest overlooking the Niagara River"><figcaption>Stone, columns and the river below. The pavilion is covered without being indoors.</figcaption></figure>
 <p>Rambler's Rest is the middle option between an outdoor ceremony and an indoor one: a covered stone structure in the open air, above the river. That is a genuinely useful category, because it means light rain does not move your ceremony and heavy sun does not cook your guests.</p>
 <p>Photographically, old stone does two things. It holds shadow in a way modern surfaces do not, which gives portraits depth without any lighting at all. And it is neutral in colour, so it does not cast anything unpleasant onto skin, which is the failing of almost every red-brick and wood venue in Southern Ontario.</p>
 <p>The river below gives you distance in the frame. Most Ontario venues photograph flat because everything is at the same depth. Here there is a foreground, a drop and a far bank.</p>
 
 <h2>Mather Arch and the parkway sites</h2>
-<figure><img src="${CDN}/cities/toronto/niagara/mother-arch-park/01.webp" alt="Couple under a stone arch with rows of white ceremony chairs on the grass"><figcaption>Mather Arch sits at Fort Erie, at the far southern end of the parkway.</figcaption></figure>
+<figure><img src="${CDN}/cities/toronto/niagara/2023-weddings-np-ramblersrest-14-edited-e1724685930816.webp" alt="Couple under a stone arch with rows of white ceremony chairs on the grass"><figcaption>Mather Arch sits at Fort Erie, at the far southern end of the parkway.</figcaption></figure>
 <p>Mather Arch is at Fort Erie, which is worth knowing before you plan a day around it, because it is at the opposite end of the parkway from the falls and from Niagara-on-the-Lake. That is a real drive, not a hop, and a timeline that assumes otherwise breaks.</p>
 <p>The arch gives you a strong architectural frame and a lawn wide enough for seated rows. It photographs best when the sun is off it, so late afternoon rather than midday, and it is one of the few sites in the region where a symmetrical, formal composition is genuinely available.</p>
 
 <h2>Niagara-on-the-Lake and the wineries</h2>
-<figure><img src="${CDN}/cities/toronto/niagara/ramblers-rest/03.webp" alt="Couple walking a gravel path with mature trees and the river beyond"><figcaption>The town is twenty minutes from the falls and looks like a different century.</figcaption></figure>
+<figure><img src="${CDN}/cities/toronto/niagara/2023-weddings-np-ramblersrest-3-edited-e1724685938842.webp" alt="Couple walking a gravel path with mature trees and the river beyond"><figcaption>The town is twenty minutes from the falls and looks like a different century.</figcaption></figure>
 <p>Twenty minutes north of the falls, Niagara-on-the-Lake is the part of the region that has nothing to do with tourism at the brink. It is a nineteenth-century town with a main street, mature trees, and vineyards immediately outside it.</p>
 <p>The wineries are the obvious draw and they are genuinely good from May to late October. The thing worth planning for is that <strong>vineyard rows run in one direction and the sun sets in another</strong>, and only some properties have rows that line up with the last light. Ask which way the rows face before you book, or ask me and I will look it up on the satellite view, which takes about a minute and saves an argument later.</p>
 <p>The town itself matters for a different reason: it has beds. Unlike Prince Edward County, Niagara-on-the-Lake has real accommodation supply, which means your guest list is not silently capped by lodging.</p>
 
 <h2>Building a Niagara day that survives the forecast</h2>
-<figure><img src="${CDN}/cities/toronto/niagara/floral-showhouse/04.webp" alt="Detail of ferns and blooms with the couple soft behind them in the glasshouse"><figcaption>Two plans, both looked at in advance. That is what a rain plan is.</figcaption></figure>
+<figure><img src="${CDN}/cities/toronto/niagara/2023-weddings-np-fsh-outdoor-1-edited-e1724180541582.webp" alt="Detail of ferns and blooms with the couple soft behind them in the glasshouse"><figcaption>Two plans, both looked at in advance. That is what a rain plan is.</figcaption></figure>
 <p>The method is the same one I use everywhere and it works better here than anywhere else in Ontario. <strong>Name two locations rather than one: the one you want and the one you use if it is wet.</strong> Both get scouted. Neither gets decided in a parking lot at three in the afternoon.</p>
 <p>In Niagara the wet plan is unusually strong, which is why I recommend the region to couples who are anxious. A glasshouse, a covered stone pavilion and a town full of interiors is a better set of options than most regions offer on their best day.</p>
 <p>The second thing to plan is traffic. The parkway on a summer Saturday moves at the speed of tourism, and the distance between the falls, the town and Fort Erie is not the drive the map promises. Build the transitions at the speed of a full carload of guests, not at the speed of one photographer on a motorcycle.</p>
 
 <h2>When Niagara is at its best</h2>
-<figure><img src="${CDN}/cities/toronto/niagara/mother-arch-park/03.webp" alt="Ceremony chairs in rows on a lawn under mature trees in late afternoon light"><figcaption>Late September and the first half of October is the region's peak, and it books accordingly.</figcaption></figure>
+<figure><img src="${CDN}/cities/toronto/niagara/2023-weddings-np-ramblersrest-3-edited-e1724685938842.webp" alt="Ceremony chairs in rows on a lawn under mature trees in late afternoon light"><figcaption>Late September and the first half of October is the region's peak, and it books accordingly.</figcaption></figure>
 <p><strong>Late September to mid-October is the best window.</strong> The vineyards have colour, the tourist volume has dropped from its August peak, the temperature is comfortable for a suit, and sunset has moved back to a time that fits a normal dinner service.</p>
 <p>May and June are lush and green and busy. July and August are hot and extremely busy, and the middle of the day is unusable outdoors, so portraits go late. November through April is where the Floral Showhouse earns its keep, and where a small winter ceremony in a warm glasshouse becomes a genuinely appealing idea rather than a compromise.</p>
 
 <h2>What coverage in Niagara costs</h2>
-<figure><img src="${CDN}/cities/toronto/niagara/ramblers-rest/05.webp" alt="Couple close together on the stone steps of the heritage pavilion at dusk"><figcaption>Niagara, Muskoka and the County are one region on my pricing, at one number each.</figcaption></figure>
+<figure><img src="${CDN}/cities/toronto/niagara/2023-weddings-np-ramblersrest-7-edited-e1724685922414.webp" alt="Couple close together on the stone steps of the heritage pavilion at dusk"><figcaption>Niagara, Muskoka and the County are one region on my pricing, at one number each.</figcaption></figure>
 <p>Niagara is inside the published Toronto region, which means it costs exactly what a downtown Toronto Saturday costs: <strong>C$4,000 for Core at eight hours, C$6,000 for Signature at ten with a second photographer, and C$8,500 for the two-day Story Weekend.</strong> Travel and the hotel nights are inside those figures, so there is no travel line at the end of the invoice, and a winery in Niagara-on-the-Lake is not a more expensive wedding than one on King Street.</p>
 <p>A colour-graded feature film and film prints handed to guests on the night are in every collection here as everywhere, which matters more for a wedding people drove two hours to reach: they get something in their hands before they leave, and the gallery is still weeks away.</p>
 <p>If you are weighing Niagara against Muskoka or the County, <a href="/blog/wedding-venues-outside-toronto">the comparison is written out here</a>. If you already have a date and a venue, <a href="/contact">send them</a> and I will tell you what the light does there at that hour in that month.</p>

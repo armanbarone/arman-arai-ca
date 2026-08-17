@@ -1543,6 +1543,23 @@ img {
   .hub-body-fig { aspect-ratio: 3 / 2; }
 }
 
+/* The work wall: real coverage from the region. Every fifth cell spans two
+   columns so the grid reads as a wall rather than a contact sheet. */
+.hub-work-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 3px;
+  margin-top: 2.4rem;
+}
+.hub-work-cell {
+  position: relative; margin: 0; aspect-ratio: 4 / 5;
+  overflow: hidden; background: #050403;
+}
+.hub-work-cell--wide { grid-column: span 2; aspect-ratio: 8 / 5; }
+@media (max-width: 1279px) { .hub-work-grid { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 767px) {
+  .hub-work-grid { grid-template-columns: repeat(2, 1fr); }
+  .hub-work-cell--wide { grid-column: span 2; }
+}
+
 /* Venues: a photo row, then the reasoning. */
 .hub-venue-media { display: grid; grid-template-columns: repeat(4, 1fr); gap: 3px; margin-bottom: 2.6rem; }
 .hub-venue-fig { position: relative; margin: 0; aspect-ratio: 4 / 5; overflow: hidden; background: #050403; }

@@ -406,7 +406,7 @@ export const MARKETS: Market[] = [
     city: "Vancouver",
     name: "Vancouver",
     province: "British Columbia",
-    region: "Vancouver, the Sea-to-Sky corridor and Vancouver Island",
+    region: "Vancouver, the North Shore and the Sea-to-Sky corridor",
     regionSlug: "vancouver",
     areas: [
       "Vancouver", "Burnaby", "Richmond", "North Vancouver", "West Vancouver",

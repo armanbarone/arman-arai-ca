@@ -16,6 +16,10 @@ export type Photo = { src: string; alt: string };
 
 const p = (key: string, alt: string): Photo => ({ src: `${CDN_BASE}/${key}.webp`, alt });
 
+/** Keys that already carry their own extension. p() appends .webp; some of the
+ *  ported and generated files are .png. */
+const raw = (key: string, alt: string): Photo => ({ src: `${CDN_BASE}/${key}`, alt });
+
 const CDN_HOST = "https://cdn.armanarai.ca";
 
 /** A Cloudflare-transformed URL at a fixed width.
@@ -46,22 +50,68 @@ export const HERO = {
   bottomRight: p("home/hero-overhead-spiral-floor-dance", "Overhead black and white frame of a couple dancing alone on a spiral marble floor"),
 };
 
+/* The hero conveyor. All three frames advance on one clock, so the queue order
+ * IS the order a visitor sees: the first three entries are the three frames on
+ * screen at load, and Arman fixed those three deliberately. Everything after
+ * them rotates in. Do not reorder the first three.
+ *
+ * The rest were uploaded as "MainPage Pics" and renamed by what they show. */
+export const HOME_HERO_POOL: Photo[] = [
+  HERO.main,
+  HERO.topRight,
+  HERO.bottomRight,
+  p("home/bride-billowing-veil-dark-bw", "Bride wrapped in a billowing tulle veil against a black ground, black and white"),
+  p("home/couple-kiss-motion-blur-warm", "Couple kissing mid-turn, the frame smeared into warm motion blur"),
+  p("home/bride-tall-window-curtains-reflection", "Bride silhouetted at a tall curtained window, mirrored in a polished floor between candles"),
+  p("home/groom-window-reflection-night-bw", "Groom in a tuxedo reflected in a dark city window at night, black and white"),
+  p("home/autumn-red-forest-couple", "Couple embracing in a red autumn forest, the bride's train spread across the leaves"),
+  p("home/dancefloor-spin-blur-overhead-bw", "Overhead frame of a couple still at the centre of a spinning, blurred dance floor"),
+  p("home/bride-rain-car-window-bw", "Bride seen through the rain-beaded window of a vintage car, black and white"),
+  p("home/bride-wildflower-hair-golden", "Bride in profile with baby's breath and wildflowers pinned through her hair, golden light"),
+  p("home/overhead-first-dance-spin-blur", "Overhead frame of a groom standing still as the bride spins into a blur of white"),
+  p("home/bride-car-night-teal-roses", "Bride holding white roses in a car at night, lit teal through the glass"),
+  p("home/hands-reaching-ivory-bow", "Two hands reaching toward each other past a large ivory bow on a black ground"),
+  p("home/bride-vintage-car-bonnet-bw", "Bride laughing across the bonnet of a white vintage car, bouquet beside her, black and white"),
+  p("home/draped-hood-sculptural-bw", "Sculptural portrait of a bride in a draped hood against black, black and white"),
+  p("home/silk-folds-abstract-bw", "Abstract high-key study of silk folds catching the light, black and white"),
+];
+
+/** The wide split figure under the hero. */
+export const HOME_MANIFESTO = raw(
+  "home/50_coastal_cliff_road_monochrome.png",
+  "A road curving along a Canadian coastal cliff in monochrome",
+);
+
+/** Revolving collages in the experience section, one per city and season. */
+export const HOME_COLLAGE: Photo[] = [
+  raw("home/Collage/batch-2-collage-02-montreal-mount-royal-winter.png", "A composed set of frames from a winter wedding on Mont-Royal in Montréal"),
+  raw("home/Collage/batch-2-collage-05-toronto-distillery-district.png", "Scenes from a Toronto wedding in the Distillery District, arranged as one composition"),
+  raw("home/Collage/batch-2-collage-10-vancouver-stanley-park.png", "Frames from a Vancouver wedding in Stanley Park, laid out together"),
+  raw("home/Collage/batch-2-collage-04-montreal-lachine-canal-autumn.png", "A Montréal wedding along the Lachine Canal in autumn, shown as a sequence"),
+  raw("home/Collage/batch-2-collage-06-toronto-city-hall-blue-hour.png", "A Toronto wedding at City Hall at blue hour, arranged as a single composition"),
+  raw("home/Collage/batch-2-collage-11-vancouver-gastown-noir.png", "Night frames from a Vancouver wedding in Gastown, laid out together"),
+  raw("home/Collage/batch-2-collage-03-montreal-habitat-67.png", "A Montréal wedding at Habitat 67, shown as a set of frames"),
+  raw("home/Collage/batch-2-collage-07-toronto-university-rom.png", "A Toronto wedding through the university district and the ROM"),
+  raw("home/Collage/batch-2-collage-09-vancouver-queen-elizabeth-bloedel.png", "A Vancouver wedding at Queen Elizabeth Park and the Bloedel Conservatory"),
+  raw("home/Collage/batch-2-collage-08-toronto-islands.png", "A Toronto wedding on the Toronto Islands, arranged as one composition"),
+  raw("home/Collage/batch-2-collage-12-vancouver-ubc-spanish-banks.png", "A Vancouver wedding at UBC and Spanish Banks, shown as a sequence"),
+];
+
 export const HOME_GRID: Photo[] = [
-  p("home/grid-bride-cape-groom-lounge", "Bride in a beaded cape beside her groom on a leather sofa, white flowers behind them"),
+  raw("home/22_south_asian_forest_sculpture.png", "South Asian couple in red and gold beside a stone sculpture in a green forest clearing"),
   p("home/grid-colonnade-kiss-bw", "Black and white frame of a couple kissing at the end of a long stone colonnade"),
   p("home/grid-bride-vintage-car-bw", "Bride holding her bouquet at the open door of a vintage car, shot through the window"),
   p("home/grid-couple-laughing-goggles", "Bride and groom laughing with their hands held up like goggles over their eyes"),
   p("home/grid-portrait-gallery-walk", "Bride walking the length of a dark gallery hung with gilt-framed paintings"),
   p("home/grid-first-dance-spin-blur", "Spinning motion blur of a couple's first dance seen from above"),
   p("home/grid-chandelier-staircase-gown", "A gown spread down a gilded staircase beneath a lit chandelier"),
-  p("home/grid-cathedral-train-dome", "Bride and her cathedral train laid out on the tiled floor of a domed church"),
 ];
 
 // The scrolling film strip on the homepage. Frame order is the strip order.
 export const FILM_STRIP: (Photo & { label: string | null })[] = [
   { ...p("home/film-lobby-embrace-bw", "Couple embracing in a dark modern lobby, black and white"), label: "KODAK 400 · EXP. 2024" },
   { ...p("home/film-window-light-solitary-bride", "Bride lit only by a tall stained-glass window in an otherwise dark room"), label: null },
-  { ...p("home/film-ballroom-kiss-chandeliers", "Couple kissing in a chandeliered ballroom with gardens through the windows"), label: "PORTRA 800 · EXP. 2024" },
+  { ...raw("home/06_chinese_garden_bridge.png", "Couple on an arched bridge in a classical Chinese garden"), label: "PORTRA 800 · EXP. 2024" },
   { ...p("home/film-medallion-floor-overhead-bw", "Overhead black and white frame of a couple on a geometric medallion floor"), label: null },
   { ...p("home/film-reception-crowd-blur-bw", "Reception guests blurred in motion around a still couple, black and white"), label: "HP5 · EXP. 2024" },
   { ...p("home/film-grand-staircase-portrait", "Bride and groom on a grand ornate staircase under warm light"), label: null },
@@ -204,10 +254,6 @@ export type CityPhotos = {
    *  happening rather than a landscape. These are real photographs of Arman. */
   working: Photo;
 };
-
-/** Keys that already carry their own extension (the ported .com files are a mix
- *  of .webp and .png, and the p() helper appends .webp). */
-const raw = (key: string, alt: string): Photo => ({ src: `${CDN_BASE}/${key}`, alt });
 
 const place = (key: string, alt: string, caption: string) =>
   ({ ...(key.includes(".") ? raw(key, alt) : p(key, alt)), caption });

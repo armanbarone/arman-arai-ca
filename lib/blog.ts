@@ -43,7 +43,7 @@ export const posts: BlogPost[] = [
     coverImage: `${CDN}/cities/toronto/niagara/2018-weddings-nelson-floralshowhouse-09-e1724180596696.webp`,
     coverAlt: "Bride and groom in the glasshouse of the Niagara Floral Showhouse",
     excerpt:
-      "Toronto wedding photography runs from about $2,200 to $5,500 in published packages, with a median near $3,475. Here is what each band of that range actually buys, and where the money goes once it leaves your account.",
+      "Toronto wedding photography runs about $2,200 to $5,500 in published packages, median near $3,475. Here is what each band actually buys.",
     topic: "Money",
     city: "toronto",
     body: `
@@ -102,7 +102,7 @@ export const posts: BlogPost[] = [
     coverImage: `${CDN}/cities/montreal/places/mtl-oldmontreal-bluehour.png`,
     coverAlt: "Couple walking a cobbled Old Montréal street at blue hour",
     excerpt:
-      "Montréal has the widest visible price dispersion in Canada: published packages run from about $1,550 to $5,000. Here is what separates the ends of that range, and what hiring locally actually changes on the day.",
+      "Montréal has Canada's widest price spread: published packages run $1,550 to $5,000. What separates the ends, and what hiring locally changes.",
     topic: "Money",
     city: "montreal",
     body: `
@@ -167,7 +167,7 @@ export const posts: BlogPost[] = [
     coverImage: `${CDN}/cities/vancouver/lions-gate-bridge-lookout.png`,
     coverAlt: "Bride and groom at the Lions Gate Bridge lookout",
     excerpt:
-      "Published Vancouver packages run from about $800 to $7,500, and all-inclusive Whistler days start near $8,500. The gap is not prestige, it is logistics. Here is how to tell which product you are buying.",
+      "Vancouver packages run about $800 to $7,500 and the gap is logistics, not prestige. How to tell which product you are actually buying.",
     topic: "Money",
     city: "vancouver",
     body: `
@@ -236,7 +236,7 @@ export const posts: BlogPost[] = [
     coverImage: `${CDN}/portfolio/documentary/bridesmaids-hotel-bed.webp`,
     coverAlt: "Bridesmaids getting ready across a hotel bed strewn with clothes",
     excerpt:
-      "Most advice about choosing a wedding photographer is about taste. Taste is the easy part. These are the questions that reveal whether someone can actually carry a whole day.",
+      "Most advice about choosing a wedding photographer is about taste. Taste is the easy part. These questions reveal who can carry a whole day.",
     topic: "Choosing",
     city: null,
     body: `
@@ -457,7 +457,7 @@ export const posts: BlogPost[] = [
     coverImage: `${CDN}/cities/vancouver/whistler/12-snowy-birch-turnaround.webp`,
     coverAlt: "Couple in the snow among the conifers on Cypress Mountain",
     excerpt:
-      "Whistler weddings are sold as all-inclusive packages starting around $8,500 once vendors are bundled in. Here is what the photography actually costs on its own, what the permits involve, and which months earn the drive.",
+      "Whistler and the Sea-to-Sky cost the same as Vancouver: C$4,500 for Core. The permits, the gondola timing, and which months earn the drive.",
     topic: "Places",
     city: "vancouver",
     body: `
@@ -529,7 +529,7 @@ export const posts: BlogPost[] = [
     coverImage: `${CDN}/cities/vancouver/locations/lighthouse-park/01.webp`,
     coverAlt: "Couple embracing on driftwood with a lighthouse above them",
     excerpt:
-      "Vancouver Island is a ferry and then a drive, and Tofino is a further three hours after that. Both are inside the same price as a Vancouver wedding. Here is what the travel really means for your day.",
+      "Vancouver Island is a ferry and a drive, and Tofino is three hours past that. What the travel means for your day, and why it is quoted, not published.",
     topic: "Places",
     city: "vancouver",
     body: `
@@ -587,7 +587,7 @@ export const posts: BlogPost[] = [
 
   {
     slug: "wedding-venues-outside-toronto",
-    title: "Getting Married Outside Toronto: Niagara, Muskoka and the County",
+    title: "Wedding Venues Outside Toronto: Niagara, Muskoka, the County",
     subtitle:
       "Three regions within three hours of the city, what each does to a photograph, and what the travel really costs.",
     date: "2026-08-13",
@@ -596,7 +596,7 @@ export const posts: BlogPost[] = [
     coverImage: `${CDN}/cities/toronto/muskoka.webp`,
     coverAlt: "Couple on a dock in front of a float plane on a Muskoka lake",
     excerpt:
-      "Most of the best wedding locations near Toronto are not in Toronto. Niagara, Muskoka and Prince Edward County each solve a different problem, and each carries a different set of logistics.",
+      "Niagara costs what downtown Toronto costs. Muskoka and Prince Edward County are quoted separately. How to choose between the three regions.",
     topic: "Places",
     city: "toronto",
     body: `
@@ -666,7 +666,7 @@ export const posts: BlogPost[] = [
     coverImage: `${CDN}/cities/vancouver/locations/whytecliff-park/01.webp`,
     coverAlt: "Couple on the rock shelves at Whytecliff Park with islands offshore at sunset",
     excerpt:
-      "The best wedding photo locations in Vancouver are chosen by weather, not by beauty. Twenty places across the city, the North Shore and the Sea-to-Sky, with the permit rules and the hour each one works.",
+      "Twenty Vancouver wedding photo locations, chosen by weather rather than beauty, with the permit rules and the light window for each one.",
     topic: "Places",
     city: "vancouver",
     body: `
@@ -753,7 +753,7 @@ export const posts: BlogPost[] = [
     coverImage: `${CDN}/cities/toronto/prince-edward-county/cover.webp`,
     coverAlt: "Couple laughing in a golden grass field in Prince Edward County at dusk",
     excerpt:
-      "Prince Edward County has the best late light in Ontario and the worst bed supply. Nine venues from Wellington to Milford, what each does to a photograph, and how the lodging shortage caps your guest list.",
+      "Prince Edward County has Ontario's best late light and its worst bed supply. Nine venues from Wellington to Milford, and the lodging problem.",
     topic: "Places",
     city: "toronto",
     body: `
@@ -814,7 +814,7 @@ export const posts: BlogPost[] = [
   /* ─────────────────────────────────────────────────────────── NIAGARA ── */
   {
     slug: "niagara-wedding-venues-and-photo-locations",
-    title: "Niagara Wedding Venues: The Parks, the Glasshouse and the Rain Plan",
+    title: "Niagara Wedding Venues and Photo Locations",
     subtitle:
       "Niagara Parks runs a set of ceremony sites most couples never find, and one of them is the best wet-weather room within two hours of Toronto.",
     date: "2026-08-14",
@@ -823,7 +823,7 @@ export const posts: BlogPost[] = [
     coverImage: `${CDN}/cities/toronto/niagara/2023-weddings-np-fsh-show-house-6-edited-e1724180551623.webp`,
     coverAlt: "Couple among hydrangeas inside the Niagara Parks Floral Showhouse glasshouse",
     excerpt:
-      "Niagara is the only wedding region near Toronto where rain is not a crisis. The Niagara Parks ceremony sites, the Floral Showhouse capacity limit, and how to build a day that survives the forecast.",
+      "Niagara is the one region near Toronto where rain is not a crisis. The Niagara Parks ceremony sites, and how to build a day around the forecast.",
     topic: "Places",
     city: "toronto",
     body: `
@@ -880,7 +880,7 @@ export const posts: BlogPost[] = [
   /* ─────────────────────────────────────────────────────────── MUSKOKA ── */
   {
     slug: "muskoka-cottage-country-wedding-photography",
-    title: "Getting Married in Muskoka: What Cottage Country Actually Demands",
+    title: "Getting Married in Muskoka: What Cottage Country Demands",
     subtitle:
       "Granite, dark water and pine, plus the drive, the bugs, the boat and the four other logistics that decide whether the day works.",
     date: "2026-08-14",
@@ -889,7 +889,7 @@ export const posts: BlogPost[] = [
     coverImage: `${CDN}/cities/toronto/muskoka/cover-and-overview/01.webp`,
     coverAlt: "Couple in summer greenery beside a Muskoka lake in late afternoon light",
     excerpt:
-      "Muskoka is the only landscape within reach of Toronto that reads unmistakably as the Canadian Shield. It also has the least forgiving logistics. What the region gives a photograph, and what it takes.",
+      "Muskoka is the only landscape near Toronto that reads as the Canadian Shield. The drive, the docks, the blackflies and the month to choose.",
     topic: "Places",
     city: "toronto",
     body: `
@@ -952,7 +952,7 @@ export const posts: BlogPost[] = [
     coverImage: `${CDN}/cities/montreal/places/mtl-snow-lane.png`,
     coverAlt: "Couple walking a snow-covered lane in Montréal in falling snow at dusk",
     excerpt:
-      "Montréal in winter has softer light all day than Montréal in July, plus available Saturdays and lower venue rates. What a December to March wedding actually requires, hour by hour.",
+      "A January wedding in Montréal has better light all day than a July one. The case for December to March, and how the timeline has to change.",
     topic: "Planning",
     city: "montreal",
     body: `
@@ -1009,7 +1009,7 @@ export const posts: BlogPost[] = [
   /* ────────────────────────────────────── TORONTO MULTI-DAY WEDDINGS ── */
   {
     slug: "south-asian-wedding-photographer-toronto-cost",
-    title: "What a Multi-Day South Asian Wedding Costs to Photograph in Toronto",
+    title: "What a South Asian Wedding Costs to Photograph in Toronto",
     subtitle:
       "Why a three-day celebration is not one package with a bigger number on it, and how coverage should actually be scoped event by event.",
     date: "2026-08-14",
@@ -1018,7 +1018,7 @@ export const posts: BlogPost[] = [
     coverImage: `${CDN}/home/film-south-asian-couple-red-gold.webp`,
     coverAlt: "South Asian couple in a cream sherwani and a red and gold lehenga seated close together",
     excerpt:
-      "Multi-day wedding coverage in the GTA runs from roughly $6,000 to well past $15,000, and the spread is almost entirely about event count and crew. How to scope it properly instead of buying a flat package.",
+      "Multi-day wedding coverage in the GTA runs roughly $6,000 to past $15,000, and the spread is event count and crew. How to scope it properly.",
     topic: "Money",
     city: "toronto",
     body: `

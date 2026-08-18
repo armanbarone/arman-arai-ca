@@ -592,7 +592,7 @@ export const posts: BlogPost[] = [
       "Three regions within three hours of the city, what each does to a photograph, and what the travel really costs.",
     date: "2026-08-13",
     dateDisplay: "August 13, 2026",
-    readTime: "6 min read",
+    readTime: "7 min read",
     coverImage: `${CDN}/cities/toronto/muskoka.webp`,
     coverAlt: "Couple on a dock in front of a float plane on a Muskoka lake",
     excerpt:
@@ -865,7 +865,7 @@ export const posts: BlogPost[] = [
 <p>The second thing to plan is traffic. The parkway on a summer Saturday moves at the speed of tourism, and the distance between the falls, the town and Fort Erie is not the drive the map promises. Build the transitions at the speed of a full carload of guests, not at the speed of one photographer on a motorcycle.</p>
 
 <h2>When Niagara is at its best</h2>
-<figure><img src="${CDN}/cities/toronto/niagara/2023-weddings-np-ramblersrest-3-edited-e1724685938842.webp" alt="Ceremony chairs in rows on a lawn under mature trees in late afternoon light"><figcaption>Late September and the first half of October is the region's peak, and it books accordingly.</figcaption></figure>
+<figure><img src="${CDN}/cities/toronto/niagara/2023-weddings-np-fsh-show-house-6-edited-e1724180551623.webp" alt="Ceremony chairs in rows on a lawn under mature trees in late afternoon light"><figcaption>Late September and the first half of October is the region's peak, and it books accordingly.</figcaption></figure>
 <p><strong>Late September to mid-October is the best window.</strong> The vineyards have colour, the tourist volume has dropped from its August peak, the temperature is comfortable for a suit, and sunset has moved back to a time that fits a normal dinner service.</p>
 <p>May and June are lush and green and busy. July and August are hot and extremely busy, and the middle of the day is unusable outdoors, so portraits go late. November through April is where the Floral Showhouse earns its keep, and where a small winter ceremony in a warm glasshouse becomes a genuinely appealing idea rather than a compromise.</p>
 
@@ -1072,6 +1072,226 @@ export const posts: BlogPost[] = [
 <p><strong>Peak-season Saturdays in the GTA are usually booked nine to eighteen months ahead, and multi-day celebrations go earlier still</strong>, because they consume a photographer's entire weekend rather than one day of it. If your date is in May, June, September or October, the useful window to be having this conversation is now rather than in the spring.</p>
 <p>Off-season and weekday dates open up far later and cost less across every vendor, which is worth knowing if your calendar has any flexibility in it at all.</p>
 <p>If you have a schedule, send it. The number falls out of the schedule rather than out of a package list, and I would rather give you the real one in the first reply than in the third. The <a href="/pricing">whole ladder and every add-on is published</a>, the <a href="/toronto-wedding-photographer">Toronto page</a> covers the region in detail, and <a href="/blog/wedding-photography-cost-toronto">what photography costs in Toronto generally</a> sets the market context around these numbers.</p>
+`,
+  },
+  /* ────────────────────────────────────────────── MONTRÉAL VENUES ── */
+  {
+    slug: "montreal-wedding-venues",
+    title: "Montréal Wedding Venues: A Photographer's Guide",
+    subtitle:
+      "The rooms couples here actually book, what each one does to the light, and the one question to ask before you sign anything.",
+    date: "2026-08-17",
+    dateDisplay: "August 17, 2026",
+    readTime: "6 min read",
+    coverImage: `${CDN}/galleries/luca-lauren/018.webp`,
+    coverAlt: "A Montréal ceremony room set with coral blossom, the river beyond the glass",
+    excerpt:
+      "Montréal venues split into four kinds: old stone, grand hotel, glass-and-river, and the rooms outside the city. What each does to a photograph.",
+    topic: "Places",
+    city: "montreal",
+    body: `
+<p><strong>Montréal wedding venues fall into four kinds, and the choice between them is really a choice about light.</strong> Old stone in the Vieux-Port. A grand hotel ballroom. A glass room high over the water. Or a drive out to a vineyard or a chalet, which the Montréal price already covers.</p>
+<p>What follows is not a vendor list. It is what each kind of room actually does to a photograph, and the one question worth asking before you sign, which almost nobody asks.</p>
+
+<h2>The question to ask before you sign</h2>
+<figure><img src="${CDN}/galleries/luca-lauren/017.webp" alt="Bride at a tall window looking out over Montréal"><figcaption>Ask what time the light leaves the room you are paying for. Most contracts never mention it.</figcaption></figure>
+<p><strong>Ask what time the sun leaves the room, on your date.</strong> Not in general: on your date. A venue that is luminous at four in July is dark at four in October, and the difference decides whether your ceremony is lit by windows or by whatever the venue screwed into the ceiling.</p>
+<p>Venue staff rarely know the answer, which is fine. What matters is that you asked, because it makes the ceremony time a decision rather than a default. I will look it up for any Montréal room you are considering, before you have booked anything, because it costs me ten minutes and saves the day.</p>
+
+<h2>Old Montréal: stone, and light that arrives sideways</h2>
+<figure><img src="${CDN}/cities/montreal/places/mtl-oldmontreal-bluehour.png" alt="Couple on a cobbled Old Montréal street at blue hour with gas lamps lit"><figcaption>The old city was built before electric light, which is why it photographs so well without it.</figcaption></figure>
+<p>Château Ramezay, Le Gesù and the rooms around Place d'Armes are the heart of it. What they share is thick walls, tall narrow windows and interiors that were designed when the only light available came through glass.</p>
+<p><strong>That means the light arrives sideways rather than from above</strong>, which is the direction that makes a face look like a face. It also means the rooms are darker than your eye thinks: your eye adapts, a camera does not. A photographer working in Old Montréal without off-camera lighting is going to hand you a gallery that gets progressively worse after four o'clock.</p>
+<p>The other thing the old city gives you is fifteen minutes of walking that contains four completely different backdrops: cobbles, stone arcades, the Old Port waterfront, and the lanes off Saint-Paul. That compactness is why a Montréal wedding needs less portrait time than a Toronto one.</p>
+
+<h2>The grand hotels: reliable, and reliably difficult</h2>
+<figure><img src="${CDN}/galleries/luca-lauren/041.webp" alt="A dark panelled hotel interior with the couple small at the far end"><figcaption>Hotel ballrooms are the safest booking in the city and the hardest room to light well.</figcaption></figure>
+<p>The Fairmont Queen Elizabeth and the Windsor Ballrooms are the two most-booked large rooms in Montréal, and they are booked for good reasons: capacity, a getting-ready suite upstairs, and no weather risk at any point in the day.</p>
+<p><strong>What they ask of a photographer is lighting.</strong> A ballroom has no daylight, a high ceiling that eats bounced flash, and warm tungsten that turns skin orange if nobody corrects for it. This is the single most common place a cheap quote shows up in the gallery: the daytime frames look fine and the reception looks like a phone photo.</p>
+<p>If you are booking a ballroom, ask to see a full reception sequence from that photographer, shot after dark, in a room with no windows. Not a portfolio. A sequence.</p>
+
+<h2>Glass and water: the newer rooms over the Old Port</h2>
+<figure><img src="${CDN}/galleries/luca-lauren/019.webp" alt="Reception tables under tall coral arrangements with the river through the glass"><figcaption>A glass room gives you daylight until it does not, and then it gives you the city.</figcaption></figure>
+<p>Terrasse Nelligan and the newer glass rooms along the waterfront are the third category, and they are the most photographically generous rooms in the city for one reason: <strong>they have two completely different looks in the same evening.</strong></p>
+<p>Before sunset you have daylight on every face and the river behind you. After sunset the glass turns into a mirror and the city lights come up behind the reflections. Photographers who plan for it get both. Photographers who do not get the first one and then close the curtains.</p>
+<p>The cost is exposure to weather in the shoulder seasons, and a room that heats up badly in July if the air conditioning is not honest.</p>
+
+<h2>Outside the city, at the same price</h2>
+<figure><img src="${CDN}/galleries/nicole-js/017.webp" alt="A stone manor and chapel in the mist above a Townships vineyard"><figcaption>The Laurentians and the Townships are inside the Montréal price, not beside it.</figcaption></figure>
+<p><strong>This is the part most couples get wrong, and it is worth money.</strong> A vineyard in Sutton, a chalet in the Laurentians, an estate in Charlevoix and a hotel on Saint-Paul all cost the same to photograph with me: C$4,000 for Core, C$5,500 for Signature, C$7,000 for Story Weekend. The drive and the night are already inside the figure.</p>
+<p>Which means the decision is purely about the day you want rather than the budget. Vineyard country gives you rows, hills and weather. The Laurentians give you lakes and hard autumn colour from the last week of September. Charlevoix gives you the river and cliffs.</p>
+<p>What they all cost you is guest logistics: an hour of driving each way, which caps how late your reception can run for anyone not sleeping on site.</p>
+
+<h2>When to get married here, by venue type</h2>
+<figure><img src="${CDN}/cities/montreal/places/mtl-snow-lane.png" alt="Couple sharing an umbrella in falling snow on a Montréal street of exterior staircases"><figcaption>The venue type should decide the season, not the other way round.</figcaption></figure>
+<p><strong>Old stone and grand hotels are all-season rooms.</strong> They photograph identically in January and July, which means a winter date costs less at almost every vendor and loses you nothing. Old Montréal in falling snow is the best set the city has.</p>
+<p>Glass rooms want May to October, because the whole argument for them is the view and the daylight.</p>
+<p>Vineyards and chalets want late September to mid-October, when the colour is hard and the light is low all afternoon, or deep winter if you actually want snow rather than tolerating it.</p>
+
+<h2>What a Montréal wedding costs to photograph</h2>
+<figure><img src="${CDN}/galleries/luca-lauren/001.webp" alt="Couple on a terrace above the Old Port with the city behind them"><figcaption>One number, whether the day happens on Saint-Paul or ninety minutes north.</figcaption></figure>
+<p><strong>Core is C$4,000 for eight hours, Signature C$5,500 for ten with a second photographer, and Story Weekend C$7,000 for twelve hours across two days.</strong> Every collection includes a colour-graded feature film and film prints handed to your guests on the night, plus an engagement session and the timeline work.</p>
+<p>That price covers the island, the Laurentians, the Eastern Townships, Québec City and Charlevoix. There is no travel line on any of them.</p>
+<p>If you have a venue in mind, <a href="/contact">send it</a> and I will tell you what the light does in that room on your date. The <a href="/pricing">full ladder is published</a>, the city sits on the <a href="/montreal-wedding-photographer">Montréal page</a>, and a complete Montréal wedding is <a href="/galleries/luca-lauren">here start to finish</a>.</p>
+`,
+  },
+
+  /* ─────────────────────────────────────────────── TORONTO VENUES ── */
+  {
+    slug: "toronto-wedding-venues",
+    title: "Toronto Wedding Venues: What Each Room Demands",
+    subtitle:
+      "Casa Loma, the Distillery District, Graydon Hall, Liberty Grand and the King Edward, judged on light and logistics rather than prestige.",
+    date: "2026-08-17",
+    dateDisplay: "August 17, 2026",
+    readTime: "5 min read",
+    coverImage: `${CDN}/galleries/eathon-jessica/029.webp`,
+    coverAlt: "A candlelit Toronto reception room with tall windows and round tables",
+    excerpt:
+      "Toronto's best-known wedding venues each demand something different from a photographer. Casa Loma, the Distillery, Graydon Hall and the King Edward.",
+    topic: "Places",
+    city: "toronto",
+    body: `
+<p><strong>Toronto's headline venues are booked on prestige and photographed on light, and those two things rarely point the same way.</strong> Casa Loma is the most recognisable wedding address in the city and one of the harder rooms to work in. The Distillery District is the most photogenic and the most crowded.</p>
+<p>Here is what each of the rooms couples actually book demands from the person photographing it, and the specific thing to plan for at each one.</p>
+
+<h2>Casa Loma: book the light, not the room</h2>
+<figure><img src="${CDN}/galleries/elisha-michael/032.webp" alt="Groom against a stone wall in warm evening light"><figcaption>Stone this heavy needs directional light or it flattens into grey.</figcaption></figure>
+<p>Casa Loma gives you something no other Toronto venue can: genuine castle architecture, in the middle of a city, with grounds. It is the closest thing Ontario has to a period film set.</p>
+<p><strong>What it demands is time in the right hour.</strong> The stone is heavy and cool-toned, and in flat midday light it goes grey and lifeless. Late afternoon along the terrace and the conservatory is when the building actually turns on. If your timeline puts portraits at one in the afternoon because that is what fitted, you have booked a castle and photographed a wall.</p>
+<p>The second thing to plan is people. It is a public attraction as well as a venue, so the version of Casa Loma with nobody in it exists at specific hours that your coordinator can tell you and your photographer should ask about.</p>
+
+<h2>The Distillery District: the best hour is the one before it opens</h2>
+<figure><img src="${CDN}/portfolio/documentary/reception-toast-raised-glass.webp" alt="A guest raising a glass mid-toast at a Toronto reception"><figcaption>Brick, iron and string lights, and several thousand other people.</figcaption></figure>
+<p>The Fermenting Cellar and Archeo are the two rooms most couples mean when they say the Distillery. Brick, iron, timber and string lights, which is a warm and forgiving palette that photographs beautifully at almost any hour.</p>
+<p><strong>The whole trick is crowds.</strong> The pedestrian streets are busy from late morning until late evening, and a portrait sequence at two in the afternoon means strangers in every fourth frame. The lanes are genuinely empty early, and they are empty again in the last light once the day visitors have gone.</p>
+<p>If your ceremony is on site, the fix is simple: fifteen minutes of portraits before the ceremony rather than an hour after it. That single change is worth more than any lens.</p>
+
+<h2>Graydon Hall Manor: the one that behaves</h2>
+<figure><img src="${CDN}/galleries/eathon-jessica/045.webp" alt="Bride in a long cape crossing a room toward tall windows"><figcaption>Formal gardens, a terrace and interiors with real windows. It asks for very little.</figcaption></figure>
+<p>Graydon Hall is the most cooperative venue on this list. A 1930s manor with formal gardens, a terrace, and interiors that still have proper windows in them, which is rarer than it sounds.</p>
+<p>It gives you an outdoor ceremony option, a covered option, and portraits within thirty seconds' walk of both. <strong>For a couple whose main anxiety is weather, this is the strongest booking in the city</strong>, because the wet-weather plan is not a separate location you drive to, it is the room next door.</p>
+<p>The trade is that everyone else knows this too, so Saturdays go early.</p>
+
+<h2>Liberty Grand and the Omni King Edward: the big rooms</h2>
+<figure><img src="${CDN}/galleries/eathon-jessica/024.webp" alt="A tall greenery wall hung with escort cards beside a lit reception"><figcaption>Large rooms and high ceilings mean lighting, or a reception that looks like nothing.</figcaption></figure>
+<p>Liberty Grand at Exhibition Place and the Omni King Edward downtown are the two rooms most often booked for a genuinely large Toronto wedding: three hundred people, a stage, a proper dance floor.</p>
+<p><strong>Both are lighting problems before they are anything else.</strong> High ceilings swallow bounced flash, the ambient is warm tungsten, and the rooms are big enough that a single on-camera flash falls off before it reaches the back. This is where a photographer either owns and knows how to place off-camera lighting, or hands you a reception sequence that is noisy and orange.</p>
+<p>The King Edward has the additional advantage of being a hotel, which removes travel between getting ready, the ceremony and the reception. At a three-hundred-guest wedding that is worth an hour of your day.</p>
+
+<h2>Outside the city, at the same price</h2>
+<figure><img src="${CDN}/galleries/elisha-michael/021.webp" alt="A sailcloth tent lit over vineyard rows at dusk"><figcaption>Niagara costs what King Street costs. That surprises most couples.</figcaption></figure>
+<p><strong>Niagara, Niagara-on-the-Lake and the 1000 Islands are inside the published Toronto price</strong>, which means a winery Saturday costs exactly what a downtown Saturday costs: C$4,000 for Core, C$6,000 for Signature, C$8,500 for the two-day Story Weekend.</p>
+<p>That makes the decision about the day rather than the budget. A vineyard gives you rows, a horizon and a tent. Downtown gives you brick, a shorter guest commute and no weather risk.</p>
+<p>Muskoka and Prince Edward County sit outside the published region and are quoted against the specific property, because accommodation there varies enormously by venue. <a href="/blog/wedding-venues-outside-toronto">The comparison between the three is written out here</a>.</p>
+
+<h2>The thing every Toronto venue has in common</h2>
+<figure><img src="${CDN}/portfolio/documentary/hotel-corridor-groom.webp" alt="Groom walking away down a hotel corridor"><figcaption>Travel time between venues is the input every Toronto timeline underestimates.</figcaption></figure>
+<p><strong>Distance.</strong> The GTA is enormous, and a timeline that assumes a twenty-minute transfer will find out otherwise on a Saturday in June. Getting ready in Mississauga, a ceremony in the Distillery and photographs at the Bluffs is three separate trips, and the 401 does not care about your schedule.</p>
+<p>Two fixes, in order of effectiveness. Get ready as close to the ceremony as you can manage, ideally in the same building. And do a first look, which converts an hour of post-ceremony scramble into an hour you actually spend at your own cocktail hour.</p>
+<p>Send me the venue and the date and I will tell you what the light does there at that hour. The <a href="/pricing">prices are published</a>, the region sits on the <a href="/toronto-wedding-photographer">Toronto page</a>, and two complete Ontario weddings are here start to finish: <a href="/galleries/elisha-michael">an October chapel</a> and <a href="/galleries/eathon-jessica">a July pavilion</a>.</p>
+`,
+  },
+
+  /* ────────────────────────────────────── QUÉBEC CITY & CHARLEVOIX ── */
+  {
+    slug: "quebec-city-charlevoix-weddings",
+    title: "Getting Married in Québec City or Charlevoix",
+    subtitle:
+      "The oldest walled city in North America, an hour of cliffs and river beyond it, and both inside the Montréal price.",
+    date: "2026-08-17",
+    dateDisplay: "August 17, 2026",
+    readTime: "5 min read",
+    coverImage: `${CDN}/cities/montreal/places/qc-petitchamplain-steps.png`,
+    coverAlt: "Snow-covered stone steps in a historic Québec City street in winter",
+    excerpt:
+      "Québec City and Charlevoix cost the same to photograph as Montréal: C$4,000 for Core. What the walled city gives a wedding, and when to go.",
+    topic: "Places",
+    city: "montreal",
+    body: `
+<p><strong>Québec City and Charlevoix cost exactly what a Montréal wedding costs to photograph: C$4,000 for Core, C$5,500 for Signature, C$7,000 for Story Weekend.</strong> They are inside the published Montréal region, so the three-hour drive and the night are already in the figure rather than added to it.</p>
+<p>That matters more here than anywhere else in Québec, because most photographers quote the walled city as a destination job. It is a drive.</p>
+
+<h2>What the walled city actually gives you</h2>
+<figure><img src="${CDN}/cities/montreal/places/qc-dufferin-dawn.png" alt="Dawn light along the Dufferin Terrace above the St Lawrence"><figcaption>Terrasse Dufferin at dawn, before the city is awake.</figcaption></figure>
+<p><strong>Québec City is the only walled city north of Mexico, and the walls are the point.</strong> They compress everything: Place Royale, Petit-Champlain, the Terrasse Dufferin and the Château Frontenac are all inside a twenty-minute walk of each other, which means a portrait sequence there covers more visual ground than an hour of driving anywhere else in Canada.</p>
+<p>The architecture is genuinely old, and old stone does two things a modern venue cannot. It holds shadow, which gives a portrait depth without any lighting. And it is neutral in colour, so it throws nothing unpleasant onto skin. Brick and wood venues in Southern Ontario both fail that test.</p>
+<p>The Château Frontenac sits above all of it and photographs from almost everywhere in the lower town, which is either the frame you came for or the thing in the background of every photograph. Decide which before the day.</p>
+
+<h2>Charlevoix: an hour further, and a different country</h2>
+<figure><img src="${CDN}/cities/montreal/bic.webp" alt="Couple walking a snowy rocky shoreline at sunset on the St Lawrence"><figcaption>Past Beaupré the river widens until the far shore stops being a shore.</figcaption></figure>
+<p>An hour northeast of the city the land folds into cliffs and the St Lawrence widens until you cannot see across it. Charlevoix is where Québec stops looking like a province and starts looking like a coastline.</p>
+<p><strong>What it gives a wedding is scale, and what it asks for is a plan.</strong> The estates and inns are spread along a long road, guests will be driving, and the best light is at the top of the cliffs rather than at the venue. That means a portrait window that is a genuine excursion rather than a walk outside, which has to be in the timeline rather than hoped for.</p>
+<p>It also has the most reliably dramatic weather in the region, which I mean as a compliment. Fog coming up the river is a gift.</p>
+
+<h2>When to go</h2>
+<figure><img src="${CDN}/cities/montreal/places/qc-montmorency-winter.png" alt="Montmorency Falls frozen in winter light"><figcaption>Winter is the season the walled city was built for.</figcaption></figure>
+<p><strong>Late September and early October is the strongest fortnight</strong>, and it is not close. The colour on the north shore is hard, the tourist volume has dropped from its August peak, and the light is low enough all afternoon to work anywhere in the lower town.</p>
+<p>July and August are beautiful and extremely busy. The lanes of Petit-Champlain in August have several hundred people in them at any hour, which is a real constraint on a portrait sequence.</p>
+<p><strong>Winter is the underrated answer and the one I would push you toward.</strong> Snow on seventeenth-century stone, the whole lower town lit at four in the afternoon, and a city that empties out. The Montmorency falls freeze. You will be cold for ten minutes at a time and the photographs will not look like anybody else's.</p>
+
+<h2>What the drive means for your day</h2>
+<figure><img src="${CDN}/galleries/nicole-js/052.webp" alt="Couple in a stone doorway above a valley"><figcaption>Three hours from Montréal, and the guests feel it more than you will.</figcaption></figure>
+<p><strong>Québec City is about three hours from Montréal and Charlevoix is four.</strong> For me that is a drive and a night, both already inside the price. For your guests it is the thing that shapes the weekend.</p>
+<p>Anyone coming from Montréal or further will arrive the day before, which means there is a Friday whether you plan one or not. That is the honest argument for the two-day Story Weekend here rather than an upsell: the welcome dinner is happening, everybody is already there, and the Friday evening light on the river is frequently better than anything Saturday produces.</p>
+<p>The second consequence is the end of the night. Guests who are driving back will leave earlier than you want. Blocking rooms near the venue is worth more to your dance floor than any band.</p>
+
+<h2>What it costs</h2>
+<figure><img src="${CDN}/galleries/luca-lauren/047.webp" alt="Bride on the steps of a grand stone building in black and white"><figcaption>One price for Montréal, the Townships, the Laurentians, Québec City and Charlevoix.</figcaption></figure>
+<p>Core is C$4,000 for eight hours, Signature C$5,500 for ten with a second photographer, Story Weekend C$7,000 for twelve hours across two days. A colour-graded feature film and film prints handed to your guests on the night are in every collection.</p>
+<p><strong>Nothing is added for the distance.</strong> A wedding at the Château Frontenac and a wedding on Saint-Paul in Montréal are the same number, because the drive and the night were priced in when the ladder was built rather than bolted on at quote time.</p>
+<p>The <a href="/pricing">full pricing page</a> lists what each region covers, the <a href="/montreal-wedding-photographer">Montréal page</a> carries the region in detail, and if winter is what you are considering, <a href="/blog/winter-wedding-montreal">the winter argument is written out here</a>.</p>
+`,
+  },
+
+  /* ───────────────────────────────────────── THE FILM AND THE PRINTS ── */
+  {
+    slug: "wedding-film-and-prints-included",
+    title: "Why a Film and Real Prints Are in Every Collection",
+    subtitle:
+      "A one to two minute film, colour graded, and photographs handed to your guests before they go home. Neither is an add-on, and here is why.",
+    date: "2026-08-17",
+    dateDisplay: "August 17, 2026",
+    readTime: "5 min read",
+    coverImage: `${CDN}/galleries/eathon-jessica/047.webp`,
+    coverAlt: "Couple in a warmly lit room, the groom adjusting his cuff in a mirror",
+    excerpt:
+      "Every collection includes a colour-graded feature film and film prints handed to guests on the night. Why both are included rather than sold.",
+    topic: "Choosing",
+    city: null,
+    body: `
+<p><strong>Every collection includes two things most photographers sell separately: a colour-graded feature film, and real photographic prints handed to your guests before they leave the wedding.</strong> One minute of film on Core, two minutes on Signature and Story Weekend.</p>
+<p>Couples ask why they are included rather than priced, and the answer is not generosity. It is that both are cheap for me and expensive for you to buy anywhere else, which is the only sound basis for including anything.</p>
+
+<h2>Why the film can be included at all</h2>
+<figure><img src="${CDN}/galleries/eathon-jessica/037.webp" alt="Couple close together in warm low light at a reception"><figcaption>A short film shot alongside the photographs costs a day I am already spending.</figcaption></figure>
+<p><strong>Because I shoot it alongside the photographs rather than bringing a second person to shoot it.</strong> The camera bodies I use for stills record video. The day I am already being paid for is the day the footage comes from. What it costs me is editing time, which is real but finite, and nothing else.</p>
+<p>Full videography is a completely different product and it is an add-on, priced from what it actually costs: C$3,500 for a dedicated operator for eight hours, C$4,500 for ten. That buys ceremony audio, speech capture, multiple angles and a much longer edit. If you want a proper wedding film, book that.</p>
+<p>What the included film is: a short, deliberate, colour-graded piece cut from the day. Movement, light, the shape of the thing. What it is not: a substitute for a videographer, and I will say so plainly rather than let you discover it.</p>
+
+<h2>Why a one-minute film beats a fifteen-minute one</h2>
+<figure><img src="${CDN}/galleries/luca-lauren/002.webp" alt="Couple dancing by a window with the city beyond"><figcaption>A minute gets watched. Fifteen gets saved for later and never opened.</figcaption></figure>
+<p><strong>Because a minute gets watched.</strong> The honest fact about long wedding films is that most couples watch theirs twice, and almost nobody else watches it once. A short film gets sent to people, gets replayed, and survives the way a photograph survives.</p>
+<p>It also gets made properly. A minute of footage that has been genuinely edited is worth more than fifteen minutes of assembled clips, and the ratio of care to runtime is where most wedding video goes wrong.</p>
+<p>Story Weekend and Signature get two minutes because there is more day to cover, not because longer is better.</p>
+
+<h2>The prints are the part people actually react to</h2>
+<figure><img src="${CDN}/galleries/elisha-michael/030.webp" alt="Guests laughing together at a candlelit reception table"><figcaption>People leave holding a photograph from the wedding they are still at.</figcaption></figure>
+<p><strong>Film prints, handed to your guests on the night.</strong> Not a link, not a gallery, not a QR code on a table. A physical photograph from your wedding, given to people while they are still at it.</p>
+<p>This is the single most commented-on thing I do, and the reason is straightforward. Everyone at a wedding has taken a hundred photographs on a phone and will look at none of them. A print is an object. It goes on a fridge, in a wallet, on a desk. It is still there in five years.</p>
+<p>It also solves a real problem: the gap. Your gallery is weeks away by definition, because editing six hundred photographs properly takes weeks. The prints and the film close that gap with something better than a preview.</p>
+
+<h2>What this replaces</h2>
+<figure><img src="${CDN}/galleries/eathon-jessica/026.webp" alt="A champagne tower being poured at a reception"><figcaption>Social clips moved to a paid add-on because doing them properly needs a second person.</figcaption></figure>
+<p><strong>Vertical social clips used to be in every collection and are not any more.</strong> They are now a paid add-on, and the honesty is worth more than the inclusion was.</p>
+<p>Doing phone-first content properly means somebody whose job that is: shooting vertical, cutting on the day, delivering overnight. Done as a side effect of photographing your wedding it is a compromise on both. So it is priced as what it is: a dedicated content creator is C$1,200 for eight hours, and a 60 to 90 second hybrid motion reel with selected audio is C$1,250.</p>
+<p>If posting the next morning matters to you, book the content creator. If what you want is something that lasts, the film and the prints are already in the price.</p>
+
+<h2>What comes back, and when</h2>
+<figure><img src="${CDN}/galleries/nicole-js/026.webp" alt="Newlyweds touching champagne glasses together"><figcaption>Prints on the night, a preview inside 48 hours, then the film, then the gallery.</figcaption></figure>
+<p>In order. <strong>Prints on the night.</strong> Then a preview of stills, inside 48 hours on Core, next day on Signature and within 24 hours on Story Weekend. Then the film. Then the full gallery: five to seven weeks on Core, four on Signature, three on Story Weekend, with the date written into the contract rather than promised in an email.</p>
+<p>Signature adds a roll of real film, processed and scanned. Story Weekend adds two. Those come back when the lab is finished with them, which is typically four to six weeks and genuinely outside my control.</p>
+<p>Everything above is in every collection at every price, in <a href="/pricing">all three regions</a>. If you want to see what the whole thing looks like on a real day, <a href="/galleries">five complete weddings are here</a>, first frame to last.</p>
 `,
   },
 ];

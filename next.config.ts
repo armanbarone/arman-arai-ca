@@ -53,11 +53,6 @@ const nextConfig: NextConfig = {
       // Destination weddings are not part of this business. The page is gone and
       // everything that pointed at it now lands on pricing, which is what a
       // couple arriving from those links is actually looking for.
-      // Two albums inherited from the .com archive were a French château and a
-      // Cape Cod resort. This domain is Canadian weddings only, and there are
-      // now five real Canadian albums, so they were retired rather than kept.
-      { source: "/galleries/margaux-antoine", destination: "/galleries", permanent: true },
-      { source: "/galleries/eleanor-james", destination: "/galleries", permanent: true },
       { source: "/destination", destination: "/pricing", permanent: true },
       { source: "/collections", destination: "/pricing", permanent: true },
       // Common alternate spellings of the city pages, so a mistyped or

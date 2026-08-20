@@ -147,11 +147,15 @@ areas, market copy, FAQs. `/pricing`, the hubs, footer, nav, `llms.txt` and
 
 - `TIERS` — three collections, identical everywhere. Core 8h, Signature 10h
   with a second shooter for six, Story Weekend 12h over two days.
-- `REGIONS` — **three** published regions, each with its own `prices` map and a
-  `covers` list. Each figure already contains travel and accommodation.
-  Everything outside them is `OUTER_REGIONS_NOTE`: quoted on request, never
-  guessed. Muskoka, Prince Edward County, Vancouver Island and the Rockies are
-  all outer.
+- `REGIONS` — **seven**. Three carry `primary: true` and a `prices` map, and
+  those are the only ones with published figures: Montréal, Toronto, Vancouver.
+  Four have a page but no `prices` key at all: Whistler is the exception that
+  DOES have prices because the 2027 sheet puts it inside the Vancouver region;
+  Tofino/Vancouver Island, Banff and Jasper are quoted on request.
+  **`prices` being absent is deliberate. Do not fill it in by extrapolating
+  from Vancouver — ask Arman for the figure.** `quoteFor()` returns `null` for
+  those and every `money()` helper renders "On request"; JSON-LD skips the
+  Offer entirely rather than emitting `price: null`.
 - `ADDONS` — fifteen. **A feature film and film prints are NOT add-ons**; they
   are in every collection.
 

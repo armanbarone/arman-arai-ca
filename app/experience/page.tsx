@@ -28,7 +28,8 @@ export const metadata: Metadata = {
   },
 };
 
-const money = (n: number) => `C$${n.toLocaleString("en-CA")}`;
+const money = (n: number | null) =>
+  n === null ? "On request" : `C$${n.toLocaleString("en-CA")}`;
 
 // The arc of the work, in the order a couple actually lives it.
 const CHAPTERS = [

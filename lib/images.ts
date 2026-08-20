@@ -136,6 +136,56 @@ export const HOME_SEQUENCE: Photo[] = [
  * which is why it is not listed here.
  */
 export const CITY_WORK: Record<string, Photo[]> = {
+  banff: [
+    p("cities/banff/banff-24", "A wedding party gathered around a couple in a golden Rockies meadow"),
+    p("cities/banff/banff-14", "Ceremony arch dressed with flowers on a lawn beneath the mountains"),
+    p("cities/banff/banff-25", "Couple with their guests behind them and the Rockies beyond"),
+    p("cities/banff/banff-15", "Couple on a lakeside dock beside a wooden boat"),
+    p("cities/banff/banff-62", "A small group in formalwear at a mountain lake"),
+    p("cities/banff/banff-53", "Couple above turquoise glacial water in the Rockies"),
+    p("cities/banff/banff-42", "Couple close together in formalwear in a mountain forest at golden hour"),
+    p("cities/banff/banff-21", "A rainbow arching over a mountain meadow behind a couple"),
+    p("cities/banff/banff-55", "Couple in a red canoe on glacial water"),
+    p("cities/banff/banff-70", "Couple on the shore of a turquoise mountain lake"),
+    p("cities/banff/banff-46", "Couple lit by a lantern against a dark mountain night"),
+    p("cities/banff/banff-56", "Northern lights over a mountain lake behind a couple"),
+  ],
+  jasper: [
+    p("cities/jasper/jasper-02", "Couple beside a red canoe on a still Jasper lake at dawn"),
+    p("cities/jasper/jasper-06", "Couple on a mountain ridge above Maligne Lake"),
+    p("cities/jasper/jasper-08", "Couple beside a lake with a canoe drawn up on the shore"),
+    p("cities/jasper/jasper-11", "Couple dancing in an alpine meadow of wildflowers"),
+    p("cities/jasper/jasper-07", "Couple on the porch of a log cabin with the mountains beyond"),
+    p("cities/jasper/jasper-12", "Couple crossing a wooden footbridge below a mountain"),
+    p("cities/jasper/jasper-09", "Couple beside a waterfall in a limestone gorge"),
+    p("cities/jasper/jasper-13", "Couple beside a campfire under the Milky Way"),
+    p("cities/jasper/jasper-04", "Couple embracing on a high ridge above the valley"),
+  ],
+  whistler: [
+    p("cities/whistler/whistler-09", "Couple on a mountain overlook above the Whistler valley"),
+    p("cities/vancouver/whistler/23-elevated-lakeside-ceremony", "An elevated ceremony deck above a Whistler lake"),
+    p("cities/whistler/whistler-03", "Ceremony set on a deck above a mountain lake"),
+    p("cities/vancouver/whistler/17-rustic-confetti-exit", "Confetti thrown over a couple leaving a rustic barn"),
+    p("cities/whistler/whistler-14", "Couple in the alpine above the tree line"),
+    p("cities/vancouver/whistler/24-vows-with-wedding-party", "Vows read with the wedding party standing close behind"),
+    p("cities/whistler/whistler-21", "Couple in falling snow among the conifers"),
+    p("cities/vancouver/whistler/21-east-asian-family-toast", "A family toast raised around a long table"),
+    p("cities/whistler/whistler-17", "Couple beside still water with the peaks reflected"),
+    p("cities/vancouver/whistler/20-stone-steps-recessional", "The recessional down wide stone steps"),
+    p("cities/whistler/whistler-06", "Couple on a suspension bridge above the sound"),
+    p("cities/vancouver/whistler/09-windblown-veil-overlook", "A veil caught by the wind at a mountain overlook"),
+  ],
+  tofino: [
+    p("cities/vancouver-island/vancouver-island-04", "Couple on a wide Pacific beach with surf behind them"),
+    p("cities/vancouver-island/vancouver-island-02", "Couple on hard wet sand at low tide"),
+    p("cities/vancouver-island/vancouver-island-11", "Couple among old-growth rainforest on Vancouver Island"),
+    p("cities/vancouver-island/vancouver-island-08", "Couple walking the tide line together"),
+    p("cities/vancouver-island/vancouver-island-17", "Couple on a rocky headland above the Pacific"),
+    p("cities/vancouver-island/vancouver-island-23", "Couple in low coastal cloud at the water's edge"),
+    p("cities/vancouver-island/vancouver-island-14", "Couple on driftwood with the open ocean behind them"),
+    p("cities/vancouver-island/vancouver-island-20", "Couple silhouetted against a west coast sunset"),
+    p("cities/vancouver-island/vancouver-island-06", "Couple beneath dripping rainforest canopy"),
+  ],
   vancouver: [
     p("cities/vancouver/work/11-storm-rainbow-ceremony", "A rainbow breaking over an outdoor ceremony as a storm clears"),
     p("cities/vancouver/work/09-mountain-veil-bride", "Bride throwing her veil up against the mountains"),
@@ -341,6 +391,46 @@ export const CITY_PHOTOS: Record<string, CityPhotos> = {
       place("cities/vancouver/cypress.webp", "Couple in the snow among the conifers on Cypress Mountain", "Cypress and the Sea-to-Sky"),
     ],
     working: p("about/arman-shooting-bridal-party-trees", "Arman photographing a bridal party in an avenue of trees"),
+  },
+  whistler: {
+    hero: p("cities/whistler/whistler-09", "Couple on a mountain overlook above Whistler, the valley behind them"),
+    places: [
+      place("cities/whistler/whistler-03", "Ceremony set on a deck above a Whistler lake", "Green Lake"),
+      place("cities/whistler/whistler-14", "Couple in the alpine above the tree line", "The alpine"),
+      place("cities/vancouver/whistler/17-rustic-confetti-exit.webp", "Confetti thrown over a couple leaving a rustic barn", "The village"),
+      place("cities/whistler/whistler-21", "Couple in falling snow among the conifers", "Winter"),
+    ],
+    working: p("cities/vancouver/whistler/24-vows-with-wedding-party", "Vows read with the wedding party standing close behind"),
+  },
+  tofino: {
+    hero: p("cities/vancouver-island/vancouver-island-04", "Couple on a wide Pacific beach with surf behind them"),
+    places: [
+      place("cities/vancouver-island/vancouver-island-02", "Couple on hard wet sand at low tide", "Chesterman Beach"),
+      place("cities/vancouver-island/vancouver-island-11", "Couple among old-growth rainforest on the island", "The rainforest"),
+      place("cities/vancouver-island/vancouver-island-17", "Couple on a rocky headland above the Pacific", "The headlands"),
+      place("cities/vancouver-island/vancouver-island-23", "Couple in low coastal cloud at the water's edge", "Storm season"),
+    ],
+    working: p("cities/vancouver-island/vancouver-island-08", "A couple walking the tide line together on Vancouver Island"),
+  },
+  banff: {
+    hero: p("cities/banff/banff-24", "A wedding party gathered for a ceremony in a golden Rockies meadow"),
+    places: [
+      place("cities/banff/banff-14", "Ceremony arch on a lawn with the Rockies behind it", "Banff"),
+      place("cities/banff/banff-53", "Couple above turquoise glacial water at Moraine Lake", "Moraine Lake"),
+      place("cities/banff/banff-15", "Couple on a lakeside dock beside a wooden boat", "Lake Louise"),
+      place("cities/banff/banff-25", "Couple with guests behind them and mountains beyond", "Canmore"),
+    ],
+    working: p("cities/banff/banff-42", "Couple close together in formalwear in the Rockies"),
+  },
+  jasper: {
+    hero: p("cities/jasper/jasper-02", "Couple beside a red canoe on a still Jasper lake at dawn"),
+    places: [
+      place("cities/jasper/jasper-01", "Couple on a ridge above a Jasper lake", "Maligne Lake"),
+      place("cities/jasper/jasper-07", "Couple on the porch of a log cabin with the mountains beyond", "The lodge"),
+      place("cities/jasper/jasper-12", "Couple on a footbridge with a mountain behind them", "Pyramid Island"),
+      place("cities/jasper/jasper-13", "Couple beside a campfire under the Milky Way", "The dark sky"),
+    ],
+    working: p("cities/jasper/jasper-11", "Couple dancing in an alpine meadow of wildflowers"),
   },
 };
 

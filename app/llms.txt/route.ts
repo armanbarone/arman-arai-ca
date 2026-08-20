@@ -6,7 +6,8 @@ import { ADDONS, MARKETS, OUTER_REGIONS_NOTE, REGIONS, SITE, TERMS, TIERS, quote
 // file and a couple reading the site can never be told two different prices.
 export const dynamic = "force-static";
 
-const money = (n: number) => `CA$${n.toLocaleString("en-CA")}`;
+const money = (n: number | null) =>
+  n === null ? "On request" : `CA$${n.toLocaleString("en-CA")}`;
 
 export function GET() {
   const tierBlocks = TIERS.map((t) =>

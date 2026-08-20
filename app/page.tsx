@@ -44,7 +44,8 @@ export const metadata: Metadata = {
   alternates: { canonical: "/" },
 };
 
-const money = (n: number) => `C$${n.toLocaleString("en-CA")}`;
+const money = (n: number | null) =>
+  n === null ? "On request" : `C$${n.toLocaleString("en-CA")}`;
 
 /* The four claims, answering the .com's four rites. */
 const manifesto = [

@@ -1294,6 +1294,123 @@ export const posts: BlogPost[] = [
 <p>Everything above is in every collection at every price, in <a href="/pricing">all three regions</a>. If you want to see what the whole thing looks like on a real day, <a href="/galleries">five complete weddings are here</a>, first frame to last.</p>
 `,
   },
+  /* ───────────────────────────────────────────────────────────── BANFF ── */
+  {
+    slug: "banff-wedding-photographer",
+    title: "Getting Married in Banff: Permits, Shuttles and Light",
+    subtitle:
+      "The most photographed mountains in Canada, and the three logistical facts that decide whether your day works.",
+    date: "2026-08-18",
+    dateDisplay: "August 18, 2026",
+    readTime: "9 min read",
+    coverImage: `${CDN}/cities/banff/banff-24.webp`,
+    coverAlt: "A wedding party gathered around a couple in a golden Rockies meadow",
+    excerpt:
+      "A Banff wedding is decided by permits, shuttle access and what hour you are willing to start. The venues, the paperwork and the two-week larch window.",
+    topic: "Places",
+    city: null,
+    body: `
+<p><strong>Banff is the easiest landscape in Canada to photograph and one of the hardest places to run a wedding in, and both facts have the same cause: everybody else wants to be there too.</strong> Moraine Lake is shuttle access only. Lake Louise has one good hour and six difficult ones. A ceremony on Parks Canada land needs a permit that is slow, seasonal and capped by site.</p>
+<p>None of that is a reason to go elsewhere. All of it is a reason to plan properly, and the planning is most of what a Rockies photographer is actually for.</p>
+
+<h2>The permit is the part that ends plans</h2>
+<figure><img src="${CDN}/cities/banff/banff-14.webp" alt="Ceremony arch dressed with flowers on a lawn beneath the mountains"><figcaption>A permitted site, arranged months out. The alternative is finding out in the final fortnight.</figcaption></figure>
+<p><strong>A ceremony on Parks Canada land requires a site-specific permit, and it is not a formality.</strong> Sites are capped, the season is limited, and the process is slow enough that applying late means not getting the site you wanted. This is the single most common reason a Rockies wedding plan collapses in the last month.</p>
+<p>The current sites, fees and application windows live with <a href="https://parks.canada.ca/pn-np/ab/banff" rel="nofollow">Parks Canada</a>, and they change, so check them rather than trusting any blog including this one. What does not change is the timing: months, not weeks.</p>
+<p>The way around it is a private venue that carries its own permissions. The Banff Springs, the Rimrock, Buffalo Mountain Lodge and Emerald Lake Lodge over in Yoho all handle their own ground, which is why most Banff weddings above forty guests happen at one of them.</p>
+
+<h2>Moraine Lake is shuttle-only now, and that changes the day</h2>
+<figure><img src="${CDN}/cities/banff/banff-53.webp" alt="Couple above turquoise glacial water in the Rockies"><figcaption>The most recognisable water in Canada, and you are not driving to it.</figcaption></figure>
+<p><strong>Private vehicles cannot reach Moraine Lake.</strong> Access is by Parks Canada shuttle, commercial bus or a booked service, and that is a hard operational fact rather than a queue you can beat by leaving early.</p>
+<p>For two people and a photographer it is entirely workable and worth doing: an early shuttle, forty minutes at the rockpile, and frames that justify the alarm clock. For a wedding party of twelve in formalwear it is a fight nobody enjoys, and the photographs are not twelve times better.</p>
+<p><strong>The honest structure for most weddings is a private venue for the day and a sunrise session at Moraine the morning after</strong>, with just the two of you. You get the frame, without asking your grandmother to board a shuttle at 5am in a dress.</p>
+
+<h2>Lake Louise has one good hour</h2>
+<figure><img src="${CDN}/cities/banff/banff-70.webp" alt="Couple on the shore of a turquoise mountain lake"><figcaption>Before the coaches, or not at all. The lake does not change; the crowd does.</figcaption></figure>
+<p>Lake Louise before the coaches arrive is a different lake from Lake Louise at eleven in the morning. The water is the same colour either way; the difference is whether there are two hundred people in your frame.</p>
+<p><strong>If the empty version is the one you want, it happens at sunrise.</strong> Not "early", not "before lunch": sunrise. Anything else and you are photographing a crowd with a lake behind it.</p>
+<p>The alternative worth knowing about is that the Chateau's own lawn is private ground, so a ceremony there is not competing with day visitors in the same way. The lakeshore in front of it is.</p>
+
+<h2>Larch season is two weeks and everybody knows</h2>
+<figure><img src="${CDN}/cities/banff/banff-21.webp" alt="A rainbow arching over a mountain meadow behind a couple"><figcaption>Late September is the best fortnight in the Rockies, and it books a year out.</figcaption></figure>
+<p><strong>The best two weeks in Banff are the back half of September, when the larches turn gold above the tree line.</strong> The crowds have thinned after Labour Day, the light is low enough to be usable all afternoon rather than only at the ends of the day, and the alpine is still open.</p>
+<p>It is a genuinely short window. Larch colour runs roughly two weeks and the exact fortnight moves with the year, so treat it as a range rather than a date. Saturdays in that window go a year ahead.</p>
+<p>June to August is the full season: everything open, everything busy, and hotel rates north of C$450 a night through July. October to April is a completely different park, with frozen lakes, narrower access and photographs almost nobody else has. May is the one month I would talk you out of: the snow has gone, the green has not arrived, and the lakes are still thawing.</p>
+
+<h2>What Banff actually does to a photograph</h2>
+<figure><img src="${CDN}/cities/banff/banff-42.webp" alt="Couple close together in formalwear in a mountain forest at golden hour"><figcaption>Rock flour, not a saturation slider. The colour is in the water.</figcaption></figure>
+<p>Three things, and none of them are editing. <strong>The water is turquoise because of glacial rock flour</strong>, suspended silt that scatters light, and it photographs that colour straight out of camera. Anyone telling you it is a preset has not been.</p>
+<p><strong>The mountains are close.</strong> Not distant scenery: close enough to fill the frame behind two people standing still, which is unusual and is why Rockies portraits read as bigger than portraits made in ranges further from the road.</p>
+<p><strong>And the light is high and hard in summer</strong>, because the season with the best access is also the season with the worst midday sun. That is the argument for building the day around the ends of it rather than the middle.</p>
+
+<h2>Where couples actually get married here</h2>
+<figure><img src="${CDN}/cities/banff/banff-25.webp" alt="Couple with their guests behind them and the Rockies beyond"><figcaption>The rooms that carry their own permissions are where most real weddings happen.</figcaption></figure>
+<p><strong>The Fairmont Banff Springs</strong> is the castle in the valley: interiors for any weather, its own permissions, and a building that photographs like nothing else in Canada after dark. <strong>The Fairmont Chateau Lake Louise</strong> gives you that water from the lawn, with the caveat above about the shoreline.</p>
+<p><strong>The Rimrock</strong> sits above the town on Sulphur Mountain with the best sunset terrace in Banff. <strong>Buffalo Mountain Lodge</strong> is timber, stone and fireplaces, and is the one I recommend for a wedding under sixty. <strong>Emerald Lake Lodge</strong> is forty minutes west over the BC line in Yoho, on an island in green water with no through traffic at all.</p>
+<p>For portraits rather than ceremonies: the Vermilion Lakes are five minutes from town, criminally underused, and the best sunrise in the park that does not require a shuttle.</p>
+
+<h2>What it costs, and why that is a conversation</h2>
+<figure><img src="${CDN}/cities/banff/banff-62.webp" alt="A small group in formalwear at a mountain lake"><figcaption>Quoted against the venue rather than averaged across the whole province.</figcaption></figure>
+<p><strong>Banff sits outside the three regions I publish figures for, so it is quoted rather than printed.</strong> That is deliberate. A Canmore Saturday at a lodge and a Moraine Lake sunrise with shuttle logistics are different jobs, and one averaged number would be wrong for both.</p>
+<p>For scale: the published Vancouver region is C$4,500 for Core, C$6,500 for Signature and C$9,000 for the two-day Story Weekend, and the Rockies sit in comparable territory once the flight, the car and the mountain nights are counted. Send the venue and the date and you get the real figure in the first reply rather than the third.</p>
+<p>Every collection carries the same things it carries everywhere: a colour-graded feature film, film prints handed to your guests on the night, an engagement session, and the timeline work. The <a href="/banff-wedding-photographer">Banff page</a> has the venues and the seasons in full, <a href="/jasper-wedding-photographer">Jasper is three hours north</a> and much quieter, and the <a href="/pricing">published regions are here</a>.</p>
+`,
+  },
+
+  /* ──────────────────────────────────────────────────────────── JASPER ── */
+  {
+    slug: "jasper-wedding-photographer",
+    title: "Jasper Weddings: The Quieter Rockies",
+    subtitle:
+      "The same water and the same mountains as Banff, three hours north, with a fraction of the traffic and a dark-sky preserve overhead.",
+    date: "2026-08-18",
+    dateDisplay: "August 18, 2026",
+    readTime: "8 min read",
+    coverImage: `${CDN}/cities/jasper/jasper-02.webp`,
+    coverAlt: "Couple beside a red canoe on a still Jasper lake at dawn",
+    excerpt:
+      "Jasper is what Banff was before everyone found it: the same glacial water with a fraction of the crowd, and the darkest sky in Canada overhead.",
+    topic: "Places",
+    city: null,
+    body: `
+<p><strong>Jasper is what Banff was before everybody found it.</strong> The same glacial water, the same scale, and a fraction of the traffic. Maligne Lake on a weekday morning is genuinely quiet, which is a sentence nobody has been able to say about Lake Louise in a decade.</p>
+<p>What it costs is distance, and that is not a small thing. Here is what the extra three hours buys, what it takes, and who should actually make the drive.</p>
+
+<h2>How far it really is</h2>
+<figure><img src="${CDN}/cities/jasper/jasper-06.webp" alt="Couple on a mountain ridge above Maligne Lake"><figcaption>Three hours from Banff on the Icefields Parkway, with no shortcut and long stretches with no signal.</figcaption></figure>
+<p><strong>Jasper is about three hours north of Banff on the Icefields Parkway, four hours from Edmonton and roughly four and a half from Calgary.</strong> There is no faster route and there is no alternative road. For long stretches there is no mobile signal either.</p>
+<p>Inside the park the distances catch people out again. Maligne Lake is fifty minutes from the townsite on a road with wildlife on it. Athabasca Falls is thirty minutes the other way. A timeline that treats those as fifteen-minute hops falls apart by mid-afternoon.</p>
+<p><strong>Tell your guests the real numbers before they book flights.</strong> A Jasper wedding is a commitment rather than a weekend away, and people who understand that in advance arrive happy.</p>
+
+<h2>What the quiet is actually worth</h2>
+<figure><img src="${CDN}/cities/jasper/jasper-08.webp" alt="Couple beside a lake with a canoe drawn up on the shore"><figcaption>The same turquoise water, without two hundred people behind you.</figcaption></figure>
+<p>You are not driving north for different mountains. The rock and the water are the same range. <strong>You are driving north for mountains with nobody in front of them</strong>, and whether that is worth three hours is genuinely a matter of what you want from the photographs.</p>
+<p>If the frame in your head is the two of you alone at a glacial lake, Jasper delivers it on a weekday morning without a shuttle, a queue or an alarm set for 4am. If your priority is minimising travel for guests flying in, Banff is the kinder choice and I will say so.</p>
+
+<h2>The dark sky is a real product</h2>
+<figure><img src="${CDN}/cities/jasper/jasper-13.webp" alt="Couple beside a campfire under the Milky Way"><figcaption>A designated dark-sky preserve. On a clear moonless night the Milky Way is visible to the naked eye.</figcaption></figure>
+<p><strong>Jasper is a designated dark-sky preserve, one of the largest in the world</strong>, and that is a photographic product rather than a brochure line. On a clear moonless night the Milky Way is visible from the lakeshore without any equipment at all.</p>
+<p>A portrait under it is something almost no Canadian wedding gallery contains. What it needs is three things: a clear forecast, a moon phase checked months ahead against your date, and about forty minutes of everybody's patience late in the evening.</p>
+<p>I check the moon phase when you book and tell you honestly in the final week whether it is on. What I will not do is promise it in advance, because the sky does not take instruction.</p>
+
+<h2>Where a Jasper wedding actually happens</h2>
+<figure><img src="${CDN}/cities/jasper/jasper-07.webp" alt="Couple on the porch of a log cabin with the mountains beyond"><figcaption>Cabins around a lake rather than a tower in a town.</figcaption></figure>
+<p><strong>The Fairmont Jasper Park Lodge</strong> is the anchor: cabins spread around Lac Beauvert rather than a single building, with a main lodge that handles a full wedding and a shoreline that handles everything else. It is where most Jasper weddings above thirty guests happen, and for good reason.</p>
+<p><strong>Pyramid Lake Lodge</strong> is ten minutes from town, and Pyramid Island, reached by a wooden footbridge, is the single best ceremony site in the park. It is small and it books early.</p>
+<p><strong>Maligne Lake</strong> is the postcard and a genuine drive; treat it as a morning-after session rather than squeezing it into the wedding day. <strong>Athabasca Falls</strong> is loud, fast water in a limestone gorge, crowded at midday and empty by seven in the evening.</p>
+
+<h2>When to come</h2>
+<figure><img src="${CDN}/cities/jasper/jasper-11.webp" alt="Couple dancing in an alpine meadow of wildflowers"><figcaption>September is the month. Colour, clear skies, and the elk rut for company.</figcaption></figure>
+<p><strong>September is the best month in Jasper and it is not close.</strong> Colour on the slopes, the summer haze gone so the skies actually clear at night, cold enough after dark to make a fire worth having, and quieter than any summer week.</p>
+<p>June to August is the full season, with sunset near ten in June, and even at its peak it is calmer than Banff in May. October to April is deep winter: frozen lakes, ice caves, almost nobody, and a serious undertaking for guests. May is thaw, and the least photogenic fortnight of the year.</p>
+
+<h2>What it costs</h2>
+<figure><img src="${CDN}/cities/jasper/jasper-04.webp" alt="Couple embracing on a high ridge above the valley"><figcaption>Quoted against your venue and your date, because the drive varies enormously by where you are in the park.</figcaption></figure>
+<p><strong>Jasper sits outside the three regions I publish figures for, so it is quoted rather than printed.</strong> The drive and the accommodation vary enormously depending on where in the park you are, and an averaged number would be wrong for a townsite wedding and wrong again for Maligne Lake.</p>
+<p>For scale, the published Vancouver region runs C$4,500 for Core, C$6,500 for Signature and C$9,000 for Story Weekend. Story Weekend is the collection I recommend here more than anywhere else in the country, because everyone has already travelled a long way, there is always a Friday, and the sky is worth a second evening.</p>
+<p>The <a href="/jasper-wedding-photographer">Jasper page</a> carries the venues and the seasons in full, <a href="/blog/banff-wedding-photographer">Banff is written up here</a> if you are weighing the two, and the <a href="/pricing">published regions and what is in every collection are here</a>.</p>
+`,
+  },
 ];
 
 export function getPost(slug: string): BlogPost | undefined {

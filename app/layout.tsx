@@ -98,14 +98,22 @@ const ORG_LD = {
   sameAs: [SITE.instagram, SITE.pinterest],
   // One offer per tier per region: the single all-in figure a couple in that
   // region actually pays. Travel is inside it; nothing is added afterwards.
+  // Regions without a published figure are deliberately absent rather than
+  // emitted with price: null, which is invalid Offer markup and was appearing
+  // on every page of the site through this block.
   makesOffer: REGIONS.flatMap((r) =>
-    TIERS.map((t) => ({
-      "@type": "Offer",
-      name: `${t.name} wedding photography — ${r.short}`,
-      price: quoteFor(r, t),
-      priceCurrency: "CAD",
-      areaServed: { "@type": "Place", name: r.name },
-    })),
+    TIERS.flatMap((t) => {
+      const price = quoteFor(r, t);
+      return price === null
+        ? []
+        : [{
+            "@type": "Offer",
+            name: `${t.name} wedding photography — ${r.short}`,
+            price,
+            priceCurrency: "CAD",
+            areaServed: { "@type": "Place", name: r.name },
+          }];
+    }),
   ),
 };
 

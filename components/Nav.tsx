@@ -4,7 +4,6 @@ import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import InquireButton from "./InquireButton";
-import { MARKETS, REGIONS } from "@/lib/site";
 
 /* Same shape as the nav on armanarai.com: one plain link, a Portfolio
    disclosure, a two-column mega menu for places, Pricing, and About/Reviews
@@ -23,27 +22,49 @@ const faqLinks = [
   { href: "/reviews", label: "Reviews" },
 ];
 
-// Column one of the mega menu: the three markets that have their own page,
-// then every other region I actually travel to and price.
-type MenuGroup = { name: string; slug: string; href?: string; places: { name: string; href: string }[] };
+/* Column one is the province, column two is the places in it that have a page
+   of their own. Every entry is a distinct destination: the old menu listed ten
+   towns per province and pointed all ten at the same city hub. */
+type MenuPlace = { name: string; href: string; note: string };
+type MenuGroup = { name: string; slug: string; href: string; places: MenuPlace[] };
+
+const hub = (slug: string) => `/${slug}-wedding-photographer`;
 
 const menuGroups: MenuGroup[] = [
-  ...MARKETS.map((m) => ({
-    name: m.city,
-    slug: m.slug,
-    href: `/${m.slug}-wedding-photographer`,
-    places: m.areas.slice(0, 10).map((a) => ({ name: a, href: `/${m.slug}-wedding-photographer` })),
-  })),
   {
-    name: "Elsewhere in Canada",
-    slug: "elsewhere",
-    href: "/pricing#travel",
-    // Regions without a page of their own still get named, with the travel
-    // table as their destination. An honest entry beats a dead link.
-    places: REGIONS.filter((r) => !MARKETS.some((m) => m.regionSlug === r.slug)).map((r) => ({
-      name: r.name,
-      href: "/pricing#travel",
-    })),
+    name: "Québec",
+    slug: "quebec",
+    href: hub("montreal"),
+    places: [
+      { name: "Montréal", href: hub("montreal"), note: "From C$4,000, and the Townships and Québec City are inside it" },
+    ],
+  },
+  {
+    name: "Ontario",
+    slug: "ontario",
+    href: hub("toronto"),
+    places: [
+      { name: "Toronto", href: hub("toronto"), note: "From C$4,000, Niagara and the 1000 Islands included" },
+    ],
+  },
+  {
+    name: "British Columbia",
+    slug: "bc",
+    href: hub("vancouver"),
+    places: [
+      { name: "Vancouver", href: hub("vancouver"), note: "From C$4,500, the North Shore and Squamish included" },
+      { name: "Whistler", href: hub("whistler"), note: "The Sea-to-Sky, at the same price as Vancouver" },
+      { name: "Tofino", href: hub("tofino"), note: "Vancouver Island and the open Pacific, quoted" },
+    ],
+  },
+  {
+    name: "Alberta",
+    slug: "alberta",
+    href: hub("banff"),
+    places: [
+      { name: "Banff", href: hub("banff"), note: "Lake Louise, Moraine Lake and Canmore" },
+      { name: "Jasper", href: hub("jasper"), note: "The quieter Rockies, under a dark-sky preserve" },
+    ],
   },
 ];
 
@@ -174,8 +195,8 @@ export default function Nav() {
                       );
                     })}
                     <div style={{ height: "0.5px", background: "#2A2520", margin: "4px 0" }} />
-                    <Link href="/pricing#travel" onClick={() => setPlacesOpen(false)} className="block px-5 py-2.5 nav-link">
-                      Travel &amp; fees
+                    <Link href="/pricing" onClick={() => setPlacesOpen(false)} className="block px-5 py-2.5 nav-link">
+                      All prices
                     </Link>
                   </div>
 
@@ -188,10 +209,14 @@ export default function Nav() {
                         key={c.name}
                         href={c.href}
                         onClick={() => setPlacesOpen(false)}
-                        className="block px-5 py-2 nav-link"
-                        style={{ letterSpacing: "0.12em" }}
+                        className="block px-5 py-2.5"
                       >
-                        {c.name}
+                        <span className="nav-link block" style={{ letterSpacing: "0.12em" }}>
+                          {c.name}
+                        </span>
+                        <span className="block text-slate text-[0.62rem] leading-snug mt-1">
+                          {c.note}
+                        </span>
                       </Link>
                     ))}
                   </div>

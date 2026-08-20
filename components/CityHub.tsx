@@ -10,6 +10,7 @@ import {
   MARKETS,
   SITE,
   TIERS,
+  hasPrices,
   quoteFor,
   regionBySlug,
   type Market,
@@ -20,7 +21,8 @@ import {
    the differentiators, the venues, the season table, the shape of the day,
    the prices and the FAQ. Content lives in lib/hubs.ts, prices in lib/site.ts. */
 
-const money = (n: number) => `C$${n.toLocaleString("en-CA")}`;
+const money = (n: number | null) =>
+  n === null ? "On request" : `C$${n.toLocaleString("en-CA")}`;
 const regionOf = (m: Market) => regionBySlug(m.regionSlug)!;
 
 const SECTIONS = [
@@ -60,9 +62,13 @@ function WorkWall({ photos }: { photos: { src: string; alt: string }[] }) {
 export function cityMetadata(m: Market) {
   const title = `${m.city} Wedding Photographer — ${m.region}`;
   const from = quoteFor(regionOf(m), CORE);
+  const priceLine =
+    from === null
+      ? "Priced against your venue and date, before you commit to anything."
+      : `From ${money(from)} all in, with travel already inside the figure.`;
   return {
     title,
-    description: `${m.angle}. Wedding photography in ${m.region}, from ${money(from)} all in. Coverage and travel are both published up front.`,
+    description: `${m.angle}. Wedding photography in ${m.region}. ${priceLine}`,
     alternates: { canonical: `/${m.slug}-wedding-photographer` },
     openGraph: {
       title: `${title} | Arman Arai`,
@@ -86,13 +92,20 @@ export function citySchema(m: Market) {
       url,
       provider: { "@id": `${SITE.url}/#business` },
       areaServed: m.areas.map((a) => ({ "@type": "Place", name: a })),
-      offers: TIERS.map((t) => ({
-        "@type": "Offer",
-        name: `${t.name} — ${t.coverage}`,
-        price: quoteFor(regionOf(m), t),
-        priceCurrency: "CAD",
-        url: `${SITE.url}/pricing#${t.slug}`,
-      })),
+      // Only regions with a published figure get Offer markup. A quoted region
+      // would otherwise emit price: null, which is worse than no offer at all.
+      offers: TIERS.flatMap((t) => {
+        const price = quoteFor(regionOf(m), t);
+        return price === null
+          ? []
+          : [{
+              "@type": "Offer",
+              name: `${t.name} — ${t.coverage}`,
+              price,
+              priceCurrency: "CAD",
+              url: `${SITE.url}/pricing#${t.slug}`,
+            }];
+      }),
     },
     {
       "@context": "https://schema.org",
@@ -131,6 +144,8 @@ export default function CityHub({ market: m }: { market: Market }) {
   const photos = CITY_PHOTOS[m.slug];
   const hub = hubBySlug(m.slug);
   const region = regionOf(m);
+  const priced = hasPrices(region);
+  const vanCore = quoteFor(regionBySlug("vancouver")!, CORE);
   const others = MARKETS.filter((x) => x.slug !== m.slug);
   // This city's writing first, topped up with the guides that apply anywhere.
   const cityPosts = [
@@ -400,8 +415,9 @@ export default function CityHub({ market: m }: { market: Market }) {
         <p className="hub-section-kicker">The whole number</p>
         <h2 className="hub-section-h">What a {m.city} wedding costs</h2>
         <p className="hub-section-intro">
-          Travel is already inside every figure below. Sales tax is the only thing on top, and
-          add-ons are the only thing that can raise it.
+          {priced
+            ? "Travel is already inside every figure below. Sales tax is the only thing on top, and add-ons are the only thing that can raise it."
+            : `${m.city} sits outside the three regions I publish figures for, so the price is quoted against your venue and your date rather than averaged. You get the real number before you commit to anything, and the collections themselves are identical to everywhere else.`}
         </p>
         <div className="hub-price-grid">
           {TIERS.map((t, i) => (
@@ -417,6 +433,12 @@ export default function CityHub({ market: m }: { market: Market }) {
             </article>
           ))}
         </div>
+        {!priced && (
+          <p className="hub-section-intro" style={{ marginTop: "1.6rem" }}>
+            For scale, the published Vancouver region runs {money(vanCore)} for Core. Send the
+            venue and the date and you will have the real figure in the first reply.
+          </p>
+        )}
         <div className="hub-price-actions">
           <InquireButton className="hub-cta">Check a {m.city} date</InquireButton>
           <Link href="/pricing" className="hub-cta-alt">

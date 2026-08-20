@@ -27,7 +27,8 @@ export const metadata: Metadata = {
   },
 };
 
-const money = (n: number) => `C$${n.toLocaleString("en-CA")}`;
+const money = (n: number | null) =>
+  n === null ? "On request" : `C$${n.toLocaleString("en-CA")}`;
 
 // One photograph per collection, so the page is not three columns of text.
 const TIER_PHOTO = [DREAMY_FINE_ART[6], EDITORIAL[5], FILM[5]];

@@ -168,9 +168,12 @@ export type Region = {
   slug: string;
   name: string;
   short: string;
-  primary: true;
-  /** Keyed by tier slug. This IS the price. Nothing is added to it. */
-  prices: Record<string, number>;
+  /** True for a region with published prices of its own. */
+  primary?: boolean;
+  /** Keyed by tier slug. This IS the price. Nothing is added to it.
+   *  Absent means there is no sourced figure and the page must say
+   *  "quoted on request" rather than show one. Do not extrapolate. */
+  prices?: Record<string, number>;
   /** Everywhere that shares this price. */
   covers: string[];
   /** Sales tax on top, stated per province. */
@@ -265,12 +268,75 @@ export const REGIONS: Region[] = [
       "the Squamish valley",
     ],
   },
+  {
+    slug: "whistler",
+    name: "Whistler and the Sea-to-Sky",
+    short: "Whistler",
+    prices: { core: 4500, signature: 6500, "story-weekend": 9000 },
+    covers: ["Whistler", "Squamish", "Pemberton", "the Sea-to-Sky corridor"],
+    tax: "5% GST, plus 7% PST where applicable",
+    marketRange: "CAD 5,800 to 7,500 for premium local coverage",
+    season: "June to September, plus a December to March winter season",
+    bestTier: "Signature",
+    promise: "Mountain weddings with the permits, the access and the weather planned in advance.",
+    travel: "The same published price as Vancouver, because it is the same trip.",
+    risk: "Peak-season lodging on the corridor, and cloud that sits on the mountain for days.",
+    venues: ["Fairmont Chateau Whistler", "Nita Lake Lodge", "Audain Art Museum", "Sea to Sky Gondola"],
+    portraits: ["Green Lake", "Lost Lake", "the alpine above the gondola", "the Squamish valley"],
+  },
+  {
+    slug: "vancouver-island",
+    name: "Vancouver Island and Tofino",
+    short: "Tofino",
+    covers: ["Tofino", "Ucluelet", "Victoria", "the Cowichan Valley", "the Gulf Islands"],
+    tax: "5% GST, plus 7% PST where applicable",
+    marketRange: "Quoted against the venue and the date",
+    season: "June to September, with a storm season worth having from November",
+    bestTier: "Story Weekend",
+    promise: "Coastal weddings, with the ferry and the drive west planned rather than hoped about.",
+    travel: "A ferry and, for Tofino, three more hours of highway. Priced against your venue.",
+    risk: "Tofino is not a day trip. It wants the two-day collection.",
+    venues: ["Wickaninnish Inn", "Long Beach Lodge", "Hatley Castle", "Cowichan Valley wineries"],
+    portraits: ["Chesterman Beach", "Long Beach", "the rainforest boardwalks", "Victoria's inner harbour"],
+  },
+  {
+    slug: "banff",
+    name: "Banff and the Canadian Rockies",
+    short: "Banff",
+    covers: ["Banff", "Lake Louise", "Moraine Lake", "Canmore", "Kananaskis", "Yoho"],
+    tax: "5% GST in Alberta",
+    marketRange: "Quoted against the venue and the date",
+    season: "June to September for the alpine, December to March for snow",
+    bestTier: "Signature or Story Weekend",
+    promise: "Mountain wedding coverage with the Parks Canada paperwork done before the date.",
+    travel: "A flight, a rental car and mountain nights. Priced against your venue.",
+    risk: "Parks Canada permits, shuttle-only access to Moraine Lake, and July hotel rates.",
+    venues: ["Fairmont Banff Springs", "Fairmont Chateau Lake Louise", "The Rimrock", "Buffalo Mountain Lodge", "Emerald Lake Lodge"],
+    portraits: ["Moraine Lake", "Lake Louise", "Two Jack Lake", "the Vermilion Lakes", "Bow Valley Parkway"],
+  },
+  {
+    slug: "jasper",
+    name: "Jasper and the northern Rockies",
+    short: "Jasper",
+    covers: ["Jasper", "Maligne Lake", "the Icefields Parkway", "Mount Robson"],
+    tax: "5% GST in Alberta",
+    marketRange: "Quoted against the venue and the date",
+    season: "June to September, and a dark-sky season worth planning for",
+    bestTier: "Story Weekend",
+    promise: "The quieter half of the Rockies, with the long drives counted properly.",
+    travel: "A flight into Edmonton or Calgary, then a long drive. Priced against your venue.",
+    risk: "Distance. Everything in Jasper is further apart than the map suggests.",
+    venues: ["Fairmont Jasper Park Lodge", "Pyramid Lake Lodge", "Maligne Lake Chalet"],
+    portraits: ["Maligne Lake", "Pyramid Island", "Athabasca Falls", "the Icefields Parkway"],
+  },
 ];
 
 export const regionBySlug = (slug: string) => REGIONS.find((r) => r.slug === slug);
 
-/** All three regions are primary now. Kept for the call sites that ask. */
-export const PRIMARY_REGIONS = REGIONS;
+/** The three regions with published prices. /pricing tables read from this. */
+export const PRIMARY_REGIONS = REGIONS.filter((r) => r.primary);
+/** Places with a page of their own but no published figure. */
+export const QUOTED_REGIONS = REGIONS.filter((r) => !r.primary);
 
 /** Everywhere outside the three published regions. */
 export const OUTER_REGIONS_NOTE =
@@ -278,8 +344,13 @@ export const OUTER_REGIONS_NOTE =
   "Vancouver Island and the Rockies, is quoted on request rather than " +
   "guessed at. Send the date and the venue and you will have a real number.";
 
-/** What a couple in this region pays for this collection, before tax. */
-export const quoteFor = (region: Region, tier: Tier) => region.prices[tier.slug];
+/** What a couple in this region pays for this collection, before tax.
+ *  Returns null where no figure is published; callers must handle that. */
+export const quoteFor = (region: Region, tier: Tier): number | null =>
+  region.prices?.[tier.slug] ?? null;
+
+/** True where the region has published figures at all. */
+export const hasPrices = (region: Region) => Boolean(region.prices);
 
 /** Booking terms, identical in every region. */
 export const TERMS = {
@@ -436,9 +507,139 @@ export const MARKETS: Market[] = [
       },
     ],
   },
+  {
+    slug: "whistler",
+    city: "Whistler",
+    name: "Whistler",
+    province: "British Columbia",
+    region: "Whistler, Squamish and the Sea-to-Sky corridor",
+    regionSlug: "whistler",
+    areas: ["Whistler", "Squamish", "Pemberton", "Creekside", "Blackcomb", "Green Lake", "Lost Lake"],
+    angle: "Mountain weddings at the same published price as a Vancouver Saturday",
+    lede:
+      "Ninety minutes north of Vancouver and inside the same number. The corridor is a logistics problem before it is an aesthetic one, and the logistics are the part you are actually paying me for.",
+    body: [
+      "There are three Whistler weddings and they are not interchangeable. A village wedding happens at a hotel or a restaurant with everything walkable, which is the easiest version and the one that survives bad weather. An alpine wedding puts the ceremony at the top of a lift, which is the most spectacular and the most exposed to cloud. A lake wedding at Green Lake or Lost Lake sits between the two: outdoors, reachable by road, and low enough to stay under the weather most days.",
+      "Whistler, Squamish and Pemberton are inside the published Vancouver region, so Core is C$4,500, Signature is C$6,500 and the two-day Story Weekend is C$9,000. The flight, the nights and the drive up the corridor are already inside those figures. A wedding at the Chateau costs what a wedding in Kitsilano costs, which surprises most couples and is the entire reason for publishing a region rather than a city.",
+      "What the corridor asks for is honesty about time. Lifts close, they hold for wind on days that look fine from the valley, and they move a wedding party far more slowly than anyone plans for. Every Whistler timeline I build names a valley-level ceremony site we switch to if the lift is held. That single line is the difference between a day that works and an afternoon spent waiting.",
+    ],
+    faqs: [
+      {
+        q: "Is Whistler more expensive than Vancouver?",
+        a: "No. Whistler, Squamish and Pemberton are inside the published Vancouver region: C$4,500 for Core, C$6,500 for Signature, C$9,000 for Story Weekend. The drive up the corridor is already inside the figure rather than added to it.",
+      },
+      {
+        q: "What happens if the gondola is closed on the day?",
+        a: "We move to the site we already named. Lifts hold for wind on mornings that look perfectly fine from the valley, so every corridor timeline I build has a valley-level ceremony location in it from the start. It is not a fallback invented on the morning, it is the second half of the plan.",
+      },
+      {
+        q: "Can we get married here in winter?",
+        a: "Yes, and February is genuinely underrated. Real snow, blue hour arriving at four, and a completely different day from the summer version. It works if you actually want winter rather than tolerating it, and if the wedding party owns proper boots.",
+      },
+    ],
+  },
+  {
+    slug: "tofino",
+    city: "Tofino",
+    name: "Tofino and Vancouver Island",
+    province: "British Columbia",
+    region: "Tofino, Ucluelet, Victoria and Vancouver Island",
+    regionSlug: "vancouver-island",
+    areas: ["Tofino", "Ucluelet", "Victoria", "the Cowichan Valley", "the Gulf Islands", "Nanaimo"],
+    angle: "The open Pacific, and a journey planned rather than assumed",
+    lede:
+      "A ferry, then a drive, then for Tofino three more hours of highway across the middle of the island. The travel is the thing that shapes the wedding, so it gets planned first rather than discovered.",
+    body: [
+      "The island splits into four propositions. Victoria gives you heritage architecture, formal gardens and an inner harbour, and it is the easiest to run because everything is close and there are beds. The Cowichan Valley, an hour north, is farmland and wineries and reads far warmer than the coast. Tofino and Ucluelet are the dramatic version: open Pacific, storm cloud, and beaches that go on for kilometres. The Gulf Islands are the private version, at the cost of a second ferry and a guest list capped by what the island can sleep.",
+      "Most couples arrive attached to Tofino and, once they have counted the drive against their guest list, end up somewhere else on the island. That is a good outcome rather than a compromise, and it is worth having the conversation early rather than after a deposit.",
+      "This is the one stretch of coast I quote rather than publish. A ferry crossing and three more hours of mountain highway are a genuinely different trip from a Kitsilano Saturday, and one averaged figure would be wrong for Victoria and wrong for Tofino in opposite directions. Send the venue and the date and you get a real number before you commit to anything.",
+    ],
+    faqs: [
+      {
+        q: "Why is the island quoted rather than published?",
+        a: "Because a Victoria wedding and a Tofino wedding are not the same journey. Victoria is a ferry and a short drive. Tofino adds three hours of mountain highway and at least one more night. Publishing a single number would overcharge half the island and undercharge the other half, so I price it against your actual venue.",
+      },
+      {
+        q: "Is storm season a real idea or a marketing one?",
+        a: "It is real, and November on the west coast is the best value date in British Columbia. Low cloud, spray, wet sand that mirrors everything, and a beach with nobody on it. You will be cold, the light goes by half past four, and the gallery will not look like anybody else's.",
+      },
+      {
+        q: "Which collection do you recommend out here?",
+        a: "Story Weekend, and I would say so even if it were the cheaper option. The travel has already turned your wedding into a two-day event for everyone attending, there is always a Friday, and the Friday evening light on that coast is frequently better than anything Saturday produces.",
+      },
+    ],
+  },
+  {
+    slug: "banff",
+    city: "Banff",
+    name: "Banff and the Rockies",
+    province: "Alberta",
+    region: "Banff, Lake Louise, Moraine Lake and Canmore",
+    regionSlug: "banff",
+    areas: ["Banff", "Lake Louise", "Moraine Lake", "Canmore", "Kananaskis", "Yoho", "Emerald Lake"],
+    angle: "The most photographed mountains in Canada, and the paperwork nobody mentions",
+    lede:
+      "Everything you have seen of the Rockies sits inside forty minutes of driving. What decides whether your day works is permits, shuttles, and what time you are willing to get up.",
+    body: [
+      "Banff is the easiest landscape in Canada to photograph and one of the harder places to run a wedding in, and both facts have the same cause: everybody else wants to be there too. Moraine Lake is shuttle access only, private vehicles are not getting you or your guests to that shoreline, and the good hour at Lake Louise is the one before the coaches arrive. A photographer who has not worked there finds this out on your morning.",
+      "A ceremony on Parks Canada land needs a permit, and the process is slow, seasonal and capped by site. It is the single most common reason a Rockies plan falls apart in the final month. I arrange it rather than hoping nobody asks, which means I need your site months out rather than weeks.",
+      "What you get in return is scale nothing else in the country matches. Glacier-fed water that reads turquoise without a slider being moved, larches turning gold for two weeks in late September, and mountains close enough to fill the frame behind two people standing still. Put a wedding party in front of them and they do not get any smaller.",
+    ],
+    faqs: [
+      {
+        q: "What does a Banff wedding cost to photograph?",
+        a: "It is quoted rather than published, because a Canmore Saturday and a Moraine Lake sunrise are different jobs with different access. For scale, the published Vancouver region is C$4,500 for Core, C$6,500 for Signature and C$9,000 for Story Weekend, and the Rockies sit in comparable territory once the flight, the car and the mountain nights are counted. Send the venue and the date and you get the real figure in the first reply.",
+      },
+      {
+        q: "Do we really need a permit?",
+        a: "For a ceremony on Parks Canada land, yes, and it is not a formality. Sites are capped, seasons are limited and the paperwork is slow. Arrange it early, or choose a private venue that carries its own permissions, such as the Springs or Emerald Lake Lodge.",
+      },
+      {
+        q: "Is Moraine Lake still worth it with the shuttle?",
+        a: "For two people and a photographer, absolutely. For a wedding party of twelve it is a logistical fight you will not enjoy. The honest answer for most weddings is a private venue for the ceremony and a sunrise trip to Moraine the next morning with just the two of you.",
+      },
+    ],
+  },
+  {
+    slug: "jasper",
+    city: "Jasper",
+    name: "Jasper",
+    province: "Alberta",
+    region: "Jasper, Maligne Lake and the Icefields Parkway",
+    regionSlug: "jasper",
+    areas: ["Jasper", "Maligne Lake", "Pyramid Lake", "Athabasca Falls", "the Icefields Parkway", "Mount Robson"],
+    angle: "The quieter half of the Rockies, and the darkest sky in the country",
+    lede:
+      "Three hours north of Banff and a different proposition entirely: fewer people, longer drives, and a designated dark-sky preserve overhead once the sun has gone.",
+    body: [
+      "Jasper is what Banff was before everybody found it. The same glacial water and the same scale with a fraction of the traffic, and that is the whole argument for making the longer journey. Maligne Lake, Pyramid Island and Athabasca Falls are genuinely quiet on a weekday morning in a way nothing in Banff has been for a decade.",
+      "The cost is distance, and it is not a small one. Everything in Jasper is further apart than the map suggests, and the Icefields Parkway between the two parks is three hours of driving with no shortcuts and, for long stretches, no signal. A timeline built on Banff assumptions does not survive up here. Guests need telling plainly how far it is before they book flights.",
+      "Jasper is a designated dark-sky preserve, which is a real photographic product rather than a brochure line. On a clear moonless night the Milky Way is visible to the naked eye from the lakeshore, and a portrait under it is something almost no Canadian wedding gallery contains. It needs a clear forecast, a moon phase checked months ahead, and about forty minutes of everybody's patience.",
+    ],
+    faqs: [
+      {
+        q: "Is Jasper worth the extra drive over Banff?",
+        a: "If quiet matters to you, yes. You get the same water and the same mountains with a fraction of the crowd, and Maligne Lake on a weekday morning is a completely different experience from Lake Louise at any hour. If your guests are flying in from far away and you want to minimise driving, Banff is the kinder choice.",
+      },
+      {
+        q: "Can you actually photograph the night sky at a wedding?",
+        a: "Yes, and Jasper is one of very few places in Canada where it is reliably possible. It needs a clear forecast, a moon phase I check months out, and roughly forty minutes late in the evening. I will tell you honestly in the week beforehand whether it is on, rather than promising it in a brochure.",
+      },
+      {
+        q: "What does a Jasper wedding cost?",
+        a: "Quoted against your venue and date rather than published, because the drive and the accommodation vary enormously depending on where in the park you are. Send both and you will have a real number in the first reply rather than the third.",
+      },
+    ],
+  },
 ];
 
 export const marketBySlug = (slug: string) => MARKETS.find((m) => m.slug === slug);
+
+/** The three markets with published prices. /pricing and the home page use
+ *  these; the nav and the hubs use all of MARKETS. */
+export const CORE_MARKETS = MARKETS.filter((m) =>
+  ["montreal", "toronto", "vancouver"].includes(m.slug),
+);
 
 /** Lowest published number on the site, used for "from" copy that stays true. */
 export const STARTING_FROM = CORE.price;

@@ -210,6 +210,245 @@ export const HUBS: Record<string, HubContent> = {
     colophon:
       "Vancouver, the North Shore, the Sea-to-Sky corridor, Whistler and Vancouver Island, all inside one published price.",
   },
+  whistler: {
+    kicker: "British Columbia · Canada · Wedding Photographer",
+    coord: "50.12°N · 122.95°W",
+    tagline:
+      "Ninety minutes north of Vancouver and inside the same published price. Mountain scale without a separate invoice for reaching it.",
+    lead: [
+      "Whistler gives you altitude, which is the one thing the Lower Mainland cannot. Glacier light on the peaks at seven in the evening, alpine meadows above the tree line, and a valley that holds snow when Vancouver is green. It is the most vertical wedding landscape in the country that you can still reach by road.",
+      "The catch is that the mountain runs the day rather than the other way around. Lifts hold for wind without warning, cloud sits on the peaks for days at a stretch, and a wedding party moves up a gondola far more slowly than anybody plans for. Everything I do here is built around that rather than in denial of it.",
+    ],
+    stats: [
+      { k: "Best months", v: "Jun to Sep, and February" },
+      { k: "Price", v: "Same as Vancouver" },
+      { k: "Lift risk", v: "Planned for, not hoped about" },
+      { k: "Core collection", v: "C$4,500" },
+    ],
+    different: [
+      {
+        title: "The same number as a Vancouver Saturday",
+        body: "Whistler, Squamish and Pemberton are inside the published Vancouver region. Core is C$4,500 here exactly as it is in Kitsilano, and the drive up the corridor is already inside it. Photographers who add a Sea-to-Sky surcharge are charging you for their own commute.",
+      },
+      {
+        title: "A valley plan, named before the date",
+        body: "Every corridor timeline I build carries a second ceremony site at valley level, chosen and looked at in advance, in case the lift is held. It costs nothing to have and it is the difference between a wedding and ninety minutes in a lift queue.",
+      },
+      {
+        title: "Winter is a real option here",
+        body: "February gives you genuine snow, blue hour at four in the afternoon, and a completely different set of photographs from the July version. It works if you actively want winter rather than tolerating it, and if everybody owns boots.",
+      },
+    ],
+    venuesIntro:
+      "Where couples up here actually get married, and what each place asks of the schedule.",
+    venues: [
+      { name: "Fairmont Chateau Whistler", where: "Upper Village", note: "The largest room in the corridor, at the foot of Blackcomb. Everything walkable, and a wet-weather plan that is the room next door." },
+      { name: "Nita Lake Lodge", where: "Creekside", note: "Lakeside, quieter, and small enough that the whole day stays in one place. The dock at the end of the evening is the frame people remember." },
+      { name: "Audain Art Museum", where: "Whistler village", note: "Concrete, glass and rainforest through the windows. The most architectural room in the mountains, and it photographs beautifully in flat light." },
+      { name: "Sea to Sky Gondola", where: "Squamish, 40 minutes south", note: "A suspension bridge above the sound, ten minutes of ascent, and half the drive of Whistler. Underrated for exactly that reason." },
+      { name: "Green Lake and Lost Lake", where: "Whistler valley", note: "Road-accessible water with the peaks behind. Where the ceremony goes when the alpine is socked in." },
+      { name: "The alpine, above the lift", where: "Whistler and Blackcomb", note: "Spectacular, and entirely at the mercy of the mountain. Worth it, with the valley site named in advance." },
+    ],
+    seasonIntro: "The corridor has two seasons worth having and two worth avoiding.",
+    seasons: [
+      { months: "June to August", light: "Long, dry, alpine", note: "The dry window. Sunset near ten in June, wildflowers above the tree line in late July, and the busiest lodging of the year." },
+      { months: "September", light: "Gold and thin", note: "The best single month. Warm light, crowds gone, and the first colour on the slopes without any snow to complicate access." },
+      { months: "December to March", light: "Blue and short", note: "Real winter. Blue hour at four, snow on everything, and a village that is fully awake. Choose it deliberately or not at all." },
+      { months: "May and November", light: "Grey and between", note: "The two months I would talk you out of. The alpine is neither snow nor open, and the odds of a textureless day are the highest of the year." },
+    ],
+    dayIntro:
+      "A Core wedding in the corridor. The mountain gets a vote, so the schedule carries slack where it matters.",
+    day: [
+      { time: "Hour 1–2", title: "Getting ready", body: "Usually the hotel, which is the whole argument for a village venue. No transfers, no weather exposure, and the light through those windows is good until noon." },
+      { time: "Hour 3", title: "The mountain call", body: "By now we know whether the lift is running and whether the peak is in cloud. Both plans were scouted, so this is a decision rather than a scramble." },
+      { time: "Hour 4", title: "Ceremony", body: "Alpine or valley, whichever the morning gave us. Permits sorted well in advance where the site needs one." },
+      { time: "Hour 5", title: "Family, then the two of you", body: "Twelve groups from a written list. Altitude and wind make this faster than anyone expects, because nobody wants to linger." },
+      { time: "Hour 6", title: "Portraits", body: "Twenty minutes at a lake or above the tree line, timed to the light rather than to the schedule." },
+      { time: "Hour 7–8", title: "Dinner and the room", body: "Speeches and the dances that matter. Nobody is driving home, so the night runs later here than almost anywhere else I work." },
+    ],
+    colophon:
+      "Whistler, Squamish and Pemberton, inside the published Vancouver price. The corridor drive is already in the number.",
+  },
+
+  tofino: {
+    kicker: "British Columbia · Canada · Wedding Photographer",
+    coord: "49.15°N · 125.91°W",
+    tagline:
+      "The open Pacific, old-growth rainforest, and a journey long enough that it becomes part of the wedding rather than a detail before it.",
+    lead: [
+      "Tofino is the far edge of the country and it feels like it. Beaches that run for kilometres, surf that does not stop, and rainforest that comes down to the sand. The light out there is soft almost all the time, because there is usually something between you and the sun, and that is exactly why the photographs look the way they do.",
+      "It is also a long way. A ferry, a drive, and then three hours of mountain highway across the middle of Vancouver Island. That distance is not an inconvenience to be minimised, it is the thing that decides your guest list, your Friday, and which collection is honest for your day.",
+    ],
+    stats: [
+      { k: "Best months", v: "Jun to Sep, and November" },
+      { k: "From Vancouver", v: "Seven hours, door to door" },
+      { k: "Price", v: "Quoted, not published" },
+      { k: "Best collection", v: "Story Weekend" },
+    ],
+    different: [
+      {
+        title: "The travel gets planned first",
+        body: "Ferry sailings fill in summer and a missed one is a two-hour problem, not a twenty-minute one. I come over the day before as a rule, and your guests should too. Every timeline out here starts from the crossing rather than from the ceremony.",
+      },
+      {
+        title: "Quoted against your venue, not averaged",
+        body: "Victoria is a ferry and a short drive. Tofino is that plus three hours of highway and another night. One published number would be wrong for both, so I price your actual wedding instead of publishing an average that flatters neither.",
+      },
+      {
+        title: "Storm season is a real recommendation",
+        body: "November on the west coast is the best value date in British Columbia. Low cloud, spray, wet sand mirroring everything, and nobody else on the beach. You will be cold and the gallery will not look like anyone else's.",
+      },
+    ],
+    venuesIntro:
+      "Four different islands, depending which part of it you choose. Here is what each gives a photograph.",
+    venues: [
+      { name: "Wickaninnish Inn", where: "Chesterman Beach, Tofino", note: "On the rock at the end of the beach, with the Pacific on three sides. The definitive west coast room, and the one the weather is most visible from." },
+      { name: "Long Beach Lodge", where: "Cox Bay, Tofino", note: "Surf out of every window and a great room built around a fire. Better in a storm than in sunshine, which is the correct way round out here." },
+      { name: "Chesterman and Long Beach", where: "Tofino", note: "Kilometres of hard sand at low tide. Check the tide table before setting the ceremony time, not after." },
+      { name: "Hatley Castle", where: "Colwood, near Victoria", note: "Edwardian stone, formal gardens and Italianate terraces. The most composed set on the island, and an hour from the ferry." },
+      { name: "The Cowichan Valley", where: "An hour north of Victoria", note: "Farmland, wineries and warm light. The gentlest version of an island wedding, and the easiest for guests." },
+      { name: "The Gulf Islands", where: "A second ferry", note: "Genuinely private, and capped by what the island can sleep. A small guest list is not a compromise here, it is the format." },
+    ],
+    seasonIntro: "The west coast has a dry season and a dramatic one, and both are worth booking.",
+    seasons: [
+      { months: "June to September", light: "Soft, long, marine", note: "The dry window, and the only one guests will thank you for. Sunset late, water warm enough to stand in, and every bed on the coast spoken for." },
+      { months: "October", light: "Low and gold", note: "The overlap. Summer light with autumn quiet, and the first swells starting to arrive. My pick if you can only choose once." },
+      { months: "November to February", light: "Grey, wet, enormous", note: "Storm season. Genuinely spectacular and genuinely uncomfortable, and the reason people build hotels facing that water." },
+      { months: "March to May", light: "Variable", note: "Rain without the drama of a real storm. The one stretch I would steer you away from." },
+    ],
+    dayIntro:
+      "A Story Weekend on the west coast, which is what I recommend here almost every time.",
+    day: [
+      { time: "Friday", title: "Everyone arrives", body: "Two hours of welcome coverage. People have driven a long way and the first evening is frequently the warmest part of the whole weekend." },
+      { time: "Hour 1–2", title: "Saturday morning", body: "Slow, and usually indoors with the weather doing something worth photographing through the glass." },
+      { time: "Hour 3", title: "The tide call", body: "Low tide decides where the ceremony and the portraits can physically happen. This was checked months ago and confirmed that morning." },
+      { time: "Hour 4", title: "Ceremony", body: "On the sand if the tide and the wind allow, under cover if they do not. Both sites named in advance." },
+      { time: "Hour 5–6", title: "The beach", body: "Twenty minutes at the water with the wind doing most of the work. Shoes come off and stay off." },
+      { time: "Hour 7–10", title: "The long evening", body: "Dinner by a fire, and nobody driving anywhere. West coast receptions run late because there is nowhere else to be." },
+    ],
+    colophon:
+      "Tofino, Ucluelet, Victoria, the Cowichan Valley and the Gulf Islands, quoted against your venue and your date.",
+  },
+
+  banff: {
+    kicker: "Alberta · Canada · Wedding Photographer",
+    coord: "51.18°N · 115.57°W",
+    tagline:
+      "The most photographed mountains in the country. What decides your day is permits, shuttle access and how early you are willing to get up.",
+    lead: [
+      "Banff compresses more landscape into forty minutes of driving than anywhere else in Canada. Moraine Lake, Lake Louise, the Vermilion Lakes, Two Jack, Emerald Lake over in Yoho, and the Bow Valley Parkway connecting most of it. Glacial rock flour turns that water a colour no editing produces, and the mountains sit close enough to fill the frame behind two people standing still.",
+      "It is also the busiest national park in the country, and that is the real planning problem. Moraine Lake is shuttle access only. Lake Louise has a good hour before the coaches and a difficult six after. A ceremony on Parks Canada land needs a permit that is slow, seasonal and capped by site. None of that is a reason to go elsewhere; all of it is a reason to plan properly.",
+    ],
+    stats: [
+      { k: "Best months", v: "Jun to Sep, late Sep for larches" },
+      { k: "Permits", v: "Parks Canada, arranged early" },
+      { k: "Moraine Lake", v: "Shuttle access only" },
+      { k: "Price", v: "Quoted, not published" },
+    ],
+    different: [
+      {
+        title: "The permit is handled, not hoped about",
+        body: "A ceremony on Parks Canada land needs a site-specific permit, and the process is slow and capped. It is the single most common reason a Rockies plan collapses in the final month. I need your site months out and I do the paperwork rather than leaving it in your inbox.",
+      },
+      {
+        title: "I plan around the shuttle, not against it",
+        body: "Moraine Lake cannot be reached by private vehicle. For two people that is a sunrise trip worth making. For a wedding party of twelve it is a fight. I will tell you which of those you are before you build a day around a photograph you saw online.",
+      },
+      {
+        title: "The good hour is early, and I will say so",
+        body: "Lake Louise before the coaches is a different lake from Lake Louise at eleven. If the frame you want is the empty one, the answer is a sunrise session the morning after the wedding, not a mid-afternoon slot squeezed between family photos.",
+      },
+    ],
+    venuesIntro:
+      "Rooms and shorelines that actually host weddings here, and what each one demands.",
+    venues: [
+      { name: "Fairmont Banff Springs", where: "Banff townsite", note: "The castle in the valley. Carries its own permissions, has interiors for any weather, and photographs like nowhere else in the country after dark." },
+      { name: "Fairmont Chateau Lake Louise", where: "Lake Louise", note: "That water, from the lawn. The most recognisable view in Canada and the busiest, so the ceremony hour matters more than the room does." },
+      { name: "The Rimrock Resort", where: "Sulphur Mountain", note: "Above the town, looking down the valley. The best sunset terrace in Banff and a genuinely dark room for the reception." },
+      { name: "Buffalo Mountain Lodge", where: "Tunnel Mountain", note: "Timber, stone and fireplaces. Smaller, warmer, and the one I recommend for a wedding under sixty people." },
+      { name: "Emerald Lake Lodge", where: "Yoho, 40 minutes west", note: "Over the BC line and worth the drive. An island lodge on green water with no through traffic at all." },
+      { name: "Moraine Lake and the Vermilion Lakes", where: "Banff National Park", note: "Portrait ground rather than venues. Moraine is shuttle only; the Vermilion Lakes are five minutes from town and criminally underused." },
+    ],
+    seasonIntro: "A short alpine season, one spectacular fortnight, and a winter worth considering.",
+    seasons: [
+      { months: "June to August", light: "Long and high", note: "The full season. Everything is open, everything is busy, and hotel rates north of C$450 a night are normal in July." },
+      { months: "Late September", light: "Gold and low", note: "Larch season, and about two weeks of it. The alpine turns gold, the crowds thin, and the light is usable all afternoon. The best fortnight in the Rockies." },
+      { months: "October to April", light: "Blue and short", note: "Snow, frozen lakes and a completely different park. Access narrows, some roads close, and the photographs are extraordinary." },
+      { months: "May", light: "Brown and between", note: "The one month I would talk you out of. The snow has gone, the green has not arrived, and the lakes are still thawing." },
+    ],
+    dayIntro:
+      "A mountain wedding day, built around the light and the access rather than a venue clock.",
+    day: [
+      { time: "Hour 1–2", title: "Getting ready", body: "Usually in the hotel, and usually with a mountain through the window doing half the work for free." },
+      { time: "Hour 3", title: "First look, or the drive", body: "If the ceremony is out at a lake, this hour is transport. Counted honestly, including the parking situation." },
+      { time: "Hour 4", title: "Ceremony", body: "Permit in hand where the site needs one. Guests seated, and the mountains doing what mountains do." },
+      { time: "Hour 5", title: "Family formals", body: "Capped at twelve groups. Altitude, wind and cold make this quick if it is organised and miserable if it is not." },
+      { time: "Hour 6", title: "Portraits", body: "Twenty minutes at water we chose for that hour, not for its reputation." },
+      { time: "Hour 7–8", title: "Dinner and the night", body: "Speeches and dancing. If the sky is clear I will steal you for four minutes after dark, because the stars here are worth it." },
+    ],
+    colophon:
+      "Banff, Lake Louise, Moraine Lake, Canmore, Kananaskis and Yoho. Quoted against your venue and your date.",
+  },
+
+  jasper: {
+    kicker: "Alberta · Canada · Wedding Photographer",
+    coord: "52.87°N · 118.08°W",
+    tagline:
+      "The quieter half of the Rockies, three hours north of Banff, under a designated dark-sky preserve.",
+    lead: [
+      "Jasper is what Banff was before everyone found it. The same glacial water, the same scale, and a fraction of the traffic. Maligne Lake on a weekday morning is genuinely quiet, which is a sentence that has not been true of Lake Louise in a decade. The park is also larger and emptier, so the landscape arrives without a queue in front of it.",
+      "What it costs is distance. Everything up here is further apart than the map suggests, the Icefields Parkway between the two parks is three hours with no shortcuts, and for long stretches there is no signal at all. Guests need telling that plainly before they book flights, because a Jasper wedding is a commitment rather than a weekend away.",
+    ],
+    stats: [
+      { k: "Best months", v: "Jun to Sep" },
+      { k: "From Banff", v: "Three hours, no shortcut" },
+      { k: "Overhead", v: "Dark-sky preserve" },
+      { k: "Price", v: "Quoted, not published" },
+    ],
+    different: [
+      {
+        title: "Quiet is the actual product",
+        body: "You are not paying the extra drive for different mountains. You are paying it for mountains with nobody in front of them. If a photograph of the two of you alone at a glacial lake matters more than convenience, this is where it happens.",
+      },
+      {
+        title: "The dark sky is real and I plan for it",
+        body: "Jasper is a designated dark-sky preserve. On a clear moonless night the Milky Way is visible to the naked eye from the lakeshore. I check the moon phase against your date months ahead and tell you honestly in the final week whether it is on.",
+      },
+      {
+        title: "The distances get counted, not glossed",
+        body: "Maligne Lake is fifty minutes from the townsite on a road with wildlife on it. Athabasca Falls is thirty the other way. A timeline that treats those as fifteen-minute hops falls apart by mid-afternoon, so mine does not.",
+      },
+    ],
+    venuesIntro:
+      "Fewer rooms than Banff, and more shoreline. What each one is actually for.",
+    venues: [
+      { name: "Fairmont Jasper Park Lodge", where: "Lac Beauvert", note: "Cabins around a lake rather than a tower. The main lodge handles a full wedding and the shoreline handles everything else." },
+      { name: "Pyramid Lake Lodge", where: "10 minutes from town", note: "Pyramid Island is reached by a footbridge and is the single best ceremony site in the park. Small, and it books early." },
+      { name: "Maligne Lake", where: "50 minutes east", note: "The postcard, and a genuine drive. Best treated as a morning-after session rather than squeezed into the wedding day." },
+      { name: "Athabasca Falls", where: "30 minutes south", note: "Loud, fast water in a limestone gorge. Dramatic, crowded at midday, and empty by seven in the evening." },
+      { name: "The Icefields Parkway", where: "South toward Banff", note: "Ninety minutes of the best road in Canada. Worth an hour of portraits if your schedule can carry it." },
+      { name: "Lac Beauvert and the townsite", where: "Jasper", note: "Where a wedding actually runs. Everything walkable, which matters more here than it does anywhere else." },
+    ],
+    seasonIntro: "A short season, and a genuine reason to consider the shoulder.",
+    seasons: [
+      { months: "June to August", light: "Long and open", note: "The full season, with sunset near ten in June. Even at peak, quieter than Banff in May." },
+      { months: "September", light: "Gold, sharp, cold at night", note: "The best month. Colour on the slopes, the elk rut, and skies that clear properly once the summer haze goes." },
+      { months: "October to April", light: "Blue and very short", note: "Deep winter. Frozen lakes, ice caves and almost nobody. A serious undertaking for guests, and unforgettable if they come." },
+      { months: "May", light: "Between seasons", note: "Thaw. Brown ground, high water, and the least photogenic fortnight of the year." },
+    ],
+    dayIntro:
+      "A Jasper day, with the driving counted honestly and the sky as a scheduled event.",
+    day: [
+      { time: "Hour 1–2", title: "Getting ready", body: "Cabins or lodge rooms, and usually a lake fifty metres away doing the work of a backdrop." },
+      { time: "Hour 3", title: "Travel, honestly costed", body: "Whichever lake you chose, the drive is real and there is wildlife on the road. This hour exists in the plan rather than being absorbed." },
+      { time: "Hour 4", title: "Ceremony", body: "Pyramid Island, the lodge lawn or a permitted site. Paperwork done well in advance." },
+      { time: "Hour 5", title: "Family, then the two of you", body: "Twelve groups, capped, then twenty minutes at the water while the light is still low." },
+      { time: "Hour 7–8", title: "Dinner", body: "Speeches and the room. Nobody is driving anywhere, so the evening runs long." },
+      { time: "After dark", title: "The sky, if it is clear", body: "Forty minutes at the lakeshore under the Milky Way. Weather-dependent, never promised, and worth staying up for." },
+    ],
+    colophon:
+      "Jasper, Maligne Lake, Pyramid Lake, Athabasca Falls and the Icefields Parkway. Quoted against your venue and your date.",
+  },
 };
 
 export const hubBySlug = (slug: string) => HUBS[slug];

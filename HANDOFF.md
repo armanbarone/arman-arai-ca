@@ -9,7 +9,7 @@ compacted and the next session starts without the argument history.
 ## 1. What this is
 
 Arman Arai runs **two** sites off one identity. They share an email
-(`i@armanarai.com`), Instagram (`@iArmanArai`) and Pinterest, and nothing else.
+(`i@armanarai.com`), Instagram (`@iarmanarai`) and Pinterest, and nothing else.
 
 | | **armanarai.com** | **armanarai.ca** (this repo) |
 |---|---|---|

@@ -21,8 +21,8 @@ export const SITE = {
   domain: "armanarai.ca",
   url: "https://www.armanarai.ca",
   email: "i@armanarai.com",
-  instagram: "https://instagram.com/iArmanArai",
-  instagramHandle: "@iArmanArai",
+  instagram: "https://instagram.com/iarmanarai",
+  instagramHandle: "@iarmanarai",
   pinterest: "https://pinterest.com/iarmanarai",
   base: "Montréal",
   blurb:

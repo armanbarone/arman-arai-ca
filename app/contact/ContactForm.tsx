@@ -135,7 +135,7 @@ export default function ContactForm() {
         <select id="referral" className="form-input cursor-pointer" value={form.referral} onChange={set("referral")}>
           <option value="">Select one</option>
           <option>Google</option>
-          <option>Instagram (@iArmanArai)</option>
+          <option>Instagram (@iarmanarai)</option>
           <option>Pinterest</option>
           <option>A friend</option>
           <option>My planner or venue</option>

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import ContactForm from "./ContactForm";
+import CalendlyEmbed from "@/components/CalendlyEmbed";
 import { MARKETS, SITE, STARTING_FROM } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -108,6 +109,25 @@ export default function Contact() {
 
           <div className="lg:col-span-3">
             <ContactForm />
+          </div>
+        </div>
+      </section>
+
+      <section className="pb-20 md:pb-28 bg-ivory">
+        <div className="page-w page-px">
+          <div className="pt-12 md:pt-16 border-t border-dust max-w-2xl">
+            <p className="text-[0.6rem] tracking-[0.32em] uppercase text-blush mb-4">Or just talk it through</p>
+            <h2 className="font-serif font-light text-cream text-2xl md:text-3xl mb-4">
+              Book a 30-minute call
+            </h2>
+            <p className="text-slate text-sm leading-relaxed">
+              Pick a time that suits you and we will go through the date, the day and the number on a
+              call rather than over email. If nothing here fits, send the form above and I will offer
+              times back.
+            </p>
+          </div>
+          <div className="mt-10 max-w-3xl">
+            <CalendlyEmbed />
           </div>
         </div>
       </section>

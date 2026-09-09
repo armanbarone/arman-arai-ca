@@ -69,13 +69,14 @@ export default function PrivacyPolicy() {
             <li><strong style={{ color: "var(--text)" }}>Resend</strong>: delivers inquiry form submissions to my inbox. What you type into the form is transmitted through Resend's infrastructure.</li>
             <li><strong style={{ color: "var(--text)" }}>Vercel</strong>: hosts this website and provides its traffic analytics. Vercel keeps standard server logs. Vercel Analytics is cookieless and does not build a profile of you across sites.</li>
             <li><strong style={{ color: "var(--text)" }}>Cloudflare</strong>: serves the photographs on this site from cdn.armanarai.ca and sits in front of it as a CDN. Cloudflare keeps standard request logs.</li>
+            <li><strong style={{ color: "var(--text)" }}>Calendly</strong>: powers the scheduling calendar embedded on the contact page. It loads only if you scroll to it, and only then does it set its own cookies. If you book a time, the name, email and any details you enter go to Calendly to create the appointment.</li>
           </ul>
-          <p style={{ marginTop: 12 }}>That is the complete list. This site runs no advertising pixel, no Google Analytics, no tag manager, and no third-party scheduling widget.</p>
+          <p style={{ marginTop: 12 }}>That is the complete list. This site runs no advertising pixel, no Google Analytics, and no tag manager.</p>
         </Section>
 
         <Section title="Cookies">
           <p><strong style={{ color: "var(--text)" }}>This website sets no advertising or analytics cookies.</strong> Traffic measurement here is cookieless, and there is no Meta pixel, Google Ads tag, or cross-site tracker on any page.</p>
-          <p style={{ marginTop: 12 }}>Cloudflare may set a strictly necessary cookie for security and bot mitigation. You can control or block cookies through your browser settings; doing so will not break anything on this site.</p>
+          <p style={{ marginTop: 12 }}>Cloudflare may set a strictly necessary cookie for security and bot mitigation. The Calendly calendar on the contact page sets its own cookies, but only once you scroll far enough for it to load. You can control or block cookies through your browser settings; doing so will not break anything on this site.</p>
         </Section>
 
         <Section title="Data Retention">

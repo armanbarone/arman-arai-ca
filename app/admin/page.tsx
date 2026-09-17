@@ -1,10 +1,10 @@
 import Link from "next/link";
 import { Card, Eyebrow, StatusPill, buttonCls } from "@/components/portal/Shell";
 import { formatCad, formatDate, todayInBusinessTz } from "@/lib/portal/money";
-import { getSettings, listBookings } from "@/lib/portal/store";
+import { listBookings } from "@/lib/portal/store";
 
 export default async function AdminHome() {
-  const [bookings, settings] = await Promise.all([listBookings(), getSettings()]);
+  const bookings = await listBookings();
   const today = todayInBusinessTz();
   const in14 = new Date(Date.now() + 14 * 86400000).toISOString().slice(0, 10);
   const active = bookings.filter((b) => b.status !== "cancelled");
@@ -12,8 +12,6 @@ export default async function AdminHome() {
   const dueSoon = active.flatMap((b) =>
     b.schedule.filter((i) => ["scheduled", "due", "partially_paid", "overdue"].includes(i.status) && i.dueDate <= in14).map((i) => ({ b, i })),
   );
-  const insurance = settings.insurance;
-  const insuranceOk = insurance && insurance.expiryDate >= today;
 
   return (
     <div>
@@ -24,15 +22,6 @@ export default async function AdminHome() {
         </div>
         <Link href="/admin/bookings/new" className={buttonCls}>New booking</Link>
       </div>
-
-      {!insuranceOk && (
-        <Card className="mb-6 border-red-900/70">
-          <p className="text-sm text-red-200">
-            {insurance ? `Your insurance record expired on ${formatDate(insurance.expiryDate)}.` : "No insurance record yet."} Agreements cannot be sent until a current policy is on file.{" "}
-            <Link href="/admin/settings" className="underline">Add it in settings</Link>.
-          </p>
-        </Card>
-      )}
 
       {dueSoon.length > 0 && (
         <Card className="mb-6">

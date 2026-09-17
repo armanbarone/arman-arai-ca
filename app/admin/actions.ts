@@ -6,7 +6,7 @@ import { requireAdmin, requestMeta, sendInvite } from "@/lib/portal/auth";
 import { buildSchedule, computeTotals, todayInBusinessTz } from "@/lib/portal/money";
 import { defaultPlanning } from "@/lib/portal/planning";
 import { PROVINCES, TIMEZONES, packageByKey } from "@/lib/portal/presets";
-import { ConflictError, createBooking, getBooking, getSettings, nextReference, saveSettings, updateBooking } from "@/lib/portal/store";
+import { ConflictError, createBooking, getBooking, nextReference, updateBooking } from "@/lib/portal/store";
 import type { Booking } from "@/lib/portal/types";
 import { randomId } from "@/lib/portal/token";
 
@@ -175,28 +175,4 @@ export async function setStatusAction(ref: string, status: "cancelled" | "draft"
   });
   revalidatePath(`/admin/bookings/${ref}`);
   revalidatePath("/admin");
-}
-
-const insuranceSchema = z.object({
-  insurer: z.string().trim().min(2),
-  policyReference: z.string().trim().min(2),
-  namedInsured: z.string().trim().min(2),
-  effectiveDate: isoDate,
-  expiryDate: isoDate,
-  liabilityLimits: z.string().trim().min(2),
-  recordingLossCoverage: z.string().trim().min(2),
-  territories: z.string().trim().min(2),
-});
-
-export async function saveInsuranceAction(_prev: { ok: boolean; error?: string } | null, form: FormData) {
-  await requireAdmin();
-  const parsed = insuranceSchema.safeParse(Object.fromEntries(form.entries()));
-  if (!parsed.success) return { ok: false, error: firstError(parsed.error) };
-  if (parsed.data.expiryDate <= parsed.data.effectiveDate) return { ok: false, error: "Expiry must be after the effective date" };
-  const settings = await getSettings();
-  settings.insurance = { ...parsed.data, confirmedAt: new Date().toISOString() };
-  await saveSettings(settings);
-  revalidatePath("/admin/settings");
-  revalidatePath("/admin");
-  return { ok: true };
 }

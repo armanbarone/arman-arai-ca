@@ -1,6 +1,6 @@
 import "server-only";
 import { BlobPreconditionFailedError, get, list, put, del } from "@vercel/blob";
-import type { Booking, PortalSettings } from "./types";
+import type { Booking } from "./types";
 
 // All client data lives in the private Vercel Blob store `ca-client-portal`
 // (region yul1, Montréal). Nothing here is public: every read goes through the
@@ -138,17 +138,4 @@ export async function updateBooking(ref: string, mutate: (b: Booking) => void | 
     }
   }
   throw new Error(`Booking ${ref} kept changing underneath the update; try again.`);
-}
-
-// ---------------------------------------------------------------- settings
-
-const SETTINGS = "settings/portal.json";
-
-export async function getSettings(): Promise<PortalSettings> {
-  return (await readJson<PortalSettings>(SETTINGS))?.data ?? { insurance: null, updatedAt: "" };
-}
-
-export async function saveSettings(settings: PortalSettings) {
-  settings.updatedAt = new Date().toISOString();
-  await writeJson(SETTINGS, settings);
 }

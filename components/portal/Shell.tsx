@@ -11,7 +11,6 @@ export function PortalShell({ children, home, email, admin }: { children: React.
           </Link>
           {email && (
             <div className="flex items-center gap-4 text-xs text-blush">
-              {admin && <Link href="/admin/settings" className="hover:text-cream">Settings</Link>}
               <span className="hidden sm:inline">{email}</span>
               <form action={signOutAction}>
                 <button className="uppercase tracking-[0.18em] hover:text-cream">Sign out</button>

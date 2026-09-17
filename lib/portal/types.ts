@@ -150,20 +150,3 @@ export interface Booking {
   internalNotes: string;
   remindersPaused: boolean;
 }
-
-export interface InsuranceRecord {
-  insurer: string;
-  policyReference: string;
-  namedInsured: string;
-  effectiveDate: string;
-  expiryDate: string;
-  liabilityLimits: string;
-  recordingLossCoverage: string;
-  territories: string;
-  confirmedAt: string;
-}
-
-export interface PortalSettings {
-  insurance: InsuranceRecord | null;
-  updatedAt: string;
-}

@@ -15,6 +15,7 @@ export const BUSINESS = {
   },
   phone: "+1 (778) 302-5231",
   email: "i@armanarai.com",
+  etransferEmail: "i@armanarai.com",
   governingProvince: "British Columbia",
   timezone: "America/Vancouver",
   lead: "Arman Arai",

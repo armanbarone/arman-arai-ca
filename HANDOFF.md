@@ -418,3 +418,47 @@ diff /tmp/before.txt /tmp/after.txt
 
 Encoding and upload instructions are in the header comment of `lib/clips.ts`
 on each site. **Keep each clip under ~1 MB** or the whole exercise is pointless.
+
+## 10. Client portal (/portal, /admin): HoneyBook replacement
+
+Started 2026-09-16. Private area for booked Canadian couples: agreement and work
+order to sign, payment schedule, live planning checklist. **CAD and Canadian
+couples only.** First documents are the *elopement* agreement and work order.
+
+**Storage: no database, by Arman's decision.** Every booking is one JSON file in
+the private Vercel Blob store `ca-client-portal` (region `yul1`, Montréal),
+linked to the canadian-weddings project (`BLOB_READ_WRITE_TOKEN`). The GitHub
+repo is **public**, so client data must never be committed. Non-production runs
+write under `dev/` in the same store. Updates use ETag conditional writes
+(`updateBooking`); the store returns *weak* ETags on larger files and those must
+have `W/` stripped or every update reads as a conflict.
+
+**Layout:** the public site moved into `app/(site)/` so its nav, footer,
+inquiry modal, JSON-LD and Vercel Analytics never load on portal/admin pages.
+`middleware.ts` sends `X-Robots-Tag: noindex…noai` and `no-store` on private
+paths and bounces anyone without a signed session; pages then check per-booking
+access server-side (`requireBookingAccess`: not your booking = 404). `robots.ts`
+disallows /portal and /admin for `*` and for named AI crawlers.
+
+**Auth:** magic links only (`lib/portal/token.ts`, HMAC with `PORTAL_SECRET`).
+Login links 15 min, invites 7 days, single-use (marker blob), and opening the
+link does not consume it; pressing Continue does (mail scanners). Admin =
+`ADMIN_EMAILS` (i@armanarai.com), 12 h session; clients 30 days.
+
+**Money:** `lib/portal/money.ts`. Taxes on top of the price (GST/HST
+767392145RT0001, defaults by elopement province, no QST/PST registration).
+Four payments of 25% incl. tax: non-refundable deposit at booking (locks date and
+vendors), then 6, 3 and 1 calendar months before; final absorbs rounding.
+Per-booking allocation of the subtotal (seeded from the elopement cost model) is
+only for valuing an undelivered part; drone has no separate value.
+
+**Phases:** 1 foundation ✅ (2026-09-16). 2 agreement + work order EN/FR with
+language choice first (English default), initials at key clauses, drawn +
+typed signatures, PDF, emailed copies. 3 Stripe (card + PAD, live account) and
+Interac e-Transfer. 4 planning checklist editing + update emails + scope
+amendments. 5 reminders cron and polish.
+
+**Owed:** RESEND_API_KEY on canadian-weddings (sender i@armanarai.com; the
+armanarai.com domain is already verified in Resend). **Wedding versions of the
+agreement and work order** after the elopement set ships.
+

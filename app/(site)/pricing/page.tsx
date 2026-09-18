@@ -18,7 +18,7 @@ import {
 export const metadata: Metadata = {
   title: "Wedding Photography Pricing — One Price, Anywhere in Canada",
   description:
-    "Three collections at one national price: Core C$3,000 for 6 hours, Signature C$4,500 for 8, Heirloom C$5,000 for 10. Travel quoted openly on top.",
+    "Three collections at one national price: Core C$3,000 for 6 hours, Signature C$4,500 for 8, Heirloom C$6,000 for 10. Travel quoted openly on top.",
   alternates: { canonical: "/pricing" },
   openGraph: {
     title: "Wedding Photography Pricing — Arman Arai",
@@ -227,6 +227,9 @@ export default function Pricing() {
               Quoted, and quoted <em className="italic text-rose">before you sign</em>
             </h2>
             <p className="text-blush text-[0.95rem] leading-relaxed font-light">{TRAVEL.body}</p>
+            <p className="text-cream text-[0.95rem] leading-relaxed font-light mt-5 border-l border-rose pl-5">
+              {TRAVEL.availabilityNote}
+            </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-px bg-dust/25">

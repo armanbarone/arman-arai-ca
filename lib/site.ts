@@ -170,7 +170,7 @@ export const TIERS: Tier[] = [
     strap: "Ten hours",
     coverage: "10 continuous hours",
     hours: 10,
-    price: 5000,
+    price: 6000,
     crew: "One lead photographer",
     images: "800+ edited images",
     planning: "Two planning calls and a location scout",
@@ -400,6 +400,9 @@ export const TRAVEL = {
     "the day before rather than arriving frayed on the morning. It goes into " +
     "the contract as one figure, agreed in writing, and nothing is added to " +
     "it afterwards.",
+  availabilityNote:
+    "Collection prices remain the same across Canada. Travel is quoted separately. " +
+    "When Arman is already scheduled in your region, the travel fee is reduced or waived.",
   /** Honest scale, not a price list. Every one of these is quoted per trip. */
   scale: [
     { where: "Within 100 km of Montréal", note: "The island, Laval, the South Shore, the near Laurentians", cost: "Included" },
@@ -483,7 +486,7 @@ export const MARKETS: Market[] = [
     body: [
       "The work here is documentary and editorial: I photograph what happens rather than staging a version of it, then I direct properly for the twenty minutes of portraits where direction is what you actually want. That distinction matters more in Montréal than anywhere else I work, because the market is full of packages that promise a number of images and say nothing about how the day will feel.",
       "Living here is the whole difference. I have already made the mistakes: I know which side of Place d'Armes is lit at five in July and which at five in October, that the Plateau photographs best in falling snow, and which venues lose the light an hour earlier than the couple expects. That is not something a photographer flying in can have, and it is why Montréal is the only market where I charge no travel at all.",
-      "A collection costs the same here as it costs anywhere in Canada: Core is C$3,000 for six hours, Signature is C$4,500 for eight, Heirloom is C$5,000 for ten. Old Montréal, the Plateau, Mont-Royal, the island, Laval and the South Shore all sit inside the 100 km radius, which means no travel line at all. The Laurentians, the Eastern Townships, Québec City and Charlevoix are past it, so the drive and the night get quoted as one agreed figure before you sign.",
+      "A collection costs the same here as it costs anywhere in Canada: Core is C$3,000 for six hours, Signature is C$4,500 for eight, Heirloom is C$6,000 for ten. Old Montréal, the Plateau, Mont-Royal, the island, Laval and the South Shore all sit inside the 100 km radius, which means no travel line at all. The Laurentians, the Eastern Townships, Québec City and Charlevoix are past it, so the drive and the night get quoted as one agreed figure before you sign.",
     ],
     faqs: [
       {
@@ -518,7 +521,7 @@ export const MARKETS: Market[] = [
     body: [
       "So I scope by event rather than by package. How many days, how many venues, how far apart, whether any two events share a day, how many people are in each room, and which twenty minutes of the whole thing you would be heartbroken to lose. Those six answers decide crew, travel and editing volume, which is where the cost actually lives. They also produce a timeline that survives contact with Highway 401 traffic on a Saturday in June, which no flat package has ever done.",
       "The part that gets underestimated is editing capacity rather than shooting capacity. A three-day celebration produces something like fifteen to twenty thousand frames. A photographer whose workflow is built for one Saturday will take four or five months to return that gallery and will quote you eight weeks when you ask. I would rather tell you the real number at the start, which is why the delivery date goes in the contract as a date.",
-      "The collection costs what it costs anywhere: Core C$3,000, Signature C$4,500, Heirloom C$5,000. Coming in from Montréal adds the train or the drive and a hotel night, and that is quoted as one figure on top, agreed in writing before you sign. It has typically run C$600 to C$900. Niagara, Niagara-on-the-Lake, the 1000 Islands, Muskoka and Prince Edward County all buy the same collections at the same figures, with their own travel quoted the same way.",
+      "The collection costs what it costs anywhere: Core C$3,000, Signature C$4,500, Heirloom C$6,000. Coming in from Montréal adds the train or the drive and a hotel night, and that is quoted as one figure on top, agreed in writing before you sign. It has typically run C$600 to C$900. Niagara, Niagara-on-the-Lake, the 1000 Islands, Muskoka and Prince Edward County all buy the same collections at the same figures, with their own travel quoted the same way.",
     ],
     faqs: [
       {
@@ -583,13 +586,13 @@ export const MARKETS: Market[] = [
       "Ninety minutes north of Vancouver and inside the same number. The corridor is a logistics problem before it is an aesthetic one, and the logistics are the part you are actually paying me for.",
     body: [
       "There are three Whistler weddings and they are not interchangeable. A village wedding happens at a hotel or a restaurant with everything walkable, which is the easiest version and the one that survives bad weather. An alpine wedding puts the ceremony at the top of a lift, which is the most spectacular and the most exposed to cloud. A lake wedding at Green Lake or Lost Lake sits between the two: outdoors, reachable by road, and low enough to stay under the weather most days.",
-      "A wedding at the Chateau costs exactly what a wedding in Kitsilano costs, and what one in Old Montréal costs: Core C$3,000, Signature C$4,500, Heirloom C$5,000. The mountain does not make the photography more expensive. What it adds is the trip, the flight, the car and the nights up the corridor, quoted as one agreed figure on top before you sign.",
+      "A wedding at the Chateau costs exactly what a wedding in Kitsilano costs, and what one in Old Montréal costs: Core C$3,000, Signature C$4,500, Heirloom C$6,000. The mountain does not make the photography more expensive. What it adds is the trip, the flight, the car and the nights up the corridor, quoted as one agreed figure on top before you sign.",
       "What the corridor asks for is honesty about time. Lifts close, they hold for wind on days that look fine from the valley, and they move a wedding party far more slowly than anyone plans for. Every Whistler timeline I build names a valley-level ceremony site we switch to if the lift is held. That single line is the difference between a day that works and an afternoon spent waiting.",
     ],
     faqs: [
       {
         q: "Is Whistler more expensive than Vancouver?",
-        a: "Not for the photography. Whistler, Squamish and Pemberton buy the same collections at the same figures as anywhere else: C$3,000, C$4,500 and C$5,000. What the corridor adds is the trip, and that is quoted with the collection rather than sprung on you afterwards.",
+        a: "Not for the photography. Whistler, Squamish and Pemberton buy the same collections at the same figures as anywhere else: C$3,000, C$4,500 and C$6,000. What the corridor adds is the trip, and that is quoted with the collection rather than sprung on you afterwards.",
       },
       {
         q: "What happens if the gondola is closed on the day?",
@@ -651,7 +654,7 @@ export const MARKETS: Market[] = [
     faqs: [
       {
         q: "What does a Banff wedding cost to photograph?",
-        a: "The photography is published and it is the same as everywhere: C$3,000 for Core, C$4,500 for Signature, C$5,000 for Heirloom. The travel is quoted, because a Canmore Saturday and a Moraine Lake sunrise are different jobs with different access. A Rockies trip has typically run C$1,200 to C$2,000 once the flight, the car and the mountain nights are counted. Send the venue and the date and you get the real figure in the first reply.",
+        a: "The photography is published and it is the same as everywhere: C$3,000 for Core, C$4,500 for Signature, C$6,000 for Heirloom. The travel is quoted, because a Canmore Saturday and a Moraine Lake sunrise are different jobs with different access. A Rockies trip has typically run C$1,200 to C$2,000 once the flight, the car and the mountain nights are counted. Send the venue and the date and you get the real figure in the first reply.",
       },
       {
         q: "Do we really need a permit?",

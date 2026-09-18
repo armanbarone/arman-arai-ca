@@ -18,7 +18,7 @@ const ORG_LD = {
   email: SITE.email,
   image: "https://cdn.armanarai.ca/about/arman-portrait-camera-window.webp",
   description: SITE.blurb,
-  priceRange: "CA$3,000–CA$5,000",
+  priceRange: "CA$3,000–CA$6,000",
   currenciesAccepted: "CAD",
   address: { "@type": "PostalAddress", addressCountry: "CA" },
   areaServed: [

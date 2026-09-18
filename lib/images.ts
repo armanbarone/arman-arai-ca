@@ -20,6 +20,14 @@ const p = (key: string, alt: string): Photo => ({ src: `${CDN_BASE}/${key}.webp`
  *  ported and generated files are .png. */
 const raw = (key: string, alt: string): Photo => ({ src: `${CDN_BASE}/${key}`, alt });
 
+/** A key that needs URL-encoding: spaces, parentheses, anything outside the
+ *  unreserved set. Cloudflare's /cdn-cgi/image/ path 404s on a literal space
+ *  rather than tolerating it, so this is not optional for those folders. */
+const encKey = (key: string) =>
+  key.split("/").map(encodeURIComponent).join("/");
+
+const enc = (key: string, alt: string): Photo => ({ src: `${CDN_BASE}/${encKey(key)}`, alt });
+
 const CDN_HOST = "https://cdn.armanarai.ca";
 
 /** A Cloudflare-transformed URL at a fixed width.
@@ -440,3 +448,70 @@ export const JOURNAL_FALLBACK = p(
   "journal/lace-gown-couple-bw",
   "Black and white frame of a couple, the bride in a lace gown, against a dark ground",
 );
+
+
+/* ── The ads landing page ───────────────────────────────────────────────────
+ * `Landing Page Pics/` in the canonical `canadian-wedding` bucket. The source
+ * files are 1 to 5 MB PNGs, so nothing may reference them directly: every one
+ * of these goes through next/image (and therefore cloudflareLoader) or through
+ * at(), which is what turns a 4 MB PNG into a 25 KB AVIF at the width a phone
+ * actually draws it.
+ *
+ * The order is the hero conveyor's order. All three frames advance on one
+ * clock, so the first three entries are what is on screen at load: the veil,
+ * the dance floor, the window portrait. Do not reorder those three without
+ * meaning to.
+ */
+export const LANDING_PAGE: Photo[] = [
+  enc("Landing Page Pics/hf_20260509_221447_6faeb54d-84df-41d6-b97c-e8c07cd6291b.png",
+    "Black and white frame of a bride from behind in a satin gown with a large bow, her veil lifting above her"),
+  enc("Landing Page Pics/hf_20260510_051431_12466c1c-d00a-49c2-a657-da202d4366a6.png",
+    "Bride laughing on a crowded dance floor with a drink raised, coloured light streaking across the frame"),
+  enc("Landing Page Pics/hf_20260509_014401_8472b7a6-05d8-451b-9f07-bf4f9a3c9c9f.png",
+    "Black and white portrait of a bride under a veil beside a tall dark window"),
+  enc("Landing Page Pics/hf_20260701_175635_da858b6e-0b3b-4fc5-b4ee-8085230c9045 (1).png",
+    "Couple forehead to forehead on the shore of a mountain lake below snow-covered peaks"),
+  enc("Landing Page Pics/hf_20260605_040612_8deca10e-a859-4497-84c2-35e5b39fa9fe (1).png",
+    "Couple walking together at golden hour, her long veil trailing behind them into the sun"),
+  enc("Landing Page Pics/hf_20260509_071323_2ac4dabf-1fa2-4d55-a1dd-c428dd92e58d.png",
+    "Soft warm frame of a groom holding his bride from behind in a strapless tulle gown"),
+  enc("Landing Page Pics/hf_20260509_182026_c732b591-20ce-4762-916a-b95c31db2cc1.png",
+    "A bride small at the foot of a grand lit staircase in a vaulted stone hall, her train across the floor"),
+  enc("Landing Page Pics/hf_20260509_015240_9ad217f3-76f9-4cf7-8bad-bb900961ae60.png",
+    "Overhead black and white frame of a couple dancing on a circular patterned floor, her dress spun to blur"),
+  enc("Landing Page Pics/hf_20260509_182056_a8909a42-b4e2-4a59-a851-7963cd2d5733.png",
+    "Bride silhouetted against a bright window between heavy curtains, candles and a mirrored reflection below"),
+  enc("Landing Page Pics/hf_20260509_185028_a0345889-995e-42f7-a86e-92b538afe688.png",
+    "Double exposure of a bride's profile under her veil layered with a portrait of the groom in a dark suit"),
+  enc("Landing Page Pics/hf_20260509_182633_d895a2be-92a2-4542-af4d-5bd6890de7a1.png",
+    "Overhead black and white frame of a groom standing still as the bride spins into a white blur"),
+  enc("Landing Page Pics/hf_20260509_194302_24695def-e308-4521-8d77-140507b7e045.png",
+    "Bride in the window of a car in teal evening light, holding a bouquet of white roses"),
+  enc("Landing Page Pics/hf_20260509_195933_9defdde0-d678-4db6-9751-7e96fee59468.png",
+    "Close frame of an off-shoulder satin gown and the bride's hands against a dark ground"),
+  enc("Landing Page Pics/hf_20260509_195951_24ef8cd1-ef1a-4036-9831-798f61f85b4f.png",
+    "Two figures close together against a burning orange sunset, lanterns in the long grass"),
+  enc("Landing Page Pics/hf_20260509_204246_f1ceb7a1-1b8f-498b-a00d-6476f809522b.png",
+    "Close crop of a bride's red lip as the groom's cuffed hand rests at her throat"),
+  enc("Landing Page Pics/hf_20260509_211016_51809161-7884-48bf-b83c-33190f7ff02c.png",
+    "Black and white frame of a bride in a bow-backed gown, her veil thrown up into the air behind her"),
+  enc("Landing Page Pics/hf_20260509_212156_8a62e4f9-9811-46c0-af2e-6a4dc17d80ce.png",
+    "Moody close frame of a bride's red lips and ringed hands in the dark of a car"),
+  enc("Landing Page Pics/hf_20260509_212415_35533fb5-de4c-4b0a-a4ec-b18d034b8b64.png",
+    "Black and white portrait of an older guest in a tuxedo straightening his bow tie"),
+  enc("Landing Page Pics/hf_20260509_215629_c50132ca-6ac1-40e7-af3f-12d4d121efff.png",
+    "Bride in a lace gown reaching back toward the groom, both lit against near-total darkness"),
+  enc("Landing Page Pics/hf_20260509_222638_fba599fa-7af7-4752-a20b-b40146290d1f.png",
+    "Bride's face seen past a blurred white streak of light, her gaze direct"),
+  enc("Landing Page Pics/hf_20260510_035220_ddaa77d7-abd3-4a41-ae95-ac5212a9a418.png",
+    "Bride standing beside her seated groom in a panelled room below a gilt-framed oil painting"),
+  enc("Landing Page Pics/hf_20260510_035921_b58f430a-f9ed-4177-b987-28f983d3862d.png",
+    "Black and white frame of a bride's eyes over a car window with the groom reflected in the glass"),
+  enc("Landing Page Pics/hf_20260510_040905_8e865345-9e85-49c0-ad95-54c429c6f1b6.png",
+    "Couple close together, the bride's hand on his lapel and a white rose at her wrist"),
+  enc("Landing Page Pics/hf_20260607_061630_b6f96141-4275-425d-b59b-c28873be17d7 (3).png",
+    "Bride mid-movement on an autumn forest floor, orange leaves and bare trees around her"),
+];
+
+/** The wide frames in the set, for banners that want landscape. */
+export const LANDING_WIDE: Photo[] = [LANDING_PAGE[1], LANDING_PAGE[0]];

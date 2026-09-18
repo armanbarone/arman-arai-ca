@@ -49,6 +49,13 @@ export interface PromoConfig {
   timelineKicker?: string;
   /** Kicker over the final CTA. Defaults to the dates-left countdown. */
   finalKicker?: string;
+  /**
+   * The 35mm film strip under the hero. It is 22 lazy frames of pure
+   * decoration: on a page that exists to book calls, that is 22 requests
+   * competing with the hero on a phone, and an animation that keeps Speed
+   * Index climbing. Pass false to drop it.
+   */
+  filmStrip?: boolean;
   /** The receipt artifact in section 3. */
   receiptTitle?: string;
   receiptStamp?: string;
@@ -89,7 +96,9 @@ export interface PromoConfig {
   /** Section artwork, per city, pulled from existing sets. Breaks up the text-heavy blocks. */
   images: {
     activitiesBanner: string;    // wide banner inside the activities section
+    activitiesBannerAlt?: string;
     alternativeImg?: string;     // portrait/landscape frame beside the alternative pitch
+    alternativeImgAlt?: string;
   };
   included: string[];
   directPay?: { title: string; items: string[]; note: string };  // curated, paid directly (lean offers)
@@ -109,13 +118,34 @@ export interface PromoConfig {
     /** Kicker over the premium list. Defaults to the allowance wording, which
      *  only makes sense on pages that sell a capped activity budget. */
     premiumKicker?: string;
-    premiumTitle: string;
-    premiumIntro: string;
-    premium: { a: string; s?: string }[];
+    /** The chip list under the columns. Omit `premium` to drop the block: a
+     *  second price list on a landing page is noise, not persuasion. */
+    premiumTitle?: string;
+    premiumIntro?: string;
+    premium?: { a: string; s?: string }[];
     albumNote: string;
   };
-  whyPrice: { kicker: string; title: string; paras: React.ReactNode[] };
-  aboutParas: string[];
+  /** The signed-letter block explaining the price. Omit to drop the section:
+   *  on a page whose only job is booking a call it is a wall of text between
+   *  the reader and the calendar. */
+  whyPrice?: { kicker: string; title: string; paras: React.ReactNode[] };
+  /** The "who I am" block. Omit `aboutParas` to drop the section entirely. */
+  aboutParas?: string[];
+  aboutKicker?: string;
+  aboutTitle?: string;
+  /** Overrides the portrait. Defaults to the site's about-page portrait. */
+  aboutPortrait?: { src: string; alt: string; caption?: string };
+  /** Screenshots of what couples actually wrote. Nothing persuades like these,
+   *  so on a landing page they sit between the work and the calendar. */
+  reviews?: {
+    kicker?: string;
+    title?: string;
+    intro?: string;
+    /** Intrinsic dimensions are required: these come off a dozen platforms at
+     *  wildly different aspect ratios, and without them the page reflows as
+     *  each one lands. */
+    items: { src: string; w: number; h: number; alt?: string }[];
+  };
   faq: { q: string; a: string }[];
   form: Omit<LeadFormProps, "endpoint">;
 }
@@ -345,6 +375,15 @@ export default function PromoPage({ cfg, experiencesAlbum, workAlbum }: {
           .dr-promo h2, .dr-promo h3 { font-weight: 400 !important; }
           .dr-promo .fc-cmp td { font-size: 0.95rem !important; }
 
+          /* ── REVIEWS: masonry so nothing is cropped ──────────────────────── */
+          .fc-proof { column-count: 1; column-gap: 14px; }
+          @media (min-width: 640px)  { .fc-proof { column-count: 2; } }
+          @media (min-width: 1024px) { .fc-proof { column-count: 3; } }
+          .fc-proof-item {
+            break-inside: avoid; margin-bottom: 14px;
+            border: 0.5px solid rgba(184,149,106,.22); background: #141110;
+          }
+
           /* ── SECTION SEPARATION ────────────────────────────────────────────
              The alternating #080704 / #0E0C0A backgrounds are a two-percent
              difference, so on a phone every section ran into the next one.
@@ -527,7 +566,7 @@ export default function PromoPage({ cfg, experiencesAlbum, workAlbum }: {
       )}
 
       {/* ══ FILM ROLL DIVIDER, same frames as the homepage ══ */}
-      <FilmStrip />
+      {cfg.filmStrip !== false && <FilmStrip />}
 
       {/* ══ 2 · WHAT YOUR DAY LOOKS LIKE, zigzag ══ */}
       <section style={{ padding: "5.5rem 0 5rem", background: "#0E0C0A" }}>
@@ -702,7 +741,7 @@ export default function PromoPage({ cfg, experiencesAlbum, workAlbum }: {
               </div>
               {cfg.images.alternativeImg && (
                 <div style={{ position: "relative", aspectRatio: "4/5", overflow: "hidden" }}>
-                  <Image src={cfg.images.alternativeImg} alt={cfg.heroAlt} fill loading="lazy" sizes="(max-width: 767px) 100vw, 400px" style={{ objectFit: "cover" }} />
+                  <Image src={cfg.images.alternativeImg} alt={cfg.images.alternativeImgAlt ?? cfg.heroAlt ?? ""} fill loading="lazy" sizes="(max-width: 767px) 100vw, 400px" style={{ objectFit: "cover" }} />
                 </div>
               )}
             </div>
@@ -735,7 +774,7 @@ export default function PromoPage({ cfg, experiencesAlbum, workAlbum }: {
             {cfg.activities.intro}
           </p>
           <div className="fc-banner">
-            <Image src={cfg.images.activitiesBanner} alt={cfg.heroAlt} fill loading="lazy" sizes="(max-width: 767px) 100vw, 80vw" style={{ objectFit: "cover" }} />
+            <Image src={cfg.images.activitiesBanner} alt={cfg.images.activitiesBannerAlt ?? cfg.heroAlt ?? ""} fill loading="lazy" sizes="(max-width: 767px) 100vw, 80vw" style={{ objectFit: "cover" }} />
           </div>
           <div className="fc-cols">
             {cfg.activities.columns.map((c) => (
@@ -755,20 +794,26 @@ export default function PromoPage({ cfg, experiencesAlbum, workAlbum }: {
             ))}
           </div>
 
-          <div style={{ marginTop: "3.6rem" }}>
-            <p style={kick}>{cfg.activities.premiumKicker ?? "Beyond the allowance"}</p>
-            <h3 style={{ fontFamily: "var(--font-cormorant)", fontWeight: 300, color: IN, fontSize: "clamp(1.4rem,2.4vw,1.9rem)", margin: "0.8rem 0 0" }}>{cfg.activities.premiumTitle}</h3>
-            <p style={{ color: MUT, maxWidth: "58ch", lineHeight: 1.75, margin: "1.1rem 0 2rem" }}>
-              {cfg.activities.premiumIntro}
-            </p>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: "0.7rem" }}>
-              {cfg.activities.premium.map((x) => (
-                <span key={x.a} style={{ border: "0.5px solid rgba(184,149,106,.3)", color: MUT, padding: "0.7rem 1.2rem", fontSize: "0.8rem", fontFamily: "var(--font-jost)", letterSpacing: "0.04em" }}>
-                  {x.a}{x.s ? <span style={{ color: DIM, fontSize: "0.66rem", marginLeft: "0.6rem", letterSpacing: "0.12em", textTransform: "uppercase" }}>{x.s}</span> : null}
-                </span>
-              ))}
+          {cfg.activities.premium && cfg.activities.premium.length > 0 && (
+            <div style={{ marginTop: "3.6rem" }}>
+              <p style={kick}>{cfg.activities.premiumKicker ?? "Beyond the allowance"}</p>
+              {cfg.activities.premiumTitle && (
+                <h3 style={{ fontFamily: "var(--font-cormorant)", fontWeight: 300, color: IN, fontSize: "clamp(1.4rem,2.4vw,1.9rem)", margin: "0.8rem 0 0" }}>{cfg.activities.premiumTitle}</h3>
+              )}
+              {cfg.activities.premiumIntro && (
+                <p style={{ color: MUT, maxWidth: "58ch", lineHeight: 1.75, margin: "1.1rem 0 2rem" }}>
+                  {cfg.activities.premiumIntro}
+                </p>
+              )}
+              <div style={{ display: "flex", flexWrap: "wrap", gap: "0.7rem" }}>
+                {cfg.activities.premium.map((x) => (
+                  <span key={x.a} style={{ border: "0.5px solid rgba(184,149,106,.3)", color: MUT, padding: "0.7rem 1.2rem", fontSize: "0.8rem", fontFamily: "var(--font-jost)", letterSpacing: "0.04em" }}>
+                    {x.a}{x.s ? <span style={{ color: DIM, fontSize: "0.66rem", marginLeft: "0.6rem", letterSpacing: "0.12em", textTransform: "uppercase" }}>{x.s}</span> : null}
+                  </span>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
 
           <div style={{ textAlign: "center", margin: "3.6rem 0 2.4rem" }}>
             <p style={kick}>{cfg.activities.albumKicker ?? "The experiences, as an album"}</p>
@@ -780,47 +825,91 @@ export default function PromoPage({ cfg, experiencesAlbum, workAlbum }: {
         </div>
       </section>
 
-      {/* ══ 7 · WHY THIS PRICE EXISTS, as a signed letter ══ */}
-      <section style={{ padding: "5.5rem 0", background: "#0E0C0A" }}>
-        <div className="page-w page-px">
-          <div style={{ textAlign: "center" }}>
-            <p style={kick}>{cfg.whyPrice.kicker}</p>
-            <h2 style={h2}>{cfg.whyPrice.title}</h2>
-          </div>
-          <div className="fc-letter">
-            <div style={{ fontFamily: "var(--font-jost)", fontSize: "0.6rem", letterSpacing: "0.28em", textTransform: "uppercase", color: "#a8834a", marginBottom: "1.6rem" }}>
-              From the desk of Arman Arai
+      {/* ══ 7 · WHY THIS PRICE EXISTS, as a signed letter (optional) ══ */}
+      {cfg.whyPrice && (
+        <section style={{ padding: "5.5rem 0", background: "#0E0C0A" }}>
+          <div className="page-w page-px">
+            <div style={{ textAlign: "center" }}>
+              <p style={kick}>{cfg.whyPrice.kicker}</p>
+              <h2 style={h2}>{cfg.whyPrice.title}</h2>
             </div>
-            <div style={{ fontFamily: "var(--font-cormorant)", lineHeight: 1.9, fontSize: "1.04rem", display: "grid", gap: "1.1rem" }}>
-              {cfg.whyPrice.paras.map((p, i) => <p key={i} style={{ margin: 0 }}>{p}</p>)}
+            <div className="fc-letter">
+              <div style={{ fontFamily: "var(--font-jost)", fontSize: "0.6rem", letterSpacing: "0.28em", textTransform: "uppercase", color: "#a8834a", marginBottom: "1.6rem" }}>
+                From the desk of Arman Arai
+              </div>
+              <div style={{ fontFamily: "var(--font-cormorant)", lineHeight: 1.9, fontSize: "1.04rem", display: "grid", gap: "1.1rem" }}>
+                {cfg.whyPrice.paras.map((p, i) => <p key={i} style={{ margin: 0 }}>{p}</p>)}
+              </div>
+              <div style={{ fontFamily: "var(--font-cormorant)", fontStyle: "italic", fontSize: "1.7rem", marginTop: "1.8rem", color: "#3d2e1f" }}>Arman</div>
             </div>
-            <div style={{ fontFamily: "var(--font-cormorant)", fontStyle: "italic", fontSize: "1.7rem", marginTop: "1.8rem", color: "#3d2e1f" }}>Arman</div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
-      {/* ══ 8 · WHO I AM ══ */}
-      <section style={{ padding: "5.5rem 0" }}>
-        <div className="page-w page-px">
-          <div className="fc-about">
-            <div>
-              <p style={kick}>The person behind the camera</p>
-              <h2 style={h2}>Twelve years of weddings taught me what to leave behind</h2>
-              <div style={{ color: MUT, lineHeight: 1.85, fontSize: "1rem", marginTop: "1.6rem", display: "grid", gap: "1.1rem" }}>
-                {cfg.aboutParas.map((p, i) => <p key={i} style={{ margin: 0 }}>{p}</p>)}
-              </div>
+      {/* ══ 7b · REVIEWS: what couples actually wrote ══ */}
+      {cfg.reviews && cfg.reviews.items.length > 0 && (
+        <section style={{ padding: "5.5rem 0", background: "#0E0C0A" }}>
+          <div className="page-w page-px">
+            <div style={{ textAlign: "center" }}>
+              <p style={kick}>{cfg.reviews.kicker ?? "Their words, not mine"}</p>
+              <h2 style={h2}>{cfg.reviews.title ?? "What couples actually wrote"}</h2>
+              {cfg.reviews.intro && (
+                <p style={{ color: MUT, maxWidth: "56ch", lineHeight: 1.75, margin: "1.2rem auto 0" }}>
+                  {cfg.reviews.intro}
+                </p>
+              )}
             </div>
-            <div className="fc-polaroid">
-              <div style={{ position: "relative", aspectRatio: "3/4", overflow: "hidden" }}>
-                <Image src={ARMAN_PORTRAIT.src} alt="Arman Arai, elopement photographer and curator, in the mountains" fill loading="lazy" sizes="(max-width: 767px) 100vw, 380px" style={{ objectFit: "cover" }} />
+            {/* Masonry columns rather than a grid, so no screenshot is cropped:
+                on a review, a crop cuts off the words that do the persuading. */}
+            <div className="fc-proof" style={{ marginTop: "2.8rem" }}>
+              {cfg.reviews.items.map((r, i) => (
+                <div key={r.src} className="fc-proof-item">
+                  <Image
+                    src={r.src}
+                    alt={r.alt ?? "A message from a couple after their gallery was delivered"}
+                    width={r.w}
+                    height={r.h}
+                    sizes="(max-width: 639px) 100vw, (max-width: 1023px) 50vw, 33vw"
+                    quality={80}
+                    loading="lazy"
+                    style={{ width: "100%", height: "auto", display: "block" }}
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* ══ 8 · WHO I AM (optional) ══ */}
+      {cfg.aboutParas && cfg.aboutParas.length > 0 && (
+        <section style={{ padding: "5.5rem 0" }}>
+          <div className="page-w page-px">
+            <div className="fc-about">
+              <div>
+                <p style={kick}>{cfg.aboutKicker ?? "The person behind the camera"}</p>
+                <h2 style={h2}>{cfg.aboutTitle ?? "Twelve years of weddings taught me what to leave behind"}</h2>
+                <div style={{ color: MUT, lineHeight: 1.85, fontSize: "1rem", marginTop: "1.6rem", display: "grid", gap: "1.1rem" }}>
+                  {cfg.aboutParas.map((p, i) => <p key={i} style={{ margin: 0 }}>{p}</p>)}
+                </div>
               </div>
-              <div style={{ position: "absolute", bottom: 18, left: 0, right: 0, textAlign: "center", fontFamily: "var(--font-jost)", fontSize: "0.6rem", letterSpacing: "0.3em", textTransform: "uppercase", color: "#6b5638" }}>
-                Arman · behind the camera
+              <div className="fc-polaroid">
+                <div style={{ position: "relative", aspectRatio: "3/4", overflow: "hidden" }}>
+                  <Image
+                    src={cfg.aboutPortrait?.src ?? ARMAN_PORTRAIT.src}
+                    alt={cfg.aboutPortrait?.alt ?? ARMAN_PORTRAIT.alt}
+                    fill loading="lazy" sizes="(max-width: 767px) 100vw, 380px"
+                    style={{ objectFit: "cover" }}
+                  />
+                </div>
+                <div style={{ position: "absolute", bottom: 18, left: 0, right: 0, textAlign: "center", fontFamily: "var(--font-jost)", fontSize: "0.6rem", letterSpacing: "0.3em", textTransform: "uppercase", color: "#6b5638" }}>
+                  {cfg.aboutPortrait?.caption ?? "Arman \u00b7 behind the camera"}
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* ══ 9 · FAQ ══ */}
       <section style={{ padding: "5.5rem 0", background: "#0E0C0A" }}>

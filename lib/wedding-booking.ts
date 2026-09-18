@@ -6,7 +6,7 @@ export function weddingCalendarUrl(search: string, hostname: string, embedded = 
   if (embedded) {
     params.set("embed_domain", hostname);
     params.set("embed_type", "Inline");
-    params.set("hide_landing_page_details", "1");
+    params.set("hide_event_type_details", "1");
     params.set("background_color", "ffffff");
     params.set("text_color", "292f29");
     params.set("primary_color", "344b3c");
@@ -22,10 +22,7 @@ export function weddingCalendarUrl(search: string, hostname: string, embedded = 
 // An unrelated frame or an arbitrary postMessage must never cause a booking redirect.
 export function isCompletedWeddingBooking(origin: string, isCalendarFrame: boolean, data: unknown): boolean {
   if (origin !== "https://calendly.com" || !isCalendarFrame || !data || typeof data !== "object") return false;
-  const message = data as { event?: unknown; payload?: { event?: { uri?: unknown }; invitee?: { uri?: unknown } } };
-  if (message.event !== "calendly.event_scheduled") return false;
-  const eventUri = message.payload?.event?.uri;
-  const inviteeUri = message.payload?.invitee?.uri;
-  return typeof eventUri === "string" && /^https:\/\/api\.calendly\.com\/scheduled_events\/[\w-]+$/.test(eventUri)
-    && typeof inviteeUri === "string" && inviteeUri.startsWith(`${eventUri}/invitees/`) && inviteeUri.length > eventUri.length + 10;
+  // The provider's completion notification is sufficient. Do not depend on
+  // optional invitee metadata, which this page neither needs nor collects.
+  return (data as { event?: unknown }).event === "calendly.event_scheduled";
 }

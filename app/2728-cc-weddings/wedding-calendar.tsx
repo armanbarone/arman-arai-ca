@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, type ReactNode } from "react";
+import Script from "next/script";
 import { track } from "@vercel/analytics";
 import { CORE } from "@/lib/site";
 import { isCompletedWeddingBooking, weddingCalendarUrl, WEDDING_CALENDAR } from "@/lib/wedding-booking";
@@ -40,11 +41,12 @@ export function BookingNavigation() {
 
 export default function WeddingCalendar() {
   const container = useRef<HTMLDivElement>(null);
-  const frame = useRef<HTMLIFrameElement>(null);
+  const widget = useRef<HTMLDivElement>(null);
   const completed = useRef(false);
   const [src, setSrc] = useState<string>();
   const [direct, setDirect] = useState(`${WEDDING_CALENDAR}?utm_source=2728-cc-weddings`);
   const [loaded, setLoaded] = useState(false);
+  const [scriptReady, setScriptReady] = useState(false);
 
   useEffect(() => {
     setDirect(weddingCalendarUrl(window.location.search, window.location.hostname, false));
@@ -58,8 +60,25 @@ export default function WeddingCalendar() {
   }, []);
 
   useEffect(() => {
+    if (!scriptReady || !src || !widget.current) return;
+    const host = widget.current;
+    const calendly = (window as unknown as { Calendly?: { initInlineWidget: (options: { url: string; parentElement: HTMLElement; resize: boolean }) => void } }).Calendly;
+    if (!calendly) return;
+    // Use Calendly's supported widget so completion notifications are enabled.
+    calendly.initInlineWidget({ url: src, parentElement: host, resize: true });
+    const iframe = host.querySelector("iframe");
+    const onLoad = () => setLoaded(true);
+    if (iframe) {
+      iframe.title = "Choose a date and time for your free 30-minute call with Arman";
+      iframe.addEventListener("load", onLoad);
+    }
+    return () => { iframe?.removeEventListener("load", onLoad); host.replaceChildren(); };
+  }, [scriptReady, src]);
+
+  useEffect(() => {
     const onMessage = (event: MessageEvent) => {
-      if (completed.current || !isCompletedWeddingBooking(event.origin, !!frame.current && event.source === frame.current.contentWindow, event.data)) return;
+      const iframe = widget.current?.querySelector("iframe");
+      if (completed.current || !isCompletedWeddingBooking(event.origin, !!iframe && event.source === iframe.contentWindow, event.data)) return;
       completed.current = true;
       // Only report an actual scheduled event, never a calendar view or a CTA click.
       // No invitee name, email, or booking URI is sent to analytics.
@@ -73,7 +92,8 @@ export default function WeddingCalendar() {
   return <>
     <div ref={container} className={styles.calendarPanel}>
       {!loaded && <div className={styles.calendarLoading} role="status"><p>Finding a time for us to meet…</p><a href={direct} target="_blank" rel="noopener noreferrer">Open the calendar in a new tab ↗</a></div>}
-      {src && <iframe ref={frame} src={src} title="Choose a date and time for your free 30-minute call with Arman" onLoad={() => setLoaded(true)} />}
+      <div ref={widget} className={styles.widgetHost} />
+      {src && <Script src="https://assets.calendly.com/assets/external/widget.js" strategy="afterInteractive" onReady={() => setScriptReady(true)} />}
     </div>
     <p className={styles.calendarFallback}>Calendar not loading? <a href={direct} target="_blank" rel="noopener noreferrer" onClick={() => record("Wedding Calendar Fallback", { placement: "calendar" })}>Choose a time in a new tab ↗</a></p>
   </>;

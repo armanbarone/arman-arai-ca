@@ -11,16 +11,14 @@ test('only a completed booking from the actual Calendly frame can redirect', () 
     assert.equal(isCompletedWeddingBooking(origin, true, booked), false);
   }
   assert.equal(isCompletedWeddingBooking('https://calendly.com', false, booked), false);
-  for (const data of [null, 'calendly.event_scheduled', {}, { event: 'calendly.event_type_viewed' }, { event: 'calendly.date_and_time_selected' }, { event: 'calendly.event_scheduled', payload: {} }]) {
+  for (const data of [null, 'calendly.event_scheduled', {}, { event: 'calendly.event_type_viewed' }, { event: 'calendly.date_and_time_selected' }]) {
     assert.equal(isCompletedWeddingBooking('https://calendly.com', true, data), false);
   }
 });
 
-test('malformed and mismatched booking identifiers are rejected', () => {
-  const withInvitee = (uri) => ({...booked, payload: {...booked.payload, invitee: { uri }}});
-  assert.equal(isCompletedWeddingBooking('https://calendly.com', true, withInvitee('https://evil.example/invitees/5678')), false);
-  assert.equal(isCompletedWeddingBooking('https://calendly.com', true, withInvitee(`${eventUri}/invitees/`)), false);
-  assert.equal(isCompletedWeddingBooking('https://calendly.com', true, withInvitee('https://api.calendly.com/scheduled_events/another/invitees/5678')), false);
+test('a genuine completion does not require optional personal or invitee metadata', () => {
+  assert.equal(isCompletedWeddingBooking('https://calendly.com', true, { event: 'calendly.event_scheduled', payload: {} }), true);
+  assert.equal(isCompletedWeddingBooking('https://calendly.com', true, { event: 'calendly.event_scheduled' }), true);
 });
 
 test('campaign attribution survives the embed and direct calendar fallback', () => {
@@ -35,6 +33,8 @@ test('campaign attribution survives the embed and direct calendar fallback', () 
     assert.equal(url.searchParams.get('utm_term'), 'wedding');
     assert.equal(url.searchParams.has('email'), false);
     assert.equal(url.searchParams.get('embed_type'), embedded ? 'Inline' : null);
+    assert.equal(url.searchParams.get('hide_event_type_details'), embedded ? '1' : null);
+    assert.equal(url.searchParams.has('hide_landing_page_details'), false);
   }
   assert.equal(new URL(weddingCalendarUrl('', 'www.armanarai.ca')).searchParams.get('utm_source'), '2728-cc-weddings');
 });

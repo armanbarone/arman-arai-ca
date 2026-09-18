@@ -126,6 +126,8 @@ export interface PromoConfig {
     columns: { title: string; items: string[] }[];
     /** Kicker over the premium list. Defaults to the allowance wording, which
      *  only makes sense on pages that sell a capped activity budget. */
+    /** The vertical flash down the side of each ticket card. */
+    ticketStub?: string;
     premiumKicker?: string;
     /** The chip list under the columns. Omit `premium` to drop the block: a
      *  second price list on a landing page is noise, not persuasion. */
@@ -440,7 +442,7 @@ export default function PromoPage({ cfg, experiencesAlbum, workAlbum }: {
         .fc-ticket:nth-child(odd) { transform: rotate(-0.6deg); }
         .fc-ticket:nth-child(even) { transform: rotate(0.5deg); }
         .fc-ticket-main { padding: 1.7rem 1.6rem; }
-        .fc-ticket-stub { color: ${PAPER_MUT}; border-left: 2px dashed rgba(61,46,31,.45); display: flex; align-items: center; justify-content: center; writing-mode: vertical-rl; font-family: var(--font-jost); letter-spacing: 0.3em; text-transform: uppercase; font-size: 0.58rem; color: #a8834a; }
+        .fc-ticket-stub { border-left: 2px dashed rgba(61,46,31,.45); display: flex; align-items: center; justify-content: center; writing-mode: vertical-rl; font-family: var(--font-jost); letter-spacing: 0.3em; text-transform: uppercase; font-size: 0.58rem; color: ${PAPER_MUT}; }
         .fc-ticket::before, .fc-ticket::after { content: ""; position: absolute; right: 58px; width: 16px; height: 16px; border-radius: 50%; background: #080704; }
         .fc-ticket::before { top: -8px; } .fc-ticket::after { bottom: -8px; }
         .fc-letter { background: #ece3d2; color: #4a3a28; max-width: 700px; margin: 2.8rem auto 0; padding: clamp(2rem,4vw,3.2rem); box-shadow: 0 24px 56px rgba(0,0,0,.55); transform: rotate(0.4deg); }
@@ -811,7 +813,7 @@ export default function PromoPage({ cfg, experiencesAlbum, workAlbum }: {
                     ))}
                   </ul>
                 </div>
-                <div className="fc-ticket-stub">Admit two · 2026</div>
+                <div className="fc-ticket-stub">{cfg.activities.ticketStub ?? "Admit two"}</div>
               </div>
             ))}
           </div>

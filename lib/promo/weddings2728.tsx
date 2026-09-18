@@ -207,6 +207,7 @@ export function weddings2728Config(): PromoConfig {
       kicker: "In every collection",
       title: "Two things most photographers charge extra for",
       albumKicker: "The work",
+      ticketStub: "Every collection",
       intro: (
         <>
           <strong style={{ color: IN, fontWeight: 400 }}>Vertical social reels</strong> in the first

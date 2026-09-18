@@ -5,19 +5,31 @@ import { HOME_GRID, LANDING_PAGE, at } from "@/lib/images";
 /* ═══════════════════════════════════════════════════════════════════════════
    /2728-weddings — the Google Ads landing page for 2027 and 2028 dates.
 
-   The page has one job: book the call. Everything on it either builds enough
-   trust to pick up the calendar, or it is cut. That is why there is no letter
-   about the money, no second price list and no third paragraph about me: the
-   reviews do that work, and screenshots of what couples actually wrote persuade
-   better than anything I can write about myself.
+   ONE JOB: get the call booked. Every block earns its place by moving somebody
+   toward the calendar, or it is cut. The order is deliberate:
 
-   Prices are read from lib/site.ts rather than typed here, so the page can
-   never quote a figure /pricing has moved off.
+     hero            the offer in one line, with the call as the only action
+     the day         proof I know how a wedding actually runs
+     what you get    the offer as an object, with the price on it
+     the collections three ways in, so "how much?" is answered before the call
+     the comparison  reframes the price against what the day really costs
+     travel          the one honest caveat, handled early so it is not a shock
+     what's included the two things nobody else gives them
+     the album       proof the work is good
+     the reviews     proof other people thought so
+     about           two lines, because nobody books a call over a biography
+     faq             the objections that actually stop people booking
+     the calendar    the point of the page
 
-   NOTHING ON THIS PAGE NAMES A HOME CITY. It runs as a national campaign, so a
-   location-specific inclusions make the offer wrong for most of the country
-   the moment it is served there. Travel is extra, quoted per wedding, and that
-   is the whole story a landing page needs to tell.
+   COPY RULES, learned the hard way on this page:
+     - Never describe a collection by what it lacks. "No album at this tier" is
+       a reason not to buy; the same fact framed as what you DO get is a reason
+       to ask.
+     - Never name a home city, and never include anything location-specific.
+       This runs nationally, so any of it is wrong for most of the country the
+       moment the ad serves there.
+     - Prices come from lib/site.ts, never typed here, so this page cannot
+       quote a figure /pricing has moved off.
    ═══════════════════════════════════════════════════════════════════════════ */
 
 const IN = "#e8dfd0";
@@ -25,7 +37,7 @@ const IN = "#e8dfd0";
 const [CORE, SIGNATURE, HEIRLOOM] = TIERS;
 const money = (n: number) => `$${n.toLocaleString("en-CA")}`;
 
-/** The review screenshots, from the same set /reviews publishes. Intrinsic
+/** The review screenshots, from the set /reviews publishes. Intrinsic
  *  dimensions come from that page, where they were measured. */
 const REVIEW_SRC = (n: number) =>
   `https://cdn.armanarai.ca/reviews/proof-${String(n).padStart(2, "0")}.png`;
@@ -47,48 +59,42 @@ export function weddings2728Config(): PromoConfig {
     /* ── Price ────────────────────────────────────────────────────────────── */
     priceFounding: CORE.price,
     pricePrefix: "From",
-    badge: "2027 and 2028 dates",
+    badge: "Booking 2027 and 2028",
     coversTitle: "What you get",
-    anchorNote: "The same price in every city. Travel is extra.",
+    anchorNote: "The same price wherever you marry. Travel quoted separately.",
     taxNote: "before tax",
 
     /* ── Hero ─────────────────────────────────────────────────────────────── */
-    /* One frame on a phone, not three. Three hero photographs on a slow mobile
-       pipe measured at 4.2s LCP and 5.2s Speed Index; the other two are pure
-       decoration above the fold and cost more than they are worth. All three
-       still show on desktop, where there is bandwidth for them. */
     heroPool: {
       images: LANDING_PAGE.map((ph) => ph.src),
       alts: LANDING_PAGE.map((ph) => ph.alt),
+      // One frame on a phone. Three measured at 4.2s LCP; desktop keeps all three.
       mobileFrames: 1,
     },
-    // 22 decorative frames between the hero and the first real section.
     filmStrip: false,
     heroImg: LANDING_PAGE[0].src,
     heroAlt: LANDING_PAGE[0].alt,
-    kicker: "Canadian weddings · 2027 and 2028 dates",
-    /* "Photographed by one person" was elopement copy: on an elopement page the
-       single curator IS the product, on a wedding page it reads like you are
-       being sold a smaller crew. The differentiator that actually matters to a
-       couple comparing quotes is that the postcode does not move the number. */
-    h1Plain: "Canadian wedding photography, ",
-    h1Accent: "the same price in every city.",
+    kicker: "Weddings across Canada · 2027 and 2028",
+    h1Plain: "Creative wedding photography, ",
+    h1Accent: "built around your day.",
     heroSub:
-      "Documentary and editorial coverage of the whole day, from $3,000. Book a 30-minute call and " +
-      "I will tell you whether your date is open and exactly what your wedding costs.",
+      "No two weddings get the same plan, and none of them get a shot list off the internet. " +
+      "Tell me what your day looks like on a 30-minute call and I will tell you whether your " +
+      "date is open and exactly what it costs.",
     heroSubShort:
-      "Documentary and editorial wedding coverage from $3,000, the same price anywhere in Canada. " +
-      "Book a 30-minute call.",
+      "No two weddings get the same plan. Book a 30-minute call: I will tell you if your date is " +
+      "open and exactly what it costs.",
 
-    /* ── The day ──────────────────────────────────────────────────────────── */
-    timelineKicker: "Six hours, eight, or ten",
-    timelineIntro: "How much of the day you hold is the only real decision.",
+    /* ── The day: proof I know how a wedding runs ─────────────────────────── */
+    timelineKicker: "",
+    timelineIntro:
+      "Built backwards from the last hour of light, with slack where the morning always runs late.",
     timeline: [
-      { n: "01", t: "The quiet room", d: "The dress on the door, the rings on a windowsill. The frames people are surprised by a year later." },
-      { n: "02", t: "The ceremony", d: "Shot from the edges with long lenses and no flash. Nobody should remember the photographer being there." },
-      { n: "03", t: "The family photographs", d: "Twelve groups, two callers, agreed in writing. Twenty minutes instead of an hour of shouting names." },
-      { n: "04", t: "Golden hour", d: "I build the timeline backwards from the last light and keep ten minutes of it for the two of you." },
-      { n: "05", t: "The room, and the floor", d: "Documentary through dinner and the dancing, with film prints handed round while it is still happening." },
+      { n: "01", t: "The quiet room", d: "The dress on the door, the rings on a windowsill, your mother trying not to start early. The frames people are surprised by a year later." },
+      { n: "02", t: "The ceremony", d: "Shot from the edges with long lenses and no flash. Nobody should remember a photographer being there, and the frames are better when nobody is performing." },
+      { n: "03", t: "The family photographs", d: "Twelve groups and two callers, agreed in writing beforehand. Twenty minutes, instead of the hour everybody dreads." },
+      { n: "04", t: "Ten minutes that are yours", d: "I hold back part of the golden hour for the two of you. It is usually the only time you get alone all day, and usually the best frames in the gallery." },
+      { n: "05", t: "The room, and the floor", d: "Dinner, the speech that goes off script, and the last hour when everyone stops posing. Film prints go round while it is still happening." },
     ],
 
     images: {
@@ -98,48 +104,55 @@ export function weddings2728Config(): PromoConfig {
       alternativeImgAlt: HOME_GRID[2].alt,
     },
 
-    /* ── In every collection ──────────────────────────────────────────────── */
+    /* ── What you get ─────────────────────────────────────────────────────── */
+    receiptBrand: "Arman Arai · Wedding Photography",
+    footerByline: "Arman Arai · Wedding Photography · Across Canada",
+    receiptTitle: "The Signature Collection",
+    receiptStamp: "Eight hours · photography and film",
+    receiptPriceLabel: "From",
     included: [
-      "Vertical social reels, sent in the first week",
-      "Film prints handed to your guests on the night",
-      "High-resolution edited images with print permission",
-      "An online gallery you can share, with prints orderable from it",
-      "Timeline planning and a written family-photograph plan",
-      "A delivery date written into the contract, not promised in an email",
+      "Vertical social reels, in your hands the first week",
+      "Film prints, handed to your guests on the night",
+      "An online gallery, yours to share, with prints and albums to order",
+      "High-resolution images with full print permission",
+      "A timeline and a written family-photograph plan",
+      "A delivery date written into the contract",
     ],
-    excluded: ["Travel", "Sales tax", "Any add-on you choose"],
+    excludedTitle: "Quoted separately, before you sign",
+    excluded: ["Travel to your venue", "Sales tax"],
     excludedNote:
-      "Travel stays separate, uses the leanest practical route and drops when regional dates can be grouped.",
+      "Agreed in writing before you book, never added to afterwards, and lower when " +
+      "your date groups with others in your region.",
 
-    /* ── The ladder ───────────────────────────────────────────────────────── */
+    /* ── The collections ──────────────────────────────────────────────────── */
     tiers: {
-      kicker: "Three lengths of day",
-      title: "Pick how much day you want",
+      kicker: "Three ways in",
+      title: "Pick how much of the day you want covered",
       featuredLabel: "Most booked",
       items: [
         {
           name: CORE.name,
           price: money(CORE.price),
           meta: `${CORE.hours} hours · ${CORE.images}`,
-          blurb: "A ceremony and a dinner in one place.",
+          blurb: "A ceremony and a dinner in one place, covered properly.",
           points: [
-            "Six hours, one lead photographer",
-            "Social reels and film prints",
-            "Full gallery within 2 weeks",
-            "No feature film or album at this tier",
+            "Six hours of coverage",
+            "Vertical social reels in the first week",
+            "Film prints for your guests on the night",
+            "Online gallery within 2 weeks, with prints and albums available to order",
           ],
         },
         {
           name: SIGNATURE.name,
           price: money(SIGNATURE.price),
           meta: `${SIGNATURE.hours} hours · ${SIGNATURE.images}`,
-          blurb: "A getting-ready in one place and a reception in another. The honest default.",
+          blurb: "Getting ready in one place, a reception in another. What most couples take.",
           points: [
-            "Eight hours, one lead photographer",
+            "Eight hours of coverage",
             "A 1-minute feature film, colour graded",
-            "2 rolls of real film",
-            `A ${ALBUM_SPECS.signature.size} album, ${ALBUM_SPECS.signature.pages}`,
-            "Full gallery in 3 weeks",
+            "2 rolls of real film, processed and scanned",
+            `A ${ALBUM_SPECS.signature.size} album included, ${ALBUM_SPECS.signature.pages}`,
+            "Online gallery in 3 weeks",
           ],
           highlight: true,
         },
@@ -147,31 +160,32 @@ export function weddings2728Config(): PromoConfig {
           name: HEIRLOOM.name,
           price: money(HEIRLOOM.price),
           meta: `${HEIRLOOM.hours} hours · ${HEIRLOOM.images}`,
-          blurb: "The whole thing, from the empty room to the floor at the end.",
+          blurb: "The whole thing, from the empty room in the morning to the floor at the end.",
           points: [
-            "Ten hours, one lead photographer",
+            "Ten hours of coverage",
             "A 3-minute feature film, colour graded",
-            "4 rolls of real film",
+            "4 rolls of real film, processed and scanned",
             `A ${ALBUM_SPECS.heirloom.size} album in ${ALBUM_SPECS.heirloom.cover}`,
-            "Full gallery in 3 weeks",
+            "Online gallery in 3 weeks",
           ],
         },
       ],
-      footnote: "CAD before tax, the same in every city. Travel is quoted separately.",
+      footnote:
+        "CAD before tax, and the same wherever you marry. We settle which one fits on the call.",
     },
 
     /* ── The comparison ───────────────────────────────────────────────────── */
     compare: {
-      intro: "The comparison worth making is against what the same day costs once you have hired everyone it takes.",
+      intro: "Worth comparing against what the same day costs once you have hired everyone it takes.",
       colA: "A photographer alone",
       colB: "Photographer plus a videographer",
       colMine: `${SIGNATURE.name}, ${money(SIGNATURE.price)}`,
       rows: [
         { row: "Coverage", a: "Photography only", b: "Two vendors, two contracts", mine: "Photography and film, one contract" },
         { row: "Social reels", a: "Usually an add-on", b: "Quoted separately again", mine: "In every collection" },
-        { row: "Something on the night", a: "Nothing until the gallery", b: "Nothing until the gallery", mine: "Film prints for your guests" },
-        { row: "Gallery date", a: "“Six to eight weeks”", b: "Two timelines to chase", mine: "A date in the contract" },
-        { row: "Price by city", a: "Rises with the postcode", b: "Rises with the postcode, twice", mine: "The same everywhere" },
+        { row: "On the night", a: "Nothing until the gallery", b: "Nothing until the gallery", mine: "Film prints for your guests" },
+        { row: "Delivery", a: "“Six to eight weeks”", b: "Two timelines to chase", mine: "A date in the contract" },
+        { row: "Price by city", a: "Rises with the postcode", b: "Rises with the postcode, twice", mine: "The same wherever you marry" },
       ],
       footnote: "All figures CAD before tax.",
     },
@@ -181,43 +195,44 @@ export function weddings2728Config(): PromoConfig {
       kicker: "Before you ask",
       title: "Travel is separate and kept lean",
       paras: [
-        "I work anywhere in Canada, and the collection costs the same wherever your wedding is. What changes is getting me there.",
-        "Travel is quoted against your actual venue and date, agreed in writing, and nothing is added to it afterwards. Tell me where you are marrying and you will have the figure in the first reply.",
+        "I work anywhere in Canada and the collection costs the same wherever your wedding is. The only variable is the trip.",
+        "It is booked on the leanest practical route, quoted against your actual venue and date, and written into the contract. When your date groups with others already in your region, it comes down or disappears, which is a good reason to talk early.",
       ],
     },
 
     workNote: "Turn the pages.",
 
-    /* ── What is included ─────────────────────────────────────────────────── */
+    /* ── The two things nobody else includes ─────────────────────────────── */
     activities: {
-      kicker: "Inside every collection",
-      title: "Two things most photographers sell separately",
+      kicker: "In every collection",
+      title: "Two things most photographers charge extra for",
       albumKicker: "The work",
       intro: (
         <>
-          <strong style={{ color: IN, fontWeight: 400 }}>Vertical social reels</strong> in the first week, while
-          everyone is still asking to see something, and{" "}
-          <strong style={{ color: IN, fontWeight: 400 }}>film prints handed to your guests on the night</strong>.
-          Both are in every collection, including the smallest.
+          <strong style={{ color: IN, fontWeight: 400 }}>Vertical social reels</strong> in the first
+          week, while everyone is still asking to see something, and{" "}
+          <strong style={{ color: IN, fontWeight: 400 }}>film prints handed to your guests on the
+          night</strong>, so people leave holding a photograph instead of waiting for a link.
         </>
       ),
       columns: [
         {
-          title: "In every collection",
+          title: "Every collection",
           items: [
             "Vertical social reels, first week",
             "Film prints on the night",
             "A preview inside 48 hours",
             "Timeline and family-photograph planning",
-            "A gallery date in your contract",
+            "An online gallery, with prints and albums to order",
+            "A delivery date in your contract",
           ],
         },
         {
           title: "Signature and Heirloom add",
           items: [
-            "A colour-graded feature film",
+            "A colour-graded feature film of your day",
             "Real film, processed and scanned",
-            "A designed album, not a credit toward one",
+            "A designed album, included rather than a credit toward one",
             "A planning call, and a location scout on Heirloom",
           ],
         },
@@ -225,7 +240,7 @@ export function weddings2728Config(): PromoConfig {
       albumNote: "1980s film stock, shot on real cameras. One of five albums on the portfolio.",
     },
 
-    /* ── Reviews ──────────────────────────────────────────────────────────── */
+    /* ── Proof ────────────────────────────────────────────────────────────── */
     reviews: {
       kicker: "Their words, not mine",
       title: "What couples actually wrote",
@@ -233,12 +248,12 @@ export function weddings2728Config(): PromoConfig {
       items: REVIEWS,
     },
 
-    /* ── About ────────────────────────────────────────────────────────────── */
-    aboutKicker: "The person behind the camera",
+    /* ── About: two lines, because nobody books over a biography ─────────── */
+    aboutKicker: "Who you would be working with",
     aboutTitle: "One wedding a day, shot by me",
     aboutParas: [
-      "I'm Arman. I photograph weddings across Canada, and I take one a day, so the date you book is the only thing on my calendar.",
-      "Documentary first, editorial when it earns it. I stay out of the ceremony and direct properly for the ten minutes of portraits, because standing two people in a field and saying “just be natural” is not direction.",
+      "I'm Arman. I photograph weddings across Canada, and I only take one a day, so the date you book is the only thing on my calendar that day.",
+      "Documentary through the parts you cannot repeat, and properly directed for the ten minutes of portraits, because standing two people in a field and saying “just be natural” is not direction.",
     ],
     aboutPortrait: {
       src: "https://cdn.armanarai.ca/about/arman-portrait-landing.png",
@@ -246,47 +261,43 @@ export function weddings2728Config(): PromoConfig {
       caption: "Arman · behind the camera",
     },
 
-    /* ── FAQ, short ───────────────────────────────────────────────────────── */
+    /* ── The objections that actually stop people booking ────────────────── */
     faq: [
       {
-        q: "Is the price the same in every city?",
-        a: `Yes. Core is ${money(CORE.price)} wherever your wedding is. The photography is the same work, so it carries the same number. Travel is quoted separately.`,
+        q: "What happens on the call?",
+        a: "Thirty minutes. You tell me the date, the venue and roughly how the day runs; I tell you whether I am free, which collection fits and what the travel costs. Nothing is taken on the call, and there is no follow-up sequence afterwards.",
+      },
+      {
+        q: "Does the price change depending on where we marry?",
+        a: `No. Core is ${money(CORE.price)} wherever your wedding is. Travel to your venue is quoted on top and agreed in writing before you book.`,
       },
       {
         q: "Which collection do we need?",
-        a: "If the ceremony and dinner are in one place, six hours is enough and I will say so. The moment there is a getting-ready across town or a late reception, take Signature. We work this out on the call.",
+        a: "If the ceremony and the dinner are in one place, six hours is genuinely enough and I will say so. Once there is a getting-ready across town or a reception that runs late, eight is the honest answer. We settle it on the call.",
       },
       {
-        q: "Do you shoot video?",
-        a: "A colour-graded feature film comes with Signature and Heirloom, shot alongside the photographs. Vertical social reels are in all three. A dedicated videographer is a separate add-on.",
+        q: "Do you shoot video too?",
+        a: "Vertical social reels come with every collection. Signature and Heirloom add a colour-graded feature film of the day, shot alongside the photographs. A dedicated videographer is available as an add-on.",
       },
       {
         q: "What if it rains?",
-        a: "We shoot. Every timeline names a covered location I have already looked at, and I carry the lighting to make an indoor room work.",
+        a: "We shoot. Every timeline names a covered location I have already looked at, and I carry the lighting to make an indoor room work. Rain days are frequently the better gallery.",
       },
       {
-        q: "How far ahead do couples book?",
-        a: "Nine to eighteen months for a peak-season Saturday. If your date is close, ask anyway.",
-      },
-      {
-        q: "How do we hold a date?",
-        a: "Thirty per cent to book, balance due 30 days before the wedding, and it can be split. Nothing is taken on the call.",
+        q: "Is our date still open?",
+        a: "Peak-season Saturdays usually go nine to eighteen months ahead, and I only take one wedding a day. Pick a time on the calendar below and I will tell you about your date on the call.",
       },
     ],
 
-    /* ── The calendar, which is the point of the page ─────────────────────── */
+    /* ── The point of the page ───────────────────────────────────────────── */
     booking: {
       kicker: "Availability, live",
       title: "Pick a time. The calendar is right here.",
       blurb:
-        "Thirty minutes: whether your date is open, which collection fits, and what the travel costs. No deposit taken on the call.",
+        "Thirty minutes: whether your date is open, which collection fits your day, and what the travel costs. No deposit, no pressure, no follow-up sequence.",
     },
 
     finalKicker: "One wedding a day. 2027 and 2028 dates are open.",
-
-    receiptTitle: "The Signature Collection",
-    receiptStamp: "Eight hours · photography and film",
-    receiptPriceLabel: "The day",
 
     /* ── The form ─────────────────────────────────────────────────────────── */
     form: {

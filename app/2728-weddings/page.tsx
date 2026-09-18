@@ -17,16 +17,16 @@ export const metadata: Metadata = {
   // absolute, or the root layout's "%s | Arman Arai" template appends the
   // brand a second time.
   title: {
-    absolute: "2027 & 2028 Canadian Wedding Photography | From C$3,000 | Arman Arai",
+    absolute: "Creative Wedding Photography, Built Around Your Day | Arman Arai",
   },
   description:
-    "Documentary and editorial wedding photography across Canada. Three collections from C$3,000, the same price in every city, with travel kept separate and lean.",
+    "No two weddings get the same plan. Collections from C$3,000, the same price wherever you marry, with travel kept separate and lean. Book a 30-minute call and find out if your date is open.",
   robots: { index: false, follow: true },
   alternates: { canonical: `${SITE.url}/2728-weddings` },
   openGraph: {
-    title: "Your whole wedding day, photographed by one person",
+    title: "Creative wedding photography, built around your day",
     description:
-      "Three collections from C$3,000, the same price wherever in Canada you marry. Social reels in the first week, film prints on the night.",
+      "Collections from C$3,000, the same price wherever you marry. Book a 30-minute call and find out if your date is open.",
     url: `${SITE.url}/2728-weddings`,
     images: [{ url: LANDING_OG_IMAGE }],
   },

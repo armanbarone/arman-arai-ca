@@ -60,6 +60,15 @@ export interface PromoConfig {
   receiptTitle?: string;
   receiptStamp?: string;
   receiptPriceLabel?: string;
+  /** The small-caps line at the top of the receipt. Defaults to the elopement
+   *  business, which is wrong on every other kind of page. */
+  receiptBrand?: string;
+  /** Heading over the things quoted separately. Defaults to the elopement
+   *  wording, where the excluded items really are booked by the couple. */
+  excludedTitle?: string;
+  /** The footer byline. Defaults to the elopement business in Vancouver, which
+   *  is wrong on a wedding page and wrong on a national campaign. */
+  footerByline?: string;
   /** The price ladder, rendered as cards. Omit to hide the section. */
   tiers?: {
     kicker: string;
@@ -575,7 +584,9 @@ export default function PromoPage({ cfg, experiencesAlbum, workAlbum }: {
       <section style={{ padding: "5.5rem 0 5rem", background: "#0E0C0A" }}>
         <div className="page-w page-px">
           <div style={{ textAlign: "center", marginBottom: "3.2rem" }}>
-            <p style={kick}>{cfg.timelineKicker ?? "Six hours, made like a film"}</p>
+            {(cfg.timelineKicker ?? "Six hours, made like a film") !== "" && (
+              <p style={kick}>{cfg.timelineKicker ?? "Six hours, made like a film"}</p>
+            )}
             <h2 style={h2}>What your day looks like</h2>
             <p style={{ color: MUT, maxWidth: "56ch", lineHeight: 1.75, margin: "1.2rem auto 0" }}>
               {cfg.timelineIntro}
@@ -603,7 +614,7 @@ export default function PromoPage({ cfg, experiencesAlbum, workAlbum }: {
             <div>
               <div className="fc-receipt">
                 <div className="fc-stamp">{cfg.receiptStamp ?? "Founding rate · 2026 · five dates only"}</div>
-                <div style={{ fontFamily: "var(--font-jost)", fontSize: "0.6rem", letterSpacing: "0.28em", textTransform: "uppercase", color: "#a8834a" }}>Arman Arai - Wedding Photographer</div>
+                <div style={{ fontFamily: "var(--font-jost)", fontSize: "0.6rem", letterSpacing: "0.28em", textTransform: "uppercase", color: "#a8834a" }}>{cfg.receiptBrand ?? "Arman Arai \u00b7 Wedding Photographer"}</div>
                 <div style={{ fontFamily: "var(--font-cormorant)", fontStyle: "italic", fontWeight: 400, fontSize: "1.65rem", margin: "0.4rem 0 0.2rem" }}>{cfg.receiptTitle ?? "The Founding Couples Day"}</div>
                 <div style={{ fontFamily: "var(--font-jost)", fontSize: "0.56rem", letterSpacing: "0.2em", textTransform: "uppercase", color: "rgba(61,46,31,.55)", marginBottom: "1.1rem" }}>{cfg.kicker}</div>
                 {cfg.included.map((it) => {
@@ -623,7 +634,7 @@ export default function PromoPage({ cfg, experiencesAlbum, workAlbum }: {
                   <span style={{ fontFamily: "var(--font-cormorant)", fontStyle: "italic", fontSize: "2.1rem", lineHeight: 1 }}>{money(cfg.priceFounding)}</span>
                 </div>
                 <div style={{ textAlign: "right", fontFamily: "var(--font-jost)", fontSize: "0.62rem", letterSpacing: "0.14em", textTransform: "uppercase", color: "rgba(61,46,31,.55)", marginTop: "0.3rem" }}>
-                  {cfg.priceStandard != null ? <><s>{money(cfg.priceStandard)}</s> standard{taxNote ? " · plus GST" : ""}</> : taxNote ? "All in, plus GST" : `All in, ${currency}`}
+                  {cfg.priceStandard != null ? <><s>{money(cfg.priceStandard)}</s> standard{taxNote ? ` · ${taxNote}` : ""}</> : taxNote ? `${currency} ${taxNote}` : `All in, ${currency}`}
                 </div>
               </div>
               <div className="fc-receipt-tear" />
@@ -641,10 +652,10 @@ export default function PromoPage({ cfg, experiencesAlbum, workAlbum }: {
                   </p>
                 </div>
               )}
-              <div style={{ borderLeft: "2px solid rgba(201,106,90,.55)", padding: "1.5rem 1.6rem", background: "rgba(201,106,90,.05)" }}>
-                <h3 style={{ ...colTitle, color: "rgba(201,106,90,.85)", marginBottom: "1rem" }}>Not included: you book these directly</h3>
+              <div style={{ borderLeft: "2px solid rgba(184,149,106,.45)", padding: "1.5rem 1.6rem", background: "rgba(184,149,106,.05)" }}>
+                <h3 style={{ ...colTitle, marginBottom: "1rem" }}>{cfg.excludedTitle ?? "Not included: you book these directly"}</h3>
                 <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
-                  {cfg.excluded.map((it) => <Li key={it} color="rgba(201,106,90,.85)">{it}</Li>)}
+                  {cfg.excluded.map((it) => <Li key={it}>{it}</Li>)}
                 </ul>
                 <p style={{ color: DIM, fontSize: "0.85rem", lineHeight: 1.7, marginTop: "1rem" }}>
                   {cfg.excludedNote}
@@ -977,7 +988,7 @@ export default function PromoPage({ cfg, experiencesAlbum, workAlbum }: {
       {/* ══ 11 · FOOTER ══ */}
       <footer style={{ padding: "2.5rem 0", borderTop: "0.5px solid rgba(184,149,106,.14)" }}>
         <div className="page-w page-px" style={{ display: "flex", flexWrap: "wrap", gap: "0.9rem 2rem", justifyContent: "space-between", fontSize: "0.72rem", color: DIM, fontFamily: "var(--font-jost)", letterSpacing: "0.05em" }}>
-          <span>Arman Arai - Wedding Photographer</span>
+          <span>{cfg.footerByline ?? "Arman Arai · Wedding Photographer"}</span>
           <span>All prices {currency}{taxNote ? `, ${taxNote}` : ""}</span>
           <span>Form details are used only to reply to your inquiry.</span>
         </div>

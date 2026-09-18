@@ -4,7 +4,7 @@ import Footer from "@/components/Footer";
 import { InquiryProvider } from "@/components/InquiryContext";
 import InquiryModal from "@/components/InquiryModal";
 import ImageProtect from "@/components/ImageProtect";
-import { MARKETS, REGIONS, SITE, TIERS, quoteFor } from "@/lib/site";
+import { MARKETS, SITE, TIERS } from "@/lib/site";
 
 // One organisation graph for the whole site. Individual pages add their own
 // Service / FAQPage / Article nodes rather than repeating this.
@@ -18,7 +18,7 @@ const ORG_LD = {
   email: SITE.email,
   image: "https://cdn.armanarai.ca/about/arman-portrait-camera-window.webp",
   description: SITE.blurb,
-  priceRange: "CA$4,000–CA$9,000",
+  priceRange: "CA$3,000–CA$5,000",
   currenciesAccepted: "CAD",
   address: { "@type": "PostalAddress", addressCountry: "CA" },
   areaServed: [
@@ -26,25 +26,17 @@ const ORG_LD = {
     ...MARKETS.map((m) => ({ "@type": "City", name: m.city })),
   ],
   sameAs: [SITE.instagram, SITE.pinterest],
-  // One offer per tier per region: the single all-in figure a couple in that
-  // region actually pays. Travel is inside it; nothing is added afterwards.
-  // Regions without a published figure are deliberately absent rather than
-  // emitted with price: null, which is invalid Offer markup and was appearing
-  // on every page of the site through this block.
-  makesOffer: REGIONS.flatMap((r) =>
-    TIERS.flatMap((t) => {
-      const price = quoteFor(r, t);
-      return price === null
-        ? []
-        : [{
-            "@type": "Offer",
-            name: `${t.name} wedding photography — ${r.short}`,
-            price,
-            priceCurrency: "CAD",
-            areaServed: { "@type": "Place", name: r.name },
-          }];
-    }),
-  ),
+  // One offer per collection, for the whole country. The price no longer
+  // varies by city, so emitting a region-by-region matrix would repeat the
+  // same figure seven times and imply a distinction that does not exist.
+  // Travel is quoted per booking and is deliberately not in this markup.
+  makesOffer: TIERS.map((t) => ({
+    "@type": "Offer",
+    name: `${t.name} wedding photography — ${t.coverage}`,
+    price: t.price,
+    priceCurrency: "CAD",
+    areaServed: { "@type": "Country", name: "Canada" },
+  })),
 };
 
 export default function SiteLayout({ children }: { children: React.ReactNode }) {

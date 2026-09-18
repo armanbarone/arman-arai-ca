@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import InquireButton from "@/components/InquireButton";
 import { ARMAN_PORTRAIT, DOCUMENTARY, DREAMY_FINE_ART, EDITORIAL, FILM } from "@/lib/images";
-import { CORE, PRIMARY_REGIONS, SITE, TIERS, quoteFor } from "@/lib/site";
+import { CORE, SITE, TIERS } from "@/lib/site";
 
 /* A tight, high-key, backlit close-up. Two things it needs to work as a
    full-bleed hero, both settled by screenshotting the real browser rather than
@@ -88,8 +88,8 @@ const CHAPTERS = [
     kicker: "The film and the prints",
     title: "Something in their hands that night",
     body: [
-      "Every collection includes film prints handed to your guests on the night, so people leave your wedding holding a photograph from it rather than waiting weeks for a link. It is the single most commented-on thing I do.",
-      "A colour-graded feature film follows: one minute on Core, two minutes on Signature and Story Weekend. So does a preview of stills, inside 48 hours on Core, next day on Signature and 24 hours on Story Weekend, while the day is still in your head.",
+      "Every collection includes vertical social reels sent in the first week, and film prints handed to your guests on the night, so people leave your wedding holding a photograph from it rather than waiting weeks for a link. It is the single most commented-on thing I do.",
+      "A colour-graded feature film follows on Signature and Heirloom, one minute and three minutes respectively. So does a preview of stills, inside 48 hours on Core, next day on Signature and 24 hours on Heirloom, while the day is still in your head.",
     ],
     photo: EDITORIAL[10],
   },
@@ -100,8 +100,8 @@ const CHAPTERS = [
     kicker: "The return",
     title: "The whole day, in order",
     body: [
-      "The full gallery arrives in five to seven weeks on Core, four on Signature and three on Story Weekend, and the date is in the contract rather than in an email. It comes back as the day happened, start to finish, including the quiet parts a highlight reel leaves out.",
-      "The top two collections carry an album credit, because a hard drive is not an heirloom and nobody has ever taken a folder of JPEGs off a shelf to show someone.",
+      "The full gallery arrives within two weeks on Core and three on Signature and Heirloom, and the date is in the contract rather than in an email. It comes back as the day happened, start to finish, including the quiet parts a highlight reel leaves out.",
+      "The top two collections carry a real album rather than a credit toward one: a 10×10 on Signature, a 12×12 in full-grain leather on Heirloom. A hard drive is not an heirloom, and nobody has ever taken a folder of JPEGs off a shelf to show someone.",
     ],
     photo: DREAMY_FINE_ART[1],
   },
@@ -258,19 +258,19 @@ export default function Experience() {
         <div className="page-w page-px">
           <p className="text-[0.62rem] tracking-[0.32em] uppercase text-rose mb-5">And what it costs</p>
           <h2 className="font-serif font-light text-cream mb-6" style={{ fontSize: "clamp(1.9rem,3vw,3rem)" }}>
-            Three collections, <em className="italic text-rose">one number each</em>
+            Three collections, <em className="italic text-rose">one price anywhere</em>
           </h2>
           <p className="text-blush text-[0.95rem] leading-relaxed max-w-2xl mx-auto mb-10 font-light">
-            {TIERS.map((t) => `${t.name} ${t.coverage}`).join(" · ")}. Core in Montréal is{" "}
-            {money(CORE.price)}, and every city carries its whole number with travel already in it.
+            The same figure wherever the wedding happens. Travel beyond 100 km of Montréal is
+            quoted on top, in writing, before you sign.
           </p>
           <div className="flex flex-wrap items-center justify-center gap-4 mb-10">
-            {PRIMARY_REGIONS.map((r) => (
+            {TIERS.map((t) => (
               <span
-                key={r.slug}
+                key={t.slug}
                 className="text-[0.68rem] tracking-[0.2em] uppercase text-blush border border-dust px-5 py-2.5"
               >
-                {r.short} from {money(quoteFor(r, CORE))}
+                {t.name} {t.coverage.replace(" continuous", "")} · {money(t.price)}
               </span>
             ))}
           </div>

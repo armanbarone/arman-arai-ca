@@ -36,7 +36,7 @@ const menuGroups: MenuGroup[] = [
     slug: "quebec",
     href: hub("montreal"),
     places: [
-      { name: "Montréal", href: hub("montreal"), note: "From C$4,000, and the Townships and Québec City are inside it" },
+      { name: "Montréal", href: hub("montreal"), note: "From C$3,000, with no travel line inside 100 km" },
     ],
   },
   {
@@ -44,7 +44,7 @@ const menuGroups: MenuGroup[] = [
     slug: "ontario",
     href: hub("toronto"),
     places: [
-      { name: "Toronto", href: hub("toronto"), note: "From C$4,000, Niagara and the 1000 Islands included" },
+      { name: "Toronto", href: hub("toronto"), note: "From C$3,000, the same as everywhere. Niagara and the 1000 Islands too" },
     ],
   },
   {
@@ -53,7 +53,7 @@ const menuGroups: MenuGroup[] = [
     href: hub("vancouver"),
     places: [
       { name: "Vancouver", href: hub("vancouver"), note: "From C$4,500, the North Shore and Squamish included" },
-      { name: "Whistler", href: hub("whistler"), note: "The Sea-to-Sky, at the same price as Vancouver" },
+      { name: "Whistler", href: hub("whistler"), note: "The Sea-to-Sky, at the same price as everywhere else" },
       { name: "Tofino", href: hub("tofino"), note: "Vancouver Island and the open Pacific, quoted" },
     ],
   },

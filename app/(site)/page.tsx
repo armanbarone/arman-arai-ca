@@ -24,7 +24,7 @@ import {
   HOME_SEQUENCE,
   at,
 } from "@/lib/images";
-import { CORE, MARKETS, PRIMARY_REGIONS, SITE, TIERS, quoteFor } from "@/lib/site";
+import { CORE, MARKETS, SITE, TIERS } from "@/lib/site";
 
 /* ────────────────────────────────────────────────────────────────────────────
    Home, in the Darkroom Rite language ported from armanarai.com so the two
@@ -40,7 +40,7 @@ import { CORE, MARKETS, PRIMARY_REGIONS, SITE, TIERS, quoteFor } from "@/lib/sit
 export const metadata: Metadata = {
   title: "Canadian Wedding Photographer — Toronto, Montréal, Vancouver",
   description:
-    "Documentary and editorial wedding photography, based in Montréal and working across Canada. Three collections from C$4,000, each region one whole number with the travel already inside it.",
+    "Documentary and editorial wedding photography, based in Montréal and working across Canada. Three collections from C$3,000 at one national price, travel qhole number with the travel already inside it.",
   alternates: { canonical: "/" },
 };
 
@@ -97,15 +97,15 @@ const steps = [
 
 /* What is in every collection. The .com's "eight things you will never touch". */
 const carried = [
-  { t: "Eight continuous hours", d: "The floor of every collection. Ten on Signature, twelve across two days on Story Weekend." },
+  { t: "Six continuous hours", d: "The floor of every collection. Eight on Signature, ten on Heirloom." },
   { t: "A feature film", d: "Colour graded, one minute on Core and two above it. In every collection, not an add-on." },
   { t: "Film prints on the night", d: "Real prints handed to your guests before they go home, while the gallery is still weeks away." },
   { t: "An engagement session", d: "Included. Not for the photographs, for the hour where you stop performing and I learn how you actually stand." },
   { t: "A timeline that survives", d: "Built backwards from sunset, with one deliberate block of slack that absorbs the whole morning's drift." },
   { t: "A written family-photo plan", d: "Twelve groups and two callers, agreed before the day. This is the single largest block of time a big wedding gets back." },
-  { t: "A preview in 48 hours", d: "Forty frames while the day is still in your head. Next day on Signature, 24 hours on Story Weekend." },
-  { t: "The full gallery, dated", d: "Five to seven weeks on Core, four on Signature, three on Story Weekend. The date is in the contract, not in an email." },
-  { t: "Travel, already inside the price", d: "Every region has one whole number. No mileage, no destination charge, nothing added at the end." },
+  { t: "A preview in 48 hours", d: "Thirty frames while the day is still in your head. Next day on Signature, 24 hours on Heirloom." },
+  { t: "The full gallery, dated", d: "Two weeks on Core, three on Signature and Heirloom. The date is in the contract, not in an email." },
+  { t: "One price, wherever it happens", d: "A collection costs the same in every city. Travel past 100 km is quoted separately and agreed in writing before you sign." },
 ];
 
 const INCANTATION =
@@ -179,9 +179,9 @@ export default function Home() {
 
               <p className="dr-lede" style={{ marginBottom: "2.2rem", maxWidth: "30rem" }}>
                 <strong>Documentary and editorial wedding photography, across Canada.</strong>{" "}
-                Three collections, each region one whole number with the travel already
-                inside it, a colour-graded feature film in every one, and film prints
-                handed to your guests on the night.
+                Three collections at one national price, wherever in the country you
+                marry. Vertical social reels and film prints in every one, travel quoted
+                openly on top.
               </p>
 
               <div className="dr-cta-row">
@@ -473,26 +473,27 @@ export default function Home() {
               <div className="dr-stack">
                 <p className="dr-eyebrow">What it costs</p>
                 <h2 className="dr-h2">
-                  Three collections, and every city has{" "}
-                  <span className="dr-flourish">one whole number</span>
+                  Three collections, and one price{" "}
+                  <span className="dr-flourish">wherever you marry</span>
                 </h2>
                 <p className="dr-p">
-                  {TIERS.map((t) => `${t.name} ${t.coverage}`).join(" · ")}. Core in Montréal
-                  is {money(CORE.price)}. Travel is already inside every figure, so nothing
-                  arrives at the end of the invoice: sales tax and the add-ons you choose are
-                  the only things that can raise it.
+                  Core is {money(CORE.price)} in Montréal, in Toronto, in Vancouver and in a
+                  field in Saskatchewan. The city does not move the number, because the work
+                  does not change. Travel beyond 100 km from Montréal is quoted separately
+                  and written into the contract before you sign, so nothing arrives at the end
+                  of the invoice.
                 </p>
                 <div style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}>
-                  {PRIMARY_REGIONS.map((r) => (
+                  {TIERS.map((t) => (
                     <span
-                      key={r.slug}
+                      key={t.slug}
                       style={{
                         fontFamily: "var(--font-jost)", fontSize: "0.68rem", letterSpacing: "0.2em",
                         textTransform: "uppercase", color: "var(--dr-bone)",
                         border: "0.5px solid var(--dr-dust)", padding: "10px 18px",
                       }}
                     >
-                      {r.short} from {money(quoteFor(r, CORE))}
+                      {t.name} {t.hours}h · {money(t.price)}
                     </span>
                   ))}
                 </div>

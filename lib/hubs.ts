@@ -34,7 +34,7 @@ export const HUBS: Record<string, HubContent> = {
     kicker: "Québec · Canada · Wedding Photographer",
     coord: "45.50°N · 73.57°W",
     tagline:
-      "Home. Everything within 75 km included, no travel line on the quote, and a photographer who has already seen your venue's light.",
+      "Home. Everything within 100 km carries no travel line at all, and a photographer who has already seen your venue's light.",
     lead: [
       "Montréal is the easiest city in the country to photograph a wedding in and the hardest to photograph well. Easy because it is compact: a Griffintown getting-ready, an Old Montréal ceremony and a Mile End reception are fifteen minutes apart, not an hour on a highway. Hard because the light changes character four times a year and the buildings that make the city beautiful are the same ones that put your ceremony in deep shade at four in the afternoon.",
       "I live here, which mostly means I have already made the mistakes. I know which side of Place d'Armes is lit at five in July and which at five in October, that the Plateau's exterior staircases photograph best in falling snow, and that a January wedding has better light all day than a July one because the sun never gets high enough to go harsh.",
@@ -43,7 +43,7 @@ export const HUBS: Record<string, HubContent> = {
       { k: "Best months", v: "May to Oct, and January" },
       { k: "Travel", v: "Included to Québec City" },
       { k: "Working language", v: "English" },
-      { k: "Core collection", v: "C$4,000" },
+      { k: "Core collection", v: "C$3,000" },
     ],
     different: [
       {
@@ -103,7 +103,7 @@ export const HUBS: Record<string, HubContent> = {
       { k: "Best months", v: "May to Oct" },
       { k: "Multi-day", v: "Quoted by event" },
       { k: "Second shooter", v: "Included on Signature" },
-      { k: "Core collection", v: "C$4,000" },
+      { k: "Core collection", v: "C$3,000" },
     ],
     different: [
       {
@@ -175,8 +175,8 @@ export const HUBS: Record<string, HubContent> = {
         body: "A ceremony in a provincial park or on Crown land needs a permit and the process is slow. I arrange it rather than hoping nobody asks. Helicopter access, ground transport and vendors are quoted as their own lines so you can decline any of them.",
       },
       {
-        title: "Whistler and the Island cost the same as Vancouver",
-        body: "They are the same trip: the flight, the nights and the ground transport are already in the number. Tofino is the one exception I will flag honestly, because it wants an extra night and therefore the two-day collection.",
+        title: "Whistler and the Island cost the same as everywhere",
+        body: "The collection price does not move with the map, and the trip out is the same flight either way, quoted openly on top. Tofino is the one I will flag honestly, because it wants an extra night and therefore the ten-hour collection.",
       },
     ],
     venuesIntro:
@@ -227,8 +227,8 @@ export const HUBS: Record<string, HubContent> = {
     ],
     different: [
       {
-        title: "The same number as a Vancouver Saturday",
-        body: "Whistler, Squamish and Pemberton are inside the published Vancouver region. Core is C$4,500 here exactly as it is in Kitsilano, and the drive up the corridor is already inside it. Photographers who add a Sea-to-Sky surcharge are charging you for their own commute.",
+        title: "The same number as a Saturday in the city",
+        body: "Whistler, Squamish and Pemberton cost what everywhere costs. Core is C$3,000 here exactly as it is in Kitsilano, and the drive up the corridor sits in the travel figure you agreed before signing rather than in a surcharge you find afterwards.",
       },
       {
         title: "A valley plan, named before the date",
@@ -267,7 +267,7 @@ export const HUBS: Record<string, HubContent> = {
       { time: "Hour 7–8", title: "Dinner and the room", body: "Speeches and the dances that matter. Nobody is driving home, so the night runs later here than almost anywhere else I work." },
     ],
     colophon:
-      "Whistler, Squamish and Pemberton, inside the published Vancouver price. The corridor drive is already in the number.",
+      "Whistler, Squamish and Pemberton, at the same collection price as anywhere. The corridor drive sits in the travel figure, quoted before you sign.",
   },
 
   tofino: {
@@ -283,7 +283,7 @@ export const HUBS: Record<string, HubContent> = {
       { k: "Best months", v: "Jun to Sep, and November" },
       { k: "From Vancouver", v: "Seven hours, door to door" },
       { k: "Price", v: "Quoted, not published" },
-      { k: "Best collection", v: "Story Weekend" },
+      { k: "Best collection", v: "Heirloom" },
     ],
     different: [
       {
@@ -317,7 +317,7 @@ export const HUBS: Record<string, HubContent> = {
       { months: "March to May", light: "Variable", note: "Rain without the drama of a real storm. The one stretch I would steer you away from." },
     ],
     dayIntro:
-      "A Story Weekend on the west coast, which is what I recommend here almost every time.",
+      "An Heirloom day on the west coast, which is what I recommend here almost every time.",
     day: [
       { time: "Friday", title: "Everyone arrives", body: "Two hours of welcome coverage. People have driven a long way and the first evening is frequently the warmest part of the whole weekend." },
       { time: "Hour 1–2", title: "Saturday morning", body: "Slow, and usually indoors with the weather doing something worth photographing through the glass." },

@@ -44,20 +44,20 @@ export default function TermsOfService() {
           <p>This site sells wedding photography in Canada. I offer the following:</p>
           <ul style={{ paddingLeft: "1.25rem", marginTop: 10, display: "flex", flexDirection: "column", gap: 6 }}>
             <li>Wedding day photography, in the three collections published on the pricing page</li>
-            <li>Engagement and welcome sessions, included in the collections or booked standalone</li>
-            <li>A colour-graded feature film, included in every collection, shot alongside the photography rather than by a separate operator</li>
-            <li>Film prints handed to guests on the night, included in every collection</li>
+            <li>Engagement and welcome sessions, booked as add-ons at published prices</li>
+            <li>A colour-graded feature film on the Signature and Heirloom collections, shot alongside the photography rather than by a separate operator</li>
+            <li>Vertical social reels and film prints handed to guests on the night, included in every collection</li>
             <li>Timeline planning and a written family-photograph plan</li>
-            <li>Optional add-ons at published prices: additional hours and events, a second photographer, albums, film, drone, dedicated video and content-creator coverage</li>
+            <li>Optional add-ons at published prices: additional hours and events, a second photographer, sessions, albums, film, drone and dedicated video coverage</li>
           </ul>
-          <p style={{ marginTop: 12 }}>Coverage anywhere in Canada is quoted as one all-in figure that already contains my travel. Every price on this website is in Canadian dollars and excludes applicable sales tax.</p>
+          <p style={{ marginTop: 12 }}>A collection carries the same published price anywhere in Canada. Travel is charged separately where the wedding is more than 100 km from Montréal, as a single figure agreed in writing in your contract before signing, and nothing is added to it afterwards. Every price on this website is in Canadian dollars and excludes applicable sales tax.</p>
           <p style={{ marginTop: 12 }}>The specific scope of services, deliverables, and coverage hours are defined in your individual contract. I accept a limited number of commissions per year to maintain the quality of my work.</p>
         </Section>
 
         <Section title="Booking and Payment">
           <p>Your date is not reserved until a signed contract and the retainer have both been received. I will hold a date informally for 48 hours as a courtesy while you decide, and that hold is not a booking.</p>
           <p style={{ marginTop: 12 }}><strong style={{ color: "var(--text)" }}>The retainer is 30% of the collection price.</strong> It is refundable only under the cancellation schedule below. The balance is due 30 days before the wedding date and can be split across instalments if you ask for that at the outset. Payment methods are specified in your contract. Once the contract is signed and the retainer has cleared, the date is yours.</p>
-          <p style={{ marginTop: 12 }}>All prices are quoted in Canadian dollars and are subject to applicable sales tax. The figure on your proposal already contains my travel to your region; there is no separate travel or destination charge added later.</p>
+          <p style={{ marginTop: 12 }}>All prices are quoted in Canadian dollars and are subject to applicable sales tax. Where travel applies, it appears on your proposal as its own agreed line alongside the collection price. Neither figure changes after signing, and no further travel or destination charge is added later.</p>
         </Section>
 
         <Section title="Cancellation by Client">
@@ -99,9 +99,9 @@ export default function TermsOfService() {
             </thead>
             <tbody>
               {[
-                ["Core", "40 images within 48 hours", "5 to 7 weeks", "First week"],
-                ["Signature", "60 images next day", "4 weeks", "Within 72 hours"],
-                ["Story Weekend", "80 images within 24 hours", "3 weeks", "Morning after day one"],
+                ["Core", "30 images within 48 hours", "Within 2 weeks", "First week"],
+                ["Signature", "40 images next day", "3 weeks", "First week"],
+                ["Heirloom", "50 images within 24 hours", "3 weeks", "First week"],
               ].map((row) => (
                 <tr key={row[0]}>
                   {row.map((cell, i) => (

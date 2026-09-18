@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import InquireButton from "@/components/InquireButton";
 import { DOCUMENTARY } from "@/lib/images";
-import { CORE, MARKETS, PRIMARY_REGIONS, SITE, TIERS, quoteFor } from "@/lib/site";
+import { CORE, MARKETS, SITE, TIERS } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "FAQ — Booking, Coverage, Travel and Delivery",
@@ -26,19 +26,19 @@ const GROUPS = [
     faqs: [
       {
         q: "What does a wedding actually cost?",
-        a: `Three collections. In Montréal they are ${TIERS.map((t) => `${t.name} ${money(t.price)}`).join(", ")}. Toronto and Vancouver carry their own complete numbers because they are a flight and hotel nights before I take a frame. Every figure on the pricing page is the whole price with travel in it; sales tax is the only thing on top.`,
+        a: `Three collections, at the same figure anywhere in Canada: ${TIERS.map((t) => `${t.name} ${money(t.price)}` + ` for ${t.hours} hours`).join(", ")}. The city does not change the number. Sales tax goes on top, and so does travel if the wedding is more than 100 km from Montréal.`,
       },
       {
         q: "Is anything added afterwards?",
-        a: "Only what you choose. Add-ons are listed with their prices, and nothing gets added to an invoice that was not agreed before you signed. If a venue needs a permit or a helicopter, that is its own line in the quote, in advance.",
+        a: "Only what you choose, plus travel if your wedding needs it, and travel is agreed in writing before you sign rather than billed afterwards. Add-ons are listed with their prices. If a venue needs a permit or a helicopter, that is its own line in the quote, in advance.",
       },
       {
         q: "What is the retainer?",
         a: "Thirty per cent to hold the date, with the balance due 30 days before the wedding. The balance can be split across instalments if that helps; say so and I will set it up that way from the start.",
       },
       {
-        q: "Do you offer a shorter, cheaper collection?",
-        a: "Yes, for a genuinely short weekday wedding, on request. It is off the public list because too many couples chose six hours for a day that needed eight and then bought the hours back at the overtime rate.",
+        q: "Is six hours enough?",
+        a: "For a ceremony and a dinner in one place, yes, and that is what Core is. It stops being enough the moment there is a getting-ready across town or a reception that runs late, and then you are buying hours back at C$450 each. If your day has two locations, take Signature.",
       },
     ],
   },
@@ -46,8 +46,8 @@ const GROUPS = [
     title: "Coverage",
     faqs: [
       {
-        q: "What is the feature film?",
-        a: "Short vertical videos cut from the day, included in every collection and delivered in the first week. They exist to fill the gap between the wedding and the gallery, when everyone is still asking to see something. They are not a highlight film and they do not replace video.",
+        q: "What are the social reels?",
+        a: "Short vertical videos cut from the day, included in every collection and sent in the first week. They exist to fill the gap between the wedding and the gallery, when everyone is still asking to see something. They are not the feature film and they do not replace video.",
       },
       {
         q: "Do you photograph multi-day and cultural weddings?",
@@ -55,11 +55,11 @@ const GROUPS = [
       },
       {
         q: "Is there a second photographer?",
-        a: "Included on Signature for six hours and on Story Weekend for eight. On Core it is an add-on at C$750. If the two of you are getting ready in different cities, one photographer cannot be in both places and I will say so rather than let you find out.",
+        a: "Not inside any collection. It is an add-on on all three, C$1,000 for six hours and C$1,500 for ten, because a second photographer is a real person being paid a real day rate and folding that into a package quietly is how it gets done badly. If the two of you are getting ready in different places, one photographer cannot be in both and I will say so rather than let you find out.",
       },
       {
         q: "Do you shoot video?",
-        a: "A colour-graded film cut from your day, one minute on Core and two minutes on Signature and Story Weekend, in every collection. It is shot alongside the photographs rather than by a separate operator, which is what makes it includable. A dedicated videographer is a different product and an add-on at C$3,500 for eight hours or C$4,500 for ten.",
+        a: "A colour-graded feature film cut from your day: one minute on Signature, three minutes on Heirloom. Core has no feature film, only the social reels. It is shot alongside the photographs rather than by a separate operator, which is what makes it includable at all. A dedicated videographer is a different product and an add-on at C$2,000 for eight hours or C$3,000 for ten.",
       },
     ],
   },
@@ -68,11 +68,11 @@ const GROUPS = [
     faqs: [
       {
         q: "Where are you based?",
-        a: "Montréal. Everything within 75 km is inside the Montréal price. Toronto, Vancouver and everywhere else carry their own complete number on the pricing page.",
+        a: "Montréal. Everything within 100 km of it carries no travel charge at all. Beyond that the collection still costs the same, and the trip is quoted separately.",
       },
       {
         q: "How far will you actually travel?",
-        a: "Anywhere in Canada. Whistler, Vancouver Island, Québec City, the Eastern Townships, Niagara, Muskoka and the Rockies are all listed with prices. Anything not listed gets quoted from the same arithmetic rather than a number invented on the spot.",
+        a: "Anywhere in Canada, at the same collection price. Whistler, Vancouver Island, Québec City, the Eastern Townships, Niagara, Muskoka and the Rockies all buy Signature for C$4,500, the same as a Saturday on Saint-Paul. What differs is the trip: roughly C$200 to C$600 by car, C$600 to C$900 for Toronto, C$1,200 to C$2,000 anywhere that needs a flight. Those are ranges from real bookings, and yours gets costed against your actual venue rather than read off a grid.",
       },
       {
         q: "Do you speak French?",
@@ -93,7 +93,7 @@ const GROUPS = [
       },
       {
         q: "When do the photographs arrive?",
-        a: `Social clips in the first week. A preview inside 48 hours on Core, next day on Signature, 24 hours on Story Weekend. The full gallery in ${CORE.delivery.toLowerCase().replace("full gallery in ", "")} on Core, four weeks on Signature and three on Story Weekend. The date is in the contract, not in an email.`,
+        a: "Social reels in the first week. A preview inside 48 hours on Core, next day on Signature, 24 hours on Heirloom. The full gallery within two weeks on Core, three weeks on Signature and Heirloom, because those two carry a graded film and real rolls to develop. The date is in the contract, not in an email.",
       },
       {
         q: "How far in advance should we book?",
@@ -194,7 +194,7 @@ export default function FAQ() {
             Ask a question
           </InquireButton>
           <p className="text-slate text-[0.82rem] mt-8">
-            {PRIMARY_REGIONS.map((r) => `${r.short} from ${money(quoteFor(r, CORE))}`).join(" · ")}
+            {TIERS.map((t) => `${t.name} ${money(t.price)}`).join(" · ")} · the same figure in every city
           </p>
         </div>
       </section>

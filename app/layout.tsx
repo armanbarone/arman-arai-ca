@@ -46,7 +46,7 @@ export const metadata: Metadata = {
     template: "%s | Arman Arai",
   },
   description:
-    "Documentary and editorial wedding photography, based in Montréal and working across Canada. Three collections from C$4,000, each region one whole number with travel already inside it.",
+    "Documentary and editorial wedding photography, based in Montréal and working across Canada. Three collections from C$3,000 at one national price, travel qhole number with travel already inside it.",
   alternates: { canonical: "/" },
   openGraph: {
     type: "website",

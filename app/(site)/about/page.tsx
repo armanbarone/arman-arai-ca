@@ -39,7 +39,7 @@ const APPROACH = [
   {
     n: "IV",
     title: "The return",
-    body: "A preview inside 48 hours, vertical clips in the first week, and the full gallery in five to seven weeks on Core, sooner on the tiers above it. Edited to what the room felt like, not to a preset that will date in three years.",
+    body: "A preview inside 48 hours, vertical social reels in the first week, and the full gallery within two weeks on Core, three on the tiers above it. Edited to what the room felt like, not to a preset that will date in three years.",
   },
 ];
 
@@ -184,8 +184,10 @@ export default function About() {
             </h2>
             <p className="text-blush text-[0.9rem] leading-relaxed font-light">
               I will travel anywhere in this country for a wedding, from Newfoundland to Vancouver
-              Island to the territories. Three places are home, which means no travel line on the
-              quote and a photographer who already knows the light, the traffic and the venues.
+              Island to the territories. A collection costs the same figure in every one of them.
+              Three places are home, which means a photographer who already knows the light, the
+              traffic and the venues. Travel is the only thing that moves, and you see it before
+              you sign.
             </p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-px bg-dust/20">

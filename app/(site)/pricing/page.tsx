@@ -6,22 +6,23 @@ import { CITY_PHOTOS, EDITORIAL, DREAMY_FINE_ART, FILM, DOCUMENTARY } from "@/li
 import {
   ADDONS,
   ADDON_GROUPS,
+  ALBUM_SPECS,
   CORE,
   OUTER_REGIONS_NOTE,
   PRIMARY_REGIONS,
   SITE,
   TIERS,
-  quoteFor,
+  TRAVEL,
 } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "Wedding Photography Pricing — Montréal, Toronto, Vancouver",
+  title: "Wedding Photography Pricing — One Price, Anywhere in Canada",
   description:
-    "Three collections, and the whole price for each region. Montréal from C$4,000, Toronto from C$4,000, Vancouver from C$4,500. A feature film and film prints included in every collection.",
+    "Three collections at one price wherever the wedding happens: Core C$3,000 for 6 hours, Signature C$4,500 for 8, Heirloom C$5,000 for 10. Social reels in every collection. Travel quoted openly on top.",
   alternates: { canonical: "/pricing" },
   openGraph: {
     title: "Wedding Photography Pricing — Arman Arai",
-    description: "Three collections. One number per city, everything in it.",
+    description: "Three collections, one price anywhere in Canada, travel quoted openly on top.",
     url: `${SITE.url}/pricing`,
     images: [{ url: CITY_PHOTOS.montreal.hero.src, alt: CITY_PHOTOS.montreal.hero.alt }],
   },
@@ -37,41 +38,48 @@ const PROCESS = [
   { n: "01", t: "You send the date", b: "Date, city, venue if you have one, and roughly how many hours you think you need. Two minutes." },
   { n: "02", t: "I reply within two business hours", b: "With whether the date is open and which collection I would actually recommend, which is not always the middle one." },
   { n: "03", t: "A twenty minute call", b: "Not a sales call. I need to hear the shape of the day before I can quote it properly." },
-  { n: "04", t: "One recommended collection", b: "With the one either side of it, and the whole price rather than a starting figure." },
+  { n: "04", t: "One recommended collection", b: "With the one either side of it, the travel figure if your day needs one, and the tax, so you see the whole invoice before you decide." },
   { n: "05", t: "A 48-hour hold on the date", b: "Free, and I will tell you if someone else asks about it in the meantime." },
   { n: "06", t: "Contract and retainer", b: "Thirty per cent to book. The balance is due 30 days before the wedding and it can be split." },
 ];
 
 const FAQS = [
   {
-    q: "Is the price on this page the whole price?",
-    a: "Yes. The number beside your city is what the collection costs there, travel included. The only things that go on top are sales tax and any add-on you choose from the list below.",
+    q: "Does the price change depending on the city?",
+    a: "No. Core is C$3,000 in Montréal, in Toronto, in Vancouver and in Halifax. The photography is the same work wherever it happens, so it carries the same number. What changes between those places is the travel, and travel is quoted separately and agreed in writing before you sign.",
   },
   {
-    q: "Why does Vancouver cost more than Montréal?",
-    a: "Because I am based in Montréal and a Vancouver wedding is a flight, three nights and ground transport before I have taken a single frame. Rather than charging Montréal couples a national average that quietly subsidises that, each city carries its own real cost. The photography is identical.",
+    q: "So what does travel actually cost?",
+    a: "Everything within 100 km of Montréal is free. Beyond that it is billed at what it costs me: the flight or the drive, ground transport, and the nights I need to be there the day before. Recent trips have run roughly C$200 to C$600 for Québec and eastern Ontario, C$600 to C$900 for Toronto, and C$1,200 to C$2,000 anywhere that needs a flight. Those are ranges from real bookings, not a tariff. Send the venue and the date and you get the actual figure in the first reply.",
   },
   {
-    q: "What is the feature film, exactly?",
-    a: "Short vertical videos cut from the day, in every collection. You get them in the first week, long before the gallery is finished, so there is something to post while people are still asking. They are not a highlight film and they are not a substitute for video, they are the thing that fills the gap between the wedding and the album.",
+    q: "Why quote travel instead of publishing a grid?",
+    a: "Because a July flight to Tofino and an October drive to Québec City are not the same number, and a grid that averages them is wrong in both directions. Publishing one would mean overcharging the couple two hours away to subsidise the couple I have to fly to. The number you get is the real cost of getting to your wedding, and once it is in the contract nothing is added to it.",
   },
   {
-    q: "Why did the six-hour collection disappear?",
-    a: "It still exists for genuinely short weekday weddings; ask and I will quote it. It is off the public list because too many couples chose six hours for a day that clearly needed eight and then bought the hours back at the overtime rate. Core is the honest default.",
+    q: "What are the social reels, and are they the feature film?",
+    a: "They are not. The reels are short vertical videos cut from the day and sent in the first week, long before the gallery is finished, so there is something to post while people are still asking. They are in every collection including Core. The feature film is a separate, colour-graded piece with sound: one minute on Signature, three minutes on Heirloom. Core has no feature film, which is part of why it is C$3,000.",
   },
   {
-    q: "We are getting married somewhere not on this page.",
-    a: "Then it goes in the second table, or I quote it from the same arithmetic. Nothing gets a number I invented on the spot.",
+    q: "What exactly is the album that comes with Signature?",
+    a: `${ALBUM_SPECS.signature.long}
+
+The Heirloom collection carries the bigger one instead. ${ALBUM_SPECS.heirloom.long}`,
+  },
+  {
+    q: "Why is Core's gallery faster than the others?",
+    a: "Because there is less in it. Core is six hours with no feature film and no rolls of film to process and scan, so two weeks is honest. Signature and Heirloom carry a graded film and real film to develop, which is three weeks of actual work. If you need it sooner than that, the seven-day rush is C$500 and it is capacity-limited.",
+  },
+  {
+    q: "Do you offer photo and video?",
+    a: "A short colour-graded film cut from the day is included on Signature and Heirloom, shot alongside the photographs rather than by a second operator, which is why it is included rather than sold. Full videography is a different product and an add-on, priced from what a dedicated operator and the edit actually cost: C$2,000 for eight hours, C$3,000 for ten. I will not quietly bundle a videographer into a collection at a number that guarantees one of us does bad work.",
   },
   {
     q: "How far in advance do couples book?",
     a: "Usually nine to eighteen months out for a peak-season Saturday. Off-season and weekday dates open up much later. If your date is close, ask anyway.",
   },
-  {
-    q: "Do you offer photo and video?",
-    a: "A short colour-graded film cut from the day: one minute on Core, two minutes on Signature and Story Weekend. I shoot it alongside the photographs rather than bringing a second operator, which is why it is included rather than sold. Full videography is a different product and an add-on, priced from what a dedicated operator and the edit actually cost: C$3,500 for eight hours, C$4,500 for ten. I will not quietly bundle a videographer into a collection at a number that guarantees one of us does bad work.",
-  },
 ];
+
 
 export default function Pricing() {
   const faqLd = {
@@ -90,18 +98,18 @@ export default function Pricing() {
     name: "Canadian wedding photography",
     url: `${SITE.url}/pricing`,
     provider: { "@id": `${SITE.url}/#business` },
-    itemListElement: PRIMARY_REGIONS.flatMap((r) =>
-      TIERS.map((t) => ({
-        "@type": "Offer",
-        name: `${t.name} — ${t.coverage} — ${r.short}`,
-        description: t.includes.join(". "),
-        price: quoteFor(r, t),
-        priceCurrency: "CAD",
-        url: `${SITE.url}/pricing#${t.slug}`,
-        areaServed: { "@type": "City", name: r.short },
-      })),
-    ),
+    itemListElement: TIERS.map((t) => ({
+      "@type": "Offer",
+      name: `${t.name} — ${t.coverage}`,
+      description: t.includes.join(". "),
+      price: t.price,
+      priceCurrency: "CAD",
+      url: `${SITE.url}/pricing#${t.slug}`,
+      areaServed: { "@type": "Country", name: "Canada" },
+    })),
   };
+
+
 
   return (
     <>
@@ -135,11 +143,12 @@ export default function Pricing() {
         >
           <p className="text-[0.62rem] tracking-[0.32em] uppercase text-rose mb-5">Investment</p>
           <h1 className="font-serif font-light text-cream leading-[1.02]" style={{ fontSize: "clamp(2.6rem,5.5vw,5rem)" }}>
-            Three collections, <em className="italic text-rose">one number each</em>
+            Three collections, <em className="italic text-rose">one price anywhere</em>
           </h1>
           <p className="text-blush text-[1rem] leading-relaxed max-w-2xl mx-auto mt-6 font-light">
-            No starting-from figures and nothing added later. The price beside your city is the
-            price, travel included. Sales tax is the only thing on top.
+            A collection costs the same in Montréal, in Toronto, in Vancouver and in a field in
+            Saskatchewan. The city does not move the number. Travel beyond 100 km is quoted on
+            top, in writing, before you sign.
           </p>
         </div>
       </section>
@@ -152,6 +161,11 @@ export default function Pricing() {
             <h2 className="font-serif font-light text-cream" style={{ fontSize: "clamp(1.9rem,3vw,2.9rem)" }}>
               What you <em className="italic text-rose">get</em>
             </h2>
+            <p className="text-blush text-[0.95rem] leading-relaxed font-light max-w-2xl mx-auto mt-5">
+              Every figure below is the whole price of that collection, in every city I work in.
+              Sales tax and anything you choose from the add-ons go on top, and so does travel if
+              your wedding is more than 100 km from Montréal.
+            </p>
             <div className="divider mt-6">
               <div className="divider-line" />
               <span className="text-rose text-xs">✦</span>
@@ -179,6 +193,9 @@ export default function Pricing() {
                     {t.name}
                     <span className="text-slate normal-case tracking-normal"> · {t.strap.toLowerCase()}</span>
                   </p>
+                  <p className="font-serif font-light text-cream leading-none mb-3" style={{ fontSize: "2.6rem" }}>
+                    {money(t.price)}
+                  </p>
                   <p className="text-[0.78rem] tracking-[0.14em] uppercase text-slate mb-5">
                     {t.coverage} · {t.images}
                   </p>
@@ -201,80 +218,40 @@ export default function Pricing() {
         </div>
       </section>
 
-      {/* ── THE THREE CITIES ── */}
-      <section className="py-16 md:py-24 bg-parchment">
+      {/* ── TRAVEL ── */}
+      <section id="travel" className="py-16 md:py-24 bg-parchment scroll-mt-16">
         <div className="page-w page-px">
           <div className="max-w-2xl mb-12">
-            <p className="text-[0.6rem] tracking-[0.32em] uppercase text-rose mb-4">The price</p>
+            <p className="text-[0.6rem] tracking-[0.32em] uppercase text-rose mb-4">Travel</p>
             <h2 className="font-serif font-light text-cream mb-5" style={{ fontSize: "clamp(1.9rem,3vw,2.9rem)" }}>
-              Three cities, <em className="italic text-rose">all in</em>
+              Quoted, and quoted <em className="italic text-rose">before you sign</em>
             </h2>
-            <p className="text-blush text-[0.95rem] leading-relaxed font-light">
-              I live in Montréal and I work in all three. Toronto and Vancouver cost more because
-              they are a flight and hotel nights before I take a frame, not because the photography
-              changes. Every number below is complete.
-            </p>
+            <p className="text-blush text-[0.95rem] leading-relaxed font-light">{TRAVEL.body}</p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
-            {PRIMARY_REGIONS.map((r) => {
-              const photo = CITY_PHOTOS[r.slug];
-              return (
-                <div key={r.slug} className="border border-dust bg-ivory flex flex-col">
-                  <div className="relative w-full" style={{ aspectRatio: "3 / 2" }}>
-                    <Image
-                      src={photo.hero.src}
-                      alt={photo.hero.alt}
-                      fill
-                      sizes="(max-width: 767px) 100vw, 33vw"
-                      quality={80}
-                      loading="lazy"
-                      style={{ objectFit: "cover" }}
-                    />
-                    <span
-                      aria-hidden
-                      className="absolute inset-0"
-                      style={{ background: "linear-gradient(to top, rgba(8,7,4,0.85), transparent 60%)" }}
-                    />
-                    <h3
-                      className="absolute left-0 bottom-0 p-5 font-serif font-light text-cream"
-                      style={{ fontSize: "1.7rem" }}
-                    >
-                      {r.short}
-                    </h3>
-                  </div>
-                  <ul className="p-6 space-y-4 flex-1">
-                    {TIERS.map((t) => (
-                      <li key={t.slug} className="flex items-baseline justify-between gap-4 border-b border-dust/40 pb-3 last:border-0">
-                        <span className="text-slate text-[0.88rem]">{t.name}</span>
-                        <span className="font-serif text-cream" style={{ fontSize: "1.35rem" }}>
-                          {money(quoteFor(r, t))}
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
-                  <div className="px-6 pb-6">
-                    <Link
-                      href={`/${r.slug}-wedding-photographer`}
-                      className="text-[0.68rem] tracking-[0.2em] uppercase text-rose border-b border-dust hover:border-rose transition-colors pb-1.5"
-                    >
-                      How I work in {r.short} →
-                    </Link>
-                  </div>
-                </div>
-              );
-            })}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-px bg-dust/25">
+            {TRAVEL.scale.map((row) => (
+              <div key={row.where} className="bg-parchment px-7 py-9 flex flex-col">
+                <p className="font-serif text-rose text-[1.25rem] mb-3">{row.cost}</p>
+                <h3 className="text-[0.78rem] tracking-[0.14em] uppercase text-cream mb-3 leading-snug">
+                  {row.where}
+                </h3>
+                <p className="text-slate text-[0.85rem] leading-relaxed">{row.note}</p>
+              </div>
+            ))}
           </div>
+
+          <p className="text-slate text-[0.88rem] leading-relaxed mt-8 max-w-2xl">{TRAVEL.footnote}</p>
 
           <div className="mt-10 flex flex-wrap items-center gap-6">
             <InquireButton className="bg-rose text-ivory text-[0.68rem] tracking-[0.2em] uppercase px-9 py-3.5 hover:bg-rose-dark transition-colors cursor-pointer border-none">
-              Check your date
+              Get the real number
             </InquireButton>
             <a
               href="#elsewhere"
               className="text-[0.68rem] tracking-[0.2em] uppercase text-slate hover:text-rose transition-colors border-b border-dust hover:border-rose pb-1.5"
             >
-              Getting married somewhere else? →
+              Where I work →
             </a>
           </div>
         </div>
@@ -289,8 +266,10 @@ export default function Pricing() {
               Priced, not <em className="italic text-rose">bundled</em>
             </h2>
             <p className="text-blush text-[0.95rem] leading-relaxed font-light mb-8">
-              The same everywhere. Each one is a real cost with a real number, which is why none of
-              them are quietly folded into a collection.
+              The same everywhere, like the collections. Each one is a real cost with a real number,
+              which is why none of them are quietly folded into a collection. The vertical social
+              reels used to be on this list and are now in every collection instead, because
+              charging for them was never defensible.
             </p>
             <div className="relative w-full hidden lg:block" style={{ aspectRatio: "4 / 5" }}>
               <Image
@@ -332,23 +311,21 @@ export default function Pricing() {
       <section id="elsewhere" className="py-16 md:py-24 bg-parchment scroll-mt-16">
         <div className="page-w page-px">
           <div className="max-w-2xl mb-11">
-            <p className="text-[0.6rem] tracking-[0.32em] uppercase text-rose mb-4">What each price covers</p>
+            <p className="text-[0.6rem] tracking-[0.32em] uppercase text-rose mb-4">Where I work</p>
             <h2 className="font-serif font-light text-cream mb-5" style={{ fontSize: "clamp(1.9rem,3vw,2.9rem)" }}>
-              One number, <em className="italic text-rose">a whole region</em>
+              Three home markets, <em className="italic text-rose">one country</em>
             </h2>
             <p className="text-blush text-[0.95rem] leading-relaxed font-light">
-              Each figure above buys the same collection anywhere in that region. Québec City costs
-              what Montréal costs. Whistler costs what Vancouver costs. Niagara costs what Toronto
-              costs. Travel and accommodation are already inside the number.
+              These three have a page of their own because I shoot in them most. They do not cost
+              more or less than anywhere else; nothing on this site does. Only the trip differs,
+              and that is the figure I quote you.
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-dust/25">
             {PRIMARY_REGIONS.map((r) => (
               <div key={r.slug} className="px-7 py-9 bg-parchment">
-                <p className="text-[0.6rem] tracking-[0.28em] uppercase text-rose mb-3">
-                  {r.short} &middot; from {money(quoteFor(r, CORE))}
-                </p>
+                <p className="text-[0.6rem] tracking-[0.28em] uppercase text-rose mb-3">{r.short}</p>
                 <h3 className="font-serif font-light text-cream text-[1.35rem] mb-4 leading-snug">{r.name}</h3>
                 <ul className="flex flex-wrap gap-x-2 gap-y-1.5 mb-5">
                   {r.covers.map((c) => (
@@ -357,7 +334,14 @@ export default function Pricing() {
                     </li>
                   ))}
                 </ul>
+                <p className="text-slate text-[0.82rem] leading-relaxed mb-2">{r.travel}</p>
                 <p className="text-slate text-[0.82rem] leading-relaxed">{r.tax} on top.</p>
+                <Link
+                  href={`/${r.slug}-wedding-photographer`}
+                  className="inline-block mt-4 text-[0.66rem] tracking-[0.2em] uppercase text-rose border-b border-dust hover:border-rose transition-colors pb-1.5"
+                >
+                  How I work in {r.short} →
+                </Link>
               </div>
             ))}
           </div>
@@ -405,7 +389,7 @@ export default function Pricing() {
                   {q}
                   <span className="text-rose text-sm mt-1.5 shrink-0 transition-transform group-open:rotate-45" aria-hidden>+</span>
                 </summary>
-                <p className="text-slate text-[0.92rem] leading-relaxed mt-4 pr-10">{a}</p>
+                <p className="text-slate text-[0.92rem] leading-relaxed mt-4 pr-10 whitespace-pre-line">{a}</p>
               </details>
             ))}
           </div>
@@ -423,7 +407,8 @@ export default function Pricing() {
             Check your date
           </InquireButton>
           <p className="text-slate text-[0.85rem] mt-8">
-            Core in Montréal is {money(CORE.price)}. Everything is on this page.
+            Core is {money(CORE.price)} wherever you are getting married. Everything else is on
+            this page.
           </p>
         </div>
       </section>

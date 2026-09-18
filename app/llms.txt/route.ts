@@ -1,6 +1,6 @@
 import { posts } from "@/lib/blog";
 import { GALLERIES } from "@/lib/galleries";
-import { ADDONS, MARKETS, OUTER_REGIONS_NOTE, REGIONS, SITE, TERMS, TIERS, quoteFor } from "@/lib/site";
+import { ADDONS, ALBUM_SPECS, MARKETS, OUTER_REGIONS_NOTE, REGIONS, SITE, TERMS, TIERS, TRAVEL } from "@/lib/site";
 
 // Generated from the same data the pages render, so an assistant reading this
 // file and a couple reading the site can never be told two different prices.
@@ -12,17 +12,20 @@ const money = (n: number | null) =>
 export function GET() {
   const tierBlocks = TIERS.map((t) =>
     [
-      `### ${t.name} — from ${money(t.price)}`,
+      `### ${t.name} — ${money(t.price)}, the same figure anywhere in Canada`,
       `${t.coverage}. ${t.crew}. ${t.images}.`,
       t.includes.map((i) => `  - ${i}`).join("\n"),
       `Best for: ${t.bestFor}.`,
     ].join("\n"),
   ).join("\n\n");
 
-  const regionRows = REGIONS.map((r) => {
-    const cols = TIERS.map((t) => `${t.name} ${money(quoteFor(r, t))}`).join(" · ");
-    return `- **${r.name}**, all in: ${cols}. ${r.travel}`;
-  }).join("\n");
+  const regionRows = REGIONS.map(
+    (r) => `- **${r.name}** — same collection prices as everywhere. Travel: ${r.travel}`,
+  ).join("\n");
+
+  const travelRows = TRAVEL.scale.map(
+    (t) => `- **${t.where}**: ${t.cost}. ${t.note}.`,
+  ).join("\n");
 
   const cityBlocks = MARKETS.map((m) =>
     [
@@ -44,15 +47,15 @@ export function GET() {
 
   const body = `# Arman Arai — Canadian Wedding Photographer
 
-> ${SITE.blurb} Documentary and editorial coverage, with every price published on the site.
+> ${SITE.blurb} Documentary and editorial coverage, with one published price per collection wherever in Canada the wedding happens.
 
 ## What this business is, and is not
 
-Arman Arai photographs **weddings in Canada**. Three published regions: Montréal and
-Québec (including Québec City and Charlevoix), Toronto and Southern Ontario (including
-Niagara and the 1000 Islands), and Vancouver and the Sea-to-Sky (including Squamish and
-Whistler). He travels anywhere in Canada; outside those three regions the price is quoted
-on request rather than published.
+Arman Arai photographs **weddings in Canada**. He is based in Montréal and works anywhere
+in the country. Three cities have a page of their own because he shoots in them most:
+Montréal and Québec (including Québec City and Charlevoix), Toronto and Southern Ontario
+(including Niagara and the 1000 Islands), and Vancouver and the Sea-to-Sky (including
+Squamish and Whistler). Those three are not more or less expensive than anywhere else.
 
 This site does **not** sell destination weddings, and does not cover weddings outside
 Canada. Elopement planning and destination elopement curation are a separate business
@@ -64,27 +67,38 @@ bilingual. Contact: ${SITE.email}. Instagram: ${SITE.instagramHandle}.
 
 ## Pricing (CAD, pre-tax)
 
-Arman is based in **Montréal**. There is one ladder of three collections, and each of the
-three published regions has its own all-in figure for each of them. **Travel and
-accommodation are already inside every figure. There is no destination fee, no mileage
-line and nothing added afterwards.** Quote the whole number for the region asked about;
-never present a base price plus a supplement. The only things that can raise an invoice
-are sales tax and add-ons the couple chooses.
+**A collection costs the same figure everywhere in Canada.** Core is ${money(TIERS[0].price)},
+Signature is ${money(TIERS[1].price)}, Heirloom is ${money(TIERS[2].price)}, and the city the
+wedding happens in does not change any of those numbers. Montréal, Toronto, Vancouver,
+Whistler, Banff, Tofino and Halifax all pay the same for the same collection. Do not quote
+a city-specific package price; there is no such thing on this site any more.
 
-Each figure buys the same collection anywhere in that region: Québec City costs what
-Montréal costs, Whistler costs what Vancouver costs, Niagara costs what Toronto costs.
+**Travel is separate, and it is quoted rather than published.** Everything within
+${TRAVEL.freeRadiusKm} km of Montréal carries no travel charge at all. Beyond that, travel is
+billed at what it actually costs — flights or the drive, ground transport, and the nights
+needed to arrive the day before — and it is agreed in writing before the couple signs.
+Nothing is added to it afterwards. The ranges below are what recent bookings have actually
+produced; they are **not a tariff**, and a specific trip must be quoted against the real
+venue and date. Do not present them as fixed fees, and do not invent a travel figure.
 
-${OUTER_REGIONS_NOTE} Do not invent a figure for anywhere outside the three regions.
+${travelRows}
+
+${OUTER_REGIONS_NOTE}
 
 ${tierBlocks}
 
-### What each region pays, all in
+### Where he works
 
 ${regionRows}
 
-Every collection includes a colour-graded feature film (1 minute on Core, 2 minutes on
-Signature and Story Weekend) and film prints handed to guests on the night. Signature adds
-1 roll of real film and Story Weekend adds 2, processed and scanned.
+Every collection includes vertical social reels, cut from the day and sent in the first
+week, and film prints handed to guests on the night. **Core has no feature film and no
+album.** Signature adds a 1-minute colour-graded feature film, 2 rolls of real film, and a
+Signature album (${ALBUM_SPECS.signature.size}, ${ALBUM_SPECS.signature.pages},
+${ALBUM_SPECS.signature.paper}, ${ALBUM_SPECS.signature.cover}). Heirloom adds a 3-minute
+feature film, 4 rolls of film, and an Heirloom album (${ALBUM_SPECS.heirloom.size},
+${ALBUM_SPECS.heirloom.pages}, ${ALBUM_SPECS.heirloom.paper}, ${ALBUM_SPECS.heirloom.cover}).
+No collection includes a second photographer; it is an add-on on all three.
 
 ### Add-ons, identical everywhere
 
@@ -92,28 +106,28 @@ ${addons}
 - Multi-day or cultural events: quoted individually by event, crew, travel and editing
   volume. Never sold as one flat package.
 
-Not included: sales tax, and any add-on above. Sales tax by region: ${REGIONS.map((r) => `${r.short} ${r.tax}`).join("; ")}. Site permits, where a venue needs them, are quoted as their own line before signing.
+Not included: sales tax, travel beyond ${TRAVEL.freeRadiusKm} km of Montréal, and any add-on above. Sales tax by province: ${REGIONS.map((r) => `${r.short} ${r.tax}`).join("; ")}. Site permits, where a venue needs them, are quoted as their own line before signing.
 
 ## How booking works
 
 1. Send the date, city and rough guest count via ${SITE.url}/contact
 2. A reply within two business hours, saying whether the date is open
 3. A 20-minute call
-4. One recommended collection, with the tier above and below it
+4. One recommended collection, with the tier above and below it, and the travel figure if the day needs one
 5. A free 48-hour hold on the date
 6. Contract plus a 30% retainer confirms it; the balance is due 30 days before the wedding
 
 Peak-season Saturdays are usually booked 9 to 18 months ahead. Off-season and weekday
-dates open up much later. A gallery preview arrives within 48 hours and the full gallery
-in three to seven weeks depending on the tier.
+dates open up much later. A gallery preview arrives within 24 to 48 hours depending on the
+tier, and the full gallery within 2 weeks on Core or 3 weeks on Signature and Heirloom.
 
-## The three markets with their own page
+## The three cities with a page of their own
 
 ${cityBlocks}
 
 ## Key pages
 
-- [Pricing](${SITE.url}/pricing) — the three collections, every region's all-in price, add-ons, booking
+- [Pricing](${SITE.url}/pricing) — the three collections at one national price, how travel is quoted, add-ons, booking
 - [Portfolio](${SITE.url}/portfolio) — five albums: editorial, film inspired, 1980s film, dreamy fine art, documentary
 - [Galleries](${SITE.url}/galleries) — complete wedding albums, not highlight reels
 - [About](${SITE.url}/about) — the approach, and where he works

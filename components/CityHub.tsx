@@ -10,8 +10,6 @@ import {
   MARKETS,
   SITE,
   TIERS,
-  hasPrices,
-  quoteFor,
   regionBySlug,
   type Market,
 } from "@/lib/site";
@@ -61,11 +59,7 @@ function WorkWall({ photos }: { photos: { src: string; alt: string }[] }) {
 
 export function cityMetadata(m: Market) {
   const title = `${m.city} Wedding Photographer — ${m.region}`;
-  const from = quoteFor(regionOf(m), CORE);
-  const priceLine =
-    from === null
-      ? "Priced against your venue and date, before you commit to anything."
-      : `From ${money(from)} all in, with travel already inside the figure.`;
+  const priceLine = `Collections from ${money(CORE.price)}, the same figure here as in every other city. Travel quoted openly on top.`;
   return {
     title,
     description: `${m.angle}. Wedding photography in ${m.region}. ${priceLine}`,
@@ -92,20 +86,15 @@ export function citySchema(m: Market) {
       url,
       provider: { "@id": `${SITE.url}/#business` },
       areaServed: m.areas.map((a) => ({ "@type": "Place", name: a })),
-      // Only regions with a published figure get Offer markup. A quoted region
-      // would otherwise emit price: null, which is worse than no offer at all.
-      offers: TIERS.flatMap((t) => {
-        const price = quoteFor(regionOf(m), t);
-        return price === null
-          ? []
-          : [{
-              "@type": "Offer",
-              name: `${t.name} — ${t.coverage}`,
-              price,
-              priceCurrency: "CAD",
-              url: `${SITE.url}/pricing#${t.slug}`,
-            }];
-      }),
+      // The collection price is national, so every city emits the same three
+      // offers. Travel is quoted per booking and is deliberately not in here.
+      offers: TIERS.map((t) => ({
+        "@type": "Offer",
+        name: `${t.name} — ${t.coverage}`,
+        price: t.price,
+        priceCurrency: "CAD",
+        url: `${SITE.url}/pricing#${t.slug}`,
+      })),
     },
     {
       "@context": "https://schema.org",
@@ -144,8 +133,6 @@ export default function CityHub({ market: m }: { market: Market }) {
   const photos = CITY_PHOTOS[m.slug];
   const hub = hubBySlug(m.slug);
   const region = regionOf(m);
-  const priced = hasPrices(region);
-  const vanCore = quoteFor(regionBySlug("vancouver")!, CORE);
   const others = MARKETS.filter((x) => x.slug !== m.slug);
   // This city's writing first, topped up with the guides that apply anywhere.
   const cityPosts = [
@@ -331,8 +318,8 @@ export default function CityHub({ market: m }: { market: Market }) {
               And up the Sea-to-Sky
             </h3>
             <p className="hub-section-intro">
-              Whistler and Squamish are inside the same price as a Kitsilano Saturday, because they
-              are the same trip.
+              Whistler and Squamish cost the same as a Kitsilano Saturday, because the photography
+              is the same work. The corridor drive goes in the travel figure, not the collection.
             </p>
             <WorkWall photos={WHISTLER_WORK} />
           </>
@@ -412,18 +399,18 @@ export default function CityHub({ market: m }: { market: Market }) {
 
       {/* ── PRICES ── */}
       <section id="prices" className="hub-section">
-        <p className="hub-section-kicker">The whole number</p>
+        <p className="hub-section-kicker">What it costs</p>
         <h2 className="hub-section-h">What a {m.city} wedding costs</h2>
         <p className="hub-section-intro">
-          {priced
-            ? "Travel is already inside every figure below. Sales tax is the only thing on top, and add-ons are the only thing that can raise it."
-            : `${m.city} sits outside the three regions I publish figures for, so the price is quoted against your venue and your date rather than averaged. You get the real number before you commit to anything, and the collections themselves are identical to everywhere else.`}
+          The same as everywhere else. A collection carries one national price, because the
+          photography is the same work wherever it happens. Sales tax goes on top, so do any
+          add-ons you choose, and so does the trip if {m.city} is more than 100 km from Montréal.
         </p>
         <div className="hub-price-grid">
           {TIERS.map((t, i) => (
             <article key={t.slug} className={`hub-price-card${i === 0 ? " hub-price-card--lead" : ""}`}>
               <p className="hub-price-name">{t.name}</p>
-              <p className="hub-price-value">{money(quoteFor(region, t))}</p>
+              <p className="hub-price-value">{money(t.price)}</p>
               <p className="hub-price-meta">{t.coverage} · {t.images}</p>
               <ul className="hub-price-list">
                 {t.includes.slice(0, 5).map((inc) => (
@@ -433,12 +420,11 @@ export default function CityHub({ market: m }: { market: Market }) {
             </article>
           ))}
         </div>
-        {!priced && (
-          <p className="hub-section-intro" style={{ marginTop: "1.6rem" }}>
-            For scale, the published Vancouver region runs {money(vanCore)} for Core. Send the
-            venue and the date and you will have the real figure in the first reply.
-          </p>
-        )}
+        <p className="hub-section-intro" style={{ marginTop: "1.6rem" }}>
+          <strong>Travel:</strong> {region.travel} It is a separate, agreed figure in the contract,
+          never a line that appears at the end. Send the venue and the date and you will have it
+          in the first reply.
+        </p>
         <div className="hub-price-actions">
           <InquireButton className="hub-cta">Check a {m.city} date</InquireButton>
           <Link href="/pricing" className="hub-cta-alt">
@@ -508,7 +494,7 @@ export default function CityHub({ market: m }: { market: Market }) {
         <div className="hub-other">
           {others.map((o) => (
             <Link key={o.slug} href={`/${o.slug}-wedding-photographer`} className="hub-other-link">
-              {o.city} · from {money(quoteFor(regionOf(o), CORE))}
+              {o.city} · from {money(CORE.price)}
             </Link>
           ))}
         </div>

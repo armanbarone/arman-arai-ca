@@ -299,6 +299,18 @@ export default function PromoPage({ cfg, experiencesAlbum, workAlbum }: {
         .fc-cmp th { font-family: var(--font-jost); font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; border-top: none; padding-bottom: 1.1rem; }
         .fc-cmp td:last-child { background: rgba(184,149,106,.07); border-left: 0.5px solid rgba(184,149,106,.25); border-right: 0.5px solid rgba(184,149,106,.25); color: ${IN}; }
         .fc-cmp th:last-child { background: rgba(184,149,106,.07); border-left: 0.5px solid rgba(184,149,106,.25); border-right: 0.5px solid rgba(184,149,106,.25); border-top: 0.5px solid rgba(184,149,106,.25); color: ${AC}; }
+        /* Review screenshots keep their full contents in bounded columns at
+           every breakpoint, rather than inheriting the entire page width. */
+        .fc-proof { column-count: 3; column-gap: 18px; max-width: 1000px; margin: 2.8rem auto 0; }
+        .fc-proof-item {
+          break-inside: avoid; margin-bottom: 18px;
+          border: 0.5px solid rgba(184,149,106,.22); background: #141110;
+        }
+        .fc-proof-item a { display: block; }
+        .fc-proof-item a:focus-visible { outline: 2px solid ${AC}; outline-offset: 4px; }
+        @media (max-width: 1023px) { .fc-proof { column-count: 2; max-width: 680px; } }
+        @media (max-width: 639px) { .fc-proof { column-count: 1; max-width: 340px; } }
+
         @media (max-width: 767px) {
           .fc-grid { grid-template-columns: 1fr !important; }
           .fc-cols { grid-template-columns: 1fr; gap: 2rem; }
@@ -374,15 +386,6 @@ export default function PromoPage({ cfg, experiencesAlbum, workAlbum }: {
           .dr-promo h1 { font-weight: 400 !important; }
           .dr-promo h2, .dr-promo h3 { font-weight: 400 !important; }
           .dr-promo .fc-cmp td { font-size: 0.95rem !important; }
-
-          /* ── REVIEWS: masonry so nothing is cropped ──────────────────────── */
-          .fc-proof { column-count: 1; column-gap: 14px; }
-          @media (min-width: 640px)  { .fc-proof { column-count: 2; } }
-          @media (min-width: 1024px) { .fc-proof { column-count: 3; } }
-          .fc-proof-item {
-            break-inside: avoid; margin-bottom: 14px;
-            border: 0.5px solid rgba(184,149,106,.22); background: #141110;
-          }
 
           /* ── SECTION SEPARATION ────────────────────────────────────────────
              The alternating #080704 / #0E0C0A backgrounds are a two-percent
@@ -600,7 +603,7 @@ export default function PromoPage({ cfg, experiencesAlbum, workAlbum }: {
             <div>
               <div className="fc-receipt">
                 <div className="fc-stamp">{cfg.receiptStamp ?? "Founding rate · 2026 · five dates only"}</div>
-                <div style={{ fontFamily: "var(--font-jost)", fontSize: "0.6rem", letterSpacing: "0.28em", textTransform: "uppercase", color: "#a8834a" }}>Arman Arai &middot; Elopement Curation</div>
+                <div style={{ fontFamily: "var(--font-jost)", fontSize: "0.6rem", letterSpacing: "0.28em", textTransform: "uppercase", color: "#a8834a" }}>Arman Arai - Wedding Photographer</div>
                 <div style={{ fontFamily: "var(--font-cormorant)", fontStyle: "italic", fontWeight: 400, fontSize: "1.65rem", margin: "0.4rem 0 0.2rem" }}>{cfg.receiptTitle ?? "The Founding Couples Day"}</div>
                 <div style={{ fontFamily: "var(--font-jost)", fontSize: "0.56rem", letterSpacing: "0.2em", textTransform: "uppercase", color: "rgba(61,46,31,.55)", marginBottom: "1.1rem" }}>{cfg.kicker}</div>
                 {cfg.included.map((it) => {
@@ -848,7 +851,7 @@ export default function PromoPage({ cfg, experiencesAlbum, workAlbum }: {
 
       {/* ══ 7b · REVIEWS: what couples actually wrote ══ */}
       {cfg.reviews && cfg.reviews.items.length > 0 && (
-        <section style={{ padding: "5.5rem 0", background: "#0E0C0A" }}>
+        <section id="reviews" style={{ padding: "5.5rem 0", background: "#0E0C0A" }}>
           <div className="page-w page-px">
             <div style={{ textAlign: "center" }}>
               <p style={kick}>{cfg.reviews.kicker ?? "Their words, not mine"}</p>
@@ -861,19 +864,21 @@ export default function PromoPage({ cfg, experiencesAlbum, workAlbum }: {
             </div>
             {/* Masonry columns rather than a grid, so no screenshot is cropped:
                 on a review, a crop cuts off the words that do the persuading. */}
-            <div className="fc-proof" style={{ marginTop: "2.8rem" }}>
+            <div className="fc-proof">
               {cfg.reviews.items.map((r, i) => (
                 <div key={r.src} className="fc-proof-item">
+                  <a href={r.src} target="_blank" rel="noopener noreferrer" aria-label={`Read review ${i + 1} at full size`}>
                   <Image
                     src={r.src}
                     alt={r.alt ?? "A message from a couple after their gallery was delivered"}
                     width={r.w}
                     height={r.h}
-                    sizes="(max-width: 639px) 100vw, (max-width: 1023px) 50vw, 33vw"
+                    sizes="(max-width: 390px) calc(100vw - 51px), 340px"
                     quality={80}
                     loading="lazy"
                     style={{ width: "100%", height: "auto", display: "block" }}
                   />
+                  </a>
                 </div>
               ))}
             </div>
@@ -972,7 +977,7 @@ export default function PromoPage({ cfg, experiencesAlbum, workAlbum }: {
       {/* ══ 11 · FOOTER ══ */}
       <footer style={{ padding: "2.5rem 0", borderTop: "0.5px solid rgba(184,149,106,.14)" }}>
         <div className="page-w page-px" style={{ display: "flex", flexWrap: "wrap", gap: "0.9rem 2rem", justifyContent: "space-between", fontSize: "0.72rem", color: DIM, fontFamily: "var(--font-jost)", letterSpacing: "0.05em" }}>
-          <span>Arman Arai &middot; Elopement Curation · Vancouver, BC</span>
+          <span>Arman Arai - Wedding Photographer</span>
           <span>All prices {currency}{taxNote ? `, ${taxNote}` : ""}</span>
           <span>Form details are used only to reply to your inquiry.</span>
         </div>

@@ -128,7 +128,7 @@ export default function WeddingLandingPage() {
           <div className={styles.calendar}><WeddingCalendar /></div>
         </section>
       </main>
-      <footer className={styles.footer}><span className={styles.footerName}>Arman Arai</span><p>Wedding photography across Canada</p><a href="/privacy-policy" target="_blank" rel="noopener noreferrer">Privacy policy</a><span>© {new Date().getFullYear()} Arman Arai</span></footer>
+      <footer className={styles.footer}><span className={styles.footerName}>Arman Arai - Wedding Photographer</span><a href="/privacy-policy" target="_blank" rel="noopener noreferrer">Privacy policy</a><span>© {new Date().getFullYear()} Arman Arai</span></footer>
       <BookingNavigation />
       <Analytics />
     </div>

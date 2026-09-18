@@ -1,0 +1,10 @@
+.proof{margin-top:40px}
+.intro{color:var(--muted);font-size:15px;line-height:1.7;text-align:center;margin-bottom:24px!important}
+.grid{column-count:3;column-gap:18px;max-width:1000px;margin:0 auto}
+.card{display:block;break-inside:avoid;margin:0 0 18px;border:1px solid var(--line);background:var(--paper);color:var(--green)}
+.card:focus-visible{outline:3px solid var(--green);outline-offset:4px}
+.card img{display:block;width:100%;height:auto}
+.caption{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:46px;padding:11px 15px;border-top:1px solid var(--line);font-size:14px;line-height:1.5}
+.card:hover .caption{text-decoration:underline;text-underline-offset:4px}
+@media(max-width:1023px){.grid{column-count:2;max-width:680px}}
+@media(max-width:639px){.grid{column-count:1;max-width:340px}.intro{text-align:left;font-size:15px}.proof{margin-top:32px}}

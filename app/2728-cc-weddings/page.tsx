@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import ReviewScreenshots from "@/components/weddings/ReviewScreenshots";
 import { Analytics } from "@vercel/analytics/next";
 import { ABOUT_STORY, LANDING_PAGE, at } from "@/lib/images";
 import { ALBUM_SPECS, CORE, SITE, TIERS } from "@/lib/site";
@@ -90,12 +91,13 @@ export default function WeddingLandingPage() {
           </div>
         </section>
 
-        <section className={styles.reviews} aria-labelledby="reviews-title">
+        <section id="reviews" className={styles.reviews} aria-labelledby="reviews-title">
           <p className={styles.eyebrow} id="reviews-title">When the photographs arrive</p>
           <div className={styles.quoteGrid}>
-            <figure><blockquote>“We just went through the preview gallery and we are OBSESSED!”</blockquote><figcaption>Jennifer <span>· After the preview gallery</span></figcaption><details><summary>Read the original message</summary><Image src="https://cdn.armanarai.ca/reviews/proof-02.png" width={1082} height={451} sizes="(max-width: 760px) 90vw, 45vw" alt="Jennifer’s original email thanking Arman after receiving her preview gallery" /></details></figure>
-            <figure><blockquote>“My mom keeps texting about the photos. She said she never saw wedding photos this good all her life.”</blockquote><figcaption>Rachel <span>· A message after the wedding</span></figcaption><details><summary>Read the original message</summary><Image src="https://cdn.armanarai.ca/reviews/proof-04.png" width={750} height={657} sizes="(max-width: 760px) 90vw, 45vw" alt="Rachel’s original message about her mother’s reaction to the wedding photographs" /></details></figure>
+            <figure><blockquote>“We just went through the preview gallery and we are OBSESSED!”</blockquote><figcaption>Jennifer <span>· After the preview gallery</span></figcaption></figure>
+            <figure><blockquote>“My mom keeps texting about the photos. She said she never saw wedding photos this good all her life.”</blockquote><figcaption>Rachel <span>· A message after the wedding</span></figcaption></figure>
           </div>
+          <ReviewScreenshots />
         </section>
 
         <section className={styles.collections} aria-labelledby="collections-title">

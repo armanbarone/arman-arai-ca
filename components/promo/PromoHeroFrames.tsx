@@ -40,9 +40,12 @@ export default function PromoHeroFrames({
   pool,
   alts,
   threeUp,
+  startDelayMs = 9000,
 }: {
   pool: string[];
   alts: string[];
+  /** Held back so the conveyor never becomes the measured LCP. See HeroCycler. */
+  startDelayMs?: number;
   /**
    * Show all three frames on a phone instead of the lead one alone.
    *
@@ -65,13 +68,14 @@ export default function PromoHeroFrames({
           sizes="(max-width: 1023px) 100vw, 60vw"
           priority
           objectPosition="center 42%"
+          startDelayMs={startDelayMs}
         />
       </div>
       <div className="fc-hf-b">
-        <HeroCycler pool={pool} position={1} alt={alt(1)} sizes="(max-width: 1023px) 50vw, 42vw" />
+        <HeroCycler pool={pool} position={1} alt={alt(1)} sizes="(max-width: 1023px) 50vw, 42vw" startDelayMs={startDelayMs} />
       </div>
       <div className="fc-hf-c">
-        <HeroCycler pool={pool} position={2} alt={alt(2)} sizes="(max-width: 1023px) 50vw, 42vw" />
+        <HeroCycler pool={pool} position={2} alt={alt(2)} sizes="(max-width: 1023px) 50vw, 42vw" startDelayMs={startDelayMs} />
       </div>
     </div>
   );

@@ -40,7 +40,7 @@ export const getSnapshot = () => offset;
 export const getServerSnapshot = () => 0;
 export { startConveyor };
 
-function startConveyor() {
+function startConveyor(firstTickMs = FIRST_TICK_MS) {
   if (running || typeof window === "undefined") return;
   // This deliberately runs even under prefers-reduced-motion. The transition is
   // opacity only, with no movement, scaling or parallax, which is the class of
@@ -53,7 +53,7 @@ function startConveyor() {
       listeners.forEach((l) => l());
       tick(TICK_MS);
     }, delay);
-  tick(FIRST_TICK_MS);
+  tick(firstTickMs);
 }
 
 interface Props {
@@ -66,6 +66,16 @@ interface Props {
   /** Only the LCP frame should set this. */
   priority?: boolean;
   objectPosition?: string;
+  /**
+   * How long to wait before the conveyor's first move.
+   *
+   * Every rotation registers a new Largest Contentful Paint candidate, and LCP
+   * is the last candidate before the user interacts. On the homepage 3s is
+   * fine. On an ads landing page it measured as a 5.7s LCP, because the swap
+   * landed well after the hero had already painted. Pass something longer than
+   * the page takes to settle and the rotation stops counting.
+   */
+  startDelayMs?: number;
 }
 
 export default function HeroCycler({
@@ -75,6 +85,7 @@ export default function HeroCycler({
   sizes,
   priority = false,
   objectPosition = "center center",
+  startDelayMs,
 }: Props) {
   const off = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
   const current = (off + position) % pool.length;
@@ -84,8 +95,8 @@ export default function HeroCycler({
   const [moved, setMoved] = useState(false);
 
   useEffect(() => {
-    startConveyor();
-  }, []);
+    startConveyor(startDelayMs);
+  }, [startDelayMs]);
 
   // Hold the departing photograph for the length of the fade so the two
   // crossfade, rather than one blinking out before the other arrives.
@@ -121,7 +132,9 @@ export default function HeroCycler({
           sizes={sizes}
           quality={82}
           {...(priority && i === current && !moved
-            ? { priority: true }
+            // fetchPriority is set explicitly: Lighthouse's LCP discovery audit
+            // reported priorityHinted:false on the preload without it.
+            ? { priority: true, fetchPriority: "high" as const }
             : { loading: "lazy" as const })}
           className="object-cover"
           style={{

@@ -41,8 +41,8 @@ const nextConfig: NextConfig = {
     loaderFile: "./cloudflareLoader.ts",
     // Fixed responsive widths cap the number of unique transforms (billing
     // guardrail) and maximise CDN cache hits.
-    deviceSizes: [400, 800, 1200, 1600, 2400],
-    imageSizes: [256, 400],
+    deviceSizes: [400, 640, 800, 1200, 1600, 2400],
+    imageSizes: [256],
     // Ignored while a custom loader is set; kept for reference and any fallback.
     remotePatterns: [
       { protocol: "https", hostname: "cdn.armanarai.com", pathname: "/**" },

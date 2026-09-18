@@ -22,18 +22,20 @@ const jost = Jost({
 });
 const greatVibes = Great_Vibes({
   subsets: ["latin"], weight: ["400"],
-  variable: "--font-great-vibes", display: "swap",
+  variable: "--font-great-vibes", display: "swap", preload: false,
 });
 // The Gazette blog-post design: plain Cormorant for the body, blackletter for
 // the nameplate. The ported gz- CSS asks for both by variable name.
 const cormorantGz = Cormorant({
   subsets: ["latin"], weight: ["300", "400", "500", "600"], style: ["normal", "italic"],
-  variable: "--font-cormorant-gz", display: "swap",
+  variable: "--font-cormorant-gz", display: "swap", preload: false,
 });
 const unifraktur = UnifrakturMaguntia({
   subsets: ["latin"], weight: ["400"],
-  variable: "--font-unifraktur", display: "swap",
+  variable: "--font-unifraktur", display: "swap", preload: false,
 });
+// Decorative and journal fonts load when used. Preloading them in the root
+// otherwise competes with the landing page's hero, even when none are visible.
 // Archivo and IBM Plex Mono were carried over from the .com and dropped again:
 // over there they are used only by the promo/ landing components, which do not
 // exist on this site. They were two font families downloaded on every page for

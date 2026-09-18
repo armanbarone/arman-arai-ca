@@ -58,7 +58,7 @@ export default function WeddingLandingPage() {
             <p className={styles.micro}>30 minutes with me, Arman. No obligation.</p>
           </div>
           <figure className={styles.heroPhoto}>
-            <Image src={hero.src} alt="A bride and groom looking at each other in warm evening light, her veil catching the sun" fill priority sizes="(max-width: 760px) 100vw, 54vw" />
+            <Image src={hero.src} alt="A bride and groom looking at each other in warm evening light, her veil catching the sun" fill priority fetchPriority="high" quality={75} sizes="(max-width: 760px) 88vw, (max-width: 1600px) 50vw, 800px" />
             <figcaption>For the day you’ll always come back to.</figcaption>
           </figure>
         </section>
@@ -71,15 +71,15 @@ export default function WeddingLandingPage() {
             <p>There’s room for a beautiful portrait and a very good time. I’ll help you with the first and be ready to photograph the second.</p>
           </div>
           <div className={styles.gallery}>
-            <figure><div><Image src={LANDING_PAGE[2].src} alt="Black and white bridal portrait beneath a veil, beside a window" fill sizes="(max-width: 760px) 76vw, 29vw" /></div><figcaption><span>01</span> A moment for you</figcaption></figure>
-            <figure><div><Image src={LANDING_PAGE[1].src} alt="A bride laughing on the dance floor beneath colourful party lights" fill sizes="(max-width: 760px) 76vw, 42vw" /></div><figcaption><span>02</span> Everyone you love, all in</figcaption></figure>
-            <figure><div><Image src={LANDING_PAGE[7].src} alt="A couple dancing on a patterned marble floor, photographed from above in black and white" fill sizes="(max-width: 760px) 76vw, 29vw" /></div><figcaption><span>03</span> Just the two of you</figcaption></figure>
+            <figure><div><Image src={LANDING_PAGE[2].src} alt="Black and white bridal portrait beneath a veil, beside a window" fill quality={75} fetchPriority="low" sizes="(max-width: 760px) 76vw, (max-width: 1600px) 27vw, 430px" /></div><figcaption><span>01</span> A moment for you</figcaption></figure>
+            <figure><div><Image src={LANDING_PAGE[1].src} alt="A bride laughing on the dance floor beneath colourful party lights" fill quality={75} fetchPriority="low" sizes="(max-width: 760px) 76vw, (max-width: 1600px) 36vw, 580px" /></div><figcaption><span>02</span> Everyone you love, all in</figcaption></figure>
+            <figure><div><Image src={LANDING_PAGE[7].src} alt="A couple dancing on a patterned marble floor, photographed from above in black and white" fill quality={75} fetchPriority="low" sizes="(max-width: 760px) 76vw, (max-width: 1600px) 27vw, 430px" /></div><figcaption><span>03</span> Just the two of you</figcaption></figure>
           </div>
           <p className={styles.swipeHint}>Swipe through the photographs <span aria-hidden="true">→</span></p>
         </section>
 
         <section className={styles.about} aria-labelledby="about-title">
-          <figure><Image src={ABOUT_STORY[4].src} alt="Arman with a bride and groom at their wedding reception" fill sizes="(max-width: 760px) 100vw, 45vw" /></figure>
+          <figure><Image src={ABOUT_STORY[4].src} alt="Arman with a bride and groom at their wedding reception" fill quality={75} fetchPriority="low" sizes="(max-width: 760px) 100vw, (max-width: 1600px) 50vw, 800px" /></figure>
           <div className={styles.aboutCopy}>
             <p className={styles.eyebrow}>Hi, I’m Arman.</p>
             <h2 id="about-title">You don’t need to know<br /><em>how to pose.</em></h2>

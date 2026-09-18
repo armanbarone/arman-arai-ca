@@ -5,7 +5,9 @@ import { BUSINESS, BUSINESS_ADDRESS_ONE_LINE } from "./business";
 // Every portal email is transactional: it concerns one booking and nothing
 // else. No offers, no newsletter content, ever.
 
-export const EMAIL_FROM = process.env.EMAIL_FROM || `${BUSINESS.tradeName} <${BUSINESS.email}>`;
+// Resend is verified for armanarai.ca, so that is the envelope sender. Replies
+// go to i@armanarai.com, which is the address couples know and the one Arman reads.
+export const EMAIL_FROM = process.env.EMAIL_FROM || `${BUSINESS.tradeName} <${BUSINESS.sendingAddress}>`;
 
 export function esc(s: string): string {
   return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");

@@ -1,0 +1,133 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+
+let scenario = 0;
+function storage() {
+  const values = new Map();
+  return { getItem: (key) => values.get(key) ?? null, setItem: (key, value) => values.set(key, value), removeItem: (key) => values.delete(key) };
+}
+async function environment({ pathname = '/2728-cc-weddings-dark', blocked = false, gpc = false } = {}) {
+  const appended = [];
+  const redirects = [];
+  globalThis.localStorage = storage();
+  globalThis.sessionStorage = storage();
+  Object.defineProperty(globalThis, 'navigator', { value: { globalPrivacyControl: gpc }, configurable: true });
+  globalThis.window = { location: { pathname, search: '?utm_source=google&gclid=test-click&email=private', origin: 'https://www.armanarai.ca', assign: (url) => redirects.push(url) }, setTimeout, clearTimeout };
+  globalThis.document = { title: 'Wedding photography', createElement: () => ({ dataset: {} }), head: { appendChild: (script) => { appended.push(script); queueMicrotask(() => blocked ? script.onerror() : script.onload()); } } };
+  const analytics = await import(`../lib/analytics.ts?test=${++scenario}`);
+  return { analytics, appended, redirects, google: () => (window.dataLayer || []).map((args) => [...args]), meta: () => (window.fbq?.queue || []).map((args) => [...args]) };
+}
+const scheduled = { event: 'calendly.event_scheduled', payload: { invitee: { uri: 'https://api.calendly.com/scheduled_events/event-123/invitees/invitee-456' }, name: 'Do not transmit', email: 'private@example.com' } };
+
+test('no optional tags before consent or on a private page; privacy signal takes precedence', async () => {
+  for (const options of [{}, { pathname: '/portal/client-123' }, { pathname: '/admin' }, { gpc: true }]) {
+    const { analytics, appended } = await environment(options);
+    if (Object.keys(options).length) analytics.setConsent('accepted');
+    analytics.trackPageView();
+    assert.equal(appended.length, 0);
+  }
+});
+
+test('accepted consent initializes all three destinations once and filters Google page URL', async () => {
+  const { analytics, appended, google, meta } = await environment();
+  analytics.setConsent('accepted');
+  analytics.trackPageView(); analytics.trackPageView();
+  assert.equal(appended.length, 2);
+  const configs = google().filter((e) => e[0] === 'config');
+  assert.deepEqual(configs.map((e) => e[1]), [analytics.GA4_ID, analytics.GOOGLE_ADS_ID]);
+  const pageViews = google().filter((e) => e[1] === 'page_view');
+  assert.equal(pageViews.length, 1);
+  assert.match(pageViews[0][2].page_location, /gclid=test-click/);
+  assert.doesNotMatch(pageViews[0][2].page_location, /email|private/);
+  assert.equal(meta().filter((e) => e[1] === 'PageView').length, 1);
+  assert.equal(meta().find((e) => e[0] === 'init')[1], analytics.META_PIXEL_ID);
+});
+
+test('confirmed booking redirects immediately then reports once on thank-you, without personal information', async () => {
+  const { analytics, redirects, google, meta } = await environment();
+  analytics.setConsent('accepted');
+  analytics.trackPageView();
+  await analytics.completeWeddingBooking(scheduled);
+  assert.deepEqual(redirects, ['/thank-you']);
+  assert.equal(google().filter((e) => e[1] === 'conversion').length, 0);
+  const booking = JSON.parse(sessionStorage.getItem(analytics.BOOKING_KEY));
+  assert.equal(booking.id, 'ca-invitee-456');
+  assert.doesNotMatch(JSON.stringify(booking), /private|api.calendly|name|email/);
+  window.location.pathname = '/thank-you';
+  await Promise.all([analytics.reportPendingBooking(), analytics.reportPendingBooking()]);
+  await analytics.reportPendingBooking();
+  const conversion = google().filter((e) => e[1] === 'conversion');
+  assert.equal(conversion.length, 1);
+  assert.equal(conversion[0][2].send_to, `${analytics.GOOGLE_ADS_ID}/${analytics.SCHEDULE_CONVERSION_LABEL}`);
+  assert.equal(conversion[0][2].transaction_id, booking.id);
+  assert.equal(google().filter((e) => e[1] === 'generate_lead').length, 1);
+  const schedule = meta().filter((e) => e[1] === 'Schedule');
+  assert.equal(schedule.length, 1);
+  assert.equal(schedule[0][3].eventID, booking.id);
+  // Re-import simulates a refresh: in-memory flags are gone; persistent dedupe remains.
+  const refreshed = await import(`../lib/analytics.ts?test=${++scenario}`);
+  await refreshed.reportPendingBooking();
+  assert.equal(google().filter((e) => e[1] === 'conversion').length, 1);
+  assert.equal(meta().filter((e) => e[1] === 'Schedule').length, 1);
+});
+
+test('direct thank-you visits, stale markers, and declined consent never report conversions', async () => {
+  for (const kind of ['direct', 'stale', 'declined']) {
+    const { analytics, google, meta } = await environment({ pathname: '/thank-you' });
+    analytics.setConsent(kind === 'declined' ? 'declined' : 'accepted');
+    if (kind !== 'direct') {
+      const createdAt = kind === 'stale' ? Date.now() - 31 * 60 * 1000 : Date.now();
+      sessionStorage.setItem(analytics.BOOKING_KEY, JSON.stringify({ id: 'ca-test-123', page: '/2728-cc-weddings', createdAt }));
+    }
+    await analytics.reportPendingBooking();
+    assert.equal(google().filter((e) => e[1] === 'conversion').length, 0);
+    assert.equal(meta().filter((e) => e[1] === 'Schedule').length, 0);
+  }
+});
+
+test('missing invitee metadata still creates a valid opaque booking id', async () => {
+  const { analytics } = await environment();
+  const b = analytics.bookingFromMessage({ event: 'calendly.event_scheduled' }, '/2728-cc-weddings?email=private', 'fallback-123', 10000);
+  assert.equal(b.id, 'ca-fallback-123');
+  assert.equal(b.page, '/2728-cc-weddings');
+  assert.equal(analytics.validBooking(b, 10001), true);
+  assert.equal(analytics.validBooking(b, 9999), false);
+});
+
+test('blocked tags do not stop the redirect or falsely mark a conversion as sent', async () => {
+  const { analytics, redirects, google, meta } = await environment({ blocked: true });
+  analytics.setConsent('accepted');
+  analytics.trackPageView();
+  await analytics.completeWeddingBooking(scheduled);
+  window.location.pathname = '/thank-you';
+  await analytics.reportPendingBooking();
+  assert.deepEqual(redirects, ['/thank-you']);
+  assert.equal(google().filter((e) => e[1] === 'conversion').length, 0);
+  assert.equal(meta().filter((e) => e[1] === 'Schedule').length, 0);
+});
+
+test('storage failure still navigates and sends the booking before leaving when tags work', async () => {
+  const { analytics, redirects, google, meta } = await environment();
+  analytics.setConsent('accepted');
+  globalThis.sessionStorage = { getItem: () => { throw new Error('blocked'); }, setItem: () => { throw new Error('blocked'); } };
+  await analytics.completeWeddingBooking(scheduled);
+  assert.deepEqual(redirects, ['/thank-you']);
+  assert.equal(google().filter((e) => e[1] === 'conversion').length, 1);
+  assert.equal(meta().filter((e) => e[1] === 'Schedule').length, 1);
+});
+
+test('loaded tags are suspended when navigation enters the private portal', async () => {
+  const { analytics, google, meta } = await environment();
+  analytics.setConsent('accepted');
+  analytics.trackPageView();
+  window.location.pathname = '/portal/client-123';
+  analytics.suspendTracking();
+  analytics.trackPageView();
+  assert.equal(window[`ga-disable-${analytics.GA4_ID}`], true);
+  assert.equal(meta().at(-1)[1], 'revoke');
+  assert.equal(google().filter((e) => e[1] === 'page_view').length, 1);
+  window.location.pathname = '/portfolio';
+  analytics.trackPageView();
+  assert.equal(window[`ga-disable-${analytics.GA4_ID}`], false);
+  assert.equal(google().filter((e) => e[1] === 'page_view').length, 2);
+});

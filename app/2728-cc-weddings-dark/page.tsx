@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import { WEDDING_GALLERY } from "@/lib/wedding-gallery";
 import ReviewScreenshots from "@/components/weddings/ReviewScreenshots";
 import { Analytics } from "@vercel/analytics/next";
 import { ABOUT_STORY, LANDING_PAGE, at } from "@/lib/images";
@@ -77,9 +78,9 @@ export default function WeddingLandingPage() {
             <p>There’s room for a beautiful portrait and a very good time. I’ll help you with the first and be ready to photograph the second.</p>
           </div>
           <div className={styles.gallery}>
-            <figure><div><Image src={LANDING_PAGE[2].src} alt="Black and white bridal portrait beneath a veil, beside a window" fill quality={75} fetchPriority="low" sizes="(max-width: 760px) 76vw, (max-width: 1600px) 27vw, 430px" /></div><figcaption><span>01</span> A moment for you</figcaption></figure>
-            <figure><div><Image src={LANDING_PAGE[1].src} alt="A bride laughing on the dance floor beneath colourful party lights" fill quality={75} fetchPriority="low" sizes="(max-width: 760px) 76vw, (max-width: 1600px) 36vw, 580px" /></div><figcaption><span>02</span> Everyone you love, all in</figcaption></figure>
-            <figure><div><Image src={LANDING_PAGE[7].src} alt="A couple dancing on a patterned marble floor, photographed from above in black and white" fill quality={75} fetchPriority="low" sizes="(max-width: 760px) 76vw, (max-width: 1600px) 27vw, 430px" /></div><figcaption><span>03</span> Just the two of you</figcaption></figure>
+            {WEDDING_GALLERY.map((photo, index) => (
+              <figure key={photo.src}><div><Image src={photo.src} alt={photo.alt} fill quality={75} fetchPriority="low" style={{ objectPosition: photo.position }} sizes={index === 1 ? "(max-width: 760px) 76vw, (max-width: 1600px) 36vw, 580px" : "(max-width: 760px) 76vw, (max-width: 1600px) 27vw, 430px"} /></div><figcaption><span>0{index + 1}</span> {photo.caption}</figcaption></figure>
+            ))}
           </div>
           <p className={styles.swipeHint}>Swipe through the photographs <span aria-hidden="true">→</span></p>
         </section>

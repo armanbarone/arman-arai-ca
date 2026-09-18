@@ -4,6 +4,7 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import Script from "next/script";
 import { track } from "@vercel/analytics";
 import { CORE } from "@/lib/site";
+import { completeWeddingBooking } from "@/lib/analytics";
 import { isCompletedWeddingBooking, weddingCalendarUrl, WEDDING_CALENDAR } from "@/lib/wedding-booking";
 import styles from "./weddings.module.css";
 
@@ -84,7 +85,7 @@ export default function WeddingCalendar({ page = "2728-cc-weddings", theme = "li
       // Only report an actual scheduled event, never a calendar view or a CTA click.
       // No invitee name, email, or booking URI is sent to analytics.
       record("Wedding Call Booked", { method: "calendly" });
-      window.location.assign("/thank-you");
+      void completeWeddingBooking(event.data);
     };
     window.addEventListener("message", onMessage);
     return () => window.removeEventListener("message", onMessage);

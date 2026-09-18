@@ -30,7 +30,7 @@ export default function PrivacyPolicy() {
           Privacy Policy
         </h1>
         <p style={{ color: "var(--label)", fontSize: "0.78rem", letterSpacing: ".1em", fontFamily: "var(--font-jost)", marginBottom: 48 }}>
-          Last updated: August 2026
+          Last updated: September 2026
         </p>
 
         <div style={{ height: "0.5px", background: "var(--hairline)", marginBottom: 48 }} />
@@ -49,7 +49,7 @@ export default function PrivacyPolicy() {
             <li>Guest count and how you found me</li>
             <li>Any message or story you choose to share</li>
           </ul>
-          <p style={{ marginTop: 12 }}>I also collect aggregate traffic data: which pages are visited, roughly how long for, the type of device, and the country the request came from. It is measured without cookies and it is not tied to you as an individual. See Third Party Services below.</p>
+          <p style={{ marginTop: 12 }}>I also collect aggregate traffic data: which pages are visited, roughly how long for, the type of device, and the country the request came from. Vercel measures aggregate traffic without cookies. If you accept optional cookies, Google and Meta also measure page visits, ad attribution and completed call bookings using browser identifiers. See Third Party Services below.</p>
         </Section>
 
         <Section title="How I Use Your Information">
@@ -60,7 +60,7 @@ export default function PrivacyPolicy() {
             <li>Communicate about your booking if we proceed to contract</li>
             <li>Deliver your gallery and related correspondence</li>
           </ul>
-          <p style={{ marginTop: 12 }}>I do not sell, rent, or share your personal information with third parties for marketing purposes. I do not send unsolicited emails or add you to mailing lists without your consent.</p>
+          <p style={{ marginTop: 12 }}>I do not sell or rent your inquiry details. With your permission, Google and Meta receive website activity and advertising identifiers to measure advertising performance. I do not send unsolicited emails or add you to mailing lists without your consent.</p>
         </Section>
 
         <Section title="Third Party Services">
@@ -71,17 +71,17 @@ export default function PrivacyPolicy() {
             <li><strong style={{ color: "var(--text)" }}>Cloudflare</strong>: serves the photographs on this site from cdn.armanarai.ca and sits in front of it as a CDN. Cloudflare keeps standard request logs.</li>
             <li><strong style={{ color: "var(--text)" }}>Calendly</strong>: powers the scheduling calendar embedded on the contact and wedding landing pages. It loads only if you scroll to it, and only then does it set its own cookies. If you book a time, the name, email and any details you enter go to Calendly to create the appointment.</li>
           </ul>
-          <p style={{ marginTop: 12 }}>That is the complete list. This site runs no advertising pixel, no Google Analytics, and no tag manager.</p>
+          <p style={{ marginTop: 12 }}><strong style={{ color: "var(--text)" }}>Google Analytics 4 and Google Ads</strong> measure visits, advertising attribution and completed discovery-call bookings after you accept optional cookies. <strong style={{ color: "var(--text)" }}>Meta Pixel</strong> measures page visits, submitted inquiries and completed bookings for advertising attribution after the same choice. These services may process data outside Canada under their own privacy policies. Website conversion events do not include the name, email or answers you enter in Calendly.</p>
         </Section>
 
         <Section title="Cookies">
-          <p><strong style={{ color: "var(--text)" }}>This website sets no advertising or analytics cookies.</strong> Traffic measurement here is cookieless, and there is no Meta pixel, Google Ads tag, or cross-site tracker on any page.</p>
-          <p style={{ marginTop: 12 }}>Cloudflare may set a strictly necessary cookie for security and bot mitigation. The Calendly calendar on the contact and wedding landing pages sets its own cookies, but only once you scroll far enough for it to load. You can control or block cookies through your browser settings; doing so will not break anything on this site.</p>
+          <p>Optional Google and Meta tags load only after you accept optional cookies. Choose either option in the cookie notice, or change your choice through <strong style={{ color: "var(--text)" }}>Cookie settings</strong> at the bottom of any public page. Declining does not prevent booking. A Global Privacy Control signal is treated as a decline.</p>
+          <p style={{ marginTop: 12 }}>Cloudflare may set a strictly necessary cookie for security and bot mitigation. The Calendly calendar on the contact and wedding landing pages sets its own cookies, but only once you scroll far enough for it to load. Your cookie choice is stored in your browser for up to 180 days. A completed-booking identifier is stored for the current browser session to prevent duplicate conversion reports; no invitee name or email is stored with it. You can also clear or block cookies in your browser settings.</p>
         </Section>
 
         <Section title="Data Retention">
           <p>Inquiry form submissions are retained in my email inbox for as long as reasonably necessary to manage our correspondence. If we enter into a contract, your information is retained for the duration of our working relationship and for a period of up to 3 years after delivery of your final gallery, in accordance with standard business record-keeping practices.</p>
-          <p style={{ marginTop: 12 }}>Aggregate traffic data is retained by Vercel according to their platform retention settings. It contains nothing that identifies you.</p>
+          <p style={{ marginTop: 12 }}>Vercel retains aggregate traffic data according to its platform settings. Google and Meta retain consented measurement data according to the settings and policies of those services. Optional advertising tags are excluded from the private client portal and admin pages.</p>
         </Section>
 
         <Section title="Your Rights">

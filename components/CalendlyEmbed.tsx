@@ -1,22 +1,31 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Script from "next/script";
+import { completeWeddingBooking } from "@/lib/analytics";
+import { isCompletedWeddingBooking } from "@/lib/wedding-booking";
 
-/**
- * The scheduler on the page rather than behind a button.
- *
- * A bare iframe, not Calendly's widget.js: the script costs ~90 KB and buys
- * nothing an iframe cannot do here. It mounts only when the block nears the
- * viewport, so a visitor who never scrolls to it never pays for it, and any
- * utm parameters on the inbound link ride along so a booking stays attributable
- * to the campaign that produced it.
- */
+/** The supported widget sends completion events; a bare iframe does not. */
 const BASE = "https://calendly.com/i-armanarai/30-minute-meeting-wedding";
 const ACCENT = "#B8956A";
 const CREAM = "#E8E0D0";
 
 export default function CalendlyEmbed({ height = 720 }: { height?: number }) {
   const ref = useRef<HTMLDivElement>(null);
+  const widget = useRef<HTMLDivElement>(null);
+  const completed = useRef(false);
+  const [ready, setReady] = useState(false);
+
+  useEffect(() => {
+    const onMessage = (event: MessageEvent) => {
+      const iframe = widget.current?.querySelector("iframe");
+      if (completed.current || !isCompletedWeddingBooking(event.origin, !!iframe && event.source === iframe.contentWindow, event.data)) return;
+      completed.current = true;
+      void completeWeddingBooking(event.data);
+    };
+    window.addEventListener("message", onMessage);
+    return () => window.removeEventListener("message", onMessage);
+  }, []);
   const [src, setSrc] = useState<string | null>(null);
 
   useEffect(() => {
@@ -26,9 +35,8 @@ export default function CalendlyEmbed({ height = 720 }: { height?: number }) {
     const build = () => {
       const q = new URLSearchParams(window.location.search);
       const p = new URLSearchParams({
-        hide_gdpr_banner: "1",
         primary_color: "b8956a",
-        hide_landing_page_details: "1",
+        hide_event_type_details: "1",
         background_color: "0e0c0a",
         text_color: "e8e0d0",
         embed_domain: window.location.hostname,
@@ -59,6 +67,16 @@ export default function CalendlyEmbed({ height = 720 }: { height?: number }) {
     return () => io.disconnect();
   }, []);
 
+  useEffect(() => {
+    if (!ready || !src || !widget.current) return;
+    const host = widget.current;
+    const calendly = (window as unknown as { Calendly?: { initInlineWidget: (options: { url: string; parentElement: HTMLElement; resize: boolean }) => void } }).Calendly;
+    calendly?.initInlineWidget({ url: src, parentElement: host, resize: true });
+    const iframe = host.querySelector("iframe");
+    if (iframe) iframe.title = "Book a 30-minute call with Arman Arai";
+    return () => host.replaceChildren();
+  }, [ready, src]);
+
   return (
     <div
       ref={ref}
@@ -71,14 +89,10 @@ export default function CalendlyEmbed({ height = 720 }: { height?: number }) {
       }}
     >
       {src ? (
-        <iframe
-          src={src}
-          title="Book a 30-minute call with Arman Arai"
-          width="100%"
-          height={height}
-          loading="lazy"
-          style={{ display: "block", border: "none", minWidth: 300 }}
-        />
+        <>
+          <div ref={widget} style={{ minWidth: 280, height }} />
+          <Script src="https://assets.calendly.com/assets/external/widget.js" strategy="afterInteractive" onReady={() => setReady(true)} />
+        </>
       ) : (
         <div
           style={{

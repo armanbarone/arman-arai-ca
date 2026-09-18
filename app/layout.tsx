@@ -8,6 +8,7 @@ import {
 } from "next/font/google";
 import "./globals.css";
 import { SITE } from "@/lib/site";
+import PublicTracking from "@/components/PublicTracking";
 
 /* The whole type system from armanarai.com, weights and settings identical, so
    a component moved between the two sites renders the same on both. */
@@ -88,6 +89,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {/* The public site's chrome (nav, footer, inquiry modal, analytics) lives
             in app/(site)/layout.tsx so the private client portal carries none of it. */}
         {children}
+        <PublicTracking />
       </body>
     </html>
   );

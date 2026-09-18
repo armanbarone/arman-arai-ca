@@ -40,7 +40,7 @@ import { CORE, MARKETS, SITE, TIERS } from "@/lib/site";
 export const metadata: Metadata = {
   title: "Canadian Wedding Photographer — Toronto, Montréal, Vancouver",
   description:
-    "Documentary and editorial wedding photography, based in Montréal and working across Canada. Three collections from C$3,000 at one national price, travel qhole number with the travel already inside it.",
+    "Documentary and editorial wedding photography across Canada, based in Montréal. Three collections from C$3,000, the same price wherever you marry.",
   alternates: { canonical: "/" },
 };
 
@@ -337,10 +337,11 @@ export default function Home() {
               <p className="dr-eyebrow dr-eyebrow--accent">In motion</p>
               <h3 className="dr-h3">Film</h3>
               <p className="dr-p">
-                A colour-graded feature film in every collection: one minute on Core, two
-                minutes above it. Real film too, a roll on Signature and two on Story
-                Weekend, processed and scanned. And prints handed to your guests on the
-                night, so people leave holding something from the day.
+                Vertical social reels in every collection, in the first week. A
+                colour-graded feature film above Core: one minute on Signature, three on
+                Heirloom. Real film too, two rolls on Signature and four on Heirloom,
+                processed and scanned. And prints handed to your guests on the night, so
+                people leave holding something from the day.
               </p>
             </div>
           </div>

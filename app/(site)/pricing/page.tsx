@@ -18,7 +18,7 @@ import {
 export const metadata: Metadata = {
   title: "Wedding Photography Pricing — One Price, Anywhere in Canada",
   description:
-    "Three collections at one price wherever the wedding happens: Core C$3,000 for 6 hours, Signature C$4,500 for 8, Heirloom C$5,000 for 10. Social reels in every collection. Travel quoted openly on top.",
+    "Three collections at one national price: Core C$3,000 for 6 hours, Signature C$4,500 for 8, Heirloom C$5,000 for 10. Travel quoted openly on top.",
   alternates: { canonical: "/pricing" },
   openGraph: {
     title: "Wedding Photography Pricing — Arman Arai",

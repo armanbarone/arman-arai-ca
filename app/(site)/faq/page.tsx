@@ -26,11 +26,11 @@ const GROUPS = [
     faqs: [
       {
         q: "What does a wedding actually cost?",
-        a: `Three collections, at the same figure anywhere in Canada: ${TIERS.map((t) => `${t.name} ${money(t.price)}` + ` for ${t.hours} hours`).join(", ")}. The city does not change the number. Sales tax goes on top, and so does travel if the wedding is more than 100 km from Montréal.`,
+        a: `Three collections, at the same figure anywhere in Canada: ${TIERS.map((t) => `${t.name} ${money(t.price)}` + ` for ${t.hours} hours`).join(", ")}. The city does not change the number. Sales tax goes on top, and travel stays separate only when the wedding requires its own trip.`,
       },
       {
         q: "Is anything added afterwards?",
-        a: "Only what you choose, plus travel if your wedding needs it, and travel is agreed in writing before you sign rather than billed afterwards. Add-ons are listed with their prices. If a venue needs a permit or a helicopter, that is its own line in the quote, in advance.",
+        a: "Only what you choose, plus travel if your wedding needs it. Add-ons are listed with their prices. Travel uses the lowest practical early-booked route, and a permit, helicopter or other venue-specific requirement remains its own line.",
       },
       {
         q: "What is the retainer?",
@@ -67,12 +67,12 @@ const GROUPS = [
     title: "Travel",
     faqs: [
       {
-        q: "Where are you based?",
-        a: "Montréal. Everything within 100 km of it carries no travel charge at all. Beyond that the collection still costs the same, and the trip is quoted separately.",
+        q: "How do you keep travel affordable?",
+        a: "I book practical routes early, including low-cost carriers when they make sense, and group regional dates whenever possible. If I am already scheduled in your region, the travel fee is reduced or waived.",
       },
       {
         q: "How far will you actually travel?",
-        a: "Anywhere in Canada, at the same collection price. Whistler, Vancouver Island, Québec City, the Eastern Townships, Niagara, Muskoka and the Rockies all buy Signature for C$4,500, the same as a Saturday on Saint-Paul. What differs is the trip: roughly C$200 to C$600 by car, C$600 to C$900 for Toronto, C$1,200 to C$2,000 anywhere that needs a flight. Those are ranges from real bookings, and yours gets costed against your actual venue rather than read off a grid.",
+        a: "Anywhere in Canada, at the same collection price. Whistler, Vancouver Island, Québec City, the Eastern Townships, Niagara, Muskoka and the Rockies all buy Signature for C$4,500. Travel uses the leanest practical route for the venue and date, and drops when another regional booking already covers part of the trip.",
       },
       {
         q: "Do you speak French?",

@@ -20,7 +20,7 @@ export const metadata: Metadata = {
     absolute: "2027 & 2028 Canadian Wedding Photography | From C$3,000 | Arman Arai",
   },
   description:
-    "Documentary and editorial wedding photography across Canada, from Montréal. Three collections from C$3,000, the same price in every city, with travel quoted openly on top.",
+    "Documentary and editorial wedding photography across Canada. Three collections from C$3,000, the same price in every city, with travel kept separate and lean.",
   robots: { index: false, follow: true },
   alternates: { canonical: `${SITE.url}/2728-weddings` },
   openGraph: {

@@ -404,7 +404,7 @@ export default function CityHub({ market: m }: { market: Market }) {
         <p className="hub-section-intro">
           The same as everywhere else. A collection carries one national price, because the
           photography is the same work wherever it happens. Sales tax goes on top, so do any
-          add-ons you choose, and so does the trip if {m.city} is more than 100 km from Montréal.
+          add-ons you choose, and travel stays separate only when the wedding requires its own trip.
         </p>
         <div className="hub-price-grid">
           {TIERS.map((t, i) => (

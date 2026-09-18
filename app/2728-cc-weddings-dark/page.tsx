@@ -38,7 +38,7 @@ const collectionDescriptions: Record<string, string> = {
 
 const questions = [
   ["We’re awkward in front of a camera. Can you help?", "Absolutely. I’ll guide you through the portraits, including where to stand and what to do with your hands. For the rest of the day, you can focus on each other and your guests while I photograph what happens."],
-  ["Do you photograph weddings anywhere in Canada?", "Yes. Collection prices are the same across Canada. Travel beyond 100 km of Montréal is quoted separately for your venue and date, and agreed before you book."],
+  ["Do you photograph weddings anywhere in Canada?", "Yes. Collection prices are the same across Canada. Travel stays separate, uses the leanest practical route, and is reduced or waived when I am already scheduled in your region."],
   ["Do we need to choose a collection before the call?", "No. Tell me what you’re planning and which parts of the day matter most to you. We’ll work out how much coverage fits, along with any travel or extras, before you decide."],
   ["Is video included?", "Every collection includes vertical social reels. Signature also includes a 1-minute feature film, and Heirloom includes a 3-minute feature film. If you want a dedicated videographer, we can discuss that as an add-on."],
   ["What happens after our call?", "If you’d like to go ahead and your date is available, we’ll confirm your collection, the full quote and the contract. A signed contract and 30% retainer secure your date. The balance is due 30 days before the wedding. Booking a call doesn’t commit you to anything."],

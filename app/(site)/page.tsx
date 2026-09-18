@@ -40,7 +40,7 @@ import { CORE, MARKETS, SITE, TIERS } from "@/lib/site";
 export const metadata: Metadata = {
   title: "Canadian Wedding Photographer — Toronto, Montréal, Vancouver",
   description:
-    "Documentary and editorial wedding photography across Canada, based in Montréal. Three collections from C$3,000, the same price wherever you marry.",
+    "Documentary and editorial wedding photography across Canada. Three collections from C$3,000, the same price wherever you marry.",
   alternates: { canonical: "/" },
 };
 
@@ -105,7 +105,7 @@ const carried = [
   { t: "A written family-photo plan", d: "Twelve groups and two callers, agreed before the day. This is the single largest block of time a big wedding gets back." },
   { t: "A preview in 48 hours", d: "Thirty frames while the day is still in your head. Next day on Signature, 24 hours on Heirloom." },
   { t: "The full gallery, dated", d: "Two weeks on Core, three on Signature and Heirloom. The date is in the contract, not in an email." },
-  { t: "One price, wherever it happens", d: "A collection costs the same in every city. Travel past 100 km is quoted separately and agreed in writing before you sign." },
+  { t: "One price, wherever it happens", d: "A collection costs the same in every city. Travel stays separate, uses the lowest practical route and drops when regional dates can be grouped." },
 ];
 
 const INCANTATION =
@@ -480,9 +480,8 @@ export default function Home() {
                 <p className="dr-p">
                   Core is {money(CORE.price)} in Montréal, in Toronto, in Vancouver and in a
                   field in Saskatchewan. The city does not move the number, because the work
-                  does not change. Travel beyond 100 km from Montréal is quoted separately
-                  and written into the contract before you sign, so nothing arrives at the end
-                  of the invoice.
+                  does not change. Travel stays separate, is kept lean through early booking and
+                  is reduced or waived when another regional date already covers the trip.
                 </p>
                 <div style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}>
                   {TIERS.map((t) => (

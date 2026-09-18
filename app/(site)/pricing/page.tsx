@@ -18,11 +18,11 @@ import {
 export const metadata: Metadata = {
   title: "Wedding Photography Pricing — One Price, Anywhere in Canada",
   description:
-    "Three collections at one national price: Core C$3,000 for 6 hours, Signature C$4,500 for 8, Heirloom C$6,000 for 10. Travel quoted openly on top.",
+    "Three collections at one national price: Core C$3,000 for 6 hours, Signature C$4,500 for 8, Heirloom C$6,000 for 10. Travel stays separate and lean.",
   alternates: { canonical: "/pricing" },
   openGraph: {
     title: "Wedding Photography Pricing — Arman Arai",
-    description: "Three collections, one price anywhere in Canada, travel quoted openly on top.",
+    description: "Three collections, one price anywhere in Canada, with travel kept separate and lean.",
     url: `${SITE.url}/pricing`,
     images: [{ url: CITY_PHOTOS.montreal.hero.src, alt: CITY_PHOTOS.montreal.hero.alt }],
   },
@@ -46,15 +46,15 @@ const PROCESS = [
 const FAQS = [
   {
     q: "Does the price change depending on the city?",
-    a: "No. Core is C$3,000 in Montréal, in Toronto, in Vancouver and in Halifax. The photography is the same work wherever it happens, so it carries the same number. What changes between those places is the travel, and travel is quoted separately and agreed in writing before you sign.",
+    a: "No. Core is C$3,000 in Montréal, Toronto, Vancouver and Halifax. The photography is the same work wherever it happens, so it carries the same number. Travel stays separate and is reduced or waived when I am already scheduled in your region.",
   },
   {
     q: "So what does travel actually cost?",
-    a: "Everything within 100 km of Montréal is free. Beyond that it is billed at what it costs me: the flight or the drive, ground transport, and the nights I need to be there the day before. Recent trips have run roughly C$200 to C$600 for Québec and eastern Ontario, C$600 to C$900 for Toronto, and C$1,200 to C$2,000 anywhere that needs a flight. Those are ranges from real bookings, not a tariff. Send the venue and the date and you get the actual figure in the first reply.",
+    a: "Often less than people expect. I book practical routes early, including low-cost carriers when they make sense, and charge only for the transportation, ground travel and nights the schedule actually needs. If I am already scheduled in your region, the travel fee is reduced or waived.",
   },
   {
     q: "Why quote travel instead of publishing a grid?",
-    a: "Because a July flight to Tofino and an October drive to Québec City are not the same number, and a grid that averages them is wrong in both directions. Publishing one would mean overcharging the couple two hours away to subsidise the couple I have to fly to. The number you get is the real cost of getting to your wedding, and once it is in the contract nothing is added to it.",
+    a: "Because even low-cost fares move with the date and route, and grouped regional dates can make travel much cheaper. A blanket grid would overcharge some couples and undercharge others. I use the leanest practical route for the actual venue and date.",
   },
   {
     q: "What are the social reels, and are they the feature film?",
@@ -147,8 +147,8 @@ export default function Pricing() {
           </h1>
           <p className="text-blush text-[1rem] leading-relaxed max-w-2xl mx-auto mt-6 font-light">
             A collection costs the same in Montréal, in Toronto, in Vancouver and in a field in
-            Saskatchewan. The city does not move the number. Travel beyond 100 km is quoted on
-            top, in writing, before you sign.
+            Saskatchewan. The city does not move the number. Travel stays separate and is kept
+            lean through early booking and grouped regional dates.
           </p>
         </div>
       </section>
@@ -163,8 +163,8 @@ export default function Pricing() {
             </h2>
             <p className="text-blush text-[0.95rem] leading-relaxed font-light max-w-2xl mx-auto mt-5">
               Every figure below is the whole price of that collection, in every city I work in.
-              Sales tax and anything you choose from the add-ons go on top, and so does travel if
-              your wedding is more than 100 km from Montréal.
+              Sales tax and anything you choose from the add-ons go on top. Travel stays separate
+              only when the wedding requires its own trip.
             </p>
             <div className="divider mt-6">
               <div className="divider-line" />
@@ -224,7 +224,7 @@ export default function Pricing() {
           <div className="max-w-2xl mb-12">
             <p className="text-[0.6rem] tracking-[0.32em] uppercase text-rose mb-4">Travel</p>
             <h2 className="font-serif font-light text-cream mb-5" style={{ fontSize: "clamp(1.9rem,3vw,2.9rem)" }}>
-              Quoted, and quoted <em className="italic text-rose">before you sign</em>
+              {TRAVEL.headline}
             </h2>
             <p className="text-blush text-[0.95rem] leading-relaxed font-light">{TRAVEL.body}</p>
             <p className="text-cream text-[0.95rem] leading-relaxed font-light mt-5 border-l border-rose pl-5">
@@ -232,7 +232,7 @@ export default function Pricing() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-px bg-dust/25">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-dust/25">
             {TRAVEL.scale.map((row) => (
               <div key={row.where} className="bg-parchment px-7 py-9 flex flex-col">
                 <p className="font-serif text-rose text-[1.25rem] mb-3">{row.cost}</p>
@@ -316,7 +316,7 @@ export default function Pricing() {
           <div className="max-w-2xl mb-11">
             <p className="text-[0.6rem] tracking-[0.32em] uppercase text-rose mb-4">Where I work</p>
             <h2 className="font-serif font-light text-cream mb-5" style={{ fontSize: "clamp(1.9rem,3vw,2.9rem)" }}>
-              Three home markets, <em className="italic text-rose">one country</em>
+              Three featured markets, <em className="italic text-rose">one country</em>
             </h2>
             <p className="text-blush text-[0.95rem] leading-relaxed font-light">
               These three have a page of their own because I shoot in them most. They do not cost

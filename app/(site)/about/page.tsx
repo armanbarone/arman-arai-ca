@@ -9,7 +9,7 @@ import { MARKETS, SITE } from "@/lib/site";
 export const metadata: Metadata = {
   title: "About — Arman Arai, Wedding Photographer",
   description:
-    "Canadian wedding photographer working coast to coast, with home markets in the GTA, Montréal and Vancouver. Photography as a spiritual record of a day rather than a product delivered after it.",
+    "Canadian wedding photographer working coast to coast, with featured markets in the GTA, Montréal and Vancouver. Photography as a spiritual record of a day rather than a product delivered after it.",
   alternates: { canonical: "/about" },
   openGraph: {
     title: "About Arman Arai",
@@ -153,7 +153,7 @@ export default function About() {
 
               <div className="flex gap-8 md:gap-12 mb-10 border-t border-dust pt-8">
                 {[
-                  { n: "3", label: "Home markets" },
+                  { n: "3", label: "Featured markets" },
                   { n: "10", label: "Provinces served" },
                   { n: "1", label: "Photographer" },
                   { n: "48h", label: "To your preview" },
@@ -206,8 +206,8 @@ export default function About() {
             ))}
           </div>
           <p className="text-slate text-[0.8rem] leading-relaxed mt-7 max-w-3xl">
-            Everywhere else in Canada is a travel quote, given before you sign rather than added
-            after. I work in English.
+            Everywhere else in Canada uses the same collection price, with travel kept separate,
+            booked early and reduced when regional dates can be grouped. I work in English.
           </p>
         </div>
       </section>

@@ -50,7 +50,7 @@ export default function TermsOfService() {
             <li>Timeline planning and a written family-photograph plan</li>
             <li>Optional add-ons at published prices: additional hours and events, a second photographer, sessions, albums, film, drone and dedicated video coverage</li>
           </ul>
-          <p style={{ marginTop: 12 }}>A collection carries the same published price anywhere in Canada. Travel is charged separately where the wedding is more than 100 km from Montréal, as a single figure agreed in writing in your contract before signing, and nothing is added to it afterwards. Every price on this website is in Canadian dollars and excludes applicable sales tax.</p>
+          <p style={{ marginTop: 12 }}>A collection carries the same published price anywhere in Canada. Travel is charged separately only when the wedding requires its own trip, with reduced or waived travel when regional dates can be grouped. Every price on this website is in Canadian dollars and excludes applicable sales tax.</p>
           <p style={{ marginTop: 12 }}>The specific scope of services, deliverables, and coverage hours are defined in your individual contract. I accept a limited number of commissions per year to maintain the quality of my work.</p>
         </Section>
 

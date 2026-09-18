@@ -261,8 +261,8 @@ export default function Experience() {
             Three collections, <em className="italic text-rose">one price anywhere</em>
           </h2>
           <p className="text-blush text-[0.95rem] leading-relaxed max-w-2xl mx-auto mb-10 font-light">
-            The same figure wherever the wedding happens. Travel beyond 100 km of Montréal is
-            quoted on top, in writing, before you sign.
+            The same figure wherever the wedding happens. Travel stays separate, uses
+            early-booked low-cost routes and drops when regional dates can be grouped.
           </p>
           <div className="flex flex-wrap items-center justify-center gap-4 mb-10">
             {TIERS.map((t) => (

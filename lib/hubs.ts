@@ -34,25 +34,25 @@ export const HUBS: Record<string, HubContent> = {
     kicker: "Québec · Canada · Wedding Photographer",
     coord: "45.50°N · 73.57°W",
     tagline:
-      "Home. Everything within 100 km carries no travel line at all, and a photographer who has already seen your venue's light.",
+      "A city where knowing the light, the rooms and the weather plan matters more than knowing the postcard view.",
     lead: [
       "Montréal is the easiest city in the country to photograph a wedding in and the hardest to photograph well. Easy because it is compact: a Griffintown getting-ready, an Old Montréal ceremony and a Mile End reception are fifteen minutes apart, not an hour on a highway. Hard because the light changes character four times a year and the buildings that make the city beautiful are the same ones that put your ceremony in deep shade at four in the afternoon.",
-      "I live here, which mostly means I have already made the mistakes. I know which side of Place d'Armes is lit at five in July and which at five in October, that the Plateau's exterior staircases photograph best in falling snow, and that a January wedding has better light all day than a July one because the sun never gets high enough to go harsh.",
+      "I have already made the mistakes here. I know which side of Place d'Armes is lit at five in July and which at five in October, that the Plateau's exterior staircases photograph best in falling snow, and that a January wedding has better light all day than a July one because the sun never gets high enough to go harsh.",
     ],
     stats: [
       { k: "Best months", v: "May to Oct, and January" },
-      { k: "Travel", v: "Included to Québec City" },
+      { k: "Travel", v: "Reduced on grouped dates" },
       { k: "Working language", v: "English" },
       { k: "Core collection", v: "C$3,000" },
     ],
     different: [
       {
-        title: "I live here, which is the whole difference",
-        body: "I have already made the mistakes at your venue. Which side of the courtyard is lit at five in July and which at five in October, which rooms lose the light an hour before anyone expects, and which street is worth the ten-minute walk in falling snow. A photographer flying in cannot have that, and it is why this is the only market with no travel charge.",
+        title: "I know the city beyond the postcard view",
+        body: "I have already made the mistakes at these venues: which side of the courtyard is lit at five in July and which at five in October, which rooms lose the light early, and which street is worth the ten-minute walk in falling snow.",
       },
       {
-        title: "No travel line, ever, inside 75 km",
-        body: "The island, Laval, the South Shore, out past Saint-Jérôme and Saint-Hyacinthe. Your quote is the collection price and nothing else. Photographers who add mileage to a Longueuil venue are telling you the truth late rather than early.",
+        title: "Travel kept practical",
+        body: "I book the leanest route the date requires and group regional work whenever possible. If another wedding already covers the trip, the travel fee is reduced or waived.",
       },
       {
         title: "Winter is not a compromise here",
@@ -87,7 +87,7 @@ export const HUBS: Record<string, HubContent> = {
       { time: "Hour 7–8", title: "Dinner and the first dance", body: "Speeches, the room, the people who came. Coverage that ends before the dancing is the most expensive economy there is." },
     ],
     colophon:
-      "Based in Montréal. Available anywhere in Canada, with the price for each place published rather than quoted after you commit.",
+      "Available anywhere in Canada, with one published collection price nationwide.",
   },
 
   toronto: {
@@ -97,7 +97,7 @@ export const HUBS: Record<string, HubContent> = {
       "The densest wedding market in the country, and the one most often quoted badly. Multi-day celebrations are scoped event by event, not sold as one flat package.",
     lead: [
       "Toronto weddings are rarely a single afternoon. A Sikh wedding runs from an early Anand Karaj to a reception that ends near midnight. A Pakistani celebration spreads mehndi, nikah and walima across three days and often three venues. Tamil, Persian, Ethiopian, Jewish and Chinese weddings each carry their own order of events and their own single moment that matters more than all the others.",
-      "Quoting that as one flat number is how couples get hurt: either they pay for hours they did not need on the quietest day, or coverage starts too late on the day that mattered, or a photographer arrives at a three-day wedding with the editing capacity for one and the gallery takes five months. I scope by event, and I come in the day before so I have seen your venue in daylight before the wedding.",
+      "Quoting that as one flat number is how couples get hurt: either they pay for hours they did not need on the quietest day, or coverage starts too late on the day that mattered, or a photographer arrives at a three-day wedding with the editing capacity for one and the gallery takes five months. I scope by event and arrive early enough to understand the venue before the wedding.",
     ],
     stats: [
       { k: "Best months", v: "May to Oct" },
@@ -115,8 +115,8 @@ export const HUBS: Record<string, HubContent> = {
         body: "Days, venues, distance between them, whether two events share a day, and how many people are in each room. That decides crew, travel and editing volume, which is where the cost actually lives. One quote, itemised, and an extra two-hour event is C$900.",
       },
       {
-        title: "I arrive the day before",
-        body: "Coming in from Montréal means a hotel night is already in the price, which means I am rested and I have walked your venue in daylight. Photographers who live twenty minutes away frequently do neither.",
+        title: "The schedule includes arrival time",
+        body: "When the itinerary requires it, I arrive the day before so I am rested and have walked the venue in daylight. Travel is booked early and kept to the route the job actually needs.",
       },
     ],
     venuesIntro:
@@ -147,7 +147,7 @@ export const HUBS: Record<string, HubContent> = {
       { time: "Hour 7–8", title: "Reception", body: "Speeches, the dances that matter, the room. Off-camera flash once it goes dark, because a dark room is not an excuse." },
     ],
     colophon:
-      "Toronto and the GTA, from Burlington to Whitby, plus Niagara, Muskoka and Prince Edward County. Travel is already in the number on this page.",
+      "Toronto and the GTA, from Burlington to Whitby, plus Niagara, Muskoka and Prince Edward County. Travel stays separate and drops when dates can be grouped.",
   },
 
   vancouver: {
@@ -176,7 +176,7 @@ export const HUBS: Record<string, HubContent> = {
       },
       {
         title: "Whistler and the Island cost the same as everywhere",
-        body: "The collection price does not move with the map, and the trip out is the same flight either way, quoted openly on top. Tofino is the one I will flag honestly, because it wants an extra night and therefore the ten-hour collection.",
+        body: "The collection price does not move with the map, and travel uses the leanest practical route for the date. Tofino is the one I will flag honestly, because it usually wants an extra night and therefore the ten-hour collection.",
       },
     ],
     venuesIntro:
@@ -228,7 +228,7 @@ export const HUBS: Record<string, HubContent> = {
     different: [
       {
         title: "The same number as a Saturday in the city",
-        body: "Whistler, Squamish and Pemberton cost what everywhere costs. Core is C$3,000 here exactly as it is in Kitsilano, and the drive up the corridor sits in the travel figure you agreed before signing rather than in a surcharge you find afterwards.",
+        body: "Whistler, Squamish and Pemberton cost what everywhere costs. Core is C$3,000 here exactly as it is in Kitsilano, and regional dates are grouped whenever possible to keep travel low.",
       },
       {
         title: "A valley plan, named before the date",
@@ -267,7 +267,7 @@ export const HUBS: Record<string, HubContent> = {
       { time: "Hour 7–8", title: "Dinner and the room", body: "Speeches and the dances that matter. Nobody is driving home, so the night runs later here than almost anywhere else I work." },
     ],
     colophon:
-      "Whistler, Squamish and Pemberton, at the same collection price as anywhere. The corridor drive sits in the travel figure, quoted before you sign.",
+      "Whistler, Squamish and Pemberton, at the same collection price as anywhere. The corridor drive stays separate and grouped regional dates can lower the travel fee.",
   },
 
   tofino: {

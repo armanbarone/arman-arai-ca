@@ -36,7 +36,7 @@ const menuGroups: MenuGroup[] = [
     slug: "quebec",
     href: hub("montreal"),
     places: [
-      { name: "Montréal", href: hub("montreal"), note: "From C$3,000, with no travel line inside 100 km" },
+      { name: "Montréal", href: hub("montreal"), note: "From C$3,000, with travel kept separate" },
     ],
   },
   {

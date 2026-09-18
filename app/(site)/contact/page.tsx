@@ -20,7 +20,7 @@ const FACTS = [
   { label: "Email", value: SITE.email, href: `mailto:${SITE.email}` },
   { label: "Instagram", value: SITE.instagramHandle, href: SITE.instagram },
   { label: "Pinterest", value: "iarmanarai", href: SITE.pinterest },
-  { label: "Home markets", value: "Toronto · Montréal · Vancouver" },
+  { label: "Featured markets", value: "Toronto · Montréal · Vancouver" },
   { label: "Also", value: "Anywhere in Canada, coast to coast" },
   { label: "Working language", value: "English" },
 ];
@@ -64,7 +64,7 @@ export default function Contact() {
             </p>
             <p className="text-slate text-sm leading-relaxed mb-10">
               Core is C${STARTING_FROM.toLocaleString("en-CA")}, and it is the same figure wherever you
-              are getting married. Travel past 100 km is quoted openly on top.{" "}
+              are getting married. Travel stays separate and uses the lowest practical route.{" "}
               <Link href="/pricing" className="text-rose border-b border-dust hover:border-rose transition-colors">
                 The full ladder is published
               </Link>{" "}

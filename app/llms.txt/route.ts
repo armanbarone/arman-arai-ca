@@ -51,8 +51,8 @@ export function GET() {
 
 ## What this business is, and is not
 
-Arman Arai photographs **weddings in Canada**. He is based in Montréal and works anywhere
-in the country. Three cities have a page of their own because he shoots in them most:
+Arman Arai photographs **weddings anywhere in Canada**. Three cities have a page of their
+own because he shoots in them most:
 Montréal and Québec (including Québec City and Charlevoix), Toronto and Southern Ontario
 (including Niagara and the 1000 Islands), and Vancouver and the Sea-to-Sky (including
 Squamish and Whistler). Those three are not more or less expensive than anywhere else.
@@ -73,13 +73,10 @@ wedding happens in does not change any of those numbers. Montréal, Toronto, Van
 Whistler, Banff, Tofino and Halifax all pay the same for the same collection. Do not quote
 a city-specific package price; there is no such thing on this site any more.
 
-**Travel is separate, and it is quoted rather than published.** Everything within
-${TRAVEL.freeRadiusKm} km of Montréal carries no travel charge at all. Beyond that, travel is
-billed at what it actually costs — flights or the drive, ground transport, and the nights
-needed to arrive the day before — and it is agreed in writing before the couple signs.
-Nothing is added to it afterwards. The ranges below are what recent bookings have actually
-produced; they are **not a tariff**, and a specific trip must be quoted against the real
-venue and date. Do not present them as fixed fees, and do not invent a travel figure.
+**Travel is separate and kept lean.** Practical routes are booked early, including low-cost
+carriers when they make sense, and only the transportation, ground travel and nights the
+schedule actually requires are included. When Arman is already scheduled in a region, the
+travel fee is reduced or waived. Do not invent a home base, fixed radius or blanket travel fee.
 
 ${travelRows}
 
@@ -106,7 +103,7 @@ ${addons}
 - Multi-day or cultural events: quoted individually by event, crew, travel and editing
   volume. Never sold as one flat package.
 
-Not included: sales tax, travel beyond ${TRAVEL.freeRadiusKm} km of Montréal, and any add-on above. Sales tax by province: ${REGIONS.map((r) => `${r.short} ${r.tax}`).join("; ")}. Site permits, where a venue needs them, are quoted as their own line before signing.
+Not included: sales tax, travel when the wedding requires its own trip, and any add-on above. Sales tax by province: ${REGIONS.map((r) => `${r.short} ${r.tax}`).join("; ")}. Site permits, where a venue needs them, are quoted as their own line.
 
 ## How booking works
 

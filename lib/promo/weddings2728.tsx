@@ -15,7 +15,7 @@ import { HOME_GRID, LANDING_PAGE, at } from "@/lib/images";
    never quote a figure /pricing has moved off.
 
    NOTHING ON THIS PAGE NAMES A HOME CITY. It runs as a national campaign, so a
-   line like "within 100 km of Montréal" makes it wrong for most of the country
+   location-specific inclusions make the offer wrong for most of the country
    the moment it is served there. Travel is extra, quoted per wedding, and that
    is the whole story a landing page needs to tell.
    ═══════════════════════════════════════════════════════════════════════════ */
@@ -109,7 +109,7 @@ export function weddings2728Config(): PromoConfig {
     ],
     excluded: ["Travel", "Sales tax", "Any add-on you choose"],
     excludedNote:
-      "Travel is quoted as one agreed figure before you sign, and nothing is added to it afterwards.",
+      "Travel stays separate, uses the leanest practical route and drops when regional dates can be grouped.",
 
     /* ── The ladder ───────────────────────────────────────────────────────── */
     tiers: {
@@ -179,7 +179,7 @@ export function weddings2728Config(): PromoConfig {
     /* ── Travel ───────────────────────────────────────────────────────────── */
     alternative: {
       kicker: "Before you ask",
-      title: "Travel is extra, and you see it before you sign",
+      title: "Travel is separate and kept lean",
       paras: [
         "I work anywhere in Canada, and the collection costs the same wherever your wedding is. What changes is getting me there.",
         "Travel is quoted against your actual venue and date, agreed in writing, and nothing is added to it afterwards. Tell me where you are marrying and you will have the figure in the first reply.",

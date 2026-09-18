@@ -8,11 +8,10 @@
  * Vancouver or anywhere else in the country. The city does not move the
  * number; the photography is identical, so the price is identical.
  *
- * TRAVEL IS SEPARATE AND IT IS QUOTED, NOT GUESSED. Everything within 100 km
- * of Montréal is inside the price. Beyond that, travel is billed at what it
- * actually costs and written into the contract before signing. There is no
- * published travel grid, because a flight to Tofino in July and a drive to
- * Québec City in October are not the same number. Never invent one.
+ * TRAVEL IS SEPARATE AND KEPT LEAN. Practical routes are booked early, low-cost
+ * carriers are used when they make sense, and grouped regional dates reduce or
+ * remove the travel fee. There is no fixed origin or home-base language on the
+ * public site.
  *
  * Source: the owner, 2026-09-17. This supersedes the earlier per-region
  * ladder, in which each city carried its own all-in figure.
@@ -26,14 +25,13 @@ export const SITE = {
   instagram: "https://instagram.com/iarmanarai",
   instagramHandle: "@iarmanarai",
   pinterest: "https://pinterest.com/iarmanarai",
-  base: "Montréal",
   blurb:
-    "Documentary and editorial wedding photography, based in Montréal and working across Canada. One price for a collection wherever it happens, with travel quoted openly on top rather than hidden inside it.",
+    "Documentary and editorial wedding photography across Canada. One price for a collection wherever it happens, with travel kept separate and reduced when regional dates can be grouped.",
 } as const;
 
 /* ── The ladder ─────────────────────────────────────────────────────────────
  * Three collections. `price` is the whole price of the collection anywhere in
- * Canada. Travel beyond 100 km of Montréal is quoted separately; see TRAVEL.
+ * Canada. Travel is handled separately and kept lean; see TRAVEL.
  */
 
 export type Tier = {
@@ -203,7 +201,7 @@ export const CORE = TIERS[0];
 /* ── Regions ────────────────────────────────────────────────────────────────
  * Regions no longer carry prices. A collection costs the same figure in every
  * one of them; what changes between them is the travel, and travel is quoted
- * per trip rather than published. `primary` marks the three home markets that
+ * per trip rather than published. `primary` marks the three featured markets that
  * get a page of their own.
  */
 
@@ -211,7 +209,7 @@ export type Region = {
   slug: string;
   name: string;
   short: string;
-  /** True for one of the three home markets, which get a page of their own. */
+  /** True for one of the three featured markets, which get a page of their own. */
   primary?: boolean;
   /** Everywhere this region covers. */
   covers: string[];
@@ -244,8 +242,8 @@ export const REGIONS: Region[] = [
     marketRange: "CAD 3,000 to 8,000+ for a full day across the market",
     season: "May to October, peaking June to September, with October foliage",
     bestTier: "Core",
-    promise: "Calm, editorial-documentary coverage from a photographer who lives here.",
-    travel: "Everything within 100 km of Montréal is inside the price. Québec City and Charlevoix are a drive and a night, quoted before you sign.",
+    promise: "Calm, editorial-documentary coverage with detailed knowledge of Montréal and Québec.",
+    travel: "Travel is kept to the route the date actually requires and reduced or waived when regional dates can be grouped.",
     risk: "",
     venues: [
       "Château Ramezay", "Windsor Ballrooms", "Le Gesù", "Fairmont Queen Elizabeth",
@@ -267,7 +265,7 @@ export const REGIONS: Region[] = [
     season: "May to October, peaking June to September, with October foliage",
     bestTier: "Core or Signature",
     promise: "Cultural fluency, reliable team logistics, and multi-day scope defined in writing.",
-    travel: "I come in from Montréal the day before. The train or the drive and the hotel night are quoted on top of the collection, at cost.",
+    travel: "Early-booked low-cost air or rail, ground transport and only the nights the schedule requires.",
     risk: "Unbounded multi-day scope. This is why multi-day events are quoted by event.",
     venues: [
       "Casa Loma", "The Fermenting Cellar and Archeo", "Graydon Hall Manor",
@@ -292,7 +290,7 @@ export const REGIONS: Region[] = [
     season: "April to October, peaking June to September, plus a Whistler winter season",
     bestTier: "Signature",
     promise: "Coastal and mountain expertise, with weather and permits handled before the date.",
-    travel: "A flight from Montréal, ground transport and two or three nights, quoted as one figure on top of the collection before you sign.",
+    travel: "Early-booked low-cost air, ground transport and only the nights the schedule requires.",
     risk: "Rain between October and April, and permits on Crown land or in a provincial park.",
     venues: [
       "Stanley Park Pavilion", "Hycroft, University Women's Club", "Fairmont Pacific Rim",
@@ -329,7 +327,7 @@ export const REGIONS: Region[] = [
     season: "June to September, with a storm season worth having from November",
     bestTier: "Heirloom",
     promise: "Coastal weddings, with the ferry and the drive west planned rather than hoped about.",
-    travel: "A flight, a ferry and, for Tofino, three more hours of highway. Quoted against your venue before you sign.",
+    travel: "Early-booked low-cost air, the ferry and only the road time the venue requires. Grouped regional dates can reduce or remove the travel fee.",
     risk: "Tofino is not a day trip. It wants the ten-hour collection and an extra night on the ground.",
     venues: ["Wickaninnish Inn", "Long Beach Lodge", "Hatley Castle", "Cowichan Valley wineries"],
     portraits: ["Chesterman Beach", "Long Beach", "the rainforest boardwalks", "Victoria's inner harbour"],
@@ -344,7 +342,7 @@ export const REGIONS: Region[] = [
     season: "June to September for the alpine, December to March for snow",
     bestTier: "Signature or Heirloom",
     promise: "Mountain wedding coverage with the Parks Canada paperwork done before the date.",
-    travel: "A flight, a rental car and mountain nights. Quoted against your venue before you sign.",
+    travel: "Early-booked low-cost air, a practical rental car and only the mountain nights the schedule requires.",
     risk: "Parks Canada permits, shuttle-only access to Moraine Lake, and July hotel rates.",
     venues: ["Fairmont Banff Springs", "Fairmont Chateau Lake Louise", "The Rimrock", "Buffalo Mountain Lodge", "Emerald Lake Lodge"],
     portraits: ["Moraine Lake", "Lake Louise", "Two Jack Lake", "the Vermilion Lakes", "Bow Valley Parkway"],
@@ -359,7 +357,7 @@ export const REGIONS: Region[] = [
     season: "June to September, and a dark-sky season worth planning for",
     bestTier: "Heirloom",
     promise: "The quieter half of the Rockies, with the long drives counted properly.",
-    travel: "A flight into Edmonton or Calgary, then a long drive. Quoted against your venue before you sign.",
+    travel: "Early-booked low-cost air into Edmonton or Calgary, then the most practical ground route for the date.",
     risk: "Distance. Everything in Jasper is further apart than the map suggests.",
     venues: ["Fairmont Jasper Park Lodge", "Pyramid Lake Lodge", "Maligne Lake Chalet"],
     portraits: ["Maligne Lake", "Pyramid Island", "Athabasca Falls", "the Icefields Parkway"],
@@ -368,10 +366,10 @@ export const REGIONS: Region[] = [
 
 export const regionBySlug = (slug: string) => REGIONS.find((r) => r.slug === slug);
 
-/** The three home markets. They get a page of their own; every other region
+/** The three featured markets. They get a page of their own; every other region
  *  is covered and costs the same, it just does not have a hub. */
 export const PRIMARY_REGIONS = REGIONS.filter((r) => r.primary);
-/** Places with a page of their own that are not one of the three home markets. */
+/** Places with a page of their own that are not one of the three featured markets. */
 export const QUOTED_REGIONS = REGIONS.filter((r) => !r.primary);
 
 /** Everywhere outside the regions with a page of their own. */
@@ -385,35 +383,28 @@ export const OUTER_REGIONS_NOTE =
 /* ── Travel ─────────────────────────────────────────────────────────────────
  * Quoted, never published as a grid. A July flight to Tofino and an October
  * drive to Québec City are not the same number and pretending otherwise is
- * how a couple ends up surprised. Everything below 100 km is free.
+ * how a couple ends up surprised. Regional scheduling can reduce the fee.
  */
 
 export const TRAVEL = {
-  /** Kilometres from Montréal inside which travel costs nothing. */
-  freeRadiusKm: 100,
-  headline:
-    "Travel is quoted, and it is quoted before you sign",
+  headline: "Travel kept lean",
   body:
-    "Everything within 100 km of Montréal is inside the collection price. " +
-    "Beyond that, travel is billed at what it actually costs me: the flight " +
-    "or the drive, the ground transport, and the nights I need to be there " +
-    "the day before rather than arriving frayed on the morning. It goes into " +
-    "the contract as one figure, agreed in writing, and nothing is added to " +
-    "it afterwards.",
+    "I book practical routes early, often using low-cost carriers, and keep the " +
+    "trip to the transportation, ground travel and nights the schedule actually " +
+    "requires. There is no inflated destination surcharge.",
   availabilityNote:
     "Collection prices remain the same across Canada. Travel is quoted separately. " +
     "When Arman is already scheduled in your region, the travel fee is reduced or waived.",
   /** Honest scale, not a price list. Every one of these is quoted per trip. */
   scale: [
-    { where: "Within 100 km of Montréal", note: "The island, Laval, the South Shore, the near Laurentians", cost: "Included" },
-    { where: "Québec, the Townships, eastern Ontario", note: "A drive, sometimes a night either side", cost: "Usually C$200 to C$600" },
-    { where: "Toronto and southern Ontario", note: "The train or the drive, plus a hotel night before the day", cost: "Usually C$600 to C$900" },
-    { where: "Anywhere that needs a flight", note: "Vancouver, Whistler, Tofino, Banff, the Maritimes: airfare, a car and two or three nights", cost: "Usually C$1,200 to C$2,000" },
+    { where: "Already scheduled in your region", note: "I group nearby dates so the same trip can serve more than one wedding", cost: "Reduced or waived" },
+    { where: "Major Canadian cities", note: "Low-cost air or rail, booked early, plus only the ground transport and nights the schedule needs", cost: "Lowest practical route" },
+    { where: "Coast, mountains and remote routes", note: "Built around the actual itinerary, with shared travel whenever dates can be grouped", cost: "Quoted to the route" },
   ],
   footnote:
-    "These are the ranges the last few years have actually produced, not a " +
-    "tariff. Your date, your venue and how far in advance you book all move " +
-    "them, which is exactly why I quote the trip instead of publishing a grid.",
+    "No blanket cross-country rate. Send the venue and date and I will use the " +
+    "leanest practical route; if another wedding already covers the trip, your " +
+    "travel fee comes down or disappears.",
 } as const;
 
 /** What a collection costs, anywhere in Canada, before tax and travel. */
@@ -435,7 +426,7 @@ export const ADDONS: Addon[] = [
   { group: "Coverage", name: "Second photographer, up to 6 hours", price: 1000, note: "A second set of eyes for the getting-ready, or the room while I am with you." },
   { group: "Coverage", name: "Second photographer, up to 10 hours", price: 1500, note: "For a large guest count, two getting-ready locations or split logistics." },
   { group: "Coverage", name: "Additional 2-hour event", price: 900, note: "A tea ceremony, rehearsal or welcome event on another day." },
-  { group: "Sessions", name: "Engagement session", price: 700, note: "60 minutes, 50+ edited images. Anywhere within 100 km of Montréal." },
+  { group: "Sessions", name: "Engagement session", price: 700, note: "60 minutes, 50+ edited images. Travel is separate only when the session requires its own trip." },
   { group: "Sessions", name: "Destination welcome session", price: 550, note: "45 minutes, when I am already on location. Not a standalone fly-out." },
   { group: "Prints", name: `Signature album, ${ALBUM_SPECS.signature.size}`, price: 1200, note: `${ALBUM_SPECS.signature.pages}, ${ALBUM_SPECS.signature.paper}, ${ALBUM_SPECS.signature.cover}. Included in Signature.` },
   { group: "Prints", name: `Heirloom album, ${ALBUM_SPECS.heirloom.size}`, price: 1800, note: `${ALBUM_SPECS.heirloom.pages}, ${ALBUM_SPECS.heirloom.paper}, ${ALBUM_SPECS.heirloom.cover}. Included in Heirloom.` },
@@ -449,7 +440,7 @@ export const ADDONS: Addon[] = [
 
 export const ADDON_GROUPS = [...new Set(ADDONS.map((a) => a.group))];
 
-/* ── The three home markets ─────────────────────────────────────────────────
+/* ── The three featured markets ─────────────────────────────────────────────
  * These get their own page. Every other region is covered and priced, but sold
  * from the pricing page rather than a hub of its own.
  */
@@ -480,13 +471,13 @@ export const MARKETS: Market[] = [
       "Montréal", "Vieux-Montréal", "Laval", "Longueuil", "Westmount", "Outremont",
       "the Plateau", "Mont-Tremblant", "the Laurentians", "the Eastern Townships",
     ],
-    angle: "Documentary coverage from a photographer who actually lives here",
+    angle: "Documentary coverage with detailed knowledge of Montréal and Québec",
     lede:
-      "This is home. Everything within 100 km of Montréal carries no travel at all, so the collection price is the whole price.",
+      "Montréal rewards local knowledge: which streets hold their light, which rooms lose it early and which weather plan actually works.",
     body: [
       "The work here is documentary and editorial: I photograph what happens rather than staging a version of it, then I direct properly for the twenty minutes of portraits where direction is what you actually want. That distinction matters more in Montréal than anywhere else I work, because the market is full of packages that promise a number of images and say nothing about how the day will feel.",
-      "Living here is the whole difference. I have already made the mistakes: I know which side of Place d'Armes is lit at five in July and which at five in October, that the Plateau photographs best in falling snow, and which venues lose the light an hour earlier than the couple expects. That is not something a photographer flying in can have, and it is why Montréal is the only market where I charge no travel at all.",
-      "A collection costs the same here as it costs anywhere in Canada: Core is C$3,000 for six hours, Signature is C$4,500 for eight, Heirloom is C$6,000 for ten. Old Montréal, the Plateau, Mont-Royal, the island, Laval and the South Shore all sit inside the 100 km radius, which means no travel line at all. The Laurentians, the Eastern Townships, Québec City and Charlevoix are past it, so the drive and the night get quoted as one agreed figure before you sign.",
+      "I have already made the mistakes: I know which side of Place d'Armes is lit at five in July and which at five in October, that the Plateau photographs best in falling snow, and which venues lose the light an hour earlier than the couple expects.",
+      "A collection costs the same here as it costs anywhere in Canada: Core is C$3,000 for six hours, Signature is C$4,500 for eight, Heirloom is C$6,000 for ten. Travel is kept separate, booked early and reduced or waived when I am already scheduled in the region.",
     ],
     faqs: [
       {
@@ -494,8 +485,8 @@ export const MARKETS: Market[] = [
         a: "No. I work in English, and I want to be straightforward about that rather than let you find out on the day. In practice it has not been a problem: your planner, your venue and your officiant handle the French side of the day, and photography direction is mostly gesture and a handful of words. If a fully French-language photographer matters to you, say so and I will point you at someone rather than talk you out of it.",
       },
       {
-        q: "What exactly does the 75 km radius include?",
-        a: "Anywhere. The collection costs the same wherever the day happens: C$3,000 for Core. Within 100 km of Montréal, which covers the island, Laval, the South Shore and the near Laurentians, there is no travel line at all. The Townships, Québec City and Charlevoix are a drive and usually a night, quoted as one agreed figure before you commit rather than calculated after.",
+        q: "How is travel handled around Québec?",
+        a: "The collection costs the same wherever the day happens: C$3,000 for Core. Travel is based only on the route the date requires, and it is reduced or waived when I am already scheduled in the region.",
       },
       {
         q: "We are having a civil ceremony with a notaire. Is that too small?",
@@ -521,7 +512,7 @@ export const MARKETS: Market[] = [
     body: [
       "So I scope by event rather than by package. How many days, how many venues, how far apart, whether any two events share a day, how many people are in each room, and which twenty minutes of the whole thing you would be heartbroken to lose. Those six answers decide crew, travel and editing volume, which is where the cost actually lives. They also produce a timeline that survives contact with Highway 401 traffic on a Saturday in June, which no flat package has ever done.",
       "The part that gets underestimated is editing capacity rather than shooting capacity. A three-day celebration produces something like fifteen to twenty thousand frames. A photographer whose workflow is built for one Saturday will take four or five months to return that gallery and will quote you eight weeks when you ask. I would rather tell you the real number at the start, which is why the delivery date goes in the contract as a date.",
-      "The collection costs what it costs anywhere: Core C$3,000, Signature C$4,500, Heirloom C$6,000. Coming in from Montréal adds the train or the drive and a hotel night, and that is quoted as one figure on top, agreed in writing before you sign. It has typically run C$600 to C$900. Niagara, Niagara-on-the-Lake, the 1000 Islands, Muskoka and Prince Edward County all buy the same collections at the same figures, with their own travel quoted the same way.",
+      "The collection costs what it costs anywhere: Core C$3,000, Signature C$4,500, Heirloom C$6,000. Travel uses the lowest practical early-booked route and is reduced or waived when I am already scheduled nearby. Niagara, the 1000 Islands, Muskoka and Prince Edward County all buy the same collections at the same figures.",
     ],
     faqs: [
       {
@@ -529,8 +520,8 @@ export const MARKETS: Market[] = [
         a: "By event, not by package. I need the number of days, the venues, the distance between them, whether any two events run the same day, and how many people are in each room. That decides crew, travel and editing volume, which is where the cost actually lives. You get one quote with the whole thing itemised, and the additional-event add-on is C$900 for a two-hour event.",
       },
       {
-        q: "You are based in Montréal. Is that a problem?",
-        a: "It is what the travel figure is for, and it is what that figure buys: I arrive the day before, rested, having walked your venue in daylight. A Toronto photographer who lives twenty minutes away charges nothing for travel and frequently does neither.",
+        q: "How do you keep Toronto travel affordable?",
+        a: "I book practical air or rail routes early and group nearby dates whenever possible. If I am already scheduled in the region, the travel fee is reduced or waived.",
       },
       {
         q: "How far outside the GTA do you go?",
@@ -555,8 +546,8 @@ export const MARKETS: Market[] = [
       "Three products in one region: a Lower Mainland wedding, a Sea-to-Sky or Whistler day, and Vancouver Island. They differ by access and weather, not by how the photographs are made.",
     body: [
       "For a city wedding the work is the same as anywhere: a timeline that respects the light, coverage that does not run out before the dancing, and portraits that take twenty minutes rather than an hour and a half. The local difference is rain. Between October and April a wet ceremony is not the exception, so every timeline I build has a covered plan that is a real plan, scouted in advance, not a shrug on the day.",
-      "Sea-to-Sky is a different job. Whistler and Squamish need travel time counted properly, and anything on Crown land or in a provincial park needs its permit sorted well before the date. The photography costs the same as it does in Montréal, Core C$3,000 and Signature C$4,500, whether the day happens in Kitsilano, in Squamish or up at Whistler. What the coast adds is the trip itself, the flight, the car and two or three nights, quoted as one figure before you sign. It has typically run C$1,200 to C$2,000.",
-      "Premium local photography in this market runs roughly C$5,800 to C$7,500 for a full day, and multi-service mountain packages start around C$8,500 once vendors are bundled in. If that bundled day is what you want, I will tell you honestly what it costs to build. If you want the photography, Signature is C$4,500 and the trip out is quoted on top, in writing, before you sign.",
+      "Sea-to-Sky is a different job. Whistler and Squamish need travel time counted properly, and anything on Crown land or in a provincial park needs its permit sorted well before the date. The photography costs the same as it does anywhere else: Core C$3,000 and Signature C$4,500. Travel is kept lean with early-booked low-cost routes and grouped regional dates.",
+      "Premium local photography in this market runs roughly C$5,800 to C$7,500 for a full day, and multi-service mountain packages start around C$8,500 once vendors are bundled in. If that bundled day is what you want, I will tell you honestly what it costs to build. If you want the photography, Signature remains C$4,500 and travel stays separate.",
     ],
     faqs: [
       {
@@ -586,7 +577,7 @@ export const MARKETS: Market[] = [
       "Ninety minutes north of Vancouver and inside the same number. The corridor is a logistics problem before it is an aesthetic one, and the logistics are the part you are actually paying me for.",
     body: [
       "There are three Whistler weddings and they are not interchangeable. A village wedding happens at a hotel or a restaurant with everything walkable, which is the easiest version and the one that survives bad weather. An alpine wedding puts the ceremony at the top of a lift, which is the most spectacular and the most exposed to cloud. A lake wedding at Green Lake or Lost Lake sits between the two: outdoors, reachable by road, and low enough to stay under the weather most days.",
-      "A wedding at the Chateau costs exactly what a wedding in Kitsilano costs, and what one in Old Montréal costs: Core C$3,000, Signature C$4,500, Heirloom C$6,000. The mountain does not make the photography more expensive. What it adds is the trip, the flight, the car and the nights up the corridor, quoted as one agreed figure on top before you sign.",
+      "A wedding at the Chateau costs exactly what a wedding in Kitsilano costs, and what one in Old Montréal costs: Core C$3,000, Signature C$4,500, Heirloom C$6,000. The mountain does not make the photography more expensive. Travel is kept lean through early booking, practical routes and grouped regional dates.",
       "What the corridor asks for is honesty about time. Lifts close, they hold for wind on days that look fine from the valley, and they move a wedding party far more slowly than anyone plans for. Every Whistler timeline I build names a valley-level ceremony site we switch to if the lift is held. That single line is the difference between a day that works and an afternoon spent waiting.",
     ],
     faqs: [
@@ -654,7 +645,7 @@ export const MARKETS: Market[] = [
     faqs: [
       {
         q: "What does a Banff wedding cost to photograph?",
-        a: "The photography is published and it is the same as everywhere: C$3,000 for Core, C$4,500 for Signature, C$6,000 for Heirloom. The travel is quoted, because a Canmore Saturday and a Moraine Lake sunrise are different jobs with different access. A Rockies trip has typically run C$1,200 to C$2,000 once the flight, the car and the mountain nights are counted. Send the venue and the date and you get the real figure in the first reply.",
+        a: "The photography is published and it is the same as everywhere: C$3,000 for Core, C$4,500 for Signature, C$6,000 for Heirloom. Travel is kept to the route the date actually requires and reduced or waived when regional dates can be grouped.",
       },
       {
         q: "Do we really need a permit?",
@@ -701,7 +692,7 @@ export const MARKETS: Market[] = [
 
 export const marketBySlug = (slug: string) => MARKETS.find((m) => m.slug === slug);
 
-/** The three home markets. /pricing and the home page link these; the nav
+/** The three featured markets. /pricing and the home page link these; the nav
  *  and the hubs use all of MARKETS. */
 export const CORE_MARKETS = MARKETS.filter((m) =>
   ["montreal", "toronto", "vancouver"].includes(m.slug),

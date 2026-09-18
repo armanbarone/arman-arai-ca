@@ -38,3 +38,20 @@ test('campaign attribution survives the embed and direct calendar fallback', () 
   }
   assert.equal(new URL(weddingCalendarUrl('', 'www.armanarai.ca')).searchParams.get('utm_source'), '2728-cc-weddings');
 });
+
+test('dark variation keeps its booking attribution and colours without changing the original', () => {
+  const options = { page: '2728-cc-weddings-dark', theme: 'dark' };
+  const dark = new URL(weddingCalendarUrl('', 'www.armanarai.ca', true, options));
+  assert.equal(dark.searchParams.get('background_color'), '141210');
+  assert.equal(dark.searchParams.get('text_color'), 'e8e0d0');
+  assert.equal(dark.searchParams.get('primary_color'), 'b8956a');
+  assert.equal(dark.searchParams.get('utm_source'), options.page);
+  assert.equal(dark.searchParams.get('utm_content'), options.page);
+  const campaign = new URL(weddingCalendarUrl('?utm_source=google&utm_content=ad-2', 'www.armanarai.ca', false, options));
+  assert.equal(campaign.searchParams.get('utm_source'), 'google');
+  assert.equal(campaign.searchParams.get('utm_content'), 'ad-2');
+  assert.equal(campaign.searchParams.has('background_color'), false);
+  const original = new URL(weddingCalendarUrl('', 'www.armanarai.ca'));
+  assert.equal(original.searchParams.get('background_color'), 'ffffff');
+  assert.equal(original.searchParams.get('primary_color'), '344b3c');
+});

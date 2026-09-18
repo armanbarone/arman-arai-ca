@@ -8,14 +8,14 @@ import { isCompletedWeddingBooking, weddingCalendarUrl, WEDDING_CALENDAR } from 
 import styles from "./weddings.module.css";
 
 function record(name: string, properties: Record<string, string>) {
-  try { track(name, { page: "2728-cc-weddings", ...properties }); } catch { /* Analytics must never interrupt booking. */ }
+  try { track(name, { page: window.location.pathname.replace(/^\/|\/$/g, ""), ...properties }); } catch { /* Analytics must never interrupt booking. */ }
 }
 
 export function BookingLink({ children, className, placement }: { children: ReactNode; className?: string; placement: string }) {
   return <a href="#book-a-call" className={className} onClick={() => record("Wedding Call CTA", { placement })}>{children}</a>;
 }
 
-export function BookingNavigation() {
+export function BookingNavigation({ classes = styles }: { classes?: Record<string, string> } = {}) {
   const [hidden, setHidden] = useState(true);
   useEffect(() => {
     const section = document.getElementById("book-a-call");
@@ -36,28 +36,29 @@ export function BookingNavigation() {
     [section, hero, footer].forEach((el) => observer.observe(el));
     return () => observer.disconnect();
   }, []);
-  return <aside className={styles.stickyCta} hidden={hidden} aria-label="Book a wedding photography call"><span>2027 & 2028 weddings<br /><strong>From C${CORE.price.toLocaleString("en-CA")}</strong><br />Before tax · travel extra</span><BookingLink placement="mobile_bar">Book a free call ↗</BookingLink></aside>;
+  return <aside className={classes.stickyCta} hidden={hidden} aria-label="Book a wedding photography call"><span>2027 & 2028 weddings<br /><strong>From C${CORE.price.toLocaleString("en-CA")}</strong><br />Before tax · travel extra</span><BookingLink placement="mobile_bar">Book a free call ↗</BookingLink></aside>;
 }
 
-export default function WeddingCalendar() {
+export default function WeddingCalendar({ page = "2728-cc-weddings", theme = "light", classes = styles }: { page?: string; theme?: "light" | "dark"; classes?: Record<string, string> } = {}) {
   const container = useRef<HTMLDivElement>(null);
   const widget = useRef<HTMLDivElement>(null);
   const completed = useRef(false);
   const [src, setSrc] = useState<string>();
-  const [direct, setDirect] = useState(`${WEDDING_CALENDAR}?utm_source=2728-cc-weddings`);
+  const [direct, setDirect] = useState(`${WEDDING_CALENDAR}?utm_source=${encodeURIComponent(page)}`);
   const [loaded, setLoaded] = useState(false);
   const [scriptReady, setScriptReady] = useState(false);
 
   useEffect(() => {
-    setDirect(weddingCalendarUrl(window.location.search, window.location.hostname, false));
-    const mountCalendar = () => setSrc(weddingCalendarUrl(window.location.search, window.location.hostname));
+    const options = { page, theme };
+    setDirect(weddingCalendarUrl(window.location.search, window.location.hostname, false, options));
+    const mountCalendar = () => setSrc(weddingCalendarUrl(window.location.search, window.location.hostname, true, options));
     if (!container.current || typeof IntersectionObserver === "undefined") { mountCalendar(); return; }
     const observer = new IntersectionObserver((entries) => {
       if (entries.some((entry) => entry.isIntersecting)) { mountCalendar(); observer.disconnect(); }
     }, { rootMargin: "650px" });
     observer.observe(container.current);
     return () => observer.disconnect();
-  }, []);
+  }, [page, theme]);
 
   useEffect(() => {
     if (!scriptReady || !src || !widget.current) return;
@@ -90,11 +91,11 @@ export default function WeddingCalendar() {
   }, []);
 
   return <>
-    <div ref={container} className={styles.calendarPanel}>
-      {!loaded && <div className={styles.calendarLoading} role="status"><p>Finding a time for us to meet…</p><a href={direct} target="_blank" rel="noopener noreferrer">Open the calendar in a new tab ↗</a></div>}
-      <div ref={widget} className={styles.widgetHost} />
+    <div ref={container} className={classes.calendarPanel}>
+      {!loaded && <div className={classes.calendarLoading} role="status"><p>Finding a time for us to meet…</p><a href={direct} target="_blank" rel="noopener noreferrer">Open the calendar in a new tab ↗</a></div>}
+      <div ref={widget} className={classes.widgetHost} />
       {src && <Script src="https://assets.calendly.com/assets/external/widget.js" strategy="afterInteractive" onReady={() => setScriptReady(true)} />}
     </div>
-    <p className={styles.calendarFallback}>Calendar not loading? <a href={direct} target="_blank" rel="noopener noreferrer" onClick={() => record("Wedding Calendar Fallback", { placement: "calendar" })}>Choose a time in a new tab ↗</a></p>
+    <p className={classes.calendarFallback}>Calendar not loading? <a href={direct} target="_blank" rel="noopener noreferrer" onClick={() => record("Wedding Calendar Fallback", { placement: "calendar" })}>Choose a time in a new tab ↗</a></p>
   </>;
 }

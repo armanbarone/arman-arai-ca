@@ -163,6 +163,11 @@ const FORM_ENDPOINT = "/api/contact";
 
 const IN = "#e8dfd0";
 const AC = "#B8956A";
+// The receipt and the tickets are printed on pale "paper" (#ece3d2). The page's
+// gold reads at 2.74:1 there, so these two are the paper-safe equivalents:
+// 5.76:1 and 6.79:1. Never use AC or a light muted tone on those surfaces.
+const PAPER_AC = "#6b5228";
+const PAPER_MUT = "#544a3e";
 // Cream at 62% and 42% over near-black lands under the 4.5:1 contrast floor and
 // reads as thin grey on a phone in daylight. These carry the body copy and the
 // captions on every promo page, so they are raised everywhere rather than
@@ -305,9 +310,10 @@ export default function PromoPage({ cfg, experiencesAlbum, workAlbum }: {
         .fc-cmp-hint { display: none; }
         .fc-cmp { width: 100%; min-width: 720px; border-collapse: collapse; }
         .fc-cmp th, .fc-cmp td { padding: 0.95rem 1.1rem; text-align: left; vertical-align: top; border-top: 0.5px solid rgba(184,149,106,.16); font-size: 0.9rem; line-height: 1.55; }
-        .fc-cmp th { font-family: var(--font-jost); font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; border-top: none; padding-bottom: 1.1rem; }
+        .fc-cmp thead th { font-family: var(--font-jost); font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; border-top: none; padding-bottom: 1.1rem; }
+        .fc-cmp tbody th { font-weight: 400; }
         .fc-cmp td:last-child { background: rgba(184,149,106,.07); border-left: 0.5px solid rgba(184,149,106,.25); border-right: 0.5px solid rgba(184,149,106,.25); color: ${IN}; }
-        .fc-cmp th:last-child { background: rgba(184,149,106,.07); border-left: 0.5px solid rgba(184,149,106,.25); border-right: 0.5px solid rgba(184,149,106,.25); border-top: 0.5px solid rgba(184,149,106,.25); color: ${AC}; }
+        .fc-cmp thead th:last-child { background: rgba(184,149,106,.07); border-left: 0.5px solid rgba(184,149,106,.25); border-right: 0.5px solid rgba(184,149,106,.25); border-top: 0.5px solid rgba(184,149,106,.25); color: ${AC}; }
         /* Review screenshots keep their full contents in bounded columns at
            every breakpoint, rather than inheriting the entire page width. */
         .fc-proof { column-count: 3; column-gap: 18px; max-width: 1000px; margin: 2.8rem auto 0; }
@@ -434,7 +440,7 @@ export default function PromoPage({ cfg, experiencesAlbum, workAlbum }: {
         .fc-ticket:nth-child(odd) { transform: rotate(-0.6deg); }
         .fc-ticket:nth-child(even) { transform: rotate(0.5deg); }
         .fc-ticket-main { padding: 1.7rem 1.6rem; }
-        .fc-ticket-stub { border-left: 2px dashed rgba(61,46,31,.35); display: flex; align-items: center; justify-content: center; writing-mode: vertical-rl; font-family: var(--font-jost); letter-spacing: 0.3em; text-transform: uppercase; font-size: 0.58rem; color: #a8834a; }
+        .fc-ticket-stub { color: ${PAPER_MUT}; border-left: 2px dashed rgba(61,46,31,.45); display: flex; align-items: center; justify-content: center; writing-mode: vertical-rl; font-family: var(--font-jost); letter-spacing: 0.3em; text-transform: uppercase; font-size: 0.58rem; color: #a8834a; }
         .fc-ticket::before, .fc-ticket::after { content: ""; position: absolute; right: 58px; width: 16px; height: 16px; border-radius: 50%; background: #080704; }
         .fc-ticket::before { top: -8px; } .fc-ticket::after { bottom: -8px; }
         .fc-letter { background: #ece3d2; color: #4a3a28; max-width: 700px; margin: 2.8rem auto 0; padding: clamp(2rem,4vw,3.2rem); box-shadow: 0 24px 56px rgba(0,0,0,.55); transform: rotate(0.4deg); }
@@ -614,9 +620,9 @@ export default function PromoPage({ cfg, experiencesAlbum, workAlbum }: {
             <div>
               <div className="fc-receipt">
                 <div className="fc-stamp">{cfg.receiptStamp ?? "Founding rate · 2026 · five dates only"}</div>
-                <div style={{ fontFamily: "var(--font-jost)", fontSize: "0.6rem", letterSpacing: "0.28em", textTransform: "uppercase", color: "#a8834a" }}>{cfg.receiptBrand ?? "Arman Arai \u00b7 Wedding Photographer"}</div>
+                <div style={{ fontFamily: "var(--font-jost)", fontSize: "0.6rem", letterSpacing: "0.28em", textTransform: "uppercase", color: PAPER_AC }}>{cfg.receiptBrand ?? "Arman Arai \u00b7 Wedding Photographer"}</div>
                 <div style={{ fontFamily: "var(--font-cormorant)", fontStyle: "italic", fontWeight: 400, fontSize: "1.65rem", margin: "0.4rem 0 0.2rem" }}>{cfg.receiptTitle ?? "The Founding Couples Day"}</div>
-                <div style={{ fontFamily: "var(--font-jost)", fontSize: "0.56rem", letterSpacing: "0.2em", textTransform: "uppercase", color: "rgba(61,46,31,.55)", marginBottom: "1.1rem" }}>{cfg.kicker}</div>
+                <div style={{ fontFamily: "var(--font-jost)", fontSize: "0.56rem", letterSpacing: "0.2em", textTransform: "uppercase", color: PAPER_MUT, marginBottom: "1.1rem" }}>{cfg.kicker}</div>
                 {cfg.included.map((it) => {
                   const m = it.match(/^(.+?)(?::|,)\s(.+)$/);
                   return (
@@ -625,7 +631,7 @@ export default function PromoPage({ cfg, experiencesAlbum, workAlbum }: {
                         <div style={{ fontFamily: "var(--font-jost)", fontSize: "0.78rem", letterSpacing: "0.06em", textTransform: "uppercase" }}>{m ? m[1] : it}</div>
                         {m && <div style={{ fontFamily: "var(--font-cormorant)", fontStyle: "italic", fontSize: "0.85rem", color: "#6b5638", lineHeight: 1.45 }}>{m[2]}</div>}
                       </div>
-                      <span style={{ color: "#a8834a", flexShrink: 0 }}>✓</span>
+                      <span style={{ color: PAPER_AC, flexShrink: 0 }}>✓</span>
                     </div>
                   );
                 })}
@@ -633,7 +639,7 @@ export default function PromoPage({ cfg, experiencesAlbum, workAlbum }: {
                   <span style={{ fontFamily: "var(--font-jost)", fontSize: "0.62rem", letterSpacing: "0.24em", textTransform: "uppercase" }}>{cfg.receiptPriceLabel ?? "Founding rate"}</span>
                   <span style={{ fontFamily: "var(--font-cormorant)", fontStyle: "italic", fontSize: "2.1rem", lineHeight: 1 }}>{money(cfg.priceFounding)}</span>
                 </div>
-                <div style={{ textAlign: "right", fontFamily: "var(--font-jost)", fontSize: "0.62rem", letterSpacing: "0.14em", textTransform: "uppercase", color: "rgba(61,46,31,.55)", marginTop: "0.3rem" }}>
+                <div style={{ textAlign: "right", fontFamily: "var(--font-jost)", fontSize: "0.62rem", letterSpacing: "0.14em", textTransform: "uppercase", color: PAPER_MUT, marginTop: "0.3rem" }}>
                   {cfg.priceStandard != null ? <><s>{money(cfg.priceStandard)}</s> standard{taxNote ? ` · ${taxNote}` : ""}</> : taxNote ? `${currency} ${taxNote}` : `All in, ${currency}`}
                 </div>
               </div>
@@ -717,16 +723,18 @@ export default function PromoPage({ cfg, experiencesAlbum, workAlbum }: {
             <table className="fc-cmp">
               <thead>
                 <tr>
-                  <th style={{ color: DIM }}></th>
-                  <th style={{ color: DIM }}>{cfg.compare.colA}</th>
-                  <th style={{ color: DIM }}>{cfg.compare.colB}</th>
-                  <th>{cfg.compare.colMine}</th>
+                  {/* The corner cell labels the row headers below it, so it is a
+                      presentational <td>, not a column header for anything. */}
+                  <td />
+                  <th scope="col" style={{ color: DIM }}>{cfg.compare.colA}</th>
+                  <th scope="col" style={{ color: DIM }}>{cfg.compare.colB}</th>
+                  <th scope="col">{cfg.compare.colMine}</th>
                 </tr>
               </thead>
               <tbody>
                 {cfg.compare.rows.map((r) => (
                   <tr key={r.row}>
-                    <td style={{ color: AC, fontFamily: "var(--font-jost)", fontSize: "0.62rem", letterSpacing: "0.18em", textTransform: "uppercase", whiteSpace: "nowrap" }}>{r.row}</td>
+                    <th scope="row" style={{ color: AC, fontFamily: "var(--font-jost)", fontSize: "0.62rem", letterSpacing: "0.18em", textTransform: "uppercase", whiteSpace: "nowrap", fontWeight: 400 }}>{r.row}</th>
                     <td style={{ color: MUT }}>{r.a}</td>
                     <td style={{ color: MUT }}>{r.b}</td>
                     <td>{r.mine}</td>
@@ -794,11 +802,11 @@ export default function PromoPage({ cfg, experiencesAlbum, workAlbum }: {
             {cfg.activities.columns.map((c) => (
               <div key={c.title} className="fc-ticket">
                 <div className="fc-ticket-main">
-                  <h3 style={{ ...colTitle, color: "#a8834a" }}>{c.title}</h3>
+                  <h3 style={{ ...colTitle, color: PAPER_AC }}>{c.title}</h3>
                   <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
                     {c.items.map((it) => (
                       <li key={it} style={{ display: "flex", gap: "0.8rem", padding: "0.55rem 0", color: "#5f4c38", lineHeight: 1.6, fontSize: "0.92rem", borderBottom: "1px dotted rgba(61,46,31,.18)" }}>
-                        <span style={{ color: "#a8834a", flexShrink: 0 }}>·</span>{it}
+                        <span style={{ color: PAPER_AC, flexShrink: 0 }}>·</span>{it}
                       </li>
                     ))}
                   </ul>
@@ -848,7 +856,7 @@ export default function PromoPage({ cfg, experiencesAlbum, workAlbum }: {
               <h2 style={h2}>{cfg.whyPrice.title}</h2>
             </div>
             <div className="fc-letter">
-              <div style={{ fontFamily: "var(--font-jost)", fontSize: "0.6rem", letterSpacing: "0.28em", textTransform: "uppercase", color: "#a8834a", marginBottom: "1.6rem" }}>
+              <div style={{ fontFamily: "var(--font-jost)", fontSize: "0.6rem", letterSpacing: "0.28em", textTransform: "uppercase", color: PAPER_AC, marginBottom: "1.6rem" }}>
                 From the desk of Arman Arai
               </div>
               <div style={{ fontFamily: "var(--font-cormorant)", lineHeight: 1.9, fontSize: "1.04rem", display: "grid", gap: "1.1rem" }}>

@@ -14,8 +14,7 @@ export const BUSINESS = {
     country: "Canada",
   },
   phone: "+1 (778) 302-5231",
-  email: "i@armanarai.com",          // where couples reach Arman, and where replies land
-  sendingAddress: "i@armanarai.ca",  // the verified Resend domain for this site
+  email: "i@armanarai.com",          // sender and reply address for everything the portal sends
   etransferEmail: "i@armanarai.com",
   governingProvince: "British Columbia",
   timezone: "America/Vancouver",

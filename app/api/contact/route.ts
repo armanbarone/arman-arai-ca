@@ -39,8 +39,15 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const { type } = body;
 
+    // The ads landing pages carry a honeypot field no human ever sees. Anything
+    // that fills it is a bot: answer 200 so it believes it succeeded, and send
+    // nothing. Silently dropping beats a 400 that tells a scraper to retry.
+    if (typeof body.company === "string" && body.company.trim() !== "") {
+      return NextResponse.json({ success: true });
+    }
+
     const ghlData: Record<string, string> = {
-      source: "armanarai.com",
+      source: "armanarai.ca",
       type: type ?? "quick",
       name: body.name ?? "",
       phone: body.phone ?? "",
@@ -53,14 +60,50 @@ export async function POST(req: NextRequest) {
       collection: body.collection ?? "",
       message: body.message ?? "",
       referral: body.referral ?? "",
+      // Landing-page fields (LeadForm). Empty on the site's own forms.
+      preferredMonth: body.preferredMonth ?? "",
+      location: body.location ?? "",
+      guests: body.guests ?? "",
+      // Ad attribution, so a booking can be traced to the click that produced it.
+      utm_source: body.utm_source ?? "",
+      utm_medium: body.utm_medium ?? "",
+      utm_campaign: body.utm_campaign ?? "",
+      utm_content: body.utm_content ?? "",
+      utm_term: body.utm_term ?? "",
+      gclid: body.gclid ?? "",
+      landingPage: body.page ?? "",
+      referrer: body.referrer ?? "",
     };
 
     const isQuick = type === "quick";
-    const subject = isQuick
-      ? `New Inquiry — ${body.name}`
-      : `Wedding Inquiry — ${body.name}${body.partnerName ? ` & ${body.partnerName}` : ""}`;
+    // "founding" is what the ads landing pages send; subjectLabel names which one.
+    const isLanding = type === "founding";
+    const subject = isLanding
+      ? `${body.subjectLabel || "Landing Page Inquiry"} — ${body.name}`
+      : isQuick
+        ? `New Inquiry — ${body.name}`
+        : `Wedding Inquiry — ${body.name}${body.partnerName ? ` & ${body.partnerName}` : ""}`;
 
-    const rows: [string, string][] = isQuick
+    // An ad click is worth knowing about on the email itself, not only in the
+    // CRM: the campaign that produced a lead changes how fast it gets answered.
+    const attribution: [string, string][] = [
+      ["Campaign", [body.utm_source, body.utm_medium, body.utm_campaign].filter(Boolean).join(" / ")],
+      ["Ad content", body.utm_content || ""],
+      ["Google click id", body.gclid || ""],
+      ["Landing page", body.page || ""],
+    ].filter((r): r is [string, string] => Boolean(r[1]));
+
+    const rows: [string, string][] = isLanding
+      ? [
+          ["Name", body.name ?? ""],
+          ["Email", body.email ?? ""],
+          ["Phone", body.phone || "Not provided"],
+          ["Preferred month", body.preferredMonth || "Not specified"],
+          ["Where", body.location || "Not specified"],
+          ["Guests", body.guests || "Not specified"],
+          ...attribution,
+        ]
+      : isQuick
       ? [
           ["Name", body.name ?? ""],
           ["Phone", body.phone || "Not provided"],
@@ -80,13 +123,13 @@ export async function POST(req: NextRequest) {
     const html = `
       <div style="font-family:Georgia,serif;max-width:520px;margin:0 auto;color:#2C2420;">
         <h2 style="font-size:1.3rem;font-weight:normal;border-bottom:1px solid #D9CEBC;padding-bottom:0.75rem;margin-bottom:1.5rem;">
-          ${isQuick ? "New Website Inquiry" : "Wedding Inquiry"}
+          ${isLanding ? (body.subjectLabel || "Landing Page Inquiry") : isQuick ? "New Website Inquiry" : "Wedding Inquiry"}
         </h2>
         <table style="width:100%;border-collapse:collapse;">
           ${rows.map(([label, value]) => `<tr><td style="padding:0.5rem 0;color:#A67268;font-size:0.75rem;text-transform:uppercase;letter-spacing:0.1em;width:140px;vertical-align:top;">${label}</td><td style="padding:0.5rem 0;">${value}</td></tr>`).join("")}
         </table>
         ${body.message ? `<div style="margin-top:1.5rem;padding:1.25rem;background:#F7F3EC;border-left:2px solid #C9A89A;"><p style="margin:0 0 0.5rem;color:#A67268;font-size:0.75rem;text-transform:uppercase;">Message</p><p style="margin:0;line-height:1.7;">${body.message}</p></div>` : ""}
-        <p style="margin-top:2rem;font-size:0.75rem;color:#6B7280;border-top:1px solid #EDE7DA;padding-top:1rem;">Sent via armanarai.com</p>
+        <p style="margin-top:2rem;font-size:0.75rem;color:#6B7280;border-top:1px solid #EDE7DA;padding-top:1rem;">Sent via armanarai.ca</p>
       </div>`;
 
     let sent = false;

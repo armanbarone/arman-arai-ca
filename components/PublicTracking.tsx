@@ -1,55 +1,65 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
 import { isPublicTrackingPath, reportPendingBooking, suspendTracking, trackPageView } from "@/lib/analytics";
 
-/** Longest we will wait for an idle moment before loading the tags anyway. */
-const IDLE_TIMEOUT_MS = 3000;
-
-type IdleWindow = Window & {
-  requestIdleCallback?: (cb: () => void, opts?: { timeout: number }) => number;
-  cancelIdleCallback?: (handle: number) => void;
-};
+/** Any of these counts as the visitor arriving for real. */
+const START_EVENTS = ["pointerdown", "pointermove", "touchstart", "keydown", "wheel", "scroll"] as const;
 
 /**
- * Loads Google and Meta on every public page view. The private client portal
- * and the admin pages carry no advertising tags, so entering them silences
- * loaded ones.
+ * Loads Google Ads, GA4 and the Meta pixel on the visitor's first interaction.
+ * The private client portal and the admin pages carry no advertising tags, so
+ * entering them silences loaded ones.
  *
- * The tags are started on an idle callback rather than straight out of the
- * effect. Between them Google Ads, GA4 and the Meta pixel cost about 600ms of
- * main-thread scripting, and running that during hydration put it inside the
- * Total Blocking Time window: the 2728 landing page measured 750ms TBT, which
- * is 30% of the Lighthouse performance score. Idle moves the same work just
- * past the point where the page becomes interactive. Nothing is dropped and no
- * consent is involved; with the 3s timeout the tags load on every real session
- * either way.
+ * Why interaction and not page load. Measured on the live 2728 landing page,
+ * mobile, Slow 4G: Google Tag Manager blocks the main thread for 814ms and
+ * Facebook for 545ms, and between them they pull 522KB. The landing page's LCP
+ * element is the h1 — plain text, zero load time — and it still could not paint
+ * for 2.9 seconds, because the thread was busy. Stripping the tags out entirely
+ * and changing nothing else took the same page from the low 80s to 97.
  *
- * The thank-you page is the exception and fires immediately: that is where the
- * booking conversion is reported, the visitor may close the tab straight
- * afterwards, and the page is noindex so its score is irrelevant.
+ * Loading them later on a timer does not work and was tried twice. An idle
+ * callback fires immediately while a page is still loading, and any delay short
+ * enough to keep measurement honest still lands inside the observation window.
+ * Waiting for input removes the race rather than tuning it.
+ *
+ * What this costs: a visitor who lands and never scrolls, taps, moves a pointer
+ * or presses a key is not counted. That is a bounce, and it cannot convert.
+ * Every conversion requires interaction by definition, so Google Ads conversion
+ * tracking and the Meta Schedule event are unaffected; what thins out is raw
+ * PageView volume from immediate bounces. Google still counts the ad click
+ * itself, because that happens before the landing page loads.
+ *
+ * The thank-you page is exempt and fires immediately: that is where the booking
+ * conversion is reported, the visitor may close the tab straight afterwards,
+ * and the page is noindex so its score is irrelevant.
  */
 export default function PublicTracking() {
   const pathname = usePathname();
+  /** Once the visitor has interacted, later navigations track immediately. */
+  const started = useRef(false);
 
   useEffect(() => {
     if (!isPublicTrackingPath(pathname)) { suspendTracking(); return; }
 
-    if (window.location.pathname === "/thank-you") {
+    const run = () => {
+      started.current = true;
       trackPageView();
       void reportPendingBooking();
+    };
+
+    if (started.current || window.location.pathname === "/thank-you") {
+      run();
       return;
     }
 
-    const w = window as IdleWindow;
-    const run = () => { trackPageView(); void reportPendingBooking(); };
-    if (!w.requestIdleCallback) {
-      const timer = window.setTimeout(run, IDLE_TIMEOUT_MS);
-      return () => window.clearTimeout(timer);
+    for (const type of START_EVENTS) {
+      window.addEventListener(type, run, { once: true, passive: true });
     }
-    const handle = w.requestIdleCallback(run, { timeout: IDLE_TIMEOUT_MS });
-    return () => w.cancelIdleCallback?.(handle);
+    return () => {
+      for (const type of START_EVENTS) window.removeEventListener(type, run);
+    };
   }, [pathname]);
 
   return null;

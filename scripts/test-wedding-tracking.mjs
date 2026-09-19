@@ -19,18 +19,24 @@ async function environment({ pathname = '/2728-cc-weddings-dark', blocked = fals
 }
 const scheduled = { event: 'calendly.event_scheduled', payload: { invitee: { uri: 'https://api.calendly.com/scheduled_events/event-123/invitees/invitee-456' }, name: 'Do not transmit', email: 'private@example.com' } };
 
-test('no optional tags before consent or on a private page; privacy signal takes precedence', async () => {
-  for (const options of [{}, { pathname: '/portal/client-123' }, { pathname: '/admin' }, { gpc: true }]) {
+test('the tags load on the first view of a public page, with no interaction and whatever the browser signals', async () => {
+  for (const options of [{}, { gpc: true }]) {
     const { analytics, appended } = await environment(options);
-    if (Object.keys(options).length) analytics.setConsent('accepted');
+    analytics.trackPageView();
+    assert.equal(appended.length, 2);
+  }
+});
+
+test('no tags on the private portal, the admin pages or the API routes', async () => {
+  for (const pathname of ['/portal/client-123', '/admin', '/api/inquiry']) {
+    const { analytics, appended } = await environment({ pathname });
     analytics.trackPageView();
     assert.equal(appended.length, 0);
   }
 });
 
-test('accepted consent initializes all three destinations once and filters Google page URL', async () => {
+test('a page view initializes all three destinations once and filters the Google page URL', async () => {
   const { analytics, appended, google, meta } = await environment();
-  analytics.setConsent('accepted');
   analytics.trackPageView(); analytics.trackPageView();
   assert.equal(appended.length, 2);
   const configs = google().filter((e) => e[0] === 'config');
@@ -45,7 +51,6 @@ test('accepted consent initializes all three destinations once and filters Googl
 
 test('confirmed booking redirects immediately then reports once on thank-you, without personal information', async () => {
   const { analytics, redirects, google, meta } = await environment();
-  analytics.setConsent('accepted');
   analytics.trackPageView();
   await analytics.completeWeddingBooking(scheduled);
   assert.deepEqual(redirects, ['/thank-you']);
@@ -71,13 +76,11 @@ test('confirmed booking redirects immediately then reports once on thank-you, wi
   assert.equal(meta().filter((e) => e[1] === 'Schedule').length, 1);
 });
 
-test('direct thank-you visits, stale markers, and declined consent never report conversions', async () => {
-  for (const kind of ['direct', 'stale', 'declined']) {
+test('direct thank-you visits and stale markers never report conversions', async () => {
+  for (const kind of ['direct', 'stale']) {
     const { analytics, google, meta } = await environment({ pathname: '/thank-you' });
-    analytics.setConsent(kind === 'declined' ? 'declined' : 'accepted');
-    if (kind !== 'direct') {
-      const createdAt = kind === 'stale' ? Date.now() - 31 * 60 * 1000 : Date.now();
-      sessionStorage.setItem(analytics.BOOKING_KEY, JSON.stringify({ id: 'ca-test-123', page: '/2728-cc-weddings', createdAt }));
+    if (kind === 'stale') {
+      sessionStorage.setItem(analytics.BOOKING_KEY, JSON.stringify({ id: 'ca-test-123', page: '/2728-cc-weddings', createdAt: Date.now() - 31 * 60 * 1000 }));
     }
     await analytics.reportPendingBooking();
     assert.equal(google().filter((e) => e[1] === 'conversion').length, 0);
@@ -96,7 +99,6 @@ test('missing invitee metadata still creates a valid opaque booking id', async (
 
 test('blocked tags do not stop the redirect or falsely mark a conversion as sent', async () => {
   const { analytics, redirects, google, meta } = await environment({ blocked: true });
-  analytics.setConsent('accepted');
   analytics.trackPageView();
   await analytics.completeWeddingBooking(scheduled);
   window.location.pathname = '/thank-you';
@@ -108,7 +110,7 @@ test('blocked tags do not stop the redirect or falsely mark a conversion as sent
 
 test('storage failure still navigates and sends the booking before leaving when tags work', async () => {
   const { analytics, redirects, google, meta } = await environment();
-  analytics.setConsent('accepted');
+  analytics.trackPageView();
   globalThis.sessionStorage = { getItem: () => { throw new Error('blocked'); }, setItem: () => { throw new Error('blocked'); } };
   await analytics.completeWeddingBooking(scheduled);
   assert.deepEqual(redirects, ['/thank-you']);
@@ -118,7 +120,6 @@ test('storage failure still navigates and sends the booking before leaving when 
 
 test('loaded tags are suspended when navigation enters the private portal', async () => {
   const { analytics, google, meta } = await environment();
-  analytics.setConsent('accepted');
   analytics.trackPageView();
   window.location.pathname = '/portal/client-123';
   analytics.suspendTracking();

@@ -1,19 +1,17 @@
-/** Public marketing measurement. No names, emails or Calendly payloads are sent. */
+/** Public marketing measurement. No names, emails or Calendly payloads are sent.
+ *  Google and Meta load on the first view of any public page. The private client
+ *  portal, the admin pages and the API routes carry no advertising tags. */
 export const GA4_ID = "G-V2GKTHF0W6";
 export const GOOGLE_ADS_ID = "AW-18154542346";
 export const META_PIXEL_ID = "1110472461323039";
 export const SCHEDULE_CONVERSION_LABEL = "LzlaCPST9cMcEIqq4dBD";
-export const CONSENT_KEY = "aa_ca_measurement_consent_v1";
 export const BOOKING_KEY = "aa_ca_completed_booking_v1";
 const SENT_KEY = "aa_ca_booking_events_v1";
-const CONSENT_LIFETIME = 180 * 24 * 60 * 60 * 1000;
 const BOOKING_LIFETIME = 30 * 60 * 1000;
-export type Consent = "accepted" | "declined";
 export type Booking = { id: string; page: string; createdAt: number };
 type Tag = (...args: unknown[]) => void;
 type MetaTag = Tag & { queue: IArguments[]; callMethod?: Tag; push?: MetaTag; loaded?: boolean; version?: string };
 type TrackingWindow = Window & { dataLayer?: unknown[]; gtag?: Tag; fbq?: MetaTag; _fbq?: MetaTag };
-let memoryConsent: Consent | null = null;
 let initialized = false;
 let suspended = false;
 let googleReady: Promise<boolean> | undefined;
@@ -26,30 +24,17 @@ export function isPublicTrackingPath(path: string) {
   return !/^\/(portal|admin|api)(?:\/|$)/.test(path);
 }
 
-export function getConsent(): Consent | null {
-  if (typeof window === "undefined") return null;
-  if ((navigator as Navigator & { globalPrivacyControl?: boolean }).globalPrivacyControl) return "declined";
-  if (memoryConsent) return memoryConsent;
-  try {
-    const saved = JSON.parse(localStorage.getItem(CONSENT_KEY) || "null");
-    if (saved && Date.now() - saved.at < CONSENT_LIFETIME && ["accepted", "declined"].includes(saved.choice)) return saved.choice;
-  } catch { /* Storage is optional. */ }
-  return null;
-}
-
-export function setConsent(choice: Consent) {
-  memoryConsent = choice;
-  try { localStorage.setItem(CONSENT_KEY, JSON.stringify({ choice, at: Date.now() })); } catch { /* Keep the choice for this page. */ }
-  if (initialized) {
-    const w = window as TrackingWindow;
-    const status = choice === "accepted" ? "granted" : "denied";
-    w.gtag?.("consent", "update", { analytics_storage: status, ad_storage: status, ad_user_data: status, ad_personalization: status });
-    w.fbq?.("consent", choice === "accepted" ? "grant" : "revoke");
-  }
-}
-
 function permitted() {
-  return typeof window !== "undefined" && isPublicTrackingPath(window.location.pathname) && getConsent() === "accepted";
+  return typeof window !== "undefined" && isPublicTrackingPath(window.location.pathname);
+}
+
+/** The tags' own on/off switch, used only to silence them inside the portal. */
+function setTagState(on: boolean) {
+  if (!initialized) return;
+  const w = window as TrackingWindow;
+  const status = on ? "granted" : "denied";
+  w.gtag?.("consent", "update", { analytics_storage: status, ad_storage: status, ad_user_data: status, ad_personalization: status });
+  w.fbq?.("consent", on ? "grant" : "revoke");
 }
 
 function loadTag(id: string, src: string): Promise<boolean> {
@@ -71,7 +56,7 @@ export function startTracking() {
     if (suspended) {
       suspended = false;
       (window as unknown as Record<string, unknown>)[`ga-disable-${GA4_ID}`] = false;
-      setConsent("accepted");
+      setTagState(true);
     }
     return;
   }
@@ -100,9 +85,7 @@ export function suspendTracking() {
   if (!initialized) return;
   suspended = true;
   (window as unknown as Record<string, unknown>)[`ga-disable-${GA4_ID}`] = true;
-  const w = window as TrackingWindow;
-  w.gtag?.("consent", "update", { analytics_storage: "denied", ad_storage: "denied", ad_user_data: "denied", ad_personalization: "denied" });
-  w.fbq?.("consent", "revoke");
+  setTagState(false);
 }
 
 export function trackPageView() {

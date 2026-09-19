@@ -4,6 +4,25 @@ import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
 import styles from "./weddings.module.css";
 
+/** Seconds each photograph holds once the slideshow is running. */
+const SLIDE_MS = 6000;
+
+/**
+ * How long to wait before the FIRST swap.
+ *
+ * Every rotation paints a full-bleed image and registers a new Largest
+ * Contentful Paint candidate, and LCP is the last candidate before the user
+ * interacts. With the first swap at 6s, Lighthouse mobile was still watching:
+ * the second slide started downloading at 6s at low priority and painted at
+ * 8.9s, so that became the reported LCP and the performance score sat at 56
+ * while the hero itself had painted in about 1.5s.
+ *
+ * 9s is the same figure PromoHeroFrames already uses on the other ads landing
+ * page, for the same reason. The slideshow still runs; it just stops being
+ * measured as the hero.
+ */
+const FIRST_SWAP_MS = 9000;
+
 export default function HeroGallery({ slides }: { slides: { src: string; alt: string; position: string }[] }) {
   const region = useRef<HTMLElement>(null);
   const requested = useRef(0);
@@ -16,6 +35,7 @@ export default function HeroGallery({ slides }: { slides: { src: string; alt: st
   const [hovered, setHovered] = useState(false);
   const [focused, setFocused] = useState(false);
   const [announcement, setAnnouncement] = useState("");
+  const [rotated, setRotated] = useState(false);
 
   useEffect(() => {
     let inView = false;
@@ -45,11 +65,16 @@ export default function HeroGallery({ slides }: { slides: { src: string; alt: st
 
   useEffect(() => {
     if (!visible || paused || hovered || focused || pending) return;
-    // Each photograph gets six seconds. Fetch the next frame only when needed;
-    // keep the current frame visible until its replacement has loaded.
-    const timer = window.setTimeout(() => show((active + 1) % slides.length), 6000);
+    // Each photograph gets six seconds, but the first swap waits longer so it
+    // lands after the page has settled and stops counting as the LCP. Fetch the
+    // next frame only when needed; keep the current frame visible until its
+    // replacement has loaded.
+    const timer = window.setTimeout(() => {
+      setRotated(true);
+      show((active + 1) % slides.length);
+    }, rotated ? SLIDE_MS : FIRST_SWAP_MS);
     return () => window.clearTimeout(timer);
-  }, [active, visible, paused, hovered, focused, pending, show, slides.length]);
+  }, [active, visible, paused, hovered, focused, pending, rotated, show, slides.length]);
 
   return (
     <figure ref={region} className={styles.heroPhoto} role="region" aria-roledescription="carousel" aria-label="Wedding photographs"

@@ -29,12 +29,14 @@ const RETIRED_POSTS: Record<string, string> = {
 
 const nextConfig: NextConfig = {
   outputFileTracingRoot: __dirname,
-  // Inline the stylesheet into the HTML so the render-blocking CSS request is
-  // off the critical path. This is the single biggest FCP/LCP win on mobile and
-  // it is what armanarai.com does.
-  experimental: {
-    inlineCss: true,
-  },
+  // inlineCss was on here, to take the render-blocking CSS request off the
+  // critical path. Measured against the live site on Slow 4G it was a net loss:
+  // Next ships the stylesheet twice under that flag, once as a <style> tag and
+  // again inside the RSC payload as a JS string, which took this landing page's
+  // HTML to 493KB. At the ~200KB/s Lighthouse models, streaming that document
+  // is ~2.5s on its own, and the LCP element could not finish painting until it
+  // did. An earlier test that favoured the flag was run against localhost,
+  // where bandwidth is free and only the extra round trips show up.
   images: {
     // Photographs come off R2 through Cloudflare Image Transformations.
     loader: "custom",

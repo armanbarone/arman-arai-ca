@@ -99,9 +99,14 @@ export async function POST(req: NextRequest) {
           ["Name", body.name ?? ""],
           ["Email", body.email ?? ""],
           ["Phone", body.phone || "Not provided"],
-          ["Preferred month", body.preferredMonth || "Not specified"],
+          // The date-check form on /wedding-photography asks for the actual
+          // date rather than a preferred month, because its whole question is
+          // "are you free on this day". Both shapes post here, so each row
+          // appears only when that form sent it.
+          ...(body.weddingDate ? ([["Wedding date", body.weddingDate]] as [string, string][]) : []),
+          ...(body.preferredMonth ? ([["Preferred month", body.preferredMonth]] as [string, string][]) : []),
           ["Where", body.location || "Not specified"],
-          ["Guests", body.guests || "Not specified"],
+          ...(body.guests ? ([["Guests", body.guests]] as [string, string][]) : []),
           ...attribution,
         ]
       : isQuick

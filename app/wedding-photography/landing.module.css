@@ -1,0 +1,401 @@
+/* The Google Ads landing page.
+ *
+ * Written fresh rather than imported from the 2728 pages: that stylesheet is
+ * six rounds of patches stacked on each other and a seventh would be unreadable.
+ * Everything here is scoped under .page, which is the only element the route
+ * renders, so nothing can leak into globals.css (which `experimental.inlineCss`
+ * puts on every route of the site, including the .com-shaped journal).
+ *
+ * Contrast: --muted #BFB2A2 on --paper #080704 is 9.4:1 and --gold #B8956A is
+ * 7.0:1. Body copy on this site has failed AA twice before. Do not darken
+ * either value without checking it.
+ */
+
+.page {
+  --paper: #080704;
+  --raise: #0E0C0A;
+  --card: #141210;
+  --ink: #E8E0D0;
+  --body: #D5CABA;
+  --muted: #BFB2A2;
+  --gold: #B8956A;
+  /* components/weddings/ReviewScreenshots reads --green and --muted from
+     whatever scope it lands in. Alias it rather than fork the component. */
+  --green: #B8956A;
+  --line: #2A2520;
+  background: var(--paper);
+  color: var(--ink);
+  /* Nothing on this page may produce a document-level horizontal scrollbar:
+     the mobile scrollers use negative-margin bleed, and 15px of reserved
+     gutter is what left a dark band down the right of the hero photograph.
+     `clip` rather than `hidden` so position:sticky still works inside. */
+  overflow-x: clip;
+  font-family: var(--font-jost), system-ui, sans-serif;
+  font-size: 17px;
+  font-weight: 400;
+  line-height: 1.7;
+}
+.page * { box-sizing: border-box; }
+.page h1, .page h2, .page h3, .page p, .page figure, .page ul, .page ol, .page blockquote { margin: 0; }
+.page h1, .page h2, .page h3, .page blockquote {
+  font-family: var(--font-cormorant), Georgia, serif;
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  line-height: 1.04;
+}
+.page em { font-style: italic; font-weight: 400; color: var(--gold); }
+.page a { color: inherit; text-decoration: none; }
+.page a:focus-visible,
+.page button:focus-visible,
+.page summary:focus-visible,
+.page input:focus-visible { outline: 2px solid var(--gold); outline-offset: 4px; }
+
+.skip { position: fixed; top: -100px; left: 20px; z-index: 100; padding: 12px 20px; background: var(--ink); color: var(--paper); }
+.skip:focus { top: 12px; }
+
+.eyebrow {
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold);
+  line-height: 1.7;
+}
+
+/* ── Header ───────────────────────────────────────────────────────────────
+   No navigation. An ads page has one way forward. */
+.header {
+  display: flex; align-items: center; justify-content: space-between; gap: 20px;
+  max-width: 1500px; margin: auto; padding: 20px 6%;
+  border-bottom: 1px solid var(--line);
+}
+.wordmark { font-family: var(--font-cormorant), Georgia, serif; font-size: 30px; line-height: 1; }
+.wordmark span { display: block; font-family: var(--font-jost), sans-serif; font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--muted); margin-top: 7px; }
+.headerCta {
+  display: inline-flex; align-items: center; gap: 14px;
+  font-size: 15px; color: var(--ink);
+  border: 1px solid var(--gold); padding: 11px 20px; min-height: 46px;
+  transition: background 0.2s;
+}
+.headerCta:hover { background: var(--card); }
+
+/* ── Hero ─────────────────────────────────────────────────────────────────
+   The headline repeats the search term, and the form is the next thing under
+   it. On a phone the photograph comes after the form, not before it. */
+.hero { max-width: 1500px; margin: auto; display: grid; grid-template-columns: 1fr; }
+.heroCopy { padding: 40px 6% 44px; }
+.hero h1 { font-size: clamp(42px, 9.5vw, 62px); margin: 16px 0 18px; }
+.intro { color: var(--body); font-size: 17px; line-height: 1.72; max-width: 46ch; }
+.price { margin-top: 20px !important; font-size: 17px; }
+.price strong { font-weight: 400; color: var(--gold); }
+.price span { display: block; font-size: 14px; color: var(--muted); margin-top: 4px; line-height: 1.6; }
+.heroPhoto { position: relative; height: 96vw; max-height: 560px; margin: 0 6% 8px; overflow: hidden; }
+.heroPhoto img { object-fit: cover; }
+.orBook { font-size: 15px; color: var(--muted); margin-top: 16px !important; }
+.textLink { color: var(--gold); border-bottom: 1px solid var(--gold); padding-bottom: 2px; }
+
+/* ── The date check ───────────────────────────────────────────────────── */
+.check, .checkDone {
+  margin-top: 26px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-top: 2px solid var(--gold);
+  padding: 22px 20px 20px;
+  max-width: 560px;
+}
+.checkTitle {
+  font-family: var(--font-cormorant), Georgia, serif;
+  font-size: 27px; line-height: 1.1; letter-spacing: -0.02em;
+  margin-bottom: 16px !important;
+}
+.honeypot { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+.checkRow { display: grid; grid-template-columns: 1fr 1fr; gap: 13px; }
+.checkField { min-width: 0; }
+.checkWide { grid-column: 1 / -1; }
+.checkField label {
+  display: block; font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--muted); margin-bottom: 6px;
+}
+.checkField label span { text-transform: none; letter-spacing: 0.02em; color: #9D9284; }
+.checkField input {
+  width: 100%; min-height: 50px;
+  background: var(--paper); border: 1px solid #3A332C; color: var(--ink);
+  font-family: var(--font-jost), sans-serif; font-size: 16px;
+  padding: 12px 12px; border-radius: 0; appearance: none; -webkit-appearance: none;
+}
+.checkField input::placeholder { color: #8C8275; }
+.checkField input:focus { border-color: var(--gold); outline: none; }
+/* Safari renders the native date picker glyph near-black on this ground. */
+.checkField input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(84%) sepia(12%) saturate(360%) hue-rotate(2deg); cursor: pointer; }
+
+.checkButton {
+  display: flex; align-items: center; justify-content: center; gap: 14px;
+  width: 100%; min-height: 56px; margin-top: 18px;
+  background: var(--gold); color: var(--paper); border: none;
+  font-family: var(--font-jost), sans-serif; font-size: 16px; letter-spacing: 0.03em;
+  cursor: pointer; transition: background 0.2s;
+}
+.checkButton:hover { background: #CBA87B; }
+.checkButton:disabled { opacity: 0.65; cursor: default; }
+.checkMicro { font-size: 13px; color: var(--muted); margin-top: 12px !important; line-height: 1.6; }
+.checkError { color: #E08A78; font-size: 15px; margin-top: 14px !important; }
+.checkDone { outline: none; }
+.checkDoneLead {
+  font-family: var(--font-cormorant), Georgia, serif; font-style: italic;
+  font-size: 26px; line-height: 1.2; color: var(--ink); margin-bottom: 12px !important;
+}
+.checkDone p { color: var(--body); font-size: 16px; line-height: 1.7; }
+.checkDone .checkButton { margin-top: 20px; text-decoration: none; }
+
+/* ── Fact bar ─────────────────────────────────────────────────────────── */
+.factBar {
+  display: flex; flex-wrap: wrap; justify-content: center; gap: 10px 26px;
+  padding: 18px 6%; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
+  font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted);
+  text-align: center;
+}
+
+/* ── Section heading, shared ──────────────────────────────────────────── */
+.sectionHead { margin-bottom: 30px; }
+.sectionHead h2 { font-size: clamp(36px, 8vw, 50px); margin-top: 14px; }
+.sectionHead > p { color: var(--body); font-size: 16px; line-height: 1.75; margin-top: 20px !important; max-width: 52ch; }
+
+.weddings, .look, .prices { max-width: 1500px; margin: auto; padding: 62px 6%; }
+.look { background: var(--raise); max-width: none; }
+.look > * { max-width: 1500px; margin-left: auto; margin-right: auto; }
+
+/* ── The galleries ────────────────────────────────────────────────────── */
+.albumGrid { display: grid; grid-template-columns: 1fr; gap: 32px; }
+.album { display: block; }
+.albumPhoto { position: relative; aspect-ratio: 4 / 5; overflow: hidden; background: var(--card); }
+.albumPhoto img { object-fit: cover; transition: transform 0.6s; }
+.album:hover .albumPhoto img { transform: scale(1.03); }
+.albumNames { font-family: var(--font-cormorant), Georgia, serif; font-size: 27px; line-height: 1.15; margin-top: 16px !important; }
+.albumWhere { color: var(--body); font-size: 15px; margin-top: 4px !important; }
+.albumMeta {
+  display: flex; justify-content: space-between; gap: 16px;
+  margin-top: 10px !important; padding-top: 10px; border-top: 1px solid var(--line);
+  font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted);
+}
+.albumMeta span:last-child { color: var(--gold); }
+
+/* ── The look strip ───────────────────────────────────────────────────── */
+.lookStrip {
+  display: flex; gap: 12px; overflow-x: auto;
+  scroll-snap-type: x mandatory; padding-bottom: 14px;
+  scrollbar-width: thin; scrollbar-color: var(--gold) transparent;
+}
+.lookStrip figure { flex: 0 0 62%; scroll-snap-align: start; }
+.lookStrip figure > div { position: relative; aspect-ratio: 4 / 5; overflow: hidden; background: var(--card); }
+.lookStrip img { object-fit: cover; }
+.lookStrip figcaption { font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-top: 10px; }
+.stripHint { font-size: 15px; color: var(--muted); margin-top: 14px !important; }
+.stripHint span { margin-right: 10px; color: var(--gold); }
+/* There is nothing to swipe once the strip becomes a grid. */
+@media (min-width: 700px) { .swipeOnly { display: none; } }
+.stripHint a { color: var(--gold); border-bottom: 1px solid var(--gold); }
+
+/* ── Prices ───────────────────────────────────────────────────────────── */
+.priceGrid { display: grid; grid-template-columns: 1fr; gap: 16px; }
+.priceCard, .priceCardFeatured {
+  display: flex; flex-direction: column;
+  border: 1px solid var(--line); border-top: 2px solid var(--line);
+  padding: 26px 22px 20px; background: var(--paper);
+}
+.priceCardFeatured { background: var(--card); border-top-color: var(--gold); }
+/* Every card renders this row, the two unflagged ones with a blank. A ::before
+   placeholder was tried first and left the middle card's heading nine pixels
+   high: a generated box and a real one do not measure the same inside a flex
+   column, and a CSS unicode escape in `content` survives the build literally
+   and paints a tofu box. A real element in the markup is the reliable version. */
+.flag {
+  display: block; height: 20px; line-height: 20px; margin-bottom: 10px;
+  font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold);
+}
+.tierHours { font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+.priceGrid h3 { font-size: 38px; margin-top: 8px !important; }
+.tierPrice { font-family: var(--font-cormorant), Georgia, serif; font-size: 40px; line-height: 1.1; margin-top: 12px !important; }
+.tierPrice span { display: block; font-family: var(--font-jost), sans-serif; font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-top: 6px; }
+.tierFor { color: var(--body); font-size: 15px; margin-top: 16px !important; }
+.priceGrid ul { list-style: none; padding: 20px 0 22px; font-size: 15px; line-height: 1.6; color: var(--body); flex: 1; }
+.priceGrid li { position: relative; padding-left: 20px; margin-bottom: 10px; }
+.priceGrid li::before { content: "✓"; position: absolute; left: 0; top: 0; color: var(--gold); font-size: 13px; }
+.tierLink {
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  border-top: 1px solid var(--line); padding-top: 16px; min-height: 48px;
+  font-size: 15px; color: var(--gold);
+}
+.included { margin-top: 32px; border-top: 1px solid var(--line); padding-top: 24px; }
+.included h3 { font-size: 28px; }
+.included p { color: var(--body); font-size: 16px; line-height: 1.8; margin-top: 12px !important; }
+.note { color: var(--muted); font-size: 14px; line-height: 1.8; margin-top: 22px !important; }
+
+/* ── Reviews ──────────────────────────────────────────────────────────── */
+.reviews { max-width: 1500px; margin: auto; padding: 62px 6%; border-top: 1px solid var(--line); }
+.quotes { display: grid; grid-template-columns: 1fr; gap: 30px; margin: 26px 0 44px; }
+.quotes blockquote { font-size: clamp(24px, 5.6vw, 31px); line-height: 1.22; }
+.quotes figcaption { font-size: 14px; color: var(--gold); margin-top: 16px; }
+.quotes figcaption span { color: var(--muted); }
+
+/* ── Arman ────────────────────────────────────────────────────────────── */
+.about { display: grid; grid-template-columns: 1fr; background: var(--raise); }
+.aboutPhoto { position: relative; height: 104vw; max-height: 620px; }
+.aboutPhoto img { object-fit: cover; }
+.aboutCopy { padding: 44px 6% 52px; align-self: center; }
+.aboutCopy h2 { font-size: clamp(36px, 8vw, 50px); margin: 14px 0 22px; }
+.aboutCopy p:not(.eyebrow) { color: var(--body); font-size: 16px; line-height: 1.8; margin-bottom: 16px !important; max-width: 52ch; }
+.aboutLink {
+  display: inline-flex; align-items: center; gap: 22px;
+  color: var(--gold); border-bottom: 1px solid var(--gold);
+  font-size: 16px; padding-bottom: 8px; min-height: 44px; margin-top: 6px;
+}
+
+/* ── FAQ ──────────────────────────────────────────────────────────────── */
+.faq { max-width: 1500px; margin: auto; padding: 62px 6%; }
+.faq h2 { font-size: clamp(36px, 8vw, 50px); margin-top: 14px; }
+.faqAside { color: var(--body); font-size: 16px; line-height: 1.8; margin-top: 20px !important; max-width: 40ch; }
+.faqLink {
+  display: inline-flex; align-items: center; gap: 20px;
+  color: var(--gold); border-bottom: 1px solid var(--gold);
+  font-size: 16px; padding-bottom: 8px; min-height: 44px; margin-top: 18px;
+}
+.questions { margin-top: 30px; }
+.questions details { border-bottom: 1px solid var(--line); }
+.questions details:first-child { border-top: 1px solid var(--line); }
+.questions summary {
+  display: flex; align-items: center; justify-content: space-between; gap: 22px;
+  padding: 19px 0; min-height: 52px; cursor: pointer; list-style: none;
+  font-size: 16px; color: var(--ink);
+}
+.questions summary::-webkit-details-marker { display: none; }
+.questions summary > span { font-size: 22px; line-height: 1; color: var(--gold); transition: transform 0.2s; }
+.questions details[open] summary > span { transform: rotate(45deg); }
+.questions details p { color: var(--body); font-size: 16px; line-height: 1.85; padding: 0 30px 22px 0; }
+
+/* ── Booking ──────────────────────────────────────────────────────────── */
+.booking {
+  display: grid; grid-template-columns: 1fr; gap: 34px;
+  background: var(--raise); padding: 56px 5%;
+  scroll-margin-top: 16px;
+}
+.bookingCopy h2 { font-size: clamp(38px, 8.5vw, 54px); margin: 14px 0 22px; }
+.bookingCopy ol { list-style: none; padding: 0; counter-reset: step; color: var(--body); font-size: 16px; line-height: 1.7; }
+.bookingCopy li { counter-increment: step; position: relative; padding: 7px 0 7px 38px; }
+.bookingCopy li::before {
+  content: counter(step); position: absolute; left: 0; top: 7px;
+  font-family: var(--font-cormorant), Georgia, serif; font-size: 20px; line-height: 1.35;
+  color: var(--gold);
+}
+.bookingNote {
+  font-family: var(--font-cormorant), Georgia, serif; font-style: italic;
+  font-size: 23px; line-height: 1.35; color: var(--ink); margin-top: 22px !important; max-width: 34ch;
+}
+.bookingCalendar { min-width: 0; }
+
+/* These five class names are the contract with WeddingCalendar and
+   BookingNavigation in app/2728-cc-weddings/wedding-calendar.tsx. Renaming one
+   silently unstyles the calendar rather than failing the build. */
+.calendarPanel { position: relative; min-height: 780px; background: var(--card); border: 1px solid var(--line); }
+.calendarPanel iframe { display: block; width: 100%; height: 100%; min-height: 780px; border: 0; position: relative; z-index: 1; }
+.widgetHost { position: relative; min-height: 780px; }
+.calendarLoading {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 12px; padding: 24px; text-align: center; font-size: 16px; color: var(--muted);
+}
+.calendarLoading a, .calendarFallback a { color: var(--gold); text-decoration: underline; text-underline-offset: 3px; }
+.calendarFallback { font-size: 14px; text-align: center; color: var(--muted); margin-top: 14px !important; }
+
+/* ── Footer ───────────────────────────────────────────────────────────── */
+.footer {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 10px 22px;
+  max-width: 1500px; margin: auto; padding: 34px 6% 120px;
+  font-size: 13px; color: var(--muted); text-align: center;
+}
+.footer a { color: var(--muted); text-decoration: underline; display: inline-flex; align-items: center; min-height: 44px; }
+.footerName { width: 100%; font-family: var(--font-cormorant), Georgia, serif; font-size: 26px; color: var(--ink); }
+
+/* ── The sticky bar, phone only ───────────────────────────────────────── */
+.stickyCta {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 40;
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  padding: 11px 5% calc(11px + env(safe-area-inset-bottom));
+  background: var(--paper); border-top: 1px solid var(--gold);
+}
+.stickyCta > span { font-size: 11px; line-height: 1.5; color: var(--muted); }
+.stickyCta strong { font-size: 13px; font-weight: 400; color: var(--ink); }
+.stickyCta a {
+  background: var(--gold); color: var(--paper);
+  font-size: 15px; padding: 13px 18px; min-height: 48px;
+  display: inline-flex; align-items: center; white-space: nowrap;
+}
+.stickyCta[hidden] { display: none !important; }
+
+/* ── Tablet ───────────────────────────────────────────────────────────── */
+@media (min-width: 700px) {
+  .albumGrid { grid-template-columns: repeat(2, 1fr); gap: 36px 24px; }
+  .lookStrip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; overflow: visible; padding-bottom: 0; }
+  .lookStrip figure { flex-basis: auto; }
+  .priceGrid { grid-template-columns: repeat(3, 1fr); gap: 0; }
+  .priceCard, .priceCardFeatured { border-left: none; }
+  .priceCard:first-child { border-left: 1px solid var(--line); }
+  .quotes { grid-template-columns: repeat(3, 1fr); gap: 34px; }
+  .sectionHead { display: flex; align-items: flex-end; justify-content: space-between; gap: 44px; }
+  .sectionHead > p { margin-top: 0 !important; max-width: 38ch; }
+}
+
+/* ── Desktop ──────────────────────────────────────────────────────────── */
+@media (min-width: 860px) {
+  .header { padding: 22px 5%; }
+  .wordmark { font-size: 34px; }
+
+  .hero { grid-template-columns: 1.05fr 0.95fr; align-items: stretch; }
+  .heroCopy { padding: 54px 5% 60px 5%; display: flex; flex-direction: column; justify-content: center; }
+  .hero h1 { font-size: clamp(52px, 4.6vw, 70px); }
+  .heroPhoto { height: auto; max-height: none; margin: 0; min-height: 720px; }
+  .check, .checkDone { max-width: none; padding: 24px 24px 22px; }
+  .checkRow { grid-template-columns: 1fr 1fr; }
+
+  .weddings, .look, .prices, .reviews, .faq { padding: 86px 5%; }
+  .albumGrid { grid-template-columns: repeat(3, 1fr); gap: 40px 24px; }
+
+  .about { grid-template-columns: 0.9fr 1.1fr; }
+  .aboutPhoto { height: auto; max-height: none; min-height: 680px; }
+  .aboutCopy { padding: 60px 8%; }
+
+  .faq { display: grid; grid-template-columns: 0.72fr 1.28fr; gap: 6%; align-items: start; }
+  .questions { margin-top: 0; }
+  .included { display: grid; grid-template-columns: 0.42fr 1.58fr; gap: 6%; }
+  .included p { margin-top: 0 !important; }
+  .note { max-width: 88ch; }
+
+  .booking { grid-template-columns: 0.85fr 1.15fr; gap: 5%; padding: 80px 5%; }
+  .bookingCopy { padding-top: 12px; }
+
+  .footer { justify-content: space-between; text-align: left; padding-bottom: 40px; }
+  .footerName { width: auto; }
+  .stickyCta { display: none; }
+}
+
+/* ── Small phones ─────────────────────────────────────────────────────────
+   Headless Chrome on Windows clamps its window to about 480px, so this range
+   cannot be screenshotted here and was sized by measurement instead. At 360px
+   the content box is 317px, and the header's wordmark (~155px at 30px
+   Cormorant) plus "Book a free call ↗" (~180px at 15px Jost) does not fit. */
+@media (max-width: 560px) {
+  .header { padding: 18px 6%; gap: 12px; }
+  .wordmark { font-size: 25px; }
+  .wordmark span { font-size: 9px; letter-spacing: 0.18em; margin-top: 6px; }
+  .headerCta { font-size: 14px; gap: 10px; padding: 10px 14px; white-space: nowrap; }
+  .eyebrow { font-size: 11px; letter-spacing: 0.14em; }
+  .check, .checkDone { padding: 20px 16px 18px; }
+  .checkRow { gap: 11px; }
+  .factBar { gap: 8px 18px; font-size: 11px; letter-spacing: 0.07em; }
+}
+/* Below this the two-column form fields are narrower than the date picker. */
+@media (max-width: 400px) {
+  .checkRow { grid-template-columns: 1fr; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page *, .page *::before, .page *::after { transition: none !important; animation: none !important; }
+}

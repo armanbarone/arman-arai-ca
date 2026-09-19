@@ -248,6 +248,16 @@ export const ARMAN_PORTRAIT = p(
   "Arman Arai with his camera, in a flat cap and suspenders, against a window",
 );
 
+/** Arman himself, mirrored from the Banff landing pages on armanarai.com into
+ *  the canadian-wedding bucket so it goes through the same transform pipeline
+ *  as every other photograph here. The about/arman-* frames below came with the
+ *  GoHighLevel import and show a different photographer at work; this is the
+ *  one to use anywhere the page says "this is me". */
+export const ARMAN = p(
+  "about/arman-portrait-white-suit",
+  "Arman Arai in a white dinner jacket and black bow tie on a terrace at golden hour",
+);
+
 export const ABOUT_STORY: Photo[] = [
   p("about/arman-shooting-ivy-wall", "Arman photographing a bride and groom in front of an ivy-covered wall"),
   p("about/arman-shooting-couple-bridge", "Arman photographing a couple embracing on a bridge over a river"),

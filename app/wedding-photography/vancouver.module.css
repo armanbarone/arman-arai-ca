@@ -68,7 +68,7 @@
 .workSection .eyebrow { color: #c5b596; }
 .workSection .sectionHeading > p, .weddingHeading > p { color: #d6dacf; }
 .styleAlbums { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 20px; }
-.albumCard { min-width: 0; text-align: left; color: inherit; background: none; border: 0; padding: 0; }
+.albumCard { min-width: 0; display: flex; flex-direction: column; align-items: stretch; justify-content: flex-start; text-align: left; color: inherit; background: none; border: 0; padding: 0; }
 .albumImage { display: block; position: relative; aspect-ratio: 3 / 4.3; overflow: hidden; }
 .albumImage img { object-fit: cover; transition: transform .45s; }
 .albumCard:hover .albumImage img { transform: scale(1.035); }

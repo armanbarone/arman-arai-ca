@@ -60,11 +60,11 @@ const CHAPTERS = [
   {
     numeral: "III",
     short: "The session",
-    caption: "Included in every collection, and not really about the photographs.",
+    caption: "A C$700 add-on, and not really about the photographs.",
     kicker: "The session",
     title: "An hour to stop performing",
     body: [
-      "An engagement session in Montréal, or a welcome session on location, is included in every collection. It is not really for the photographs.",
+      "An engagement session in Montréal, or a welcome session on location, is a C$700 add-on rather than something folded into a collection. It is the one I recommend most often, and it is not really for the photographs.",
       "It is for the hour where you stop performing for the camera and I learn how the two of you actually stand next to each other. Couples who have done it are noticeably different at 4pm on the wedding day, and it shows in the frames.",
     ],
     photo: FILM[4],

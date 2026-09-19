@@ -98,9 +98,8 @@ const steps = [
 /* What is in every collection. The .com's "eight things you will never touch". */
 const carried = [
   { t: "Six continuous hours", d: "The floor of every collection. Eight on Signature, ten on Heirloom." },
-  { t: "A feature film", d: "Colour graded, one minute on Core and two above it. In every collection, not an add-on." },
+  { t: "Vertical social reels", d: "Cut from the day and sent in the first week, long before the gallery, while everyone is still asking to see something." },
   { t: "Film prints on the night", d: "Real prints handed to your guests before they go home, while the gallery is still weeks away." },
-  { t: "An engagement session", d: "Included. Not for the photographs, for the hour where you stop performing and I learn how you actually stand." },
   { t: "A timeline that survives", d: "Built backwards from sunset, with one deliberate block of slack that absorbs the whole morning's drift." },
   { t: "A written family-photo plan", d: "Twelve groups and two callers, agreed before the day. This is the single largest block of time a big wedding gets back." },
   { t: "A preview in 48 hours", d: "Thirty frames while the day is still in your head. Next day on Signature, 24 hours on Heirloom." },
@@ -169,10 +168,10 @@ export default function Home() {
                 </div>
                 <div className="grid grid-cols-2 gap-0.5" style={{ aspectRatio: "2 / 1" }}>
                   <div className="relative overflow-hidden">
-                    <HeroCycler pool={HERO_POOL} position={1} alt="A moment from a wedding day photographed by Arman Arai" sizes="50vw" />
+                    <HeroCycler pool={HERO_POOL} position={1} alt="A moment from a wedding day photographed by Arman Arai" sizes="50vw" eager />
                   </div>
                   <div className="relative overflow-hidden">
-                    <HeroCycler pool={HERO_POOL} position={2} alt="A wedding reception photographed by Arman Arai" sizes="50vw" objectPosition="center 60%" />
+                    <HeroCycler pool={HERO_POOL} position={2} alt="A wedding reception photographed by Arman Arai" sizes="50vw" objectPosition="center 60%" eager />
                   </div>
                 </div>
               </div>

@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import InquireButton from "@/components/InquireButton";
 import { SITE } from "@/lib/site";
+import { PROOF, proofSrc } from "@/lib/reviews";
 
 export const metadata: Metadata = {
   title: "Reviews — What Couples Actually Wrote",
@@ -16,28 +17,10 @@ export const metadata: Metadata = {
   },
 };
 
-/* Screenshots couples sent, unedited. Intrinsic dimensions are recorded because
-   these came off a dozen different platforms and run from 0.46 to 2.42 in aspect
-   ratio; without them next/image cannot reserve space and the page reflows as
-   each one lands. They are laid out in masonry columns rather than a grid so no
-   screenshot is ever cropped, which on a review would cut off the words that
-   matter. */
-const PROOF = [
-  { n: 1, w: 1896, h: 2485 },
-  { n: 2, w: 1082, h: 451 },
-  { n: 3, w: 750, h: 851 },
-  { n: 4, w: 750, h: 657 },
-  { n: 5, w: 1896, h: 1555 },
-  { n: 6, w: 422, h: 474 },
-  { n: 7, w: 375, h: 797 },
-  { n: 8, w: 428, h: 301 },
-  { n: 9, w: 750, h: 1623 },
-  { n: 10, w: 437, h: 293 },
-  { n: 11, w: 422, h: 231 },
-  { n: 12, w: 373, h: 154 },
-];
-
-const src = (n: number) => `https://cdn.armanarai.ca/reviews/proof-${String(n).padStart(2, "0")}.png`;
+/* The screenshots, their dimensions and their alt text live in lib/reviews.ts,
+   shared with the 2728 landing pages. They are laid out in masonry columns
+   rather than a grid so no screenshot is ever cropped, which on a review would
+   cut off the words that matter. */
 
 export default function Reviews() {
   return (
@@ -75,8 +58,8 @@ export default function Reviews() {
             {PROOF.map((p, i) => (
               <div key={p.n} className="proof-item border border-dust/60 bg-ivory">
                 <Image
-                  src={src(p.n)}
-                  alt="A message from a couple after their gallery was delivered"
+                  src={proofSrc(p.n)}
+                  alt={p.alt}
                   width={p.w}
                   height={p.h}
                   sizes="(max-width: 639px) 100vw, (max-width: 1023px) 50vw, 33vw"
@@ -108,7 +91,7 @@ export default function Reviews() {
               href="/galleries"
               className="text-[0.62rem] tracking-[0.2em] uppercase text-slate hover:text-rose transition-colors border-b border-dust hover:border-rose pb-1.5"
             >
-              Four complete albums →
+              See complete weddings →
             </Link>
             <InquireButton className="inline-block bg-rose text-ivory text-[0.62rem] tracking-[0.2em] uppercase px-10 py-4 hover:bg-rose-dark transition-colors duration-300 cursor-pointer border-none">
               Check your date

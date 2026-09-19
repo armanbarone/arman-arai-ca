@@ -55,6 +55,7 @@ export async function POST(req: NextRequest) {
       bestTime: body.bestTime ?? "",
       partnerName: body.partnerName ?? "",
       weddingDate: body.weddingDate ?? "",
+      market: body.market ?? "",
       venue: body.venue ?? "",
       guestCount: body.guestCount ?? "",
       collection: body.collection ?? "",
@@ -106,8 +107,12 @@ export async function POST(req: NextRequest) {
       : isQuick
       ? [
           ["Name", body.name ?? ""],
-          ["Phone", body.phone || "Not provided"],
           ["Email", body.email ?? ""],
+          ["Phone", body.phone || "Not provided"],
+          // The quick form asks for these two now, because without them the
+          // first reply cannot answer the only question it is asked.
+          ["Wedding Date", body.weddingDate || "Not provided"],
+          ["Where", body.venue || "Not provided"],
           ["Best Time", body.bestTime || "Not specified"],
         ]
       : [
@@ -115,8 +120,13 @@ export async function POST(req: NextRequest) {
           ["Phone", body.phone || "Not provided"],
           ["Email", body.email ?? ""],
           ["Wedding Date", body.weddingDate || "Not provided"],
+          // "Where" and "Coverage" are asked on the contact form (Where is even
+          // required) but were never put on the email, so the two answers that
+          // decide availability and the recommendation arrived nowhere.
+          ["Where", body.market || "Not provided"],
           ["Venue", body.venue || "Not provided"],
           ["Guests", body.guestCount || "Not provided"],
+          ["Coverage", body.collection || "Not specified"],
           ["Referral", body.referral || "Not provided"],
         ];
 

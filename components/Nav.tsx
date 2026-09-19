@@ -52,7 +52,7 @@ const menuGroups: MenuGroup[] = [
     slug: "bc",
     href: hub("vancouver"),
     places: [
-      { name: "Vancouver", href: hub("vancouver"), note: "From C$4,500, the North Shore and Squamish included" },
+      { name: "Vancouver", href: hub("vancouver"), note: "From C$3,000, the North Shore and Squamish included" },
       { name: "Whistler", href: hub("whistler"), note: "The Sea-to-Sky, at the same price as everywhere else" },
       { name: "Tofino", href: hub("tofino"), note: "Vancouver Island and the open Pacific, quoted" },
     ],

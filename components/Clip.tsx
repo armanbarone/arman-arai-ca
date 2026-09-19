@@ -74,7 +74,7 @@ const CSS = `
 }
 .clip-cap {
   font-family: var(--font-jost), sans-serif; font-size: 0.6rem;
-  letter-spacing: 0.22em; text-transform: uppercase; color: #857060;
+  letter-spacing: 0.22em; text-transform: uppercase; color: #8F7A69;
   margin-top: 0.8rem;
 }
 @media (prefers-reduced-motion: reduce) {

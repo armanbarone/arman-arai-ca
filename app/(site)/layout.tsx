@@ -48,8 +48,12 @@ export default function SiteLayout({ children }: { children: React.ReactNode }) 
       />
       <InquiryProvider>
         <ImageProtect />
+        {/* Off-screen until focused. The nav carries a places menu and a
+            portfolio menu, so a keyboard user otherwise tabs through every
+            city on the site before reaching the page. */}
+        <a className="skip-link" href="#main">Skip to content</a>
         <Nav />
-        <main>{children}</main>
+        <main id="main">{children}</main>
         <Footer />
         <InquiryModal />
       </InquiryProvider>

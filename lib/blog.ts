@@ -872,7 +872,7 @@ export const posts: BlogPost[] = [
 <h2>What coverage in Niagara costs</h2>
 <figure><img src="${CDN}/cities/toronto/niagara/2023-weddings-np-ramblersrest-7-edited-e1724685922414.webp" alt="Couple close together on the stone steps of the heritage pavilion at dusk"><figcaption>Niagara, Muskoka and the County all buy the same collections at the same price. Only the drive differs.</figcaption></figure>
 <p>Niagara costs exactly what a downtown Toronto Saturday costs, and what a Montréal one costs: <strong>C$3,000 for Core at six hours, C$4,500 for Signature at eight, and C$6,000 for Heirloom at ten.</strong> Travel stays separate and is limited to the practical route and any night the schedule actually requires; a winery in Niagara-on-the-Lake is not a more expensive wedding than one on King Street.</p>
-<p>A colour-graded feature film and film prints handed to guests on the night are in every collection here as everywhere, which matters more for a wedding people drove two hours to reach: they get something in their hands before they leave, and the gallery is still weeks away.</p>
+<p>Vertical social reels and film prints handed to guests on the night are in every collection here as everywhere, which matters more for a wedding people drove two hours to reach: they get something in their hands before they leave, and the gallery is still weeks away. The colour-graded feature film comes with Signature and Heirloom.</p>
 <p>If you are weighing Niagara against Muskoka or the County, <a href="/blog/wedding-venues-outside-toronto">the comparison is written out here</a>. If you already have a date and a venue, <a href="/contact">send them</a> and I will tell you what the light does there at that hour in that month.</p>
 `,
   },
@@ -1247,16 +1247,16 @@ export const posts: BlogPost[] = [
   /* ───────────────────────────────────────── THE FILM AND THE PRINTS ── */
   {
     slug: "wedding-film-and-prints-included",
-    title: "Why a Film and Real Prints Are in Every Collection",
+    title: "Why Reels and Real Prints Are in Every Collection",
     subtitle:
-      "A one to two minute film, colour graded, and photographs handed to your guests before they go home. Neither is an add-on, and here is why.",
+      "Vertical social reels in the first week, and photographs handed to your guests before they go home. Neither is an add-on, and here is why.",
     date: "2026-08-17",
     dateDisplay: "August 17, 2026",
     readTime: "5 min read",
     coverImage: `${CDN}/galleries/eathon-jessica/047.webp`,
     coverAlt: "Couple in a warmly lit room, the groom adjusting his cuff in a mirror",
     excerpt:
-      "Every collection includes a colour-graded feature film and film prints handed to guests on the night. Why both are included rather than sold.",
+      "Every collection includes vertical social reels and film prints handed to guests on the night. Why both are included rather than sold, and where the feature film actually sits.",
     topic: "Choosing",
     city: null,
     body: `
@@ -1291,7 +1291,7 @@ export const posts: BlogPost[] = [
 <figure><img src="${CDN}/galleries/nicole-js/026.webp" alt="Newlyweds touching champagne glasses together"><figcaption>Prints on the night, a preview inside 48 hours, then the film, then the gallery.</figcaption></figure>
 <p>In order. <strong>Prints on the night.</strong> Then the social reels, in the first week. Then a preview of stills, inside 48 hours on Core, next day on Signature and within 24 hours on Heirloom. Then the film. Then the full gallery: within two weeks on Core, three on Signature and Heirloom, with the date written into the contract rather than promised in an email.</p>
 <p>Signature adds two rolls of real film, processed and scanned. Heirloom adds four. Those come back when the lab is finished with them, which is typically four to six weeks and genuinely outside my control.</p>
-<p>Everything above is in every collection at every price, in <a href="/pricing">all three regions</a>. If you want to see what the whole thing looks like on a real day, <a href="/galleries">five complete weddings are here</a>, first frame to last.</p>
+<p>The reels and the prints are in every collection at every price, and the feature film comes with Signature and Heirloom. The <a href="/pricing">whole ladder is published</a>. If you want to see what it looks like on a real day, <a href="/galleries">nine complete weddings are here</a>, first frame to last.</p>
 `,
   },
   /* ───────────────────────────────────────────────────────────── BANFF ── */
@@ -1353,7 +1353,7 @@ export const posts: BlogPost[] = [
 <figure><img src="${CDN}/cities/banff/banff-62.webp" alt="A small group in formalwear at a mountain lake"><figcaption>Quoted against the venue rather than averaged across the whole province.</figcaption></figure>
 <p><strong>Banff sits outside the three regions I publish figures for, so it is quoted rather than printed.</strong> That is deliberate. A Canmore Saturday at a lodge and a Moraine Lake sunrise with shuttle logistics are different jobs, and one averaged number would be wrong for both.</p>
 <p>The photography is published and it is the same as everywhere: C$3,000 for Core, C$4,500 for Signature and C$6,000 for Heirloom. Travel is kept to the lowest practical route booked early, and grouping nearby dates can reduce or remove that fee. Send the venue and the date and the route can be worked out around what the day actually requires.</p>
-<p>Every collection carries the same things it carries everywhere: a colour-graded feature film, film prints handed to your guests on the night, an engagement session, and the timeline work. The <a href="/banff-wedding-photographer">Banff page</a> has the venues and the seasons in full, <a href="/jasper-wedding-photographer">Jasper is three hours north</a> and much quieter, and the <a href="/pricing">published regions are here</a>.</p>
+<p>Every collection carries the same things it carries everywhere: vertical social reels, film prints handed to your guests on the night, and the timeline work. The feature film comes with Signature and Heirloom, and an engagement session is a C$700 add-on. The <a href="/banff-wedding-photographer">Banff page</a> has the venues and the seasons in full, <a href="/jasper-wedding-photographer">Jasper is three hours north</a> and much quieter, and the <a href="/pricing">published regions are here</a>.</p>
 `,
   },
 

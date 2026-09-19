@@ -29,7 +29,7 @@ const APPROACH = [
   {
     n: "II",
     title: "An engagement session",
-    body: "Included in Core and Signature. Not for the photographs. For the hour where you stop performing and I learn how the two of you actually stand.",
+    body: "A C$700 add-on, and the one I recommend most. Not for the photographs. For the hour where you stop performing and I learn how the two of you actually stand.",
   },
   {
     n: "III",

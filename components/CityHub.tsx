@@ -58,7 +58,11 @@ function WorkWall({ photos }: { photos: { src: string; alt: string }[] }) {
 }
 
 export function cityMetadata(m: Market) {
-  const title = `${m.city} Wedding Photographer — ${m.region}`;
+  // Keep the whole rendered title (this plus " | Arman Arai") near 60
+  // characters so Google shows it intact.
+  const title = m.titleQualifier
+    ? `${m.city} Wedding Photographer — ${m.titleQualifier}`
+    : `${m.city} Wedding Photographer`;
   const priceLine = `Collections from ${money(CORE.price)}, the same figure here as in every other city. Travel quoted openly on top.`;
   return {
     title,

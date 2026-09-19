@@ -50,8 +50,20 @@ body { color: #E8E0D0; background: #080704; font-size: 16px; -webkit-font-smooth
 
 /* ══ READABILITY, copied from armanarai.com ══
    .com resolves these through its theme tokens; this site is dark-only, so the
-   dark values are inlined. --dim #857060, --dim-soft #A89480, --prose #D8CEBF. */
-.text-slate { color:#857060 !important; }
+   dark values are inlined. --dim #8F7A69, --dim-soft #A89480, --prose #D8CEBF.
+
+   --dim was #857060, which measures 4.30:1 on the #080704 ground and fails
+   WCAG AA for normal text. #8F7A69 is 4.95:1. Anything dimmer than #8F7A69 on
+   this background fails: check a replacement before using it. */
+.skip-link {
+  position: fixed; top: -100px; left: 20px; z-index: 300;
+  padding: 12px 20px; background: #E8E0D0; color: #080704;
+  font-family: var(--font-jost), sans-serif; font-size: 0.8rem;
+  letter-spacing: 0.08em; text-decoration: none;
+}
+.skip-link:focus { top: 12px; outline: 3px solid #B8956A; outline-offset: 3px; }
+
+.text-slate { color:#8F7A69 !important; }
 .text-blush { color:#A89480 !important; }
 .prose-arman p { color:#D8CEBF; margin-bottom:1.4em; }
 .prose-arman h2 { color:#E8DDD0; }
@@ -324,7 +336,7 @@ img {
    Daylight flips --text/--dim/--accent to near-black and the headlines,
    datelines and captions disappear into the paper. */
 [data-theme="light"] .gz-root {
-  --gz-ink:#E8E0D0; --gz-dim:#857060; --gz-accent:#B8956A; --gz-gilt:#D4B080;
+  --gz-ink:#E8E0D0; --gz-dim:#8F7A69; --gz-accent:#B8956A; --gz-gilt:#D4B080;
 }
 .gz-root a { color: var(--gz-accent); text-decoration: none; }
 .gz-root a:hover { color: var(--gz-gilt); }
@@ -1492,7 +1504,7 @@ img {
 /* ══ CITY HUB: the sections this site adds on top of the ported .com base ══ */
 .hub-toc-link {
   font-family: var(--font-jost); font-size: 0.66rem; letter-spacing: 0.22em;
-  text-transform: uppercase; color: #857060; text-decoration: none;
+  text-transform: uppercase; color: #8F7A69; text-decoration: none;
   padding: 0.9rem 0; white-space: nowrap; transition: color 0.3s;
 }
 .hub-toc-link:hover { color: #B8956A; }
@@ -1517,7 +1529,7 @@ img {
   font-family: var(--font-cormorant), Georgia, serif; font-weight: 300;
   font-size: 1.4rem; line-height: 1.24; color: #E8E0D0; margin: 0 0 0.9rem;
 }
-.hub-diff-body { font-size: 0.9rem; line-height: 1.75; color: #857060; margin: 0; }
+.hub-diff-body { font-size: 0.9rem; line-height: 1.75; color: #8F7A69; margin: 0; }
 /* The "how I work here" read: prose against a frame of the work. Without the
    grid the copy sat in a 68ch column with the right half of the section empty. */
 .hub-body-split {
@@ -1584,7 +1596,7 @@ img {
   font-family: var(--font-jost); font-size: 0.58rem; letter-spacing: 0.2em;
   text-transform: uppercase; color: #6A5030; margin: 0.35rem 0 0;
 }
-.hub-venue-note { font-size: 0.9rem; line-height: 1.7; color: #857060; margin: 0; }
+.hub-venue-note { font-size: 0.9rem; line-height: 1.7; color: #8F7A69; margin: 0; }
 
 /* Season: four cards, deliberately equal so no month looks recommended. */
 .hub-season-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: #2A2520; }
@@ -1597,7 +1609,7 @@ img {
   font-family: var(--font-cormorant), Georgia, serif; font-size: 1.3rem;
   color: #E8E0D0; margin: 0 0 0.7rem; line-height: 1.2;
 }
-.hub-season-note { font-size: 0.86rem; line-height: 1.7; color: #857060; margin: 0; }
+.hub-season-note { font-size: 0.86rem; line-height: 1.7; color: #8F7A69; margin: 0; }
 
 /* Prices. */
 .hub-price-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: #2A2520; }
@@ -1613,11 +1625,11 @@ img {
 }
 .hub-price-meta {
   font-family: var(--font-jost); font-size: 0.62rem; letter-spacing: 0.16em;
-  text-transform: uppercase; color: #857060; margin: 0 0 1.4rem;
+  text-transform: uppercase; color: #8F7A69; margin: 0 0 1.4rem;
 }
 .hub-price-list { list-style: none; margin: 0; padding: 0; }
 .hub-price-list li {
-  font-size: 0.86rem; line-height: 1.65; color: #857060;
+  font-size: 0.86rem; line-height: 1.65; color: #8F7A69;
   padding-left: 1.1rem; position: relative; margin-bottom: 0.6rem;
 }
 .hub-price-list li::before { content: "\2726"; position: absolute; left: 0; top: 0.1rem; color: #B8956A; font-size: 0.6rem; }
@@ -1632,14 +1644,14 @@ img {
 .hub-cta--big { padding: 1.1rem 2.8rem; margin-top: 0.6rem; }
 .hub-cta-alt {
   font-family: var(--font-jost); font-size: 0.66rem; letter-spacing: 0.2em;
-  text-transform: uppercase; color: #857060; text-decoration: none;
+  text-transform: uppercase; color: #8F7A69; text-decoration: none;
   border-bottom: 0.5px solid #2A2520; padding-bottom: 6px; transition: color 0.3s, border-color 0.3s;
 }
 .hub-cta-alt:hover { color: #B8956A; border-color: #B8956A; }
 
 .hub-faq { border-top: 0.5px solid #2A2520; }
 .hub-faq-item { border-bottom: 0.5px solid #2A2520; padding: 1.5rem 0; }
-.hub-faq-more { font-size: 0.88rem; color: #857060; margin-top: 1.6rem; }
+.hub-faq-more { font-size: 0.88rem; color: #8F7A69; margin-top: 1.6rem; }
 .hub-faq-more a { color: #B8956A; }
 
 .hub-section--close { text-align: center; }
@@ -1678,7 +1690,7 @@ img {
 }
 .hub-album-where {
   display: block; font-family: var(--font-jost); font-size: 0.6rem;
-  letter-spacing: 0.2em; text-transform: uppercase; color: #857060; margin-top: 0.4rem;
+  letter-spacing: 0.2em; text-transform: uppercase; color: #8F7A69; margin-top: 0.4rem;
 }
 .hub-album-frames {
   display: block; font-family: var(--font-jost); font-size: 0.6rem;
@@ -1705,7 +1717,7 @@ img {
 .hub-post-card:hover .hub-post-title { color: #B8956A; }
 .hub-post-read {
   display: block; font-family: var(--font-jost); font-size: 0.56rem;
-  letter-spacing: 0.2em; text-transform: uppercase; color: #857060; margin-top: 0.5rem;
+  letter-spacing: 0.2em; text-transform: uppercase; color: #8F7A69; margin-top: 0.5rem;
 }
 
 /* The .com's timeline packs the hour label and the heading tight. At this

@@ -208,7 +208,7 @@ const CSS = `
 .ga-amp { font-family: var(--font-great-vibes), cursive; font-style: normal; color: #B8956A; }
 .ga-hero-meta {
   font-family: var(--font-jost), sans-serif; font-size: 9px; text-transform: uppercase;
-  letter-spacing: 0.26em; color: #857060; margin: 1.3rem 0 0;
+  letter-spacing: 0.26em; color: #8F7A69; margin: 1.3rem 0 0;
 }
 
 .ga-story { max-width: 760px; margin: 0 auto; padding: 5.5rem 1.5rem 4rem; }

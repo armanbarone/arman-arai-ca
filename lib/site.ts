@@ -452,6 +452,15 @@ export type Market = {
   province: string;
   region: string;
   regionSlug: string;
+  /**
+   * An extra search term for the <title>, where one is genuinely distinct from
+   * the city name. Left unset almost everywhere on purpose: the titles used to
+   * append the full `region` string and ran to 102 characters, so Google cut
+   * them off mid-list and the snippet sold nothing. The sub-regions still live
+   * in the description, the headings and the body, which is what actually
+   * ranks for them.
+   */
+  titleQualifier?: string;
   areas: string[];
   angle: string;
   lede: string;
@@ -629,6 +638,7 @@ export const MARKETS: Market[] = [
   {
     slug: "banff",
     city: "Banff",
+    titleQualifier: "Lake Louise",
     name: "Banff and the Rockies",
     province: "Alberta",
     region: "Banff, Lake Louise, Moraine Lake and Canmore",

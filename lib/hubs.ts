@@ -6,7 +6,16 @@
  *
  * Shape mirrors armanarai.com's service-place hubs, which is why the city pages
  * render with the same hub- classes.
+ *
+ * The one commercial fact that appears up here is the Core price, in the hero
+ * stat block. It is read from site.ts rather than typed, because it was typed
+ * once and two cities drifted to C$4,500 and stayed wrong on a live page.
  */
+
+import { CORE } from "./site";
+
+/** The Core price, for the hero stat block. One national figure, every city. */
+const CORE_STAT = { k: "Core collection", v: `C$${CORE.price.toLocaleString("en-CA")}` };
 
 export type Venue = { name: string; where: string; note: string };
 export type Season = { months: string; light: string; note: string };
@@ -43,7 +52,7 @@ export const HUBS: Record<string, HubContent> = {
       { k: "Best months", v: "May to Oct, and January" },
       { k: "Travel", v: "Reduced on grouped dates" },
       { k: "Working language", v: "English" },
-      { k: "Core collection", v: "C$3,000" },
+      CORE_STAT,
     ],
     different: [
       {
@@ -103,7 +112,7 @@ export const HUBS: Record<string, HubContent> = {
       { k: "Best months", v: "May to Oct" },
       { k: "Multi-day", v: "Quoted by event" },
       { k: "Second shooter", v: "Included on Signature" },
-      { k: "Core collection", v: "C$3,000" },
+      CORE_STAT,
     ],
     different: [
       {
@@ -163,7 +172,7 @@ export const HUBS: Record<string, HubContent> = {
       { k: "Best months", v: "Jun to Sep" },
       { k: "Rain plan", v: "Scouted, not improvised" },
       { k: "Island and Whistler", v: "Same price" },
-      { k: "Core collection", v: "C$4,500" },
+      CORE_STAT,
     ],
     different: [
       {
@@ -223,7 +232,7 @@ export const HUBS: Record<string, HubContent> = {
       { k: "Best months", v: "Jun to Sep, and February" },
       { k: "Price", v: "Same as Vancouver" },
       { k: "Lift risk", v: "Planned for, not hoped about" },
-      { k: "Core collection", v: "C$4,500" },
+      CORE_STAT,
     ],
     different: [
       {
@@ -282,7 +291,7 @@ export const HUBS: Record<string, HubContent> = {
     stats: [
       { k: "Best months", v: "Jun to Sep, and November" },
       { k: "From Vancouver", v: "Seven hours, door to door" },
-      { k: "Price", v: "Quoted, not published" },
+      CORE_STAT,
       { k: "Best collection", v: "Heirloom" },
     ],
     different: [
@@ -343,7 +352,7 @@ export const HUBS: Record<string, HubContent> = {
       { k: "Best months", v: "Jun to Sep, late Sep for larches" },
       { k: "Permits", v: "Parks Canada, arranged early" },
       { k: "Moraine Lake", v: "Shuttle access only" },
-      { k: "Price", v: "Quoted, not published" },
+      CORE_STAT,
     ],
     different: [
       {
@@ -403,7 +412,7 @@ export const HUBS: Record<string, HubContent> = {
       { k: "Best months", v: "Jun to Sep" },
       { k: "From Banff", v: "Three hours, no shortcut" },
       { k: "Overhead", v: "Dark-sky preserve" },
-      { k: "Price", v: "Quoted, not published" },
+      CORE_STAT,
     ],
     different: [
       {

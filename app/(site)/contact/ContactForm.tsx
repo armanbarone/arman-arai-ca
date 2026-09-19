@@ -66,34 +66,34 @@ export default function ContactForm() {
     <form onSubmit={handleSubmit} className="space-y-6">
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
         <div>
-          <label htmlFor="name" className="block text-[0.56rem] tracking-[0.22em] uppercase text-blush mb-2">Your name</label>
-          <input id="name" type="text" required autoComplete="given-name" className="form-input" value={form.name} onChange={set("name")} />
+          <label htmlFor="name" className="block text-[0.68rem] tracking-[0.18em] uppercase text-blush mb-2">Your name</label>
+          <input id="name" name="name" type="text" required autoComplete="given-name" className="form-input" value={form.name} onChange={set("name")} />
         </div>
         <div>
-          <label htmlFor="partnerName" className="block text-[0.56rem] tracking-[0.22em] uppercase text-blush mb-2">Partner&rsquo;s name</label>
-          <input id="partnerName" type="text" className="form-input" value={form.partnerName} onChange={set("partnerName")} />
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-        <div>
-          <label htmlFor="phone" className="block text-[0.56rem] tracking-[0.22em] uppercase text-blush mb-2">Phone number</label>
-          <input id="phone" type="tel" autoComplete="tel" placeholder="+1 416 000 0000" className="form-input" value={form.phone} onChange={set("phone")} />
-        </div>
-        <div>
-          <label htmlFor="email" className="block text-[0.56rem] tracking-[0.22em] uppercase text-blush mb-2">Email address</label>
-          <input id="email" type="email" required autoComplete="email" className="form-input" value={form.email} onChange={set("email")} />
+          <label htmlFor="partnerName" className="block text-[0.68rem] tracking-[0.18em] uppercase text-blush mb-2">Partner&rsquo;s name</label>
+          <input id="partnerName" name="partnerName" type="text" className="form-input" value={form.partnerName} onChange={set("partnerName")} />
         </div>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
         <div>
-          <label htmlFor="weddingDate" className="block text-[0.56rem] tracking-[0.22em] uppercase text-blush mb-2">Wedding date</label>
-          <input id="weddingDate" type="text" required placeholder="20 June 2027, or still deciding" className="form-input" value={form.weddingDate} onChange={set("weddingDate")} />
+          <label htmlFor="phone" className="block text-[0.68rem] tracking-[0.18em] uppercase text-blush mb-2">Phone number</label>
+          <input id="phone" name="phone" type="tel" autoComplete="tel" placeholder="+1 416 000 0000" className="form-input" value={form.phone} onChange={set("phone")} />
         </div>
         <div>
-          <label htmlFor="market" className="block text-[0.56rem] tracking-[0.22em] uppercase text-blush mb-2">Where</label>
-          <select id="market" required className="form-input cursor-pointer" value={form.market} onChange={set("market")}>
+          <label htmlFor="email" className="block text-[0.68rem] tracking-[0.18em] uppercase text-blush mb-2">Email address</label>
+          <input id="email" name="email" type="email" required autoComplete="email" className="form-input" value={form.email} onChange={set("email")} />
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        <div>
+          <label htmlFor="weddingDate" className="block text-[0.68rem] tracking-[0.18em] uppercase text-blush mb-2">Wedding date</label>
+          <input id="weddingDate" name="weddingDate" type="text" required placeholder="20 June 2027, or still deciding" className="form-input" value={form.weddingDate} onChange={set("weddingDate")} />
+        </div>
+        <div>
+          <label htmlFor="market" className="block text-[0.68rem] tracking-[0.18em] uppercase text-blush mb-2">Where</label>
+          <select id="market" name="market" required className="form-input cursor-pointer" value={form.market} onChange={set("market")}>
             <option value="">Select one</option>
             {MARKETS.map((m) => (
               <option key={m.slug}>{m.region}</option>
@@ -105,8 +105,8 @@ export default function ContactForm() {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
         <div>
-          <label htmlFor="guestCount" className="block text-[0.56rem] tracking-[0.22em] uppercase text-blush mb-2">Guest count</label>
-          <select id="guestCount" className="form-input cursor-pointer" value={form.guestCount} onChange={set("guestCount")}>
+          <label htmlFor="guestCount" className="block text-[0.68rem] tracking-[0.18em] uppercase text-blush mb-2">Guest count</label>
+          <select id="guestCount" name="guestCount" className="form-input cursor-pointer" value={form.guestCount} onChange={set("guestCount")}>
             <option value="">Select one</option>
             {GUEST_COUNTS.map((g) => (
               <option key={g}>{g}</option>
@@ -114,8 +114,8 @@ export default function ContactForm() {
           </select>
         </div>
         <div>
-          <label htmlFor="collection" className="block text-[0.56rem] tracking-[0.22em] uppercase text-blush mb-2">Coverage you have in mind</label>
-          <select id="collection" className="form-input cursor-pointer" value={form.collection} onChange={set("collection")}>
+          <label htmlFor="collection" className="block text-[0.68rem] tracking-[0.18em] uppercase text-blush mb-2">Coverage you have in mind</label>
+          <select id="collection" name="collection" className="form-input cursor-pointer" value={form.collection} onChange={set("collection")}>
             <option value="">Not sure yet, advise me</option>
             <option>Core — 6 hours</option>
             <option>Signature — 8 hours</option>
@@ -126,13 +126,13 @@ export default function ContactForm() {
       </div>
 
       <div>
-        <label htmlFor="venue" className="block text-[0.56rem] tracking-[0.22em] uppercase text-blush mb-2">Venue, or venues</label>
-        <input id="venue" type="text" placeholder="Booked, on a shortlist, or wide open" className="form-input" value={form.venue} onChange={set("venue")} />
+        <label htmlFor="venue" className="block text-[0.68rem] tracking-[0.18em] uppercase text-blush mb-2">Venue, or venues</label>
+        <input id="venue" name="venue" type="text" placeholder="Booked, on a shortlist, or wide open" className="form-input" value={form.venue} onChange={set("venue")} />
       </div>
 
       <div>
-        <label htmlFor="referral" className="block text-[0.56rem] tracking-[0.22em] uppercase text-blush mb-2">How did you find me?</label>
-        <select id="referral" className="form-input cursor-pointer" value={form.referral} onChange={set("referral")}>
+        <label htmlFor="referral" className="block text-[0.68rem] tracking-[0.18em] uppercase text-blush mb-2">How did you find me?</label>
+        <select id="referral" name="referral" className="form-input cursor-pointer" value={form.referral} onChange={set("referral")}>
           <option value="">Select one</option>
           <option>Google</option>
           <option>Instagram (@iarmanarai)</option>
@@ -144,9 +144,9 @@ export default function ContactForm() {
       </div>
 
       <div>
-        <label htmlFor="message" className="block text-[0.56rem] tracking-[0.22em] uppercase text-blush mb-2">Tell me about the day</label>
+        <label htmlFor="message" className="block text-[0.68rem] tracking-[0.18em] uppercase text-blush mb-2">Tell me about the day</label>
         <textarea
-          id="message"
+          id="message" name="message"
           rows={5}
           placeholder="What the day looks like, how many events, whose traditions are in it, and the twenty minutes you would be heartbroken to lose."
           className="form-input resize-none"

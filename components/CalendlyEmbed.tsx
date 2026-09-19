@@ -129,6 +129,24 @@ export default function CalendlyEmbed({ height = 720 }: { height?: number }) {
           >
             Pick any 30 minutes that suits you
           </span>
+          {/* Calendly is a third-party script and was measured still spinning
+              after six seconds. Never leave the only booking path behind it. */}
+          <a
+            href={BASE}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              fontFamily: "var(--font-jost)",
+              fontSize: "0.72rem",
+              letterSpacing: "0.12em",
+              color: ACCENT,
+              textDecoration: "underline",
+              textUnderlineOffset: "4px",
+              marginTop: "0.4rem",
+            }}
+          >
+            Calendar not loading? Choose a time in a new tab ↗
+          </a>
         </div>
       )}
     </div>

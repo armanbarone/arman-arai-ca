@@ -65,6 +65,12 @@ interface Props {
   sizes: string;
   /** Only the LCP frame should set this. */
   priority?: boolean;
+  /**
+   * Above the fold, but not the LCP candidate. Loads eagerly without a priority
+   * hint, so the small companion tiles do not sit behind a lazy gate while the
+   * user is already looking at them, and do not compete with the LCP image.
+   */
+  eager?: boolean;
   objectPosition?: string;
   /**
    * How long to wait before the conveyor's first move.
@@ -84,6 +90,7 @@ export default function HeroCycler({
   alt,
   sizes,
   priority = false,
+  eager = false,
   objectPosition = "center center",
   startDelayMs,
 }: Props) {
@@ -135,7 +142,9 @@ export default function HeroCycler({
             // fetchPriority is set explicitly: Lighthouse's LCP discovery audit
             // reported priorityHinted:false on the preload without it.
             ? { priority: true, fetchPriority: "high" as const }
-            : { loading: "lazy" as const })}
+            : eager && i === current && !moved
+              ? { loading: "eager" as const }
+              : { loading: "lazy" as const })}
           className="object-cover"
           style={{
             objectPosition,

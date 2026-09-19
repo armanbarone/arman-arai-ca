@@ -343,12 +343,12 @@ const CSS = `
   font-family: var(--font-jost), sans-serif; font-size: 10px; text-transform: uppercase;
   letter-spacing: 0.22em; line-height: 2.1; white-space: nowrap;
 }
-.gx-meta-loc, .gx-meta-dim { color: #857060; }
+.gx-meta-loc, .gx-meta-dim { color: #8F7A69; }
 .gx-cap--m { display: block; padding: 0 1.5rem 1.1rem; }
 .gx-names--m { font-size: 34px; }
 .gx-meta-line {
   font-family: var(--font-jost), sans-serif; font-size: 9px; text-transform: uppercase;
-  letter-spacing: 0.22em; color: #857060; margin: 0.6rem 0 0;
+  letter-spacing: 0.22em; color: #8F7A69; margin: 0.6rem 0 0;
 }
 
 .gx-strip-wrap { position: relative; overflow: hidden; }

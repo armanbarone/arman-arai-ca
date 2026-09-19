@@ -9,14 +9,21 @@ import { ANALOGUE, DOCUMENTARY, DREAMY_FINE_ART, EDITORIAL, FILM, allAt } from "
 import { GALLERIES } from "@/lib/galleries";
 import { SITE } from "@/lib/site";
 
+/* This page shows every complete wedding, so the count is read from the data.
+ * It was typed as "four" and stayed there while the galleries grew to nine. */
+const COUNT = GALLERIES.length;
+const COUNT_WORD =
+  ["no", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve"][COUNT] ??
+  String(COUNT);
+
 export const metadata: Metadata = {
   title: "Portfolio — Canadian Wedding Photography",
   description:
-    "Five albums of wedding work — editorial, film inspired, 1980s film, dreamy fine art and documentary — plus four complete wedding days shown from the first frame to the last.",
+    `Five albums of wedding work — editorial, film inspired, 1980s film, dreamy fine art and documentary — plus ${COUNT_WORD} complete wedding days shown from the first frame to the last.`,
   alternates: { canonical: "/portfolio" },
   openGraph: {
     title: "Portfolio | Arman Arai",
-    description: "Five albums of wedding work, plus four complete wedding days.",
+    description: `Five albums of wedding work, plus ${COUNT_WORD} complete wedding days.`,
     url: `${SITE.url}/portfolio`,
   },
 };
@@ -64,8 +71,8 @@ export default function Portfolio() {
           </h1>
           <p className="text-blush text-base leading-relaxed max-w-2xl mx-auto font-light">
             Every wedding has its own light and its own register. These five albums are the range I
-            bring to a day. Below them sit four complete weddings, so you can see whole days rather
-            than only the frames that flatter me.
+            bring to a day. Below them sit {COUNT_WORD} complete weddings, so you can see whole days
+            rather than only the frames that flatter me.
           </p>
         </div>
       </section>
@@ -182,7 +189,7 @@ export default function Portfolio() {
               href="/galleries"
               className="text-[0.62rem] tracking-[0.2em] uppercase text-slate hover:text-rose transition-colors border-b border-dust hover:border-rose pb-1.5"
             >
-              All four galleries →
+              See complete weddings →
             </Link>
           </div>
         </div>

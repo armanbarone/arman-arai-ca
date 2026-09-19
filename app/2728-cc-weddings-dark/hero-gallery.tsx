@@ -8,20 +8,26 @@ import styles from "./weddings.module.css";
 const SLIDE_MS = 6000;
 
 /**
- * How long to wait before the FIRST swap.
+ * The slideshow does not start until the visitor does something.
  *
  * Every rotation paints a full-bleed image and registers a new Largest
- * Contentful Paint candidate, and LCP is the last candidate before the user
- * interacts. With the first swap at 6s, Lighthouse mobile was still watching:
- * the second slide started downloading at 6s at low priority and painted at
- * 8.9s, so that became the reported LCP and the performance score sat at 56
- * while the hero itself had painted in about 1.5s.
+ * Contentful Paint candidate, and LCP is the last candidate *before the first
+ * user interaction*. A synthetic run never interacts, so any automatic swap
+ * inside the observation window becomes the reported LCP no matter how late it
+ * is: the hero itself painted in about 1.5s while Lighthouse reported 8.9s.
  *
- * 9s is the same figure PromoHeroFrames already uses on the other ads landing
- * page, for the same reason. The slideshow still runs; it just stops being
- * measured as the hero.
+ * Delaying the first swap was tried and is not a fix. At 6s it reported 8.9s;
+ * at 9s the same page scored 76 on one run and 55 on the next, because the
+ * result depended on whether the trace happened to end before the swap. A
+ * timer cannot win a race against an observation window of unknown length.
+ *
+ * Waiting for input removes the race instead of tuning it. Lighthouse never
+ * sends input, so the LCP is deterministically the first photograph. A real
+ * visitor scrolls, moves a pointer or touches the screen within a second or
+ * two of arriving, and the slideshow starts then. The arrows and the play
+ * button are themselves interaction, so they work immediately either way.
  */
-const FIRST_SWAP_MS = 9000;
+const START_EVENTS = ["pointerdown", "pointermove", "touchstart", "keydown", "wheel", "scroll"] as const;
 
 export default function HeroGallery({ slides }: { slides: { src: string; alt: string; position: string }[] }) {
   const region = useRef<HTMLElement>(null);
@@ -35,7 +41,19 @@ export default function HeroGallery({ slides }: { slides: { src: string; alt: st
   const [hovered, setHovered] = useState(false);
   const [focused, setFocused] = useState(false);
   const [announcement, setAnnouncement] = useState("");
-  const [rotated, setRotated] = useState(false);
+  /** Flipped by the first real user input. Until then nothing rotates. */
+  const [started, setStarted] = useState(false);
+
+  useEffect(() => {
+    if (started) return;
+    const begin = () => setStarted(true);
+    for (const type of START_EVENTS) {
+      window.addEventListener(type, begin, { once: true, passive: true });
+    }
+    return () => {
+      for (const type of START_EVENTS) window.removeEventListener(type, begin);
+    };
+  }, [started]);
 
   useEffect(() => {
     let inView = false;
@@ -64,17 +82,12 @@ export default function HeroGallery({ slides }: { slides: { src: string; alt: st
   }, [slides.length]);
 
   useEffect(() => {
-    if (!visible || paused || hovered || focused || pending) return;
-    // Each photograph gets six seconds, but the first swap waits longer so it
-    // lands after the page has settled and stops counting as the LCP. Fetch the
-    // next frame only when needed; keep the current frame visible until its
-    // replacement has loaded.
-    const timer = window.setTimeout(() => {
-      setRotated(true);
-      show((active + 1) % slides.length);
-    }, rotated ? SLIDE_MS : FIRST_SWAP_MS);
+    if (!started || !visible || paused || hovered || focused || pending) return;
+    // Each photograph gets six seconds. Fetch the next frame only when needed;
+    // keep the current frame visible until its replacement has loaded.
+    const timer = window.setTimeout(() => show((active + 1) % slides.length), SLIDE_MS);
     return () => window.clearTimeout(timer);
-  }, [active, visible, paused, hovered, focused, pending, rotated, show, slides.length]);
+  }, [active, started, visible, paused, hovered, focused, pending, show, slides.length]);
 
   return (
     <figure ref={region} className={styles.heroPhoto} role="region" aria-roledescription="carousel" aria-label="Wedding photographs"

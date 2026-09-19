@@ -39,11 +39,17 @@ export default function DateCheck({
   city,
   wherePlaceholder,
   page,
+  classes = styles,
+  replyTiming = "Answered the same day, by me.",
+  confirmation = "Got it. I’ll come back on your date today.",
 }: {
   /** "Montréal", or "Canada" on the national page. Used only in the email subject. */
   city: string;
   wherePlaceholder: string;
   page: string;
+  classes?: Record<string, string>;
+  replyTiming?: string;
+  confirmation?: string;
 }) {
   const [status, setStatus] = useState<"idle" | "sending" | "done" | "error">("idle");
   const [error, setError] = useState("");
@@ -86,7 +92,7 @@ export default function DateCheck({
           ...attribution,
         }),
       });
-      if (!res.ok) throw new Error("That did not send. Email i@armanarai.com and I will answer the same day.");
+      if (!res.ok) throw new Error("That did not send. Please try again or email i@armanarai.com.");
       setStatus("done");
       trackLead("wedding_date_check");
       try { track("Wedding Date Check", { page }); } catch { /* Analytics must never interrupt a lead. */ }
@@ -98,13 +104,13 @@ export default function DateCheck({
 
   if (status === "done") {
     return (
-      <div className={styles.checkDone} ref={done} tabIndex={-1} role="status">
-        <p className={styles.checkDoneLead}>Got it. I&rsquo;ll come back on your date today.</p>
+      <div className={classes.checkDone} ref={done} tabIndex={-1} role="status">
+        <p className={classes.checkDoneLead}>{confirmation}</p>
         <p>
           If you would rather not wait, pick a time below and I will check the
           date live while we talk.
         </p>
-        <a className={styles.checkButton} href="#book-a-call">
+        <a className={classes.checkButton} href="#book-a-call">
           Pick a time <span aria-hidden="true">↓</span>
         </a>
       </div>
@@ -112,43 +118,42 @@ export default function DateCheck({
   }
 
   return (
-    <form className={styles.check} onSubmit={onSubmit} aria-labelledby="check-title">
-      <p className={styles.checkTitle} id="check-title">Check your date</p>
+    <form className={classes.check} onSubmit={onSubmit} aria-labelledby="check-title">
+      <p className={classes.checkTitle} id="check-title">Check your date</p>
       {/* Honeypot. No human ever sees this; anything that fills it is dropped. */}
-      <input type="text" name="company" tabIndex={-1} autoComplete="off" aria-hidden="true" className={styles.honeypot} />
+      <input type="text" name="company" tabIndex={-1} autoComplete="off" aria-hidden="true" className={classes.honeypot} />
 
-      <div className={styles.checkRow}>
-        <div className={styles.checkField}>
+      <div className={classes.checkRow}>
+        <div className={classes.checkField}>
           <label htmlFor="dc-date">Wedding date</label>
           <input id="dc-date" name="weddingDate" type="date" required />
         </div>
-        <div className={styles.checkField}>
+        <div className={classes.checkField}>
           <label htmlFor="dc-where">Where</label>
           <input id="dc-where" name="location" type="text" required maxLength={90} placeholder={wherePlaceholder} />
         </div>
-        <div className={styles.checkField}>
+        <div className={classes.checkField}>
           <label htmlFor="dc-name">Your name</label>
           <input id="dc-name" name="name" type="text" required maxLength={60} autoComplete="name" />
         </div>
-        <div className={styles.checkField}>
+        <div className={classes.checkField}>
           <label htmlFor="dc-email">Email</label>
           <input id="dc-email" name="email" type="email" required maxLength={100} autoComplete="email" />
         </div>
-        <div className={`${styles.checkField} ${styles.checkWide}`}>
+        <div className={`${classes.checkField} ${classes.checkWide}`}>
           <label htmlFor="dc-phone">Phone <span>optional, only if you prefer a call</span></label>
           <input id="dc-phone" name="phone" type="tel" maxLength={30} autoComplete="tel" />
         </div>
       </div>
 
-      {status === "error" && <p className={styles.checkError}>{error}</p>}
+      {status === "error" && <p className={classes.checkError} role="alert">{error}</p>}
 
-      <button className={styles.checkButton} type="submit" disabled={status === "sending"}>
+      <button className={classes.checkButton} type="submit" disabled={status === "sending"}>
         {status === "sending" ? "Sending…" : "See if the date is free"}
         <span aria-hidden="true">↗</span>
       </button>
-      <p className={styles.checkMicro}>
-        Answered the same day, by me. Your details are used to reply to this and
-        nothing else.
+      <p className={classes.checkMicro}>
+        {replyTiming} Your details are used to reply to your inquiry. <a href="/privacy-policy" target="_blank" rel="noopener noreferrer">Privacy policy</a>.
       </p>
     </form>
   );

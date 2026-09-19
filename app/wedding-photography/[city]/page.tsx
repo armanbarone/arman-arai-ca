@@ -4,6 +4,7 @@ import { LANDING_CITY_SLUGS, variantBySlug } from "@/lib/ads/wedding-landing";
 import { at, FILM_STRIP } from "@/lib/images";
 import { SITE } from "@/lib/site";
 import LandingPage from "../LandingPage";
+import VancouverLanding, { VANCOUVER_DESCRIPTION, VANCOUVER_HERO } from "../VancouverLanding";
 
 /* One landing page per market, so the headline can repeat the search term.
  *
@@ -37,17 +38,22 @@ export async function generateMetadata(
   const { city } = await params;
   const variant = variantBySlug(city);
   if (!variant) return {};
+  const isVancouver = city === "vancouver";
+  const title = isVancouver ? "Vancouver Wedding Photography | From C$3,000 | Arman Arai" : variant.metaTitle;
+  const description = isVancouver ? VANCOUVER_DESCRIPTION : variant.metaDescription;
+  const photo = isVancouver ? VANCOUVER_HERO : FILM_STRIP[5];
   return {
-    title: { absolute: variant.metaTitle },
-    description: variant.metaDescription,
+    title: { absolute: title },
+    description,
     robots: { index: false, follow: true, googleBot: { index: false, follow: true } },
     alternates: { canonical: `${SITE.url}${variant.path}` },
     openGraph: {
-      title: variant.h1,
-      description: variant.metaDescription,
+      title,
+      description,
       url: `${SITE.url}${variant.path}`,
-      images: [{ url: at(FILM_STRIP[5].src, 1200), alt: FILM_STRIP[5].alt }],
+      images: [{ url: at(photo.src, 1200), alt: photo.alt }],
     },
+    ...(isVancouver ? { twitter: { card: "summary_large_image" as const, title, description, images: [at(photo.src, 1200)] } } : {}),
   };
 }
 
@@ -55,5 +61,6 @@ export default async function CityLanding({ params }: { params: Promise<{ city: 
   const { city } = await params;
   const variant = variantBySlug(city);
   if (!variant) notFound();
+  if (city === "vancouver") return <VancouverLanding />;
   return <LandingPage variant={variant} />;
 }

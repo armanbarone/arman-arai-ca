@@ -272,3 +272,118 @@
   .page h2 { font-size: 43px; }
 }
 @media (prefers-reduced-motion: reduce) { .page *, .page *::before, .page *::after { transition: none !important; scroll-behavior: auto !important; } }
+
+/* Separate darkroom edition. All overrides require this root class, leaving
+   the approved light page intact. The source site's grain is already supplied
+   by globals.css. Small text uses the site's current, higher-contrast neutrals
+   rather than the older low-contrast label values in the design handoff. */
+.page.dark {
+  --paper: #080704;
+  --ink: #e8e0d0;
+  --muted: #a89480;
+  --line: #2a2520;
+  --green: #b8956a;
+  --gold: #b8956a;
+  --dark-surface: #0e0c0a;
+  --dark-card: #141210;
+  --dark-panel: #1e1b16;
+  --dark-body: #c3b5a1;
+  --dark-ease: cubic-bezier(.25,.46,.45,.94);
+  color-scheme: dark;
+}
+.dark :focus-visible { outline-color: var(--gold); }
+.dark h1, .dark h2 { font-weight: 300; }
+.dark h1 em, .dark h2 em { color: var(--gold); font-weight: 300; }
+.dark .header, .dark .hero { max-width: 1440px; }
+.dark .header, .dark .factBar, .dark .dateInquiry, .dark .firstQuote a,
+.dark .weddingHeading, .dark .workBottom, .dark .priceCard, .dark .featuredPrice,
+.dark .tierHeader, .dark .collectionLink, .dark .included, .dark .reviewsGrid figure,
+.dark .questions details, .dark .bookingCopy li, .dark .dialogBar {
+  border-color: var(--line);
+}
+.dark .header, .dark .factBar, .dark .firstQuote a, .dark .tierHeader,
+.dark .questions details, .dark .dialogBar { border-bottom-width: .5px; }
+.dark .factBar, .dark .dateInquiry, .dark .weddingHeading, .dark .workBottom,
+.dark .collectionLink, .dark .included, .dark .reviewsGrid figure,
+.dark .questions details:first-child, .dark .bookingCopy li { border-top-width: .5px; }
+.dark .priceCard, .dark .featuredPrice { border-width: .5px; }
+.dark .eyebrow, .dark .heroSideNote, .dark .factBar, .dark .albumTopline,
+.dark .tierHeader p, .dark .reviewsGrid figcaption, .dark .bookingCopy li span { color: var(--gold); }
+.dark .navLink { position: relative; color: var(--dark-body); text-transform: uppercase; letter-spacing: .16em; font-size: 10px; padding: 8px 0; border: 0; }
+.dark .navLink::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: .5px; background: var(--gold); transform: scaleX(0); transform-origin: left; transition: transform .65s var(--dark-ease); }
+.dark .navLink:hover { color: var(--gold); }
+.dark .navLink:hover::after { transform: scaleX(1); }
+.dark .headerCta { border: .5px solid #6a5030; color: var(--ink); transition: border-color .65s var(--dark-ease), background .65s var(--dark-ease); }
+.dark .headerCta:hover { border-color: var(--gold); background: var(--dark-card); }
+.dark .heroIntro, .dark .sectionHeading > p, .dark .weddingHeading > p,
+.dark .aboutCopy > p:not(.eyebrow), .dark .included p, .dark .questions details p,
+.dark .bookingCopy > p:not(.eyebrow), .dark .dialogContent > p { color: var(--dark-body); }
+.dark .starting strong { color: var(--gold); }
+.dark .button, .dark .checkButton, .dark .stickyCta > a {
+  background: #1a1612;
+  border: .5px solid var(--gold);
+  color: var(--ink) !important;
+  transition: background .65s var(--dark-ease), border-color .65s var(--dark-ease);
+}
+.dark .button:hover, .dark .checkButton:hover, .dark .stickyCta > a:hover { background: var(--line); }
+.dark .heroImage figcaption, .dark .albumBadge { color: var(--ink); background: linear-gradient(transparent, rgba(8,7,4,.8)); }
+.dark .heroInset { box-shadow: 0 0 0 .5px #6a5030, 0 16px 38px rgba(8,7,4,.7); }
+.dark .dateInquiry > summary { color: var(--dark-body); }
+.dark .dateInquiry > summary span { color: var(--gold); }
+.dark .checkField input { background: transparent; border: 0; border-bottom: .5px solid #76624c; padding-left: 0; padding-right: 0; color: var(--ink); color-scheme: dark; }
+.dark .checkField input::placeholder { color: #a89480; opacity: 1; }
+.dark .checkField input:focus { border-bottom-color: var(--gold); }
+.dark .checkError { color: var(--ink); border-left: 2px solid var(--gold); padding-left: 12px; }
+.dark .quoteMark { color: var(--gold); }
+.dark .firstQuote a { color: var(--muted); }
+.dark .workSection, .dark .collections, .dark .booking { background: var(--dark-surface); color: var(--ink); }
+.dark .workSection, .dark .collections, .dark .reviews, .dark .faq, .dark .booking {
+  padding-left: max(5.5%, calc((100% - 1280px) / 2));
+  padding-right: max(5.5%, calc((100% - 1280px) / 2));
+}
+.dark .workSection { border-block: .5px solid var(--line); }
+.dark .albumImage { box-shadow: 0 0 0 .5px #6a5030; }
+.dark .albumImage img { transition: transform .65s var(--dark-ease); }
+.dark .albumSubtitle, .dark .albumHint { color: var(--dark-body); }
+.dark .styleAlbums, .dark .weddingAlbums { scrollbar-color: #9a7a54 #1e1b16; }
+.dark .workBottom a, .dark .textLink, .dark .collectionLink { color: var(--gold); }
+.dark .textLink { border-bottom: .5px solid #6a5030; }
+.dark .signature { font-family: var(--font-great-vibes), cursive; color: var(--gold); font-size: clamp(26px, 2.4vw, 34px); line-height: 1.5; font-style: normal; }
+.dark .priceCard { background: var(--paper); }
+.dark .featuredPrice { color: var(--ink); background: var(--dark-card); border-color: #6a5030; box-shadow: inset 0 1px var(--gold); }
+.dark .priceGrid ul { color: var(--dark-body); }
+.dark .priceGrid li::before { color: var(--gold); }
+.dark .price > span, .dark .tierHeader span, .dark .travel { color: var(--muted); }
+.dark .reviewsGrid img { background: var(--dark-card); }
+.dark .reviewsGrid a span { color: var(--gold); }
+.dark .interlude { gap: 3px; background: var(--paper); }
+.dark .questions summary span { color: var(--gold); }
+.dark .booking { border-top: .5px solid var(--line); }
+.dark .bookingCopy .bookingNote { color: var(--muted); }
+.dark .calendarPanel { background: var(--dark-card); border: .5px solid var(--line); box-shadow: 0 15px 45px rgba(8,7,4,.45); }
+.dark .calendarLoading, .dark .calendarFallback { color: var(--dark-body); }
+.dark .calendarLoading a, .dark .calendarFallback a { color: var(--gold); }
+.dark .footer { border-top: .5px solid var(--line); }
+.dark .footer > div, .dark .footerBrand span { color: var(--muted); }
+.dark .stickyCta { border-top: .5px solid #6a5030; box-shadow: 0 -5px 25px rgba(8,7,4,.45); }
+.dark .stickyCta > span { color: var(--muted); }
+.dark .stickyCta strong { color: var(--ink); }
+.dark .albumDialog { background: var(--dark-panel); border: .5px solid #6a5030; animation: darkroom-in .45s cubic-bezier(.34,1.4,.64,1); }
+.dark .albumDialog::backdrop { background: rgba(8,7,4,.88); backdrop-filter: blur(8px); }
+.dark .dialogBar { background: var(--dark-card); }
+.dark .dialogBar button { border: .5px solid #6a5030; background: #1a1612; }
+.dark .dialogBar button:hover { border-color: var(--gold); }
+.dark .albumChapter h3 { color: var(--gold); }
+.dark .albumPhotos figure { box-shadow: 0 0 0 .5px #6a5030; }
+.dark .dialogEnd { border-top: .5px solid #6a5030; margin-top: 45px; }
+.dark .textButton { color: var(--dark-body); }
+@keyframes darkroom-in { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@media (max-width: 760px) {
+  .dark .workSection, .dark .collections, .dark .reviews, .dark .faq { padding-left: 6%; padding-right: 6%; }
+  .dark .booking { padding-left: 5%; padding-right: 5%; }
+  .dark .signature { font-size: 27px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .dark *, .dark *::before, .dark *::after { transition: none !important; animation: none !important; }
+  :global(html):has(.dark) { scroll-behavior: auto; }
+}

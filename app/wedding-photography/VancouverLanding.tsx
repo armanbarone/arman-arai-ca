@@ -39,8 +39,9 @@ const questions = [
   ["How do we secure our wedding date?", "Once we’ve confirmed availability, your collection and the full quote, a signed contract and 30% retainer secure the date. The balance is due 30 days before the wedding. There’s no obligation to book after our consultation."],
 ];
 
-export default function VancouverLanding() {
-  return <div className={styles.page}>
+export default function VancouverLanding({ theme = "light" }: { theme?: "light" | "dark" } = {}) {
+  const page = `wedding-photography/vancouver${theme === "dark" ? "-dark" : ""}`;
+  return <div className={`${styles.page}${theme === "dark" ? ` ${styles.dark}` : ""}`} data-landing-theme={theme}>
     <a className={styles.skip} href="#main">Skip to content</a>
     <header className={styles.header}>
       <a className={styles.wordmark} href="#main" aria-label="Arman Arai, top of page">Arman Arai<span>WEDDING PHOTOGRAPHY</span></a>
@@ -55,7 +56,7 @@ export default function VancouverLanding() {
           <p className={styles.starting}>Collections from <strong>{money(CORE.price)}</strong><span>6, 8 or 10 hours · CAD before tax · travel extra</span></p>
           <BookingLink className={styles.button} placement="vancouver_hero">Book a free consultation <span aria-hidden="true">↗</span></BookingLink>
           <p className={styles.micro}>30 minutes with Arman · Check your date · No obligation</p>
-          <details className={styles.dateInquiry}><summary>Prefer to check your date by email? <span aria-hidden="true">+</span></summary><DateCheck city="Vancouver" wherePlaceholder="Your venue, or Vancouver area" page="/wedding-photography/vancouver" classes={styles} replyTiming="I’ll reply personally with availability." confirmation="Your inquiry is on its way. I’ll be in touch about your date." /></details>
+          <details className={styles.dateInquiry}><summary>Prefer to check your date by email? <span aria-hidden="true">+</span></summary><DateCheck city="Vancouver" wherePlaceholder="Your venue, or Vancouver area" page={`/${page}`} classes={styles} replyTiming="I’ll reply personally with availability." confirmation="Your inquiry is on its way. I’ll be in touch about your date." /></details>
         </div>
         <div className={styles.heroArt}>
           <figure className={styles.heroImage}><Image src={VANCOUVER_HERO.src} alt={VANCOUVER_HERO.alt} fill priority fetchPriority="high" quality={78} sizes="(max-width: 760px) 84vw, 42vw" /><figcaption>A day you felt. Photographs you keep.</figcaption></figure>
@@ -101,7 +102,7 @@ export default function VancouverLanding() {
 
       <section className={styles.faq} aria-labelledby="faq-title"><div><p className={styles.eyebrow}>A few things before we meet</p><h2 id="faq-title">You might<br /><em>be wondering.</em></h2></div><div className={styles.questions}>{questions.map(([q, a]) => <details key={q}><summary>{q}<span aria-hidden="true">+</span></summary><p>{a}</p></details>)}</div></section>
 
-      <section id="book-a-call" className={styles.booking} aria-labelledby="booking-title"><div className={styles.bookingCopy}><p className={styles.eyebrow}>Your Vancouver wedding starts here</p><h2 id="booking-title" tabIndex={-1}>Bring your date.<br /><em>Tell me your plans.</em></h2><p>Choose a time for a free 30-minute video call with me. We’ll check your wedding date, talk about the photographs you love, and go through coverage and pricing.</p><ol><li><span>01</span> Choose a time that works for you.</li><li><span>02</span> Meet Arman and talk through your day.</li><li><span>03</span> Decide in your own time.</li></ol><p className={styles.bookingNote}>No obligation. No need to have it all figured out.<br />This calendar books our consultation, not your wedding date.</p></div><div className={styles.bookingCalendar}><WeddingCalendar page="wedding-photography/vancouver" classes={styles} /></div></section>
+      <section id="book-a-call" className={styles.booking} aria-labelledby="booking-title"><div className={styles.bookingCopy}><p className={styles.eyebrow}>Your Vancouver wedding starts here</p><h2 id="booking-title" tabIndex={-1}>Bring your date.<br /><em>Tell me your plans.</em></h2><p>Choose a time for a free 30-minute video call with me. We’ll check your wedding date, talk about the photographs you love, and go through coverage and pricing.</p><ol><li><span>01</span> Choose a time that works for you.</li><li><span>02</span> Meet Arman and talk through your day.</li><li><span>03</span> Decide in your own time.</li></ol><p className={styles.bookingNote}>No obligation. No need to have it all figured out.<br />This calendar books our consultation, not your wedding date.</p></div><div className={styles.bookingCalendar}><WeddingCalendar page={page} theme={theme} classes={styles} /></div></section>
     </main>
     <footer className={styles.footer}><a href="#main" className={styles.footerBrand}>Arman Arai<span>Wedding photography · Vancouver</span></a><div><a href={`mailto:${SITE.email}`}>{SITE.email}</a><a href="/privacy-policy" target="_blank" rel="noopener noreferrer">Privacy policy</a><span>© {new Date().getFullYear()} Arman Arai</span></div></footer>
     <BookingNavigation classes={styles} /><Analytics />

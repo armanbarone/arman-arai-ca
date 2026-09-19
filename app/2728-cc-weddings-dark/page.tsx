@@ -43,13 +43,21 @@ const vancouverGallery = [
   { ...frame("52-ocean-sunset-string-light-platform"), caption: "Your kind of evening", position: "center 55%" },
 ];
 
+/* The album: the rest of the Vancouver work, the same photographs the city hub
+ * shows. Left out are the three frames captioned in the strip just above it,
+ * and the opening hero frame, which every visitor has already seen at full
+ * bleed. The later hero slides stay in: they only appear if the slideshow is
+ * started, so most visitors meet them here for the first time. */
+const alreadyShown = new Set([hero.src, ...vancouverGallery.map((photo) => photo.src)]);
+const albumPhotos = CITY_WORK.vancouver.filter((photo) => !alreadyShown.has(photo.src));
+
 export const metadata: Metadata = {
   title: { absolute: "Vancouver Wedding Photographer — 2027 & 2028 | Arman Arai" },
-  description: `Enjoy your Vancouver wedding. Love your photographs. Documentary and editorial wedding photography in Vancouver, the North Shore and the Sea-to-Sky from ${money(CORE.price)}. Book a free call with Arman.`,
+  description: `Serving Vancouver couples with creative wedding photography, from the North Shore to the Sea-to-Sky. Collections from ${money(CORE.price)}. Book a free call with Arman.`,
   alternates: { canonical: `${SITE.url}/2728-cc-weddings-dark` },
   robots: { index: false, follow: true, googleBot: { index: false, follow: true } },
   openGraph: {
-    title: "Enjoy your Vancouver wedding. Love your photographs.",
+    title: "Serving Vancouver couples with creative wedding photography",
     description: `Vancouver wedding photography for 2027 & 2028. Collections from ${money(CORE.price)}. Meet Arman and talk through your day.`,
     url: `${SITE.url}/2728-cc-weddings-dark`,
     images: [{ url: at(hero.src, 1200), alt: hero.alt }],
@@ -88,7 +96,7 @@ export default function WeddingLandingPage() {
         <section className={styles.hero} aria-labelledby="hero-title">
           <div className={styles.heroCopy}>
             <p className={styles.eyebrow}>Vancouver · 2027 & 2028 weddings</p>
-            <h1 id="hero-title">Enjoy your Vancouver wedding.<br /><em>Love your photographs.</em></h1>
+            <h1 id="hero-title">Serving Vancouver couples with<br /><em>creative wedding photography</em></h1>
             <p className={styles.intro}>Beautiful portraits. The laughter you remember. The moments you missed. Wedding photography that gives you all three, from the North Shore to the Sea-to-Sky.</p>
             <p className={styles.starting}>Collections from <strong>{money(CORE.price)}</strong><span>CAD before tax · travel quoted separately</span></p>
             <BookingLink className={styles.button} placement="hero">Book a free discovery call <span aria-hidden="true">↗</span></BookingLink>
@@ -110,6 +118,28 @@ export default function WeddingLandingPage() {
             ))}
           </div>
           <p className={styles.swipeHint}>Swipe through the photographs <span aria-hidden="true">→</span></p>
+        </section>
+
+        <section id="album" className={styles.album} aria-labelledby="album-title">
+          <div className={styles.albumHeading}>
+            <div><p className={styles.eyebrow}>The album</p><h2 id="album-title">Weddings I have<br /><em>photographed here.</em></h2></div>
+            <p>Stanley Park and the Sea-to-Sky, a conservatory in the rain and a boat at sunset. All of it Vancouver, all of it mine.</p>
+          </div>
+          <div className={styles.albumGrid}>
+            {albumPhotos.map((photo, index) => (
+              <figure key={photo.src} className={index % 5 === 0 ? styles.albumCellWide : styles.albumCell}>
+                <Image
+                  src={photo.src}
+                  alt={photo.alt}
+                  fill
+                  quality={75}
+                  loading="lazy"
+                  fetchPriority="low"
+                  sizes="(max-width: 760px) 50vw, (max-width: 1100px) 33vw, 25vw"
+                />
+              </figure>
+            ))}
+          </div>
         </section>
 
         <section className={styles.about} aria-labelledby="about-title">

@@ -50,7 +50,7 @@ export default function VancouverLanding() {
       <section className={styles.hero} aria-labelledby="hero-title">
         <div className={styles.heroCopy}>
           <p className={styles.eyebrow}>Your people. Your day. Your kind of photographs.</p>
-          <h1 id="hero-title">Vancouver<br />wedding<br /><em>photography.</em></h1>
+          <h1 id="hero-title">Vancouver <br />wedding <br /><em>photography.</em></h1>
           <p className={styles.heroIntro}>Beautiful portraits. All the feeling in between.<br />And time to actually enjoy your wedding.</p>
           <p className={styles.starting}>Collections from <strong>{money(CORE.price)}</strong><span>6, 8 or 10 hours · CAD before tax · travel extra</span></p>
           <BookingLink className={styles.button} placement="vancouver_hero">Book a free consultation <span aria-hidden="true">↗</span></BookingLink>

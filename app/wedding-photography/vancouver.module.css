@@ -360,7 +360,9 @@
 .dark .questions summary span { color: var(--gold); }
 .dark .booking { border-top: .5px solid var(--line); }
 .dark .bookingCopy .bookingNote { color: var(--muted); }
-.dark .calendarPanel { background: var(--dark-card); border: .5px solid var(--line); box-shadow: 0 15px 45px rgba(8,7,4,.45); }
+.dark .calendarPanel { min-height: 0; background: var(--dark-card); border: .5px solid var(--line); box-shadow: 0 15px 45px rgba(8,7,4,.45); }
+.dark .widgetHost { min-height: 0; height: 760px; }
+.dark .widgetHost iframe { min-height: 0; display: block; background: var(--dark-card); }
 .dark .calendarLoading, .dark .calendarFallback { color: var(--dark-body); }
 .dark .calendarLoading a, .dark .calendarFallback a { color: var(--gold); }
 .dark .footer { border-top: .5px solid var(--line); }

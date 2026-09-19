@@ -4,7 +4,9 @@ import { LANDING_CITY_SLUGS, variantBySlug } from "@/lib/ads/wedding-landing";
 import { at, FILM_STRIP } from "@/lib/images";
 import { SITE } from "@/lib/site";
 import LandingPage from "../LandingPage";
-import VancouverLanding, { VANCOUVER_DESCRIPTION, VANCOUVER_HERO } from "../VancouverLanding";
+import CityWeddingLanding from "../CityWeddingLanding";
+import { WEDDING_CITIES, weddingCityRoute } from "@/lib/ads/city-wedding-pages";
+import { cityWeddingMetadata } from "@/lib/ads/city-wedding-metadata";
 
 /* One landing page per market, so the headline can repeat the search term.
  *
@@ -23,11 +25,12 @@ import VancouverLanding, { VANCOUVER_DESCRIPTION, VANCOUVER_HERO } from "../Vanc
  * path. Changing either one to match the other creates a redirect loop.
  */
 
-// All seven markets get a page. Ad spend lives on the three big cities, but a
-// variant costs nothing and a campaign for Whistler or Banff needs somewhere
-// to land.
+// Preserve the existing markets and publish both editions of the new design.
+// Vancouver's dark edition retains its existing static route.
 export function generateStaticParams() {
-  return LANDING_CITY_SLUGS.map((city) => ({ city }));
+  const routes = new Set([...LANDING_CITY_SLUGS, ...WEDDING_CITIES.flatMap((city) => [city.slug, `${city.slug}-dark`])]);
+  routes.delete("vancouver-dark");
+  return [...routes].map((city) => ({ city }));
 }
 
 export const dynamicParams = false;
@@ -36,12 +39,13 @@ export async function generateMetadata(
   { params }: { params: Promise<{ city: string }> },
 ): Promise<Metadata> {
   const { city } = await params;
+  const designed = weddingCityRoute(city);
+  if (designed) return cityWeddingMetadata(designed.city, designed.path);
   const variant = variantBySlug(city);
   if (!variant) return {};
-  const isVancouver = city === "vancouver";
-  const title = isVancouver ? "Vancouver Wedding Photography | From C$3,000 | Arman Arai" : variant.metaTitle;
-  const description = isVancouver ? VANCOUVER_DESCRIPTION : variant.metaDescription;
-  const photo = isVancouver ? VANCOUVER_HERO : FILM_STRIP[5];
+  const title = variant.metaTitle;
+  const description = variant.metaDescription;
+  const photo = FILM_STRIP[5];
   return {
     title: { absolute: title },
     description,
@@ -53,14 +57,14 @@ export async function generateMetadata(
       url: `${SITE.url}${variant.path}`,
       images: [{ url: at(photo.src, 1200), alt: photo.alt }],
     },
-    ...(isVancouver ? { twitter: { card: "summary_large_image" as const, title, description, images: [at(photo.src, 1200)] } } : {}),
   };
 }
 
 export default async function CityLanding({ params }: { params: Promise<{ city: string }> }) {
   const { city } = await params;
+  const designed = weddingCityRoute(city);
+  if (designed) return <CityWeddingLanding city={designed.city} theme={designed.theme} />;
   const variant = variantBySlug(city);
   if (!variant) notFound();
-  if (city === "vancouver") return <VancouverLanding />;
   return <LandingPage variant={variant} />;
 }

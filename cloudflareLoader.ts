@@ -1,10 +1,8 @@
-// Custom next/image loader. Every photograph on armanarai.ca lives in the R2
-// bucket `canadian-wedding`, served at the root of cdn.armanarai.ca and resized
-// on the fly by Cloudflare Image Transformations (enabled on the zone
-// 2026-08-13). TRANSFORMS exists so the site degrades to serving the original
-// object, which is already WebP and capped at 2400px, if that ever gets turned
-// off again rather than every image 404ing.
-const CDN = "https://cdn.armanarai.ca";
+// Custom next/image loader for the Canadian portfolio and the original .com
+// hub imagery used on city landing pages. Both hosts resize through Cloudflare
+// Image Transformations; keep their responsive srcsets on the source host.
+// TRANSFORMS can fall back to the original objects if transforms are disabled.
+const CDNS = ["https://cdn.armanarai.ca", "https://cdn.armanarai.com"];
 const TRANSFORMS = true;
 
 export default function cloudflareLoader({
@@ -17,6 +15,8 @@ export default function cloudflareLoader({
   quality?: number;
 }): string {
   const MARKER = "/cdn-cgi/image/";
+  const CDN = CDNS.find((host) => src.startsWith(`${host}/`));
+  if (!CDN) return src;
 
   // A src that already baked in its own transform: rewrite the width to the one
   // next/image is asking for, otherwise every srcset entry resolves to the same

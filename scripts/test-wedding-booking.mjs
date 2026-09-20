@@ -34,6 +34,7 @@ test('campaign attribution survives the embed and direct calendar fallback', () 
     assert.equal(url.searchParams.has('email'), false);
     assert.equal(url.searchParams.get('embed_type'), embedded ? 'Inline' : null);
     assert.equal(url.searchParams.get('hide_event_type_details'), embedded ? '1' : null);
+    assert.equal(url.searchParams.get('hide_gdpr_banner'), embedded ? '1' : null);
     assert.equal(url.searchParams.has('hide_landing_page_details'), false);
   }
   assert.equal(new URL(weddingCalendarUrl('', 'www.armanarai.ca')).searchParams.get('utm_source'), '2728-cc-weddings');

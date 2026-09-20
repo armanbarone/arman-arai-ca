@@ -7,6 +7,7 @@ export function weddingCalendarUrl(search: string, hostname: string, embedded = 
     params.set("embed_domain", hostname);
     params.set("embed_type", "Inline");
     params.set("hide_event_type_details", "1");
+    params.set("hide_gdpr_banner", "1");
     params.set("background_color", options.theme === "dark" ? "141210" : "ffffff");
     params.set("text_color", options.theme === "dark" ? "e8e0d0" : "292f29");
     params.set("primary_color", options.theme === "dark" ? "b8956a" : "344b3c");

@@ -37,6 +37,7 @@ export default function CalendlyEmbed({ height = 720 }: { height?: number }) {
       const p = new URLSearchParams({
         primary_color: "b8956a",
         hide_event_type_details: "1",
+        hide_gdpr_banner: "1",
         background_color: "0e0c0a",
         text_color: "e8e0d0",
         embed_domain: window.location.hostname,

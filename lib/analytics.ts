@@ -2,8 +2,11 @@
  *  Google and Meta load on the first view of any public page. The private client
  *  portal, the admin pages and the API routes carry no advertising tags. */
 export const GA4_ID = "G-V2GKTHF0W6";
-export const GOOGLE_ADS_ID = "AW-18154542346";
+export const GOOGLE_ADS_ID = "AW-18464850778";
 export const META_PIXEL_ID = "1110472461323039";
+// Keep the existing booking goal paired with the account that owns its label.
+// Installing another account's base tag does not migrate that conversion action.
+export const SCHEDULE_CONVERSION_ID = "AW-18154542346";
 export const SCHEDULE_CONVERSION_LABEL = "LzlaCPST9cMcEIqq4dBD";
 export const BOOKING_KEY = "aa_ca_completed_booking_v1";
 const SENT_KEY = "aa_ca_booking_events_v1";
@@ -70,6 +73,7 @@ export function startTracking() {
   w.gtag("js", new Date());
   w.gtag("config", GA4_ID, { send_page_view: false });
   w.gtag("config", GOOGLE_ADS_ID);
+  w.gtag("config", SCHEDULE_CONVERSION_ID);
   googleReady = loadTag("aa-google-tag", `https://www.googletagmanager.com/gtag/js?id=${GOOGLE_ADS_ID}`);
 
   if (!w.fbq) {
@@ -153,7 +157,7 @@ async function reportBooking(booking: Booking) {
       if (!ready || !permitted() || wasSent(key)) return;
       const w = window as TrackingWindow;
       w.gtag?.("event", "generate_lead", { send_to: GA4_ID, method: "calendly_booking", landing_page: booking.page, currency: "CAD" });
-      w.gtag?.("event", "conversion", { send_to: `${GOOGLE_ADS_ID}/${SCHEDULE_CONVERSION_LABEL}`, transaction_id: booking.id, currency: "CAD" });
+      w.gtag?.("event", "conversion", { send_to: `${SCHEDULE_CONVERSION_ID}/${SCHEDULE_CONVERSION_LABEL}`, transaction_id: booking.id, currency: "CAD" });
       markSent(key);
     }),
     metaReady?.then((ready) => {

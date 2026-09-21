@@ -81,12 +81,15 @@ test('no tags on the private portal, the admin pages or the API routes', async (
   }
 });
 
-test('a page view initializes all three destinations once and filters the Google page URL', async () => {
+test('a page view configures both Ads accounts with one Google script and filters the Google page URL', async () => {
   const { analytics, appended, google, meta } = await environment();
   analytics.trackPageView(); analytics.trackPageView();
   assert.equal(appended.length, 2);
   const configs = google().filter((e) => e[0] === 'config');
-  assert.deepEqual(configs.map((e) => e[1]), [analytics.GA4_ID, analytics.GOOGLE_ADS_ID]);
+  assert.deepEqual(configs.map((e) => e[1]), [analytics.GA4_ID, 'AW-18464850778', 'AW-18154542346']);
+  const googleScripts = appended.filter((script) => script.src.includes('googletagmanager.com/gtag/js'));
+  assert.equal(googleScripts.length, 1);
+  assert.equal(googleScripts[0].src, 'https://www.googletagmanager.com/gtag/js?id=AW-18464850778');
   const pageViews = google().filter((e) => e[1] === 'page_view');
   assert.equal(pageViews.length, 1);
   assert.match(pageViews[0][2].page_location, /gclid=test-click/);
@@ -109,7 +112,7 @@ test('confirmed booking redirects immediately then reports once on thank-you, wi
   await analytics.reportPendingBooking();
   const conversion = google().filter((e) => e[1] === 'conversion');
   assert.equal(conversion.length, 1);
-  assert.equal(conversion[0][2].send_to, `${analytics.GOOGLE_ADS_ID}/${analytics.SCHEDULE_CONVERSION_LABEL}`);
+  assert.equal(conversion[0][2].send_to, 'AW-18154542346/LzlaCPST9cMcEIqq4dBD');
   assert.equal(conversion[0][2].transaction_id, booking.id);
   assert.equal(google().filter((e) => e[1] === 'generate_lead').length, 1);
   const schedule = meta().filter((e) => e[1] === 'Schedule');

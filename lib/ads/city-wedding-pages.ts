@@ -1,4 +1,4 @@
-import { HOME_GRID, HOME_HERO_POOL, type Photo } from "../images";
+import { CITY_PHOTOS, CITY_WORK, HOME_GRID, HOME_HERO_POOL, type Photo } from "../images";
 import { GALLERIES } from "../galleries";
 
 export type WeddingCity = {
@@ -31,12 +31,13 @@ const hatley = (number: number, alt: string): Photo => ({
   alt,
 });
 const defaultAlbums = ["luca-lauren", "elisha-michael", "nicole-js"];
-const homepageInterlude = [HOME_GRID[0], HOME_GRID[3], HOME_GRID[5]];
 
 export const WEDDING_CITIES: WeddingCity[] = [
   {
     slug: "vancouver", name: "Vancouver",
-    hero: HOME_HERO_POOL[4], inset: HOME_HERO_POOL[14], interlude: homepageInterlude,
+    hero: CITY_PHOTOS.vancouver.hero,
+    inset: CITY_WORK.vancouver[15],
+    interlude: [CITY_PHOTOS.vancouver.places[0], CITY_PHOTOS.vancouver.places[1], CITY_WORK.vancouver[3]],
     coverage: ["Vancouver & the Lower Mainland", "North Shore & Sea-to-Sky"],
     about: "From a celebration downtown to a day on the North Shore or up the Sea-to-Sky, we’ll make a photography plan that fits your wedding.",
     coverageQuestion: "Do you cover the Lower Mainland and the Sea-to-Sky?",

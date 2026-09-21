@@ -6,7 +6,6 @@ import { track } from "@vercel/analytics";
 import { CORE } from "@/lib/site";
 import { completeWeddingBooking } from "@/lib/analytics";
 import { isCompletedWeddingBooking, weddingCalendarUrl, WEDDING_CALENDAR } from "@/lib/wedding-booking";
-import styles from "./weddings.module.css";
 
 function record(name: string, properties: Record<string, string>) {
   try { track(name, { page: window.location.pathname.replace(/^\/|\/$/g, ""), ...properties }); } catch { /* Analytics must never interrupt booking. */ }
@@ -16,7 +15,7 @@ export function BookingLink({ children, className, placement }: { children: Reac
   return <a href="#book-a-call" className={className} onClick={() => record("Wedding Call CTA", { placement })}>{children}</a>;
 }
 
-export function BookingNavigation({ classes = styles }: { classes?: Record<string, string> } = {}) {
+export function BookingNavigation({ classes }: { classes: Record<string, string> }) {
   const [hidden, setHidden] = useState(true);
   useEffect(() => {
     const section = document.getElementById("book-a-call");
@@ -40,7 +39,7 @@ export function BookingNavigation({ classes = styles }: { classes?: Record<strin
   return <aside className={classes.stickyCta} hidden={hidden} aria-label="Book a wedding photography call"><span>2027 & 2028 weddings<br /><strong>From C${CORE.price.toLocaleString("en-CA")}</strong><br />Before tax · travel extra</span><BookingLink placement="mobile_bar">Book a free call ↗</BookingLink></aside>;
 }
 
-export default function WeddingCalendar({ page = "2728-cc-weddings", theme = "light", classes = styles }: { page?: string; theme?: "light" | "dark"; classes?: Record<string, string> } = {}) {
+export default function WeddingCalendar({ page = "2728-cc-weddings", theme = "light", classes }: { page?: string; theme?: "light" | "dark"; classes: Record<string, string> }) {
   const container = useRef<HTMLDivElement>(null);
   const widget = useRef<HTMLDivElement>(null);
   const completed = useRef(false);

@@ -54,7 +54,7 @@ export default function AlbumBrowser({ albums, label, compact = false }: { album
       {albums.map((album, index) => {
         const count = album.chapters.reduce((sum, chapter) => sum + chapter.photos.length, 0);
         return <button type="button" key={album.id} className={styles.albumCard} onClick={(event) => open(album, event.currentTarget)} aria-haspopup="dialog" aria-label={`Open ${album.title} album, ${count} photographs`}>
-          <span className={styles.albumImage}><Image src={album.cover.src} alt={album.cover.alt} fill quality={75} sizes={compact ? "(max-width: 600px) 65vw, (max-width: 1000px) 30vw, 18vw" : "(max-width: 600px) 85vw, 30vw"} /><span className={styles.albumBadge}>View full album <span aria-hidden="true">↗</span></span></span>
+          <span className={styles.albumImage}><Image src={album.cover.src} alt={album.cover.alt} fill quality={68} sizes={compact ? "(max-width: 760px) 65vw, (max-width: 1000px) 30vw, (max-width: 1600px) 17vw, 272px" : "(max-width: 760px) 78vw, (max-width: 1600px) 28vw, 448px"} /><span className={styles.albumBadge}>View full album <span aria-hidden="true">↗</span></span></span>
           <span className={styles.albumTopline}><span>{String(index + 1).padStart(2, "0")}</span><span>{count} photographs</span></span>
           <span className={styles.albumTitle}>{album.title}</span>
           <span className={styles.albumSubtitle}>{album.subtitle}</span>

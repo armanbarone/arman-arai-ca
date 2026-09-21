@@ -1,9 +1,5 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { LANDING_CITY_SLUGS, variantBySlug } from "@/lib/ads/wedding-landing";
-import { at, FILM_STRIP } from "@/lib/images";
-import { SITE } from "@/lib/site";
-import LandingPage from "../LandingPage";
 import CityWeddingLanding from "../CityWeddingLanding";
 import { WEDDING_CITIES, weddingCityRoute } from "@/lib/ads/city-wedding-pages";
 import { cityWeddingMetadata } from "@/lib/ads/city-wedding-metadata";
@@ -25,12 +21,12 @@ import { cityWeddingMetadata } from "@/lib/ads/city-wedding-metadata";
  * path. Changing either one to match the other creates a redirect loop.
  */
 
-// Preserve the existing markets and publish both editions of the new design.
-// Vancouver's dark edition retains its existing static route.
+// Legacy markets have their own static routes so their CSS is not sent here.
+// Vancouver's dark edition also retains its existing static route.
 export function generateStaticParams() {
-  const routes = new Set([...LANDING_CITY_SLUGS, ...WEDDING_CITIES.flatMap((city) => [city.slug, `${city.slug}-dark`])]);
-  routes.delete("vancouver-dark");
-  return [...routes].map((city) => ({ city }));
+  return WEDDING_CITIES.flatMap((city) => [city.slug, `${city.slug}-dark`])
+    .filter((city) => city !== "vancouver-dark")
+    .map((city) => ({ city }));
 }
 
 export const dynamicParams = false;
@@ -40,31 +36,12 @@ export async function generateMetadata(
 ): Promise<Metadata> {
   const { city } = await params;
   const designed = weddingCityRoute(city);
-  if (designed) return cityWeddingMetadata(designed.city, designed.path);
-  const variant = variantBySlug(city);
-  if (!variant) return {};
-  const title = variant.metaTitle;
-  const description = variant.metaDescription;
-  const photo = FILM_STRIP[5];
-  return {
-    title: { absolute: title },
-    description,
-    robots: { index: false, follow: true, googleBot: { index: false, follow: true } },
-    alternates: { canonical: `${SITE.url}${variant.path}` },
-    openGraph: {
-      title,
-      description,
-      url: `${SITE.url}${variant.path}`,
-      images: [{ url: at(photo.src, 1200), alt: photo.alt }],
-    },
-  };
+  return designed ? cityWeddingMetadata(designed.city, designed.path) : {};
 }
 
 export default async function CityLanding({ params }: { params: Promise<{ city: string }> }) {
   const { city } = await params;
   const designed = weddingCityRoute(city);
-  if (designed) return <CityWeddingLanding city={designed.city} theme={designed.theme} />;
-  const variant = variantBySlug(city);
-  if (!variant) notFound();
-  return <LandingPage variant={variant} />;
+  if (!designed) notFound();
+  return <CityWeddingLanding city={designed.city} theme={designed.theme} />;
 }

@@ -59,8 +59,8 @@ export default function CityWeddingLanding({ city, theme = "light" }: { city: We
           <details className={styles.dateInquiry}><summary>Prefer to check your date by email? <span aria-hidden="true">+</span></summary><DateCheck city={city.name} wherePlaceholder={`Your venue, or ${city.name} area`} page={`/${page}`} classes={styles} replyTiming="I’ll reply personally with availability." confirmation="Your inquiry is on its way. I’ll be in touch about your date." /></details>
         </div>
         <div className={styles.heroArt}>
-          <figure className={styles.heroImage}><Image src={city.hero.src} alt={city.hero.alt} style={city.heroPosition ? { objectPosition: city.heroPosition } : undefined} fill priority fetchPriority="high" quality={78} sizes="(max-width: 760px) 84vw, 42vw" /><figcaption>A day you felt. Photographs you keep.</figcaption></figure>
-          <figure className={styles.heroInset}><Image src={city.inset.src} alt={city.inset.alt} fill quality={72} sizes="(max-width: 760px) 33vw, 16vw" /></figure>
+          <figure className={styles.heroImage}><Image src={city.hero.src} alt={city.hero.alt} style={city.heroPosition ? { objectPosition: city.heroPosition } : undefined} fill priority fetchPriority="high" quality={68} sizes="(max-width: 760px) 80vw, (max-width: 1600px) 38vw, 608px" /><figcaption>A day you felt. Photographs you keep.</figcaption></figure>
+          <figure className={styles.heroInset}><Image src={city.inset.src} alt={city.inset.alt} fill quality={68} sizes="(max-width: 760px) 28vw, (max-width: 1600px) 14vw, 224px" /></figure>
           <span className={styles.heroSideNote}>Documentary feeling / Editorial eye</span>
         </div>
       </section>

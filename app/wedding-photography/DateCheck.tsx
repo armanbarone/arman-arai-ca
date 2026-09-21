@@ -3,7 +3,6 @@
 import { useEffect, useRef, useState } from "react";
 import { track } from "@vercel/analytics";
 import { trackLead } from "@/lib/analytics";
-import styles from "./landing.module.css";
 
 /* The first thing under the headline.
  *
@@ -39,7 +38,7 @@ export default function DateCheck({
   city,
   wherePlaceholder,
   page,
-  classes = styles,
+  classes,
   replyTiming = "Answered the same day, by me.",
   confirmation = "Got it. I’ll come back on your date today.",
 }: {
@@ -47,7 +46,7 @@ export default function DateCheck({
   city: string;
   wherePlaceholder: string;
   page: string;
-  classes?: Record<string, string>;
+  classes: Record<string, string>;
   replyTiming?: string;
   confirmation?: string;
 }) {

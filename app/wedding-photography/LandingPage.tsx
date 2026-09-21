@@ -88,7 +88,7 @@ export default function LandingPage({ variant }: { variant: LandingVariant }) {
               Collections from <strong>{money(CORE.price)}</strong>
               <span>CAD before tax. The same price in every Canadian city, travel quoted separately.</span>
             </p>
-            <DateCheck city={city} wherePlaceholder={variant.wherePlaceholder} page={variant.path} />
+            <DateCheck city={city} wherePlaceholder={variant.wherePlaceholder} page={variant.path} classes={styles} />
             <p className={styles.orBook}>
               Or <BookingLink className={styles.textLink} placement="hero_secondary">book a free 30-minute call</BookingLink> and I will check the date while we talk.
             </p>

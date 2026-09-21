@@ -1,5 +1,4 @@
-import { CITY_PHOTOS, CITY_WORK, HOME_GRID, HOME_HERO_POOL, type Photo } from "../images";
-import { GALLERIES } from "../galleries";
+import { CITY_PHOTOS, CITY_WORK, type Photo } from "../images";
 
 export type WeddingCity = {
   slug: string;
@@ -17,19 +16,9 @@ export type WeddingCity = {
   albums: string[];
 };
 
-const photograph = (slug: string, number: string): Photo => {
-  const image = GALLERIES.find((gallery) => gallery.slug === slug)!.chapters
-    .flatMap((chapter) => chapter.images).find((image) => image.url.endsWith(`/${number}.webp`))!;
-  return { src: image.url, alt: image.alt };
-};
-
-// Scene-setting images from the existing .com hubs stay separate from the
-// complete client albums below. Their filenames retain the source provenance.
-const banff = (name: string, alt: string): Photo => ({ src: `https://cdn.armanarai.com/elopement/banff-hub/${name}.webp`, alt });
-const hatley = (number: number, alt: string): Photo => ({
-  src: `https://cdn.armanarai.com/${encodeURI(`Vancouver Island/Vancouver Island Elopement - Arman Arai New (${number}).png`)}`,
-  alt,
-});
+// City photographs stay in their existing canadian-wedding/cities R2 folders.
+// Keep these scene-setting selections separate from the complete client albums.
+const described = (photo: Photo, alt: string): Photo => ({ ...photo, alt });
 const defaultAlbums = ["luca-lauren", "elisha-michael", "nicole-js"];
 
 export const WEDDING_CITIES: WeddingCity[] = [
@@ -48,8 +37,9 @@ export const WEDDING_CITIES: WeddingCity[] = [
   },
   {
     slug: "toronto", name: "Toronto",
-    hero: { ...photograph("eathon-jessica", "013"), alt: "A wedding couple with their dog in a sunlit garden" }, inset: HOME_HERO_POOL[14],
-    interlude: [photograph("eathon-jessica", "028"), photograph("elisha-michael", "001"), HOME_GRID[5]],
+    hero: CITY_WORK.toronto[3],
+    inset: CITY_PHOTOS.toronto.places[0],
+    interlude: [CITY_WORK.toronto[0], described(CITY_WORK.toronto[9], "A wedding party under umbrellas among blossoming trees in Niagara"), CITY_PHOTOS.toronto.places[1]],
     coverage: ["Toronto & the GTA", "City celebrations & Ontario weekends"],
     about: "From a downtown celebration to a garden wedding outside the city, we’ll make time for the portraits without losing the afternoon to travel. Your people and your plans come first.",
     coverageQuestion: "Do you photograph weddings across the GTA?",
@@ -60,9 +50,9 @@ export const WEDDING_CITIES: WeddingCity[] = [
   },
   {
     slug: "montreal", name: "Montréal",
-    hero: photograph("luca-lauren", "011"), heroPosition: "48% center",
-    inset: photograph("parsa-marjan", "004"),
-    interlude: [photograph("luca-lauren", "001"), photograph("nicole-js", "053"), photograph("parsa-marjan", "005")],
+    hero: CITY_PHOTOS.montreal.hero, heroPosition: "50% 42%",
+    inset: CITY_PHOTOS.montreal.places[1],
+    interlude: [CITY_PHOTOS.montreal.places[0], CITY_PHOTOS.montreal.places[2], CITY_PHOTOS.montreal.places[3]],
     coverage: ["Montréal & the surrounding area", "Old Port, city rooms & country estates"],
     about: "From a celebration in Old Montréal to a wedding in the Townships, we’ll plan portraits around the places you love and the time you want with your guests. A few quiet moments together, then back to the party.",
     coverageQuestion: "Do you cover weddings outside Montréal?",
@@ -73,9 +63,9 @@ export const WEDDING_CITIES: WeddingCity[] = [
   },
   {
     slug: "banff", name: "Banff",
-    hero: banff("hero", "A wedding couple in the mountains of Banff"),
-    inset: banff("real-lakelouise", "A couple together beside the turquoise water of Lake Louise"),
-    interlude: [banff("real-minnewanka", "A wedding couple in a canoe on Lake Minnewanka"), banff("act-dinner", "A candlelit table on a mountain lodge terrace"), HOME_GRID[5]],
+    hero: CITY_WORK.banff[5],
+    inset: described(CITY_WORK.banff[10], "A couple dancing among trees above a mountain valley in golden light"),
+    interlude: [described(CITY_WORK.banff[0], "A lakeside wedding ceremony beneath golden autumn trees in the Rockies"), CITY_WORK.banff[1], described(CITY_WORK.banff[8], "A wedding couple laughing together in a wooden canoe on Lake Louise")],
     coverage: ["Banff & Lake Louise", "Canmore & the Bow Valley"],
     about: "A mountain backdrop, your favourite people, and time to take it all in. We’ll build the photography around your ceremony and reception, with room for portraits and a plan for changing weather.",
     coverageQuestion: "Do you photograph weddings in Lake Louise and Canmore too?",
@@ -86,9 +76,9 @@ export const WEDDING_CITIES: WeddingCity[] = [
   },
   {
     slug: "victoria", name: "Victoria",
-    hero: hatley(1, "A wedding couple in the knot garden below Hatley Castle in Greater Victoria"),
-    inset: hatley(6, "Hatley Castle lit at blue hour, seen from the garden urn walk"),
-    interlude: [hatley(6, "The illuminated stone facade and gardens of Hatley Castle at blue hour"), HOME_GRID[3], HOME_GRID[5]],
+    hero: CITY_WORK.vancouver[2],
+    inset: described(CITY_WORK.tofino[6], "A wedding couple beside a forested cliff on a Vancouver Island beach"),
+    interlude: [described(CITY_WORK.tofino[7], "A wedding couple and their family beside a white carriage in a sunlit garden"), described(CITY_WORK.tofino[4], "A couple on a rocky Vancouver Island shoreline in shafts of golden light"), CITY_WORK.vancouver[9]],
     coverage: ["Victoria & Greater Victoria", "Gardens, heritage rooms & the coast"],
     about: "From a garden ceremony to a celebration by the water, we’ll make space for photographs that feel like you. We’ll keep the portrait plan close to your day, so you can get back to the people who came to celebrate.",
     coverageQuestion: "Do you cover Greater Victoria and the rest of the island?",

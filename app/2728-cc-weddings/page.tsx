@@ -128,11 +128,11 @@ export default function WeddingLandingPage() {
 
         <section id="book-a-call" className={styles.booking} aria-labelledby="booking-title">
           <div className={styles.bookingIntro}><p className={styles.eyebrow}>Let’s talk about your wedding</p><h2 id="booking-title">Tell me what<br /><em>you’re planning.</em></h2><p>Pick a time below for a free 30-minute video call. We’ll talk about your date, your venue and what you’d love from your photographs.</p><ol><li>Check availability for your wedding date.</li><li>Talk through coverage, pricing and travel.</li><li>See if we’re a good fit.</li></ol><p className={styles.bookingNote}>No need to have it all figured out.<br />And no obligation to book.</p></div>
-          <div className={styles.calendar}><WeddingCalendar /></div>
+          <div className={styles.calendar}><WeddingCalendar classes={styles} /></div>
         </section>
       </main>
       <footer className={styles.footer}><span className={styles.footerName}>Arman Arai - Wedding Photographer</span><a href="/privacy-policy" target="_blank" rel="noopener noreferrer">Privacy policy</a><span>© {new Date().getFullYear()} Arman Arai</span></footer>
-      <BookingNavigation />
+      <BookingNavigation classes={styles} />
       <Analytics />
     </div>
   );

@@ -49,7 +49,7 @@ export const metadata: Metadata = {
     template: "%s | Arman Arai",
   },
   description:
-    "Documentary and editorial wedding photography across Canada. Three collections from C$3,000, the same price wherever you marry.",
+    "Documentary and editorial wedding photography across Canada, and destination weddings worldwide outside the USA. Three collections from C$3,000, the same price wherever you marry.",
   alternates: { canonical: "/" },
   openGraph: {
     type: "website",
@@ -58,7 +58,7 @@ export const metadata: Metadata = {
     url: SITE.url,
     title: "Arman Arai — Canadian Wedding Photographer",
     description:
-      "Documentary and editorial wedding photography in Toronto, Montréal and Vancouver, and across Canada coast to coast.",
+      "Documentary and editorial wedding photography in Toronto, Montréal and Vancouver, across Canada coast to coast, and worldwide outside the United States.",
   },
   twitter: {
     card: "summary_large_image",

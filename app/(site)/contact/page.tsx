@@ -7,7 +7,7 @@ import { MARKETS, SITE, STARTING_FROM } from "@/lib/site";
 export const metadata: Metadata = {
   title: "Contact — Check Your Wedding Date",
   description:
-    "Send your date, city and rough guest count. I answer inside two business hours and tell you straight away whether the date is open. Toronto, Montréal, Vancouver and across Canada.",
+    "Send your date, city and rough guest count. I answer inside two business hours and tell you straight away whether the date is open. Across Canada, and worldwide outside the USA.",
   alternates: { canonical: "/contact" },
   openGraph: {
     title: "Contact Arman Arai",
@@ -18,10 +18,13 @@ export const metadata: Metadata = {
 
 const FACTS = [
   { label: "Email", value: SITE.email, href: `mailto:${SITE.email}` },
+  { label: "Phone", value: SITE.phone, href: `tel:${SITE.phoneE164}` },
   { label: "Instagram", value: SITE.instagramHandle, href: SITE.instagram },
   { label: "Pinterest", value: "iarmanarai", href: SITE.pinterest },
   { label: "Featured markets", value: "Toronto · Montréal · Vancouver" },
   { label: "Also", value: "Anywhere in Canada, coast to coast" },
+  { label: "Abroad", value: "Everywhere except the United States" },
+  { label: "Registered", value: `${SITE.address.street}, ${SITE.address.city}, ${SITE.address.region}` },
   { label: "Working language", value: "English" },
 ];
 
@@ -59,7 +62,8 @@ export default function Contact() {
               actually recommend, and what it costs, in the first reply rather than the third.
             </p>
             <p className="font-serif italic text-rose text-[0.9rem] leading-relaxed mb-4">
-              Booking 2027 and 2028 weddings across Canada. Peak Saturdays usually go nine to
+              Booking 2027 and 2028 weddings across Canada, and destination weddings everywhere
+              outside the United States. Peak Saturdays usually go nine to
               eighteen months out; off-season and weekday dates open up much later.
             </p>
             <p className="text-slate text-sm leading-relaxed mb-10">

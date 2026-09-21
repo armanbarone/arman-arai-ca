@@ -66,6 +66,21 @@ const menuGroups: MenuGroup[] = [
       { name: "Jasper", href: hub("jasper"), note: "The quieter Rockies, under a dark-sky preserve" },
     ],
   },
+  /* Not a province. It sits in the same menu because a couple looking for
+     where he works looks here, and the destination page is otherwise reachable
+     only from the footer. */
+  {
+    name: "Beyond Canada",
+    slug: "destination",
+    href: "/destination-wedding-photographer",
+    places: [
+      {
+        name: "Destination weddings",
+        href: "/destination-wedding-photographer",
+        note: "Anywhere in the world except the United States, at the same collection price",
+      },
+    ],
+  },
 ];
 
 export default function Nav() {

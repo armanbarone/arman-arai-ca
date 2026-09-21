@@ -13,6 +13,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const core: MetadataRoute.Sitemap = [
     { url: `${SITE.url}/`, changeFrequency: "monthly", priority: 1.0 },
     { url: `${SITE.url}/pricing`, changeFrequency: "monthly", priority: 0.95 },
+    { url: `${SITE.url}/destination-wedding-photographer`, changeFrequency: "monthly", priority: 0.9 },
     { url: `${SITE.url}/portfolio`, changeFrequency: "monthly", priority: 0.85 },
     { url: `${SITE.url}/galleries`, changeFrequency: "monthly", priority: 0.85 },
     { url: `${SITE.url}/experience`, changeFrequency: "yearly", priority: 0.8 },

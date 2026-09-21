@@ -40,7 +40,7 @@ import { CORE, MARKETS, SITE, TIERS } from "@/lib/site";
 export const metadata: Metadata = {
   title: "Canadian Wedding Photographer — Toronto, Montréal, Vancouver",
   description:
-    "Documentary and editorial wedding photography across Canada. Three collections from C$3,000, the same price wherever you marry.",
+    "Documentary and editorial wedding photography across Canada, and destination weddings worldwide outside the USA. Three collections from C$3,000, the same price wherever you marry.",
   alternates: { canonical: "/" },
 };
 
@@ -178,9 +178,10 @@ export default function Home() {
 
               <p className="dr-lede" style={{ marginBottom: "2.2rem", maxWidth: "30rem" }}>
                 <strong>Documentary and editorial wedding photography, across Canada.</strong>{" "}
-                Three collections at one national price, wherever in the country you
-                marry. Vertical social reels and film prints in every one, travel quoted
-                openly on top.
+                Three collections at one price, wherever you marry: every province, and
+                destination weddings anywhere in the world outside the United States.
+                Vertical social reels and film prints in every one, travel quoted openly
+                on top.
               </p>
 
               <div className="dr-cta-row">

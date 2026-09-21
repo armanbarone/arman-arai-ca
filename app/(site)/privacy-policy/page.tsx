@@ -36,7 +36,7 @@ export default function PrivacyPolicy() {
         <div style={{ height: "0.5px", background: "var(--hairline)", marginBottom: 48 }} />
 
         <Section title="Who We Are">
-          <p>This website, armanarai.ca, is operated by Arman Arai, a wedding photographer working across Canada. References to "I", "me", or "my" throughout this policy refer to Arman Arai Photography.</p>
+          <p>This website, armanarai.ca, is operated by Arman Arai, a wedding photographer working across Canada and, for destination weddings, everywhere outside the United States. References to "I", "me", or "my" throughout this policy refer to Arman Arai Photography.</p>
           <p style={{ marginTop: 12 }}>Contact: <a href="mailto:i@armanarai.com" style={{ color: "var(--accent)" }}>i@armanarai.com</a></p>
         </Section>
 

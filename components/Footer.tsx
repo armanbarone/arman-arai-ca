@@ -15,8 +15,9 @@ export default function Footer() {
           <div>
             <span className="font-script text-4xl text-cream block mb-5">Arman Arai</span>
             <p className="text-[0.82rem] text-blush leading-relaxed max-w-sm font-normal mb-8">
-              Wedding photographer. Documentary and editorial coverage across Canada, with one
-              collection price nationwide and travel kept lean through early booking.
+              Wedding photographer. Documentary and editorial coverage across Canada, and
+              destination weddings anywhere outside the United States, with one collection
+              price wherever you marry and travel kept lean through early booking.
             </p>
             <InquireButton
               className="text-[0.62rem] tracking-[0.2em] uppercase px-8 py-3.5 transition-colors duration-300 cursor-pointer border-none"
@@ -30,7 +31,13 @@ export default function Footer() {
             <p className="text-[0.58rem] tracking-[0.28em] uppercase text-rose mb-6">Connect</p>
             <ul className="space-y-3">
               <li><Link href="/contact" className="footer-link">Contact</Link></li>
+              <li>
+                <Link href="/destination-wedding-photographer" className="footer-link">
+                  Destination weddings
+                </Link>
+              </li>
               <li><a href={`mailto:${SITE.email}`} className="footer-link">{SITE.email}</a></li>
+              <li><a href={`tel:${SITE.phoneE164}`} className="footer-link">{SITE.phone}</a></li>
               <li>
                 <a href={SITE.instagram} target="_blank" rel="noopener noreferrer" className="footer-link">
                   Instagram {SITE.instagramHandle}
@@ -51,7 +58,7 @@ export default function Footer() {
             <Link href="/privacy-policy" className="hover:text-rose transition-colors">Privacy</Link>
             <Link href="/terms-of-service" className="hover:text-rose transition-colors">Terms</Link>
           </div>
-          <span>Available across Canada</span>
+          <span>Across Canada, and worldwide outside the USA</span>
         </div>
       </div>
     </footer>

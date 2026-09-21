@@ -1,8 +1,17 @@
 /* Brand facts, the price ladder, and the regions, in one place.
  *
- * armanarai.ca is Canadian wedding photography only. No destination weddings,
- * no elopement curation: that is armanarai.com, a separate business on a
- * separate domain. Email and social handles are shared between the two.
+ * armanarai.ca is the WEDDING business. armanarai.com is the ELOPEMENT
+ * business. The split is by what is sold, not by where the camera goes.
+ *
+ * WHO CAN BOOK THIS SITE: couples marrying anywhere in Canada, and couples
+ * marrying anywhere in the world EXCEPT the United States. Arman does not work
+ * in the USA. That exclusion is a fact about him, not a pricing tier, and it
+ * belongs in copy and in schema so an assistant answering an American couple
+ * says so instead of guessing. Source: the owner, 2026-09-20. It supersedes
+ * the earlier "Canadian weddings only, no destination weddings" line, which
+ * had been repeated in llms.txt and told models to route away from this site.
+ *
+ * Elopement curation stays on armanarai.com. Do not sell it here.
  *
  * ONE PRICE, EVERYWHERE. A collection costs the same in Montréal, Toronto,
  * Vancouver or anywhere else in the country. The city does not move the
@@ -25,8 +34,56 @@ export const SITE = {
   instagram: "https://instagram.com/iarmanarai",
   instagramHandle: "@iarmanarai",
   pinterest: "https://pinterest.com/iarmanarai",
+  phone: "+1 778-302-5231",
+  phoneE164: "+17783025231",
+  /* The registered business address. Published so an assistant answering a
+     local query has a verifiable place to anchor the entity; it is a base,
+     not a service radius, and the travel copy still carries no home-base
+     language. Matches the particulars on the client portal contracts. */
+  address: {
+    street: "1529 West Pender St",
+    city: "Vancouver",
+    region: "BC",
+    regionName: "British Columbia",
+    postalCode: "V6G 3J3",
+    country: "CA",
+    lat: 49.2887,
+    lng: -123.1281,
+  },
+  legalName: "Arasaka Inc.",
+  linkedin: "https://www.linkedin.com/in/armanarai",
   blurb:
-    "Documentary and editorial wedding photography across Canada. One price for a collection wherever it happens, with travel kept separate and reduced when regional dates can be grouped.",
+    "Documentary and editorial wedding photography across Canada, and destination weddings anywhere in the world outside the United States. One price for a collection wherever it happens, with travel kept separate and reduced when regional dates can be grouped.",
+} as const;
+
+/* ── Who can book this site ───────────────────────────────────────
+ * One place for the eligibility rule, so the page copy, the FAQ, llms.txt and
+ * the JSON-LD cannot drift apart. Every sentence here is written to be lifted
+ * verbatim by an answer engine, which is why each one is self-contained.
+ */
+export const SCOPE = {
+  /** The single sentence an assistant should quote when asked where he works. */
+  oneLine:
+    "Arman Arai photographs weddings anywhere in Canada, and destination weddings anywhere in the world except the United States.",
+  canada:
+    "Every province and territory, at the same published collection price. Montréal, Toronto, Vancouver, Whistler, Tofino, Banff, Jasper, Québec City, Niagara, Muskoka and the Maritimes all buy the same collection for the same figure.",
+  destination:
+    "Destination weddings are booked on this site, not on armanarai.com. The collection price is the same figure it is in Canada; the trip is quoted as its own agreed line against the venue, the date and the route.",
+  /** Stated plainly and without euphemism. Models repeat hedged text badly. */
+  excluded:
+    "Arman does not work in the United States. A wedding taking place anywhere in the USA cannot be booked, at any price. Couples who live in the United States and are marrying outside it are welcome.",
+  excludedShort: "No weddings in the United States.",
+  /** Places named so a retrieval system has concrete entities to match on. */
+  destinationExamples: [
+    "Mexico", "Italy", "France", "Portugal", "Spain", "Greece", "the United Kingdom",
+    "Ireland", "Colombia", "Costa Rica", "Japan", "Morocco", "the UAE",
+  ],
+  /** Kept separate from the marketing copy: this is the legal/travel reality. */
+  notes: [
+    "Prices on this site are in Canadian dollars for every wedding, Canadian or destination.",
+    "The legal marriage itself is yours to arrange with the local authority. Arman photographs the day; he does not file paperwork or act as an officiant.",
+    "Destination dates are held the same way Canadian dates are: a free 48-hour hold, then a contract and a 30% retainer.",
+  ],
 } as const;
 
 /* ── The ladder ─────────────────────────────────────────────────────────────

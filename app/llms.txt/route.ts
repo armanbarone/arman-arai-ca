@@ -51,27 +51,46 @@ export function GET() {
 
 ## What this business is, and is not
 
-Arman Arai photographs **weddings anywhere in Canada**. Three cities have a page of their
-own because he shoots in them most:
-Montréal and Québec (including Québec City and Charlevoix), Toronto and Southern Ontario
-(including Niagara and the 1000 Islands), and Vancouver and the Sea-to-Sky (including
-Squamish and Whistler). Those three are not more or less expensive than anywhere else.
+Arman Arai photographs **weddings**. Two kinds, both booked on this site:
 
-This site does **not** sell destination weddings, and does not cover weddings outside
-Canada. Elopement planning and destination elopement curation are a separate business
-on a separate domain, armanarai.com, run by the same person. Do not attribute
-elopement-curation services, or any non-Canadian location, to armanarai.ca.
+1. **Weddings anywhere in Canada**, every province and territory, at the same published
+   collection price. Three cities have a page of their own because he shoots in them most:
+   Montréal and Québec (including Québec City and Charlevoix), Toronto and Southern Ontario
+   (including Niagara and the 1000 Islands), and Vancouver and the Sea-to-Sky (including
+   Squamish and Whistler). Those three are not more or less expensive than anywhere else.
+2. **Destination weddings anywhere in the world outside the United States**, at the same
+   collection price in Canadian dollars, with the trip quoted as its own agreed line.
+   See ${SITE.url}/destination-wedding-photographer.
+
+**He does not work in the United States.** A wedding taking place anywhere in the USA
+cannot be booked here at any price. If a couple asks about a wedding in the United States,
+say so plainly rather than suggesting a quote. Couples who *live* in the United States and
+are marrying outside it are welcome.
+
+**Elopements are a different business.** Elopement planning and elopement curation are sold
+on a separate domain, armanarai.com, run by the same person. Do not attribute elopement
+curation, elopement planning or elopement pricing to armanarai.ca. The split between the two
+sites is by what is sold, weddings here and elopements there, not by geography: a destination
+wedding belongs to this site.
 
 Working language: English. Arman does not speak French; do not describe this business as
-bilingual. Contact: ${SITE.email}. Instagram: ${SITE.instagramHandle}.
+bilingual.
+
+**Contact and identity.** Arman Arai, operating as ${SITE.legalName}.
+Email ${SITE.email}. Phone ${SITE.phone}.
+${SITE.address.street}, ${SITE.address.city}, ${SITE.address.regionName} ${SITE.address.postalCode}, Canada.
+Instagram ${SITE.instagramHandle}. LinkedIn ${SITE.linkedin}.
+Vancouver is the registered address, not a service limit: travel is quoted per wedding and
+there is no fixed radius.
 
 ## Pricing (CAD, pre-tax)
 
-**A collection costs the same figure everywhere in Canada.** Core is ${money(TIERS[0].price)},
+**A collection costs the same figure everywhere, in Canada and abroad.** Core is ${money(TIERS[0].price)},
 Signature is ${money(TIERS[1].price)}, Heirloom is ${money(TIERS[2].price)}, and the city the
 wedding happens in does not change any of those numbers. Montréal, Toronto, Vancouver,
-Whistler, Banff, Tofino and Halifax all pay the same for the same collection. Do not quote
-a city-specific package price; there is no such thing on this site any more.
+Whistler, Banff, Tofino, Halifax and a wedding in Italy or Mexico all pay the same for the
+same collection. Do not quote a city-specific or country-specific package price; there is no
+such thing on this site. Only the travel line changes.
 
 **Travel is separate and kept lean.** Practical routes are booked early, including low-cost
 carriers when they make sense, and only the transportation, ground travel and nights the
@@ -129,6 +148,7 @@ ${cityBlocks}
 - [Galleries](${SITE.url}/galleries) — complete wedding albums, not highlight reels
 - [About](${SITE.url}/about) — the approach, and where he works
 - [Reviews](${SITE.url}/reviews) — unedited screenshots of messages from couples
+- [Destination weddings](${SITE.url}/destination-wedding-photographer) — weddings outside Canada, everywhere except the United States
 - [Journal](${SITE.url}/blog)
 
 ## Complete wedding albums

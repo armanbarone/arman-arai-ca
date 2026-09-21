@@ -22,9 +22,19 @@ Arman Arai runs **two** sites off one identity. They share an email
 Team `team_0GV5RGkH6Bi25jynLMXA6XzR`. Canonical host is **www.armanarai.ca**
 (apex 308s to www). Deploys are git-triggered from `main`.
 
-The .ca sells **Canadian weddings**; the .com sells elopement curation. Keep the
-two offers apart: do not advertise elopement curation here, and do not advertise
-Canadian weddings there.
+The .ca sells **weddings**; the .com sells **elopement curation**. The split is
+by what is SOLD, not by geography. Do not advertise elopement curation here, and
+do not advertise Canadian weddings there.
+
+**Updated 2026-09-20, by Arman:** this site takes weddings **anywhere in Canada
+and anywhere in the world except the United States**. He does not work in the
+USA. The earlier line, "Canadian weddings only, no destination weddings", was
+wrong and had been repeated into `llms.txt`, where it was telling answer engines
+not to attribute any non-Canadian wedding to this site. Destination weddings now
+have their own page at `/destination-wedding-photographer`, and the eligibility
+rule lives in one place: `SCOPE` in `lib/site.ts`. The US exclusion is stated
+plainly in copy, in the FAQ and in llms.txt because a hedged version gets
+repeated badly by models.
 
 **That is a positioning rule about what is SOLD, not a ban on where a photograph
 was taken.** Arman's back catalogue includes weddings outside Canada and they

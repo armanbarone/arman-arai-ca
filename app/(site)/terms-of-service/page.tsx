@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
+import { SITE } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Terms of Service | Arman Arai",
-  description: "Terms of service for Arman Arai wedding photography in Canada: booking, payment, cancellation, copyright, and delivery terms.",
+  description: "Terms of service for Arman Arai wedding photography in Canada and abroad: booking, payment, cancellation, copyright, and delivery terms.",
   robots: { index: true, follow: true },
   alternates: { canonical: "https://www.armanarai.ca/terms-of-service" },
 };
@@ -41,7 +42,7 @@ export default function TermsOfService() {
         </Section>
 
         <Section title="Services">
-          <p>This site sells wedding photography in Canada. I offer the following:</p>
+          <p>This site sells wedding photography in Canada, and destination wedding photography anywhere in the world except the United States, where I do not work. I offer the following:</p>
           <ul style={{ paddingLeft: "1.25rem", marginTop: 10, display: "flex", flexDirection: "column", gap: 6 }}>
             <li>Wedding day photography, in the three collections published on the pricing page</li>
             <li>Engagement and welcome sessions, booked as add-ons at published prices</li>
@@ -50,7 +51,7 @@ export default function TermsOfService() {
             <li>Timeline planning and a written family-photograph plan</li>
             <li>Optional add-ons at published prices: additional hours and events, a second photographer, sessions, albums, film, drone and dedicated video coverage</li>
           </ul>
-          <p style={{ marginTop: 12 }}>A collection carries the same published price anywhere in Canada. Travel is charged separately only when the wedding requires its own trip, with reduced or waived travel when regional dates can be grouped. Every price on this website is in Canadian dollars and excludes applicable sales tax.</p>
+          <p style={{ marginTop: 12 }}>A collection carries the same published price anywhere in Canada and at any destination outside the United States. Travel is charged separately only when the wedding requires its own trip, with reduced or waived travel when regional dates can be grouped. Every price on this website is in Canadian dollars and excludes applicable sales tax.</p>
           <p style={{ marginTop: 12 }}>The specific scope of services, deliverables, and coverage hours are defined in your individual contract. I accept a limited number of commissions per year to maintain the quality of my work.</p>
         </Section>
 
@@ -155,7 +156,7 @@ export default function TermsOfService() {
 
         <Section title="Contact">
           <p>Questions about these terms can be directed to:</p>
-          <p style={{ marginTop: 10 }}>Arman Arai Photography<br /><a href="mailto:i@armanarai.com" style={{ color: "var(--accent)" }}>i@armanarai.com</a><br />Montréal, Québec, Canada</p>
+          <p style={{ marginTop: 10 }}>Arman Arai Photography<br /><a href="mailto:i@armanarai.com" style={{ color: "var(--accent)" }}>i@armanarai.com</a><br />{SITE.phone}<br />{SITE.address.street}, {SITE.address.city}, {SITE.address.regionName} {SITE.address.postalCode}, Canada</p>
         </Section>
 
         <div style={{ height: "0.5px", background: "var(--hairline)", marginTop: 48, marginBottom: 24 }} />

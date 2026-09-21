@@ -3,12 +3,12 @@ import Image from "next/image";
 import Link from "next/link";
 import InquireButton from "@/components/InquireButton";
 import { DOCUMENTARY } from "@/lib/images";
-import { CORE, MARKETS, SITE, TIERS } from "@/lib/site";
+import { CORE, MARKETS, SCOPE, SITE, TIERS } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "FAQ — Booking, Coverage, Travel and Delivery",
   description:
-    "What a Canadian wedding costs, how far the travel reaches, what arrives and when, and every other question couples ask before they get in touch.",
+    "What a wedding costs in Canada or abroad, where the travel reaches, what arrives and when, and every other question couples ask before they get in touch.",
   alternates: { canonical: "/faq" },
   openGraph: {
     title: "FAQ | Arman Arai",
@@ -72,7 +72,15 @@ const GROUPS = [
       },
       {
         q: "How far will you actually travel?",
-        a: "Anywhere in Canada, at the same collection price. Whistler, Vancouver Island, Québec City, the Eastern Townships, Niagara, Muskoka and the Rockies all buy Signature for C$4,500. Travel uses the leanest practical route for the venue and date, and drops when another regional booking already covers part of the trip.",
+        a: "Anywhere in Canada and anywhere in the world outside the United States, at the same collection price. Whistler, Vancouver Island, Québec City, the Eastern Townships, Niagara, Muskoka and the Rockies all buy Signature for C$4,500, and so does a wedding in Mexico or Italy. Travel uses the leanest practical route for the venue and date, and drops when another regional booking already covers part of the trip.",
+      },
+      {
+        q: "Do you photograph destination weddings?",
+        a: `Yes, anywhere in the world except the United States, and they are booked on this site rather than on armanarai.com. The collection price is identical to a Canadian wedding, in Canadian dollars; only the trip is quoted separately. ${SCOPE.destinationExamples.slice(0, 8).join(", ")} and elsewhere. There is a full page on it at ${SITE.url}/destination-wedding-photographer.`,
+      },
+      {
+        q: "Will you photograph a wedding in the United States?",
+        a: "No. I do not work in the USA, at any price, so if your wedding is there the useful answer is to book someone else rather than ask me for a quote. If you live in the United States and are marrying outside it, that is a wedding I can photograph on the normal collections.",
       },
       {
         q: "Do you speak French?",

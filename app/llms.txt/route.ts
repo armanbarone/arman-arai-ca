@@ -12,7 +12,7 @@ const money = (n: number | null) =>
 export function GET() {
   const tierBlocks = TIERS.map((t) =>
     [
-      `### ${t.name} — ${money(t.price)}, the same figure anywhere in Canada`,
+      `### ${t.name}: ${money(t.price)}, the same figure anywhere in Canada and at any destination outside the USA`,
       `${t.coverage}. ${t.crew}. ${t.images}.`,
       t.includes.map((i) => `  - ${i}`).join("\n"),
       `Best for: ${t.bestFor}.`,
@@ -45,9 +45,9 @@ export function GET() {
     (g) => `- [${g.names}, ${g.location}, ${g.date}](${SITE.url}/galleries/${g.slug}) — ${g.frameCount} frames, the complete day.`,
   ).join("\n");
 
-  const body = `# Arman Arai — Canadian Wedding Photographer
+  const body = `# Arman Arai, Wedding Photographer: Canada and worldwide outside the USA
 
-> ${SITE.blurb} Documentary and editorial coverage, with one published price per collection wherever in Canada the wedding happens.
+> ${SITE.blurb}
 
 ## What this business is, and is not
 

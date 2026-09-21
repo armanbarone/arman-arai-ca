@@ -57,12 +57,13 @@ const collectionFor: Record<string, string> = {
 
 export default function LandingPage({ variant }: { variant: LandingVariant }) {
   const city = variant.slug ? variant.h1.replace("Wedding Photographer in ", "") : "Canada";
+  const dateFirst = Boolean(variant.slug);
   const order = galleryOrderFor(variant.slug);
   const albums = order
     .map((slug) => GALLERIES.find((g) => g.slug === slug))
     .filter((g): g is (typeof GALLERIES)[number] => Boolean(g));
   const frames = albums.reduce((sum, g) => sum + g.frameCount, 0);
-  const faqs = [...variant.faqs, ...COMMON_FAQS];
+  const faqs = [...variant.faqs, ...COMMON_FAQS].map((faq) => dateFirst && faq.q === "How do we find out if you have our date?" ? { ...faq, a: "Use the date check at the top of this page to see current availability, then book a free 30-minute video call with Arman. Your wedding date is secured by a signed contract and retainer." } : faq);
 
   return (
     <div className={styles.page}>
@@ -72,9 +73,9 @@ export default function LandingPage({ variant }: { variant: LandingVariant }) {
         <a className={styles.wordmark} href="#main" aria-label="Arman Arai, top of page">
           Arman Arai<span>Wedding Photography</span>
         </a>
-        <BookingLink className={styles.headerCta} placement="header">
+        {dateFirst ? <a className={styles.headerCta} href="#check-date">Check your date <span aria-hidden="true">↗</span></a> : <BookingLink className={styles.headerCta} placement="header">
           Book a free call <span aria-hidden="true">↗</span>
-        </BookingLink>
+        </BookingLink>}
       </header>
 
       <main id="main">
@@ -88,7 +89,7 @@ export default function LandingPage({ variant }: { variant: LandingVariant }) {
               Collections from <strong>{money(CORE.price)}</strong>
               <span>CAD before tax. The same price in every Canadian city, travel quoted separately.</span>
             </p>
-            <DateCheck city={city} wherePlaceholder={variant.wherePlaceholder} page={variant.path} classes={styles} />
+            <div id={dateFirst ? "check-date" : undefined} className={styles.dateCheckPanel}><DateCheck city={city} wherePlaceholder={variant.wherePlaceholder} page={variant.path} classes={styles} instantAvailability={dateFirst} replyTiming={dateFirst ? "See availability, then choose a time for a free video call." : undefined} /></div>
             <p className={styles.orBook}>
               Or <BookingLink className={styles.textLink} placement="hero_secondary">book a free 30-minute call</BookingLink> and I will check the date while we talk.
             </p>
@@ -330,7 +331,7 @@ export default function LandingPage({ variant }: { variant: LandingVariant }) {
         <section id="book-a-call" className={styles.booking} aria-labelledby="booking-title">
           <div className={styles.bookingCopy}>
             <p className={styles.eyebrow}>Free, 30 minutes, no obligation</p>
-            <h2 id="booking-title">Pick a time<br /><em>and bring your date.</em></h2>
+            <h2 id="booking-title" tabIndex={-1}>Pick a time<br /><em>and bring your date.</em></h2>
             <ol>
               <li>I check your date live while we talk.</li>
               <li>We go through the day, the coverage and the real number.</li>
@@ -354,7 +355,7 @@ export default function LandingPage({ variant }: { variant: LandingVariant }) {
         <span>© {new Date().getFullYear()}</span>
       </footer>
 
-      <BookingNavigation classes={styles} />
+      <BookingNavigation classes={styles} dateFirst={dateFirst} />
       <Analytics />
     </div>
   );

@@ -144,7 +144,11 @@
   font-size: 26px; line-height: 1.2; color: var(--ink); margin-bottom: 12px !important;
 }
 .checkDone p { color: var(--body); font-size: 16px; line-height: 1.7; }
+.checkDone .checkDoneLead { color: var(--ink); font-size: 26px; line-height: 1.2; }
+.checkDone .checkMicro { color: var(--muted); font-size: 13px; line-height: 1.6; }
 .checkDone .checkButton { margin-top: 20px; text-decoration: none; }
+.dateCheckPanel { scroll-margin-top: 24px; }
+.checkAnother { margin-top: 20px; padding: 0 0 3px; border: 0; border-bottom: 1px solid var(--line); background: none; color: var(--muted); font: inherit; font-size: 13px; cursor: pointer; }
 
 /* ── Fact bar ─────────────────────────────────────────────────────────── */
 .factBar {

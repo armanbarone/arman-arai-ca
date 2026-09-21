@@ -21,20 +21,27 @@ test('invalid, rolled-over and past dates never return availability', () => {
 });
 
 const realRequire = createRequire(import.meta.url);
-function contact({ configured = true, delivered = true } = {}) {
+function contact({ configured = true, delivered = true, resend = false, resendDelivered = true } = {}) {
   const sent = [];
+  const emails = [];
   const module = { exports: {} };
   const compiled = ts.transpileModule(readFileSync(new URL('../app/api/contact/route.ts', import.meta.url), 'utf8'), {
     compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 },
   }).outputText;
   runInNewContext(compiled, {
     exports: module.exports, module,
-    require: (name) => name === '@/lib/wedding-availability' ? { checkWeddingDate: (date) => checkWeddingDate(date, now) } : realRequire(name),
-    process: { env: configured ? { GHL_WEBHOOK_URL: 'https://example.test/inquiries' } : {} },
+    require: (name) => {
+      if (name === '@/lib/wedding-availability') return { checkWeddingDate: (date) => checkWeddingDate(date, now) };
+      if (name === 'resend') return { Resend: class {
+        emails = { send: async (message) => { emails.push(message); return { error: resendDelivered ? null : { message: 'Provider rejected request' } }; } };
+      } };
+      return realRequire(name);
+    },
+    process: { env: { ...(configured ? { GHL_WEBHOOK_URL: 'https://example.test/inquiries' } : {}), ...(resend ? { RESEND_API_KEY: 'test-only-key' } : {}) } },
     fetch: async (_url, options) => { sent.push(JSON.parse(options.body)); return { ok: delivered }; },
     console: { warn() {}, error() {} },
   });
-  return { submit: (body) => module.exports.POST({ json: async () => body }), sent };
+  return { submit: (body) => module.exports.POST({ json: async () => body }), sent, emails };
 }
 const valid = { type: 'wedding-date-check', name: 'Test Couple', email: 'test@example.com', location: 'Vancouver', weddingDate: '2027-08-27' };
 
@@ -80,4 +87,40 @@ test('existing contact forms retain their successful response shape', async () =
   const { submit } = contact();
   const response = await submit({ ...valid, type: 'founding' });
   assert.deepEqual(await response.json(), { success: true });
+});
+
+test('Resend is primary and sends the city, date, availability and attribution to Arman', async () => {
+  for (const [city, slug] of [['Toronto', 'toronto'], ['Montréal', 'montreal'], ['Banff', 'banff'], ['Victoria', 'victoria'], ['Whistler', 'whistler'], ['Jasper', 'jasper'], ['Tofino', 'tofino']]) {
+    const { submit, sent, emails } = contact({ resend: true });
+    const response = await submit({ ...valid, subjectLabel: `Date check — ${city}`, location: city, page: `/wedding-photography/${slug}`, utm_source: 'meta' });
+    assert.equal(response.status, 200);
+    assert.equal((await response.json()).availability, 'available');
+    assert.equal(sent.length, 0, 'Resend success must not also post a duplicate inquiry to the fallback');
+    assert.equal(emails.length, 1);
+    assert.equal(emails[0].from, 'Arman Arai <i@armanarai.ca>');
+    assert.deepEqual([...emails[0].to], ['i@armanarai.com']);
+    assert.equal(emails[0].replyTo, 'test@example.com');
+    assert.equal(emails[0].subject, `Date check — ${city} — Test Couple`);
+    assert.match(emails[0].html, /2027-08-27/);
+    assert.match(emails[0].html, /available/);
+    assert.ok(emails[0].html.includes(`/wedding-photography/${slug}`));
+    assert.match(emails[0].html, /meta/);
+  }
+});
+
+test('Resend failure with no configured fallback cannot confirm an inquiry', async () => {
+  const { submit } = contact({ configured: false, resend: true, resendDelivered: false });
+  const response = await submit(valid);
+  assert.equal(response.status, 503);
+  assert.equal((await response.json()).success, undefined);
+});
+
+test('Resend email escapes submitted text and clearly reports the booked date', async () => {
+  const { submit, emails } = contact({ configured: false, resend: true });
+  const response = await submit({ ...valid, name: '<script>test</script>', weddingDate: '2027-08-28' });
+  assert.equal((await response.json()).availability, 'unavailable');
+  assert.match(emails[0].html, /unavailable/);
+  assert.match(emails[0].html, /2027-08-28/);
+  assert.match(emails[0].html, /&lt;script&gt;/);
+  assert.doesNotMatch(emails[0].html, /<script>/);
 });

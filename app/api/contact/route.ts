@@ -172,8 +172,10 @@ export async function POST(req: NextRequest) {
       </div>`;
 
     let sent = false;
-    if (process.env.GHL_WEBHOOK_URL) sent = await sendViaGHL(ghlData);
-    if (!sent && process.env.RESEND_API_KEY) sent = await sendViaResend(subject, html, body.email);
+    // Resend is the site's primary email provider. Retain the existing webhook
+    // only as a fallback for deployments where it is explicitly configured.
+    if (process.env.RESEND_API_KEY) sent = await sendViaResend(subject, html, body.email);
+    if (!sent && process.env.GHL_WEBHOOK_URL) sent = await sendViaGHL(ghlData);
     if (!sent) {
       console.warn("Contact inquiry delivery failed or no provider is configured.");
       return NextResponse.json({ error: "Your inquiry could not be sent. Please try again or email i@armanarai.com." }, { status: 503 });

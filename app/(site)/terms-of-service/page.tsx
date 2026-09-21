@@ -51,7 +51,7 @@ export default function TermsOfService() {
             <li>Timeline planning and a written family-photograph plan</li>
             <li>Optional add-ons at published prices: additional hours and events, a second photographer, sessions, albums, film, drone and dedicated video coverage</li>
           </ul>
-          <p style={{ marginTop: 12 }}>A collection carries the same published price anywhere in Canada and at any destination outside the United States. Travel is charged separately only when the wedding requires its own trip, with reduced or waived travel when regional dates can be grouped. Every price on this website is in Canadian dollars and excludes applicable sales tax.</p>
+          <p style={{ marginTop: 12 }}>A collection carries the same published price anywhere in Canada. A wedding outside Canada is not sold at the published figure; it is quoted individually against the country, the venue and the date, and the agreed figure is the one on your proposal. Travel within Canada is charged separately only when the wedding requires its own trip, with reduced or waived travel when regional dates can be grouped. Every price on this website is in Canadian dollars and excludes applicable sales tax.</p>
           <p style={{ marginTop: 12 }}>The specific scope of services, deliverables, and coverage hours are defined in your individual contract. I accept a limited number of commissions per year to maintain the quality of my work.</p>
         </Section>
 

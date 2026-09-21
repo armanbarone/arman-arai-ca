@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import InquireButton from "@/components/InquireButton";
 import { EDITORIAL, FILM } from "@/lib/images";
-import { MARKETS, SCOPE, SITE, TERMS, TIERS, TRAVEL } from "@/lib/site";
+import { MARKETS, SCOPE, SITE, TERMS, TIERS } from "@/lib/site";
 
 /* The destination page.
  *
@@ -22,7 +22,7 @@ const money = (n: number) => `C$${n.toLocaleString("en-CA")}`;
 export const metadata: Metadata = {
   title: "Destination Wedding Photographer | Arman Arai",
   description:
-    "A Canadian documentary wedding photographer who travels worldwide, outside the USA. One published collection price from C$3,000 wherever you marry, with the trip quoted as its own line.",
+    "A Canadian documentary wedding photographer who travels worldwide, outside the USA. Send the country, the venue and the date and you get one quoted number before you decide.",
   alternates: { canonical: "/destination-wedding-photographer" },
   openGraph: {
     title: "Destination Wedding Photographer | Arman Arai",
@@ -41,12 +41,16 @@ const FAQS = [
     a: `${SCOPE.excluded} It is not a capacity question and there is no price at which it changes, so if your wedding is in the USA the honest answer is to book someone else. If you live in the United States and are marrying in Mexico, Italy, Portugal or anywhere else outside it, that is a wedding I can photograph.`,
   },
   {
-    q: "Does a destination wedding cost more than a Canadian one?",
-    a: `The collection costs exactly the same: ${TIERS.map((t) => `${t.name} ${money(t.price)} for ${t.hours} hours`).join(", ")}, in Canadian dollars, before tax. What changes is the trip, which is quoted as its own agreed line against your venue, your date and the route. There is no destination surcharge and no percentage added to the photography.`,
+    q: "What does a destination wedding cost?",
+    a: `${SCOPE.destinationPricing} The collections on the pricing page are what a wedding in Canada costs; a wedding in Puglia or Oaxaca is a different job with a different shape, and quoting it off a Canadian ladder would be guesswork dressed up as a price list.`,
   },
   {
-    q: "How is the travel figure worked out?",
-    a: "Against the real itinerary, not a blanket rate. I book practical routes early, use low-cost carriers where they make sense, and include only the flights, ground travel and nights the schedule actually requires. You see the number before you sign, and it does not move afterwards.",
+    q: "Why not just publish a destination price?",
+    a: "Because the honest range is too wide to be useful. A five-hour flight to a city hotel and a two-connection trip to an island in shoulder season are not the same job, and a single published figure would be wrong for both. You get a real number, built against your actual venue and date, before you commit to anything.",
+  },
+  {
+    q: "How is the quote worked out?",
+    a: "Against the real itinerary, not a blanket rate. It covers the coverage you want, and the flights, ground travel and nights the schedule actually requires, booked on practical routes early. You see one number before you sign, and it does not move afterwards.",
   },
   {
     q: "Do we have to be Canadian to book you?",
@@ -67,9 +71,10 @@ const FAQS = [
 ];
 
 const COMPARISON = [
-  { row: "Collection price", canada: `${money(TIERS[0].price)} / ${money(TIERS[1].price)} / ${money(TIERS[2].price)}`, dest: "Identical, in Canadian dollars" },
-  { row: "What is included", canada: "Coverage, social reels, film prints, and the film and album on Signature and Heirloom", dest: "Identical" },
-  { row: "Travel", canada: "Separate line, reduced or waived when regional dates group", dest: "Separate line, quoted to the route and the nights required" },
+  { row: "Price", canada: `Published: ${money(TIERS[0].price)} / ${money(TIERS[1].price)} / ${money(TIERS[2].price)}, the same in every province`, dest: "Quoted against the country, the venue and the date" },
+  { row: "Travel", canada: "Its own line, reduced or waived when regional dates group", dest: "Built into the one quoted number, not added afterwards" },
+  { row: "The photography", canada: "Documentary and editorial, one lead photographer", dest: "Identical. The work does not change with the postcode" },
+  { row: "What comes back", canada: "Coverage, social reels, film prints, and the film and album on Signature and Heirloom", dest: "Identical, and scoped with you when the quote is built" },
   { row: "Arrival", canada: "The day before, usually", dest: "Two to three days ahead, to scout in the real light" },
   { row: "Booking", canada: TERMS.retainer, dest: "The same retainer, on the same contract" },
 ];
@@ -86,14 +91,22 @@ export default function DestinationPage() {
         description: `${SCOPE.oneLine} ${SCOPE.destination}`,
         provider: { "@id": `${SITE.url}/#business` },
         areaServed: SCOPE.destinationExamples.map((name) => ({ "@type": "Place", name })),
-        offers: TIERS.map((t) => ({
+        // No Offer node, deliberately. A destination wedding has no published
+        // figure, and the site's rule everywhere else is that a missing price
+        // is omitted rather than filled in from a neighbouring region. Emitting
+        // the Canadian ladder here would hand every answer engine a number this
+        // page does not charge.
+        offers: {
           "@type": "Offer",
-          name: t.name,
-          price: t.price,
-          priceCurrency: "CAD",
           availability: "https://schema.org/InStock",
-          url: `${SITE.url}/pricing`,
-        })),
+          priceCurrency: "CAD",
+          priceSpecification: {
+            "@type": "PriceSpecification",
+            priceCurrency: "CAD",
+            description: SCOPE.destinationPricing,
+          },
+          url: `${SITE.url}/contact`,
+        },
       },
       {
         "@type": "FAQPage",
@@ -153,12 +166,19 @@ export default function DestinationPage() {
       <section className="py-14 md:py-20 bg-ivory">
         <div className="page-w page-px max-w-3xl">
           <p className="font-serif text-cream text-[1.35rem] md:text-[1.6rem] leading-[1.5]">
-            I photograph weddings anywhere in the world except the United States. The collection
-            costs the same figure abroad that it costs in Canada: {money(TIERS[0].price)} for six
-            hours, {money(TIERS[1].price)} for eight, {money(TIERS[2].price)} for ten, in Canadian
-            dollars. The trip is quoted as its own agreed line.
+            I photograph weddings anywhere in the world except the United States. A wedding abroad
+            is quoted rather than picked off a price list: send the country, the venue and the
+            date, and you get one number, built against the real itinerary, before you decide
+            anything.
           </p>
-          <p className="text-slate text-[0.95rem] leading-relaxed mt-8">{SCOPE.excluded}</p>
+          <p className="text-slate text-[0.95rem] leading-relaxed mt-8">
+            {SCOPE.destinationPricing} The three collections on{" "}
+            <Link href="/pricing" className="text-rose hover:text-blush transition-colors">the pricing page</Link>{" "}
+            are what a wedding in Canada costs, and they hold in every province. A wedding in
+            Puglia is a different job, and pricing it as a Montréal wedding with a flight
+            attached would be a worse answer than a real quote.
+          </p>
+          <p className="text-slate text-[0.95rem] leading-relaxed mt-5">{SCOPE.excluded}</p>
           <p className="text-slate text-[0.95rem] leading-relaxed mt-5">
             Elopements, and the planning that goes with them, are a separate business on{" "}
             <a href="https://www.armanarai.com" className="text-rose hover:text-blush transition-colors">
@@ -176,7 +196,7 @@ export default function DestinationPage() {
             What changes when the wedding is not in Canada
           </h2>
           <p className="text-slate text-[0.92rem] leading-relaxed mb-8 max-w-2xl">
-            Almost nothing about the photography, and one line about the trip.
+            Nothing about the photography. The difference is how it is priced.
           </p>
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse min-w-[560px]">
@@ -198,7 +218,11 @@ export default function DestinationPage() {
               </tbody>
             </table>
           </div>
-          <p className="text-slate text-[0.88rem] leading-relaxed mt-8">{TRAVEL.footnote}</p>
+          <p className="text-slate text-[0.88rem] leading-relaxed mt-8">
+            The Canadian column is published in full on the pricing page. The destination column
+            is not a second price list I have chosen not to show you: it is one number built
+            against your wedding, and you will have it before anything is committed.
+          </p>
         </div>
       </section>
 
@@ -220,9 +244,9 @@ export default function DestinationPage() {
             </h2>
             <p className="text-slate text-[0.95rem] leading-relaxed mb-5">
               Most of the year is Canadian: {MARKETS.map((m) => m.city).join(", ")} and the regions
-              around them, all at the same collection price. A destination wedding is the same
-              coverage with a longer approach, and it is planned the same way, against your venue
-              and your date rather than against a package.
+              around them, all at the same published collection price. A wedding abroad is the
+              same photography over a longer approach, and it is priced as its own job rather
+              than as a Canadian date with a flight attached.
             </p>
             <p className="text-slate text-[0.95rem] leading-relaxed mb-8">
               {SCOPE.destinationExamples.slice(0, 9).join(", ")}: send where you are marrying and I
@@ -284,8 +308,8 @@ export default function DestinationPage() {
             Ask about a destination date
           </InquireButton>
           <p className="text-slate text-[0.82rem] mt-8">
-            {TIERS.map((t) => `${t.name} ${money(t.price)}`).join(" · ")} · the same figure wherever
-            you marry
+            Quoted per wedding · Canadian collections are published on{" "}
+            <Link href="/pricing" className="text-rose hover:text-blush transition-colors">/pricing</Link>
           </p>
         </div>
       </section>

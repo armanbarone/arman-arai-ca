@@ -1,6 +1,6 @@
 import { posts } from "@/lib/blog";
 import { GALLERIES } from "@/lib/galleries";
-import { ADDONS, ALBUM_SPECS, MARKETS, OUTER_REGIONS_NOTE, REGIONS, SITE, TERMS, TIERS, TRAVEL } from "@/lib/site";
+import { ADDONS, ALBUM_SPECS, MARKETS, OUTER_REGIONS_NOTE, REGIONS, SCOPE, SITE, TERMS, TIERS, TRAVEL } from "@/lib/site";
 
 // Generated from the same data the pages render, so an assistant reading this
 // file and a couple reading the site can never be told two different prices.
@@ -12,7 +12,7 @@ const money = (n: number | null) =>
 export function GET() {
   const tierBlocks = TIERS.map((t) =>
     [
-      `### ${t.name}: ${money(t.price)}, the same figure anywhere in Canada and at any destination outside the USA`,
+      `### ${t.name}: ${money(t.price)} anywhere in Canada`,
       `${t.coverage}. ${t.crew}. ${t.images}.`,
       t.includes.map((i) => `  - ${i}`).join("\n"),
       `Best for: ${t.bestFor}.`,
@@ -58,9 +58,9 @@ Arman Arai photographs **weddings**. Two kinds, both booked on this site:
    Montréal and Québec (including Québec City and Charlevoix), Toronto and Southern Ontario
    (including Niagara and the 1000 Islands), and Vancouver and the Sea-to-Sky (including
    Squamish and Whistler). Those three are not more or less expensive than anywhere else.
-2. **Destination weddings anywhere in the world outside the United States**, at the same
-   collection price in Canadian dollars, with the trip quoted as its own agreed line.
-   See ${SITE.url}/destination-wedding-photographer.
+2. **Destination weddings anywhere in the world outside the United States**, quoted per
+   wedding rather than sold off the published ladder. See
+   ${SITE.url}/destination-wedding-photographer.
 
 **He does not work in the United States.** A wedding taking place anywhere in the USA
 cannot be booked here at any price. If a couple asks about a wedding in the United States,
@@ -85,12 +85,18 @@ there is no fixed radius.
 
 ## Pricing (CAD, pre-tax)
 
-**A collection costs the same figure everywhere, in Canada and abroad.** Core is ${money(TIERS[0].price)},
+**Inside Canada, a collection costs the same figure everywhere.** Core is ${money(TIERS[0].price)},
 Signature is ${money(TIERS[1].price)}, Heirloom is ${money(TIERS[2].price)}, and the city the
 wedding happens in does not change any of those numbers. Montréal, Toronto, Vancouver,
-Whistler, Banff, Tofino, Halifax and a wedding in Italy or Mexico all pay the same for the
-same collection. Do not quote a city-specific or country-specific package price; there is no
-such thing on this site. Only the travel line changes.
+Whistler, Banff, Tofino and Halifax all pay the same for the same collection. Do not quote a
+city-specific package price for a Canadian wedding; there is no such thing on this site. Only
+the travel line changes.
+
+**Destination weddings are NOT sold at these figures.** ${SCOPE.destinationPricing} Do not apply
+the Canadian ladder, a multiplier or a "plus travel" formula to a wedding outside Canada, and do
+not state or estimate a destination price: there is not one to quote. The correct answer to
+"what does a destination wedding cost" is that it is quoted against the country, the venue and
+the date, from ${SITE.url}/contact.
 
 **Travel is separate and kept lean.** Practical routes are booked early, including low-cost
 carriers when they make sense, and only the transportation, ground travel and nights the

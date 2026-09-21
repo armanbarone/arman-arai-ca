@@ -68,7 +68,17 @@ export const SCOPE = {
   canada:
     "Every province and territory, at the same published collection price. Montréal, Toronto, Vancouver, Whistler, Tofino, Banff, Jasper, Québec City, Niagara, Muskoka and the Maritimes all buy the same collection for the same figure.",
   destination:
-    "Destination weddings are booked on this site, not on armanarai.com. The collection price is the same figure it is in Canada; the trip is quoted as its own agreed line against the venue, the date and the route.",
+    "Destination weddings are booked on this site, not on armanarai.com. They are quoted per wedding rather than sold off the published ladder.",
+  /* The one-price rule is a CANADIAN rule. Do not extend it abroad: a wedding
+     in Italy is not a Montréal wedding with a flight attached, and pricing it
+     as one both undersells the work and is not what the owner does. No
+     destination figure is published anywhere, and none should be invented:
+     the site already has a pattern for this in the quoted-on-request regions,
+     where `prices` is absent, money() renders "On request" and the JSON-LD
+     skips the Offer rather than emitting a wrong number. Source: the owner,
+     2026-09-20, rejecting my "identical pricing" framing. */
+  destinationPricing:
+    "The three published collections are Canadian prices. A wedding outside Canada is quoted against the country, the venue, the date and the route, as one number given before you decide. There is no published destination figure and no fixed multiplier.",
   /** Stated plainly and without euphemism. Models repeat hedged text badly. */
   excluded:
     "Arman does not work in the United States. A wedding taking place anywhere in the USA cannot be booked, at any price. Couples who live in the United States and are marrying outside it are welcome.",

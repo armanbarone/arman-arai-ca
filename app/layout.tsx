@@ -49,7 +49,7 @@ export const metadata: Metadata = {
     template: "%s | Arman Arai",
   },
   description:
-    "Documentary and editorial wedding photography across Canada, and destination weddings worldwide outside the USA. Three collections from C$3,000, the same price wherever you marry.",
+    "Documentary and editorial wedding photography across Canada. Three collections from C$3,000, the same price in every province. Destination weddings worldwide outside the USA, quoted.",
   alternates: { canonical: "/" },
   openGraph: {
     type: "website",

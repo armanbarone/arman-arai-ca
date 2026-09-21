@@ -72,11 +72,11 @@ const GROUPS = [
       },
       {
         q: "How far will you actually travel?",
-        a: "Anywhere in Canada and anywhere in the world outside the United States, at the same collection price. Whistler, Vancouver Island, Québec City, the Eastern Townships, Niagara, Muskoka and the Rockies all buy Signature for C$4,500, and so does a wedding in Mexico or Italy. Travel uses the leanest practical route for the venue and date, and drops when another regional booking already covers part of the trip.",
+        a: "Anywhere in Canada, and anywhere in the world outside the United States. Inside Canada the collection price does not move: Whistler, Vancouver Island, Québec City, the Eastern Townships, Niagara, Muskoka and the Rockies all buy Signature for C$4,500, and travel uses the leanest practical route for the venue and date, dropping when another regional booking already covers part of the trip. A wedding outside Canada is quoted rather than priced off that ladder.",
       },
       {
         q: "Do you photograph destination weddings?",
-        a: `Yes, anywhere in the world except the United States, and they are booked on this site rather than on armanarai.com. The collection price is identical to a Canadian wedding, in Canadian dollars; only the trip is quoted separately. ${SCOPE.destinationExamples.slice(0, 8).join(", ")} and elsewhere. There is a full page on it at ${SITE.url}/destination-wedding-photographer.`,
+        a: `Yes, anywhere in the world except the United States, and they are booked on this site rather than on armanarai.com. ${SCOPE.destinationPricing} ${SCOPE.destinationExamples.slice(0, 8).join(", ")} and elsewhere. There is a full page on it at ${SITE.url}/destination-wedding-photographer.`,
       },
       {
         q: "Will you photograph a wedding in the United States?",

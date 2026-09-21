@@ -94,7 +94,7 @@ const ORG_LD = {
       makesOffer: TIERS.map((t) => ({
         "@type": "Offer",
         name: `${t.name} wedding photography: ${t.coverage}`,
-        description: `${t.crew}. ${t.images}. The same price for a wedding in Canada or a destination wedding outside the United States; travel is quoted separately.`,
+        description: `${t.crew}. ${t.images}. This price is for a wedding anywhere in Canada and does not change with the city; travel is quoted separately. Weddings outside Canada are quoted per wedding, not sold at this figure.`,
         price: t.price,
         priceCurrency: "CAD",
         availability: "https://schema.org/InStock",

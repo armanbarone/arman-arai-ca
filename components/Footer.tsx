@@ -15,9 +15,9 @@ export default function Footer() {
           <div>
             <span className="font-script text-4xl text-cream block mb-5">Arman Arai</span>
             <p className="text-[0.82rem] text-blush leading-relaxed max-w-sm font-normal mb-8">
-              Wedding photographer. Documentary and editorial coverage across Canada, and
-              destination weddings anywhere outside the United States, with one collection
-              price wherever you marry and travel kept lean through early booking.
+              Wedding photographer. Documentary and editorial coverage across Canada, at one
+              collection price in every province, and destination weddings anywhere outside
+              the United States, quoted against the country and the date.
             </p>
             <InquireButton
               className="text-[0.62rem] tracking-[0.2em] uppercase px-8 py-3.5 transition-colors duration-300 cursor-pointer border-none"

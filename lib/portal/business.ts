@@ -14,7 +14,11 @@ export const BUSINESS = {
     country: "Canada",
   },
   phone: "+1 (778) 302-5231",
-  email: "i@armanarai.com",          // sender and reply address for everything the portal sends
+  email: "i@armanarai.com",          // where couples reach Arman; every portal email replies here
+  // Resend is verified for armanarai.ca on this project, so mail leaves from
+  // this address. It is a sending identity, not a mailbox: replies go to the
+  // address above.
+  sendingAddress: "i@armanarai.ca",
   etransferEmail: "i@armanarai.com",
   governingProvince: "British Columbia",
   timezone: "America/Vancouver",

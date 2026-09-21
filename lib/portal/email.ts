@@ -5,10 +5,9 @@ import { BUSINESS, BUSINESS_ADDRESS_ONE_LINE } from "./business";
 // Every portal email is transactional: it concerns one booking and nothing
 // else. No offers, no newsletter content, ever.
 
-// Everything the portal sends comes from i@armanarai.com. That needs a Resend
-// API key authorised for the armanarai.com domain; a key scoped to another
-// domain is rejected with a 403 and the couple never gets the email.
-export const EMAIL_FROM = process.env.EMAIL_FROM || `${BUSINESS.tradeName} <${BUSINESS.email}>`;
+// Sent from the armanarai.ca domain, which is what this project's Resend key is
+// authorised for, with Reply-To set to i@armanarai.com below.
+export const EMAIL_FROM = process.env.EMAIL_FROM || `${BUSINESS.tradeName} <${BUSINESS.sendingAddress}>`;
 
 export function esc(s: string): string {
   return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");

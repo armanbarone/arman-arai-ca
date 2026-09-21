@@ -1,4 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
+import { checkWeddingDate } from "@/lib/wedding-availability";
+
+function escapeHtml(value: unknown) {
+  return String(value ?? "").replace(/[&<>"']/g, (character) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[character]!);
+}
 
 async function sendViaGHL(data: Record<string, string>) {
   const webhookUrl = process.env.GHL_WEBHOOK_URL;
@@ -46,6 +51,23 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ success: true });
     }
 
+    const isDateCheck = type === "wedding-date-check";
+    const availability = isDateCheck ? checkWeddingDate(body.weddingDate) : null;
+    if (availability && "error" in availability) {
+      return NextResponse.json({ error: availability.error }, { status: 400 });
+    }
+    if (isDateCheck) {
+      for (const [key, max] of [["name", 60], ["email", 100], ["location", 90]] as const) {
+        if (typeof body[key] !== "string" || !body[key].trim() || body[key].length > max) {
+          return NextResponse.json({ error: "Please enter your name, email and wedding location." }, { status: 400 });
+        }
+        body[key] = body[key].trim();
+      }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(body.email)) {
+        return NextResponse.json({ error: "Please enter a valid email address." }, { status: 400 });
+      }
+    }
+
     const ghlData: Record<string, string> = {
       source: "armanarai.ca",
       type: type ?? "quick",
@@ -55,6 +77,7 @@ export async function POST(req: NextRequest) {
       bestTime: body.bestTime ?? "",
       partnerName: body.partnerName ?? "",
       weddingDate: body.weddingDate ?? "",
+      ...(availability && "availability" in availability ? { dateAvailability: availability.availability } : {}),
       market: body.market ?? "",
       venue: body.venue ?? "",
       guestCount: body.guestCount ?? "",
@@ -78,7 +101,7 @@ export async function POST(req: NextRequest) {
 
     const isQuick = type === "quick";
     // "founding" is what the ads landing pages send; subjectLabel names which one.
-    const isLanding = type === "founding";
+    const isLanding = type === "founding" || isDateCheck;
     const subject = isLanding
       ? `${body.subjectLabel || "Landing Page Inquiry"} — ${body.name}`
       : isQuick
@@ -104,6 +127,7 @@ export async function POST(req: NextRequest) {
           // "are you free on this day". Both shapes post here, so each row
           // appears only when that form sent it.
           ...(body.weddingDate ? ([["Wedding date", body.weddingDate]] as [string, string][]) : []),
+          ...(availability && "availability" in availability ? ([["Availability", availability.availability]] as [string, string][]) : []),
           ...(body.preferredMonth ? ([["Preferred month", body.preferredMonth]] as [string, string][]) : []),
           ["Where", body.location || "Not specified"],
           ...(body.guests ? ([["Guests", body.guests]] as [string, string][]) : []),
@@ -138,21 +162,24 @@ export async function POST(req: NextRequest) {
     const html = `
       <div style="font-family:Georgia,serif;max-width:520px;margin:0 auto;color:#2C2420;">
         <h2 style="font-size:1.3rem;font-weight:normal;border-bottom:1px solid #D9CEBC;padding-bottom:0.75rem;margin-bottom:1.5rem;">
-          ${isLanding ? (body.subjectLabel || "Landing Page Inquiry") : isQuick ? "New Website Inquiry" : "Wedding Inquiry"}
+          ${escapeHtml(isLanding ? (body.subjectLabel || "Landing Page Inquiry") : isQuick ? "New Website Inquiry" : "Wedding Inquiry")}
         </h2>
         <table style="width:100%;border-collapse:collapse;">
-          ${rows.map(([label, value]) => `<tr><td style="padding:0.5rem 0;color:#A67268;font-size:0.75rem;text-transform:uppercase;letter-spacing:0.1em;width:140px;vertical-align:top;">${label}</td><td style="padding:0.5rem 0;">${value}</td></tr>`).join("")}
+          ${rows.map(([label, value]) => `<tr><td style="padding:0.5rem 0;color:#A67268;font-size:0.75rem;text-transform:uppercase;letter-spacing:0.1em;width:140px;vertical-align:top;">${escapeHtml(label)}</td><td style="padding:0.5rem 0;">${escapeHtml(value)}</td></tr>`).join("")}
         </table>
-        ${body.message ? `<div style="margin-top:1.5rem;padding:1.25rem;background:#F7F3EC;border-left:2px solid #C9A89A;"><p style="margin:0 0 0.5rem;color:#A67268;font-size:0.75rem;text-transform:uppercase;">Message</p><p style="margin:0;line-height:1.7;">${body.message}</p></div>` : ""}
+        ${body.message ? `<div style="margin-top:1.5rem;padding:1.25rem;background:#F7F3EC;border-left:2px solid #C9A89A;"><p style="margin:0 0 0.5rem;color:#A67268;font-size:0.75rem;text-transform:uppercase;">Message</p><p style="margin:0;line-height:1.7;">${escapeHtml(body.message)}</p></div>` : ""}
         <p style="margin-top:2rem;font-size:0.75rem;color:#6B7280;border-top:1px solid #EDE7DA;padding-top:1rem;">Sent via armanarai.ca</p>
       </div>`;
 
     let sent = false;
     if (process.env.GHL_WEBHOOK_URL) sent = await sendViaGHL(ghlData);
     if (!sent && process.env.RESEND_API_KEY) sent = await sendViaResend(subject, html, body.email);
-    if (!sent) console.warn("No email provider configured. Set GHL_WEBHOOK_URL or RESEND_API_KEY in Vercel.");
+    if (!sent) {
+      console.warn("Contact inquiry delivery failed or no provider is configured.");
+      return NextResponse.json({ error: "Your inquiry could not be sent. Please try again or email i@armanarai.com." }, { status: 503 });
+    }
 
-    return NextResponse.json({ success: true });
+    return NextResponse.json({ success: true, ...(availability && "availability" in availability ? availability : {}) });
   } catch (err) {
     console.error("Contact API error:", err);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });

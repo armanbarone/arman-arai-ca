@@ -56,6 +56,14 @@
 .checkDone { padding: 16px 0; font-size: 14px; }
 .checkDoneLead { font-family: var(--font-cormorant), Georgia, serif; font-size: 26px; margin-bottom: 10px !important; }
 .checkError { font-size: 13px; color: #a0392c; margin-top: 12px !important; }
+.dateCheckPanel { border-top: 1px solid var(--line); max-width: 480px; padding-top: 18px; scroll-margin-top: 24px; }
+.dateCheckPanel .check { padding: 0; }
+.dateCheckPanel .checkDoneLead { font-size: 34px; line-height: 1.1; }
+.dateCheckPanel .checkDone { padding-top: 0; }
+.dateCheckPanel .checkDone > .checkMicro:first-child { margin: 0 0 12px !important; }
+.checkAnother { color: var(--muted); background: none; border: 0; padding: 0 0 3px; border-bottom: 1px solid var(--line); margin-top: 20px; font-size: 12px !important; cursor: pointer; }
+.directCall { max-width: 480px; font-size: 11px; color: var(--muted); margin-top: 16px !important; }
+.directCall a { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
 .factBar { border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); padding: 20px 5.5%; display: flex; justify-content: center; gap: 7%; text-align: center; text-transform: uppercase; font-size: 9px; letter-spacing: .14em; }
 .firstQuote { padding: 54px 20px 64px; text-align: center; }
 .quoteMark { display: block; font-family: Georgia, serif; color: #7c896e; font-size: 45px; height: 35px; line-height: 1; }

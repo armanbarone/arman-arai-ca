@@ -29,7 +29,7 @@ const weddingAlbumsFor = (slugs: string[]): LandingAlbum[] => slugs.map((slug) =
 });
 
 const questionsFor = (city: WeddingCity) => [
-  ["How do we check whether our date is available?", "Book a free 30-minute call below and bring your wedding date. We’ll check availability and talk through your plans. If you prefer email, use the date inquiry near the top of this page. A consultation does not reserve the wedding date."],
+  ["How do we check whether our date is available?", city.slug === "vancouver" ? "Use the date check near the top of this page. You’ll see whether your date is currently available, then you can book a free 30-minute video call with Arman to talk through your plans. Checking a date or booking a consultation does not reserve the wedding date." : "Book a free 30-minute call below and bring your wedding date. We’ll check availability and talk through your plans. If you prefer email, use the date inquiry near the top of this page. A consultation does not reserve the wedding date."],
   [city.coverageQuestion, city.coverageAnswer],
   [city.planningQuestion, city.planningAnswer],
   ["We’re not comfortable posing. Will you help?", "Yes. I’ll give you clear, simple direction for portraits, including where to stand and what to do with your hands. During the ceremony and celebrations, you can focus on your guests while I photograph what happens."],
@@ -39,13 +39,14 @@ const questionsFor = (city: WeddingCity) => [
 
 export default function CityWeddingLanding({ city, theme = "light" }: { city: WeddingCity; theme?: "light" | "dark" }) {
   const page = `wedding-photography/${city.slug}${theme === "dark" ? "-dark" : ""}`;
+  const dateFirst = city.slug === "vancouver";
   const questions = questionsFor(city);
   const weddingAlbums = weddingAlbumsFor(city.albums);
   return <div className={`${styles.page}${theme === "dark" ? ` ${styles.dark}` : ""}`} data-landing-theme={theme} data-landing-city={city.slug}>
     <a className={styles.skip} href="#main">Skip to content</a>
     <header className={styles.header}>
       <a className={styles.wordmark} href="#main" aria-label="Arman Arai, top of page">Arman Arai<span>WEDDING PHOTOGRAPHY</span></a>
-      <nav aria-label="Page navigation"><a className={styles.navLink} href="#albums">The photographs</a><a className={styles.navLink} href="#collections">Collections</a><BookingLink className={styles.headerCta} placement={`${city.slug}_header`}>Let’s meet <span aria-hidden="true">↗</span></BookingLink></nav>
+      <nav aria-label="Page navigation"><a className={styles.navLink} href="#albums">The photographs</a><a className={styles.navLink} href="#collections">Collections</a>{dateFirst ? <a className={styles.headerCta} href="#check-date">Check your date <span aria-hidden="true">↗</span></a> : <BookingLink className={styles.headerCta} placement={`${city.slug}_header`}>Let’s meet <span aria-hidden="true">↗</span></BookingLink>}</nav>
     </header>
     <main id="main">
       <section className={styles.hero} aria-labelledby="hero-title">
@@ -54,9 +55,14 @@ export default function CityWeddingLanding({ city, theme = "light" }: { city: We
           <h1 id="hero-title">{city.name} <br />wedding <br /><em>photography.</em></h1>
           <p className={styles.heroIntro}>Beautiful portraits. All the feeling in between.<br />And time to actually enjoy your wedding.</p>
           <p className={styles.starting}>Collections from <strong>{money(CORE.price)}</strong><span>6, 8 or 10 hours · CAD before tax · travel extra</span></p>
-          <BookingLink className={styles.button} placement={`${city.slug}_hero`}>Book a free consultation <span aria-hidden="true">↗</span></BookingLink>
-          <p className={styles.micro}>30 minutes with Arman · Check your date · No obligation</p>
-          <details className={styles.dateInquiry}><summary>Prefer to check your date by email? <span aria-hidden="true">+</span></summary><DateCheck city={city.name} wherePlaceholder={`Your venue, or ${city.name} area`} page={`/${page}`} classes={styles} replyTiming="I’ll reply personally with availability." confirmation="Your inquiry is on its way. I’ll be in touch about your date." /></details>
+          {dateFirst ? <>
+            <div id="check-date" className={styles.dateCheckPanel}><DateCheck city={city.name} wherePlaceholder="Your venue, or Vancouver area" page={`/${page}`} classes={styles} instantAvailability replyTiming="See availability, then choose a time for a free video call." /></div>
+            <p className={styles.directCall}>Prefer to talk first? <BookingLink placement={`${city.slug}_hero_direct`}>Book a free consultation ↗</BookingLink></p>
+          </> : <>
+            <BookingLink className={styles.button} placement={`${city.slug}_hero`}>Book a free consultation <span aria-hidden="true">↗</span></BookingLink>
+            <p className={styles.micro}>30 minutes with Arman · Check your date · No obligation</p>
+            <details className={styles.dateInquiry}><summary>Prefer to check your date by email? <span aria-hidden="true">+</span></summary><DateCheck city={city.name} wherePlaceholder={`Your venue, or ${city.name} area`} page={`/${page}`} classes={styles} replyTiming="I’ll reply personally with availability." confirmation="Your inquiry is on its way. I’ll be in touch about your date." /></details>
+          </>}
         </div>
         <div className={styles.heroArt}>
           <figure className={styles.heroImage}><Image src={city.hero.src} alt={city.hero.alt} style={city.heroPosition ? { objectPosition: city.heroPosition } : undefined} fill priority fetchPriority="high" quality={68} sizes="(max-width: 760px) 80vw, (max-width: 1600px) 38vw, 608px" /><figcaption>A day you felt. Photographs you keep.</figcaption></figure>
@@ -105,6 +111,6 @@ export default function CityWeddingLanding({ city, theme = "light" }: { city: We
       <section id="book-a-call" className={styles.booking} aria-labelledby="booking-title"><div className={styles.bookingCopy}><p className={styles.eyebrow}>Your {city.name} wedding starts here</p><h2 id="booking-title" tabIndex={-1}>Bring your date.<br /><em>Tell me your plans.</em></h2><p>Choose a time for a free 30-minute video call with me. We’ll check your wedding date, talk about the photographs you love, and go through coverage and pricing.</p><ol><li><span>01</span> Choose a time that works for you.</li><li><span>02</span> Meet Arman and talk through your day.</li><li><span>03</span> Decide in your own time.</li></ol><p className={styles.bookingNote}>No obligation. No need to have it all figured out.<br />This calendar books our consultation, not your wedding date.</p></div><div className={styles.bookingCalendar}><WeddingCalendar page={page} theme={theme} classes={styles} /></div></section>
     </main>
     <footer className={styles.footer}><a href="#main" className={styles.footerBrand}>Arman Arai<span>Wedding photography · {city.name}</span></a><div><a href={`mailto:${SITE.email}`}>{SITE.email}</a><a href="/privacy-policy" target="_blank" rel="noopener noreferrer">Privacy policy</a><span>© {new Date().getFullYear()} Arman Arai</span></div></footer>
-    <BookingNavigation classes={styles} /><Analytics />
+    <BookingNavigation classes={styles} dateFirst={dateFirst} /><Analytics />
   </div>;
 }

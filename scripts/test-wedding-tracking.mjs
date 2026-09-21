@@ -1,5 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+import { runInNewContext } from 'node:vm';
+import ts from 'typescript';
 
 let scenario = 0;
 function storage() {
@@ -25,6 +28,49 @@ test('the tags load on the first view of a public page, with no interaction and 
     analytics.trackPageView();
     assert.equal(appended.length, 2);
   }
+});
+
+test('PublicTracking mounts start real page-view tracking without waiting for input', async () => {
+  const { analytics, appended, google, meta } = await environment({ pathname: '/wedding-photography/vancouver-dark' });
+  const effects = [];
+  const module = { exports: {} };
+  const source = readFileSync(new URL('../components/PublicTracking.tsx', import.meta.url), 'utf8');
+  const compiled = ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.CommonJS } }).outputText;
+  const require = (name) => {
+    if (name === 'react') return { useEffect: (effect) => effects.push(effect) };
+    if (name === 'next/navigation') return { usePathname: () => window.location.pathname };
+    if (name === '@/lib/analytics') return analytics;
+    throw new Error(`Unexpected import: ${name}`);
+  };
+  runInNewContext(compiled, { exports: module.exports, module, require });
+  module.exports.default();
+  // Mount effects only: no pointer, scroll, keyboard, submit or booking event.
+  effects.forEach((effect) => effect());
+  assert.equal(appended.length, 2);
+  assert.equal(google().filter((e) => e[1] === 'page_view').length, 1);
+  assert.equal(meta().filter((e) => e[1] === 'PageView').length, 1);
+  assert.equal(meta().filter((e) => ['Lead', 'Schedule'].includes(e[1])).length, 0);
+  // React Strict Mode replay must not duplicate the page view.
+  effects.forEach((effect) => effect());
+  assert.equal(meta().filter((e) => e[1] === 'PageView').length, 1);
+});
+
+test('a successful inquiry sends Lead separately from PageView and Schedule', async () => {
+  const { analytics, google, meta } = await environment();
+  analytics.trackPageView();
+  analytics.trackLead('wedding_date_check');
+  assert.equal(meta().filter((e) => e[1] === 'PageView').length, 1);
+  assert.equal(meta().filter((e) => e[1] === 'Lead').length, 1);
+  assert.equal(meta().filter((e) => e[1] === 'Schedule').length, 0);
+  assert.equal(google().filter((e) => e[1] === 'generate_lead').length, 1);
+});
+
+test('local development never sends test inquiries to advertising accounts', async () => {
+  const { analytics, appended } = await environment();
+  window.location.hostname = 'localhost';
+  analytics.trackPageView();
+  analytics.trackLead('wedding_date_check');
+  assert.equal(appended.length, 0);
 });
 
 test('no tags on the private portal, the admin pages or the API routes', async () => {

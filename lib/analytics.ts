@@ -25,7 +25,9 @@ export function isPublicTrackingPath(path: string) {
 }
 
 function permitted() {
-  return typeof window !== "undefined" && isPublicTrackingPath(window.location.pathname);
+  return typeof window !== "undefined" &&
+    !["localhost", "127.0.0.1", "[::1]"].includes(window.location.hostname) &&
+    isPublicTrackingPath(window.location.pathname);
 }
 
 /** The tags' own on/off switch, used only to silence them inside the portal. */

@@ -15,11 +15,11 @@ export function BookingLink({ children, className, placement }: { children: Reac
   return <a href="#book-a-call" className={className} onClick={() => record("Wedding Call CTA", { placement })}>{children}</a>;
 }
 
-export function BookingNavigation({ classes }: { classes: Record<string, string> }) {
+export function BookingNavigation({ classes, dateFirst = false }: { classes: Record<string, string>; dateFirst?: boolean }) {
   const [hidden, setHidden] = useState(true);
   useEffect(() => {
     const section = document.getElementById("book-a-call");
-    const hero = document.getElementById("hero-title");
+    const hero = document.getElementById(dateFirst ? "check-date" : "hero-title");
     const footer = document.querySelector("footer");
     if (!section || !hero || !footer || typeof IntersectionObserver === "undefined") return;
     let bookingVisible = false;
@@ -35,8 +35,8 @@ export function BookingNavigation({ classes }: { classes: Record<string, string>
     });
     [section, hero, footer].forEach((el) => observer.observe(el));
     return () => observer.disconnect();
-  }, []);
-  return <aside className={classes.stickyCta} hidden={hidden} aria-label="Book a wedding photography call"><span>2027 & 2028 weddings<br /><strong>From C${CORE.price.toLocaleString("en-CA")}</strong><br />Before tax · travel extra</span><BookingLink placement="mobile_bar">Book a free call ↗</BookingLink></aside>;
+  }, [dateFirst]);
+  return <aside className={classes.stickyCta} hidden={hidden} aria-label={dateFirst ? "Check your wedding date" : "Book a wedding photography call"}><span>2027 & 2028 weddings<br /><strong>From C${CORE.price.toLocaleString("en-CA")}</strong><br />Before tax · travel extra</span>{dateFirst ? <a href="#check-date">Check your date ↗</a> : <BookingLink placement="mobile_bar">Book a free call ↗</BookingLink>}</aside>;
 }
 
 export default function WeddingCalendar({ page = "2728-cc-weddings", theme = "light", classes }: { page?: string; theme?: "light" | "dark"; classes: Record<string, string> }) {

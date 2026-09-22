@@ -117,9 +117,9 @@ export default function ContactForm() {
           <label htmlFor="collection" className="block text-[0.68rem] tracking-[0.18em] uppercase text-blush mb-2">Coverage you have in mind</label>
           <select id="collection" name="collection" className="form-input cursor-pointer" value={form.collection} onChange={set("collection")}>
             <option value="">Not sure yet, advise me</option>
-            <option>Core — 6 hours</option>
+            <option>Essential — 6 hours</option>
             <option>Signature — 8 hours</option>
-            <option>Heirloom — 10 hours</option>
+            <option>Complete — 10 hours</option>
             <option>Multi-day, needs a custom quote</option>
           </select>
         </div>

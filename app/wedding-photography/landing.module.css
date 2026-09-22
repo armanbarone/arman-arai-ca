@@ -339,7 +339,7 @@
   .albumGrid { grid-template-columns: repeat(2, 1fr); gap: 36px 24px; }
   .lookStrip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; overflow: visible; padding-bottom: 0; }
   .lookStrip figure { flex-basis: auto; }
-  .priceGrid { grid-template-columns: repeat(3, 1fr); gap: 0; }
+  .priceGrid { grid-template-columns: repeat(2, 1fr); gap: 0; }
   .priceCard, .priceCardFeatured { border-left: none; }
   .priceCard:first-child { border-left: 1px solid var(--line); }
   .quotes { grid-template-columns: repeat(3, 1fr); gap: 34px; }
@@ -402,4 +402,9 @@
 
 @media (prefers-reduced-motion: reduce) {
   .page *, .page *::before, .page *::after { transition: none !important; animation: none !important; }
+}
+
+/* Four collections. Two-up from 700px, four across once there is room. */
+@media (min-width: 1100px) {
+  .priceGrid { grid-template-columns: repeat(4, 1fr); }
 }

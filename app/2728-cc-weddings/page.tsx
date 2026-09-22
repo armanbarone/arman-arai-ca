@@ -4,7 +4,7 @@ import { WEDDING_GALLERY } from "@/lib/wedding-gallery";
 import ReviewScreenshots from "@/components/weddings/ReviewScreenshots";
 import { Analytics } from "@vercel/analytics/next";
 import { ABOUT_STORY, LANDING_PAGE, at } from "@/lib/images";
-import { ALBUM_SPECS, CORE, SITE, TIERS } from "@/lib/site";
+import { ALBUM_SPECS, ENTRY, SITE, TIERS } from "@/lib/site";
 import WeddingCalendar, { BookingLink, BookingNavigation } from "./wedding-calendar";
 import styles from "./weddings.module.css";
 
@@ -12,12 +12,12 @@ const money = (n: number) => `C$${n.toLocaleString("en-CA")}`;
 const hero = LANDING_PAGE[4];
 export const metadata: Metadata = {
   title: { absolute: "2027 & 2028 Wedding Photography in Canada | Arman Arai" },
-  description: `Enjoy your wedding. Love your photographs. Documentary and editorial wedding photography across Canada from ${money(CORE.price)}. Book a free call with Arman.`,
+  description: `Enjoy your wedding. Love your photographs. Documentary and editorial wedding photography across Canada from ${money(ENTRY.price)}. Book a free call with Arman.`,
   alternates: { canonical: `${SITE.url}/2728-cc-weddings` },
   robots: { index: false, follow: true, googleBot: { index: false, follow: true } },
   openGraph: {
     title: "Enjoy your wedding. Love your photographs.",
-    description: `Canadian wedding photography for 2027 & 2028. Collections from ${money(CORE.price)}. Meet Arman and talk through your day.`,
+    description: `Canadian wedding photography for 2027 & 2028. Collections from ${money(ENTRY.price)}. Meet Arman and talk through your day.`,
     url: `${SITE.url}/2728-cc-weddings`,
     images: [{ url: at(hero.src, 1200), alt: "A bride and groom together in the evening sunlight" }],
   },
@@ -33,7 +33,7 @@ const questions = [
   ["We’re awkward in front of a camera. Can you help?", "Absolutely. I’ll guide you through the portraits, including where to stand and what to do with your hands. For the rest of the day, you can focus on each other and your guests while I photograph what happens."],
   ["Do you photograph weddings anywhere in Canada?", "Yes. Collection prices are the same across Canada. Travel stays separate, uses the leanest practical route, and is reduced or waived when I am already scheduled in your region."],
   ["Do we need to choose a collection before the call?", "No. Tell me what you’re planning and which parts of the day matter most to you. We’ll work out how much coverage fits, along with any travel or extras, before you decide."],
-  ["Is video included?", "Every collection includes vertical social reels. Signature also includes a 1-minute feature film, and Heirloom includes a 3-minute feature film. If you want a dedicated videographer, we can discuss that as an add-on."],
+  ["Is video included?", "Every collection includes vertical social reels. Signature also includes a 1-minute feature film, and Complete includes a 3-minute feature film. Photo + Film puts a dedicated filmmaker on the day for a longer piece, and that filmmaker can be added to any other collection."],
   ["What happens after our call?", "If you’d like to go ahead and your date is available, we’ll confirm your collection, the full quote and the contract. A signed contract and 30% retainer secure your date. The balance is due 30 days before the wedding. Booking a call doesn’t commit you to anything."],
 ];
 
@@ -55,7 +55,7 @@ export default function WeddingLandingPage() {
             <p className={styles.eyebrow}>Across Canada · 2027 & 2028 weddings</p>
             <h1 id="hero-title">Enjoy your wedding.<br /><em>Love your photographs.</em></h1>
             <p className={styles.intro}>Beautiful portraits. The laughter you remember. The moments you missed. Wedding photography that gives you all three.</p>
-            <p className={styles.starting}>Collections from <strong>{money(CORE.price)}</strong><span>CAD before tax · travel quoted separately</span></p>
+            <p className={styles.starting}>Collections from <strong>{money(ENTRY.price)}</strong><span>CAD before tax · travel quoted separately</span></p>
             <BookingLink className={styles.button} placement="hero">Book a free discovery call <span aria-hidden="true">↗</span></BookingLink>
             <p className={styles.micro}>30 minutes with me, Arman. No obligation.</p>
           </div>

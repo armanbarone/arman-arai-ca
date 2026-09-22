@@ -44,9 +44,9 @@ export default function TermsOfService() {
         <Section title="Services">
           <p>This site sells wedding photography in Canada, and destination wedding photography anywhere in the world except the United States, where I do not work. I offer the following:</p>
           <ul style={{ paddingLeft: "1.25rem", marginTop: 10, display: "flex", flexDirection: "column", gap: 6 }}>
-            <li>Wedding day photography, in the three collections published on the pricing page</li>
+            <li>Wedding day photography, in the four collections published on the pricing page</li>
             <li>Engagement and welcome sessions, booked as add-ons at published prices</li>
-            <li>A colour-graded feature film on the Signature and Heirloom collections, shot alongside the photography rather than by a separate operator</li>
+            <li>A colour-graded feature film on the Signature and Complete collections, shot alongside the photography rather than by a separate operator, and a longer film shot by a dedicated filmmaker on the Photo + Film collection</li>
             <li>Vertical social reels and film prints handed to guests on the night, included in every collection</li>
             <li>Timeline planning and a written family-photograph plan</li>
             <li>Optional add-ons at published prices: additional hours and events, a second photographer, sessions, albums, film, drone and dedicated video coverage</li>
@@ -100,9 +100,10 @@ export default function TermsOfService() {
             </thead>
             <tbody>
               {[
-                ["Core", "30 images within 48 hours", "Within 2 weeks", "First week"],
+                ["Essential", "30 images within 48 hours", "Within 2 weeks", "First week"],
                 ["Signature", "40 images next day", "3 weeks", "First week"],
-                ["Heirloom", "50 images within 24 hours", "3 weeks", "First week"],
+                ["Complete", "50 images within 24 hours", "3 weeks", "First week"],
+                ["Photo + Film", "40 images next day", "3 weeks, film in 10", "First week"],
               ].map((row) => (
                 <tr key={row[0]}>
                   {row.map((cell, i) => (
@@ -114,7 +115,7 @@ export default function TermsOfService() {
               ))}
             </tbody>
           </table>
-          <p style={{ marginTop: 14 }}>Where you have purchased the seven-day gallery rush, the full gallery is delivered within seven days of your wedding. The included feature film is delivered with or before the full gallery. Rolls of real film are returned once the lab has processed and scanned them, which is typically four to six weeks and is outside my control. Where you have booked the dedicated videographer add-on, that operator is a separate supplier and their delivery timeline is stated separately in your contract.</p>
+          <p style={{ marginTop: 14 }}>Where you have purchased the seven-day gallery rush, the full gallery is delivered within seven days of your wedding. The included feature film is delivered with or before the full gallery. Rolls of real film are returned once the lab has processed and scanned them, which is typically four to six weeks and is outside my control. Where your collection includes a dedicated filmmaker, or you have added one, that filmmaker is a separate supplier and their delivery timeline is stated separately in your contract.</p>
           <p style={{ marginTop: 12 }}>Galleries are delivered via a private, password-protected online gallery. Download links are active for a minimum of 90 days after delivery. I strongly recommend downloading and backing up your images promptly upon receipt.</p>
         </Section>
 

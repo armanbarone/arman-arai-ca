@@ -2,12 +2,13 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import InquireButton from "@/components/InquireButton";
-import { CITY_PHOTOS, EDITORIAL, DREAMY_FINE_ART, FILM, DOCUMENTARY } from "@/lib/images";
+import { CITY_PHOTOS, EDITORIAL, DREAMY_FINE_ART, FILM, FILM_STRIP, DOCUMENTARY } from "@/lib/images";
 import {
   ADDONS,
   ADDON_GROUPS,
+  QUOTED_ADDONS,
   ALBUM_SPECS,
-  CORE,
+  ENTRY,
   OUTER_REGIONS_NOTE,
   PRIMARY_REGIONS,
   SITE,
@@ -18,11 +19,11 @@ import {
 export const metadata: Metadata = {
   title: "Wedding Photography Pricing — One Price, Anywhere in Canada",
   description:
-    "Three collections at one national price: Core C$3,000 for 6 hours, Signature C$4,500 for 8, Heirloom C$6,000 for 10. Travel stays separate and lean.",
+    "Four collections at one national price: Essential C$2,000 for 6 hours, Signature C$3,000 for 8, Complete C$4,200 for 10, and Photo + Film C$5,900 with a dedicated filmmaker. Travel stays separate and lean.",
   alternates: { canonical: "/pricing" },
   openGraph: {
     title: "Wedding Photography Pricing — Arman Arai",
-    description: "Three collections, one price anywhere in Canada, with travel kept separate and lean.",
+    description: "Four collections, one price anywhere in Canada, with travel kept separate and lean.",
     url: `${SITE.url}/pricing`,
     images: [{ url: CITY_PHOTOS.montreal.hero.src, alt: CITY_PHOTOS.montreal.hero.alt }],
   },
@@ -32,7 +33,8 @@ const money = (n: number | null) =>
   n === null ? "On request" : `C$${n.toLocaleString("en-CA")}`;
 
 // One photograph per collection, so the page is not three columns of text.
-const TIER_PHOTO = [DREAMY_FINE_ART[6], EDITORIAL[5], FILM[5]];
+// Photo + Film gets the motion frame: the tier sells movement, so the card should show it.
+const TIER_PHOTO = [DREAMY_FINE_ART[6], EDITORIAL[5], FILM[5], FILM_STRIP[4]];
 
 const PROCESS = [
   { n: "01", t: "You send the date", b: "Date, city, venue if you have one, and roughly how many hours you think you need. Two minutes." },
@@ -46,7 +48,7 @@ const PROCESS = [
 const FAQS = [
   {
     q: "Does the price change depending on the city?",
-    a: "No. Core is C$3,000 in Montréal, Toronto, Vancouver and Halifax. The photography is the same work wherever it happens, so it carries the same number. Travel stays separate and is reduced or waived when I am already scheduled in your region.",
+    a: "No. Essential is C$2,000 in Montréal, Toronto, Vancouver and Halifax. The photography is the same work wherever it happens, so it carries the same number. Travel stays separate and is reduced or waived when I am already scheduled in your region.",
   },
   {
     q: "So what does travel actually cost?",
@@ -58,21 +60,21 @@ const FAQS = [
   },
   {
     q: "What are the social reels, and are they the feature film?",
-    a: "They are not. The reels are short vertical videos cut from the day and sent in the first week, long before the gallery is finished, so there is something to post while people are still asking. They are in every collection including Core. The feature film is a separate, colour-graded piece with sound: one minute on Signature, three minutes on Heirloom. Core has no feature film, which is part of why it is C$3,000.",
+    a: "They are not. The reels are short vertical videos cut from the day and sent in the first week, long before the gallery is finished, so there is something to post while people are still asking. They are in every collection including Essential. The feature film is a separate, colour-graded piece with sound: one minute on Signature, three minutes on Complete, and three to five minutes on Photo + Film, where a dedicated filmmaker shoots it rather than me. Essential has no feature film, which is part of why it is C$2,000.",
   },
   {
-    q: "What exactly is the album that comes with Signature?",
+    q: "What exactly is the album that comes with Complete?",
     a: `${ALBUM_SPECS.signature.long}
 
-The Heirloom collection carries the bigger one instead. ${ALBUM_SPECS.heirloom.long}`,
+Complete and Photo + Film both carry it. On Essential and Signature it is an add-on at C$1,200. The bigger one is an upgrade from either. ${ALBUM_SPECS.heirloom.long}`,
   },
   {
-    q: "Why is Core's gallery faster than the others?",
-    a: "Because there is less in it. Core is six hours with no feature film and no rolls of film to process and scan, so two weeks is honest. Signature and Heirloom carry a graded film and real film to develop, which is three weeks of actual work. If you need it sooner than that, the seven-day rush is C$500 and it is capacity-limited.",
+    q: "Why is Essential's gallery faster than the others?",
+    a: "Because there is less in it. Essential is six hours with no feature film and no rolls of film to process and scan, so two weeks is honest. Everything above it carries a graded film and real film to develop, which is three weeks of actual work. If you need it sooner than that, the seven-day rush is C$750 and it is capacity-limited.",
   },
   {
     q: "Do you offer photo and video?",
-    a: "A short colour-graded film cut from the day is included on Signature and Heirloom, shot alongside the photographs rather than by a second operator, which is why it is included rather than sold. Full videography is a different product and an add-on, priced from what a dedicated operator and the edit actually cost: C$2,000 for eight hours, C$3,000 for ten. I will not quietly bundle a videographer into a collection at a number that guarantees one of us does bad work.",
+    a: "Yes, and there are two versions of it. A short colour-graded film cut from the day is included on Signature and Complete, shot alongside the photographs rather than by a second operator, which is why it is included rather than sold. A proper film is a different product: Photo + Film puts a dedicated filmmaker on the day for eight hours and returns a three to five minute piece with licensed music and your vows, at C$5,900, and that filmmaker can be added to any other collection for C$2,900. A filmmaker is not a camera add-on, and I will not bundle one in at a number that guarantees somebody does bad work.",
   },
   {
     q: "How far in advance do couples book?",
@@ -143,7 +145,7 @@ export default function Pricing() {
         >
           <p className="text-[0.62rem] tracking-[0.32em] uppercase text-rose mb-5">Investment</p>
           <h1 className="font-serif font-light text-cream leading-[1.02]" style={{ fontSize: "clamp(2.6rem,5.5vw,5rem)" }}>
-            Three collections, <em className="italic text-rose">one price anywhere</em>
+            Four collections, <em className="italic text-rose">one price anywhere</em>
           </h1>
           <p className="text-blush text-[1rem] leading-relaxed max-w-2xl mx-auto mt-6 font-light">
             A collection costs the same in Montréal, in Toronto, in Vancouver and in a field in
@@ -162,7 +164,7 @@ export default function Pricing() {
               What you <em className="italic text-rose">get</em>
             </h2>
             <p className="text-blush text-[0.95rem] leading-relaxed font-light max-w-2xl mx-auto mt-5">
-              Every figure below is the whole price of that collection, in every city I work in.
+Every figure below is the whole price of that collection, in every city I work in.
               Sales tax and anything you choose from the add-ons go on top. Travel stays separate
               only when the wedding requires its own trip.
             </p>
@@ -173,7 +175,7 @@ export default function Pricing() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-px bg-dust/25">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-px bg-dust/25">
             {TIERS.map((t, i) => (
               <div key={t.slug} id={t.slug} className="bg-ivory flex flex-col relative scroll-mt-24">
                 {i === 0 && <span className="absolute top-0 left-0 right-0 h-px bg-rose z-10" aria-hidden />}
@@ -182,7 +184,7 @@ export default function Pricing() {
                     src={TIER_PHOTO[i].src}
                     alt={TIER_PHOTO[i].alt}
                     fill
-                    sizes="(max-width: 1023px) 100vw, 33vw"
+                    sizes="(max-width: 767px) 100vw, (max-width: 1279px) 50vw, 25vw"
                     quality={80}
                     loading={i === 0 ? undefined : "lazy"}
                     style={{ objectFit: "cover" }}
@@ -302,6 +304,18 @@ export default function Pricing() {
                 </ul>
               </div>
             ))}
+            <div className="mb-0">
+              <p className="text-[0.6rem] tracking-[0.28em] uppercase text-slate mb-3">Quoted rather than published</p>
+              <ul className="divide-y divide-dust/50 border-y border-dust/50">
+                {QUOTED_ADDONS.map((a) => (
+                  <li key={a.name} className="py-4 flex flex-col sm:flex-row sm:items-baseline gap-1.5 sm:gap-6">
+                    <span className="font-serif text-cream text-[1.1rem] sm:w-64 shrink-0">{a.name}</span>
+                    <span className="text-rose text-[0.92rem] tracking-wide sm:w-24 shrink-0">By quote</span>
+                    <span className="text-slate text-[0.88rem] leading-relaxed">{a.note}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
             <p className="text-slate text-[0.85rem] leading-relaxed mt-7">
               Multi-day and cultural weddings are scoped by event, crew, travel and editing volume
               rather than sold as one flat package. Sales tax sits on top of every number here.
@@ -410,7 +424,7 @@ export default function Pricing() {
             Check your date
           </InquireButton>
           <p className="text-slate text-[0.85rem] mt-8">
-            Core is {money(CORE.price)} wherever you are getting married. Everything else is on
+            Essential is {money(ENTRY.price)} wherever you are getting married. Everything else is on
             this page.
           </p>
         </div>

@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import InquireButton from "@/components/InquireButton";
 import { DOCUMENTARY } from "@/lib/images";
-import { CORE, MARKETS, SCOPE, SITE, TIERS } from "@/lib/site";
+import { ENTRY, MARKETS, SCOPE, SITE, TIERS } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "FAQ — Booking, Coverage, Travel and Delivery",
@@ -26,7 +26,7 @@ const GROUPS = [
     faqs: [
       {
         q: "What does a wedding actually cost?",
-        a: `Three collections, at the same figure anywhere in Canada: ${TIERS.map((t) => `${t.name} ${money(t.price)}` + ` for ${t.hours} hours`).join(", ")}. The city does not change the number. Sales tax goes on top, and travel stays separate only when the wedding requires its own trip.`,
+        a: `Four collections, at the same figure anywhere in Canada: ${TIERS.map((t) => `${t.name} ${money(t.price)}` + ` for ${t.hours} hours`).join(", ")}. The city does not change the number. Sales tax goes on top, and travel stays separate only when the wedding requires its own trip.`,
       },
       {
         q: "Is anything added afterwards?",
@@ -38,7 +38,7 @@ const GROUPS = [
       },
       {
         q: "Is six hours enough?",
-        a: "For a ceremony and a dinner in one place, yes, and that is what Core is. It stops being enough the moment there is a getting-ready across town or a reception that runs late, and then you are buying hours back at C$450 each. If your day has two locations, take Signature.",
+        a: "For a ceremony and a dinner in one place, yes, and that is what Essential is. It stops being enough the moment there is a getting-ready across town or a reception that runs late, and then you are buying hours back at C$400 each. If your day has two locations, take Signature.",
       },
     ],
   },
@@ -51,7 +51,7 @@ const GROUPS = [
       },
       {
         q: "Do you photograph multi-day and cultural weddings?",
-        a: "Regularly, and they are scoped by event rather than sold as one flat package. Tell me how many days, how many venues, how far apart, and which twenty minutes you would be heartbroken to lose. An extra two-hour event is C$900.",
+        a: "Regularly, and they are scoped by event rather than sold as one flat package. Tell me how many days, how many venues, how far apart, and which twenty minutes you would be heartbroken to lose. A rehearsal dinner or welcome event of up to three hours is C$1,000.",
       },
       {
         q: "Is there a second photographer?",
@@ -59,7 +59,7 @@ const GROUPS = [
       },
       {
         q: "Do you shoot video?",
-        a: "A colour-graded feature film cut from your day: one minute on Signature, three minutes on Heirloom. Core has no feature film, only the social reels. It is shot alongside the photographs rather than by a separate operator, which is what makes it includable at all. A dedicated videographer is a different product and an add-on at C$2,000 for eight hours or C$3,000 for ten.",
+        a: "A colour-graded feature film cut from your day: one minute on Signature, three minutes on Complete. Essential has no feature film, only the social reels. It is shot alongside the photographs rather than by a separate operator, which is what makes it includable at all. A dedicated filmmaker is a different product: it is what Photo + Film carries at C$5,900, and it can be added to any other collection for C$2,900.",
       },
     ],
   },
@@ -72,7 +72,7 @@ const GROUPS = [
       },
       {
         q: "How far will you actually travel?",
-        a: "Anywhere in Canada, and anywhere in the world outside the United States. Inside Canada the collection price does not move: Whistler, Vancouver Island, Québec City, the Eastern Townships, Niagara, Muskoka and the Rockies all buy Signature for C$4,500, and travel uses the leanest practical route for the venue and date, dropping when another regional booking already covers part of the trip. A wedding outside Canada is quoted rather than priced off that ladder.",
+        a: "Anywhere in Canada, and anywhere in the world outside the United States. Inside Canada the collection price does not move: Whistler, Vancouver Island, Québec City, the Eastern Townships, Niagara, Muskoka and the Rockies all buy Signature for C$3,000, and travel uses the leanest practical route for the venue and date, dropping when another regional booking already covers part of the trip. A wedding outside Canada is quoted rather than priced off that ladder.",
       },
       {
         q: "Do you photograph destination weddings?",
@@ -101,7 +101,7 @@ const GROUPS = [
       },
       {
         q: "When do the photographs arrive?",
-        a: "Social reels in the first week. A preview inside 48 hours on Core, next day on Signature, 24 hours on Heirloom. The full gallery within two weeks on Core, three weeks on Signature and Heirloom, because those two carry a graded film and real rolls to develop. The date is in the contract, not in an email.",
+        a: "Social reels in the first week. A preview inside 48 hours on Essential, next day on Signature and Photo + Film, 24 hours on Complete. The full gallery within two weeks on Essential and three weeks on everything above it, because those carry a graded film and real rolls to develop. A dedicated filmmaker's film on Photo + Film takes ten weeks. The date is in the contract, not in an email.",
       },
       {
         q: "How far in advance should we book?",

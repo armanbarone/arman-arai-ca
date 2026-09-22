@@ -67,7 +67,7 @@ export default function Contact() {
               eighteen months out; off-season and weekday dates open up much later.
             </p>
             <p className="text-slate text-sm leading-relaxed mb-10">
-              Core is C${STARTING_FROM.toLocaleString("en-CA")}, and it is the same figure wherever you
+              Essential is C${STARTING_FROM.toLocaleString("en-CA")}, and it is the same figure wherever you
               are getting married. Travel stays separate and uses the lowest practical route.{" "}
               <Link href="/pricing" className="text-rose border-b border-dust hover:border-rose transition-colors">
                 The full ladder is published

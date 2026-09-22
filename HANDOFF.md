@@ -155,29 +155,50 @@ These cost real time and the owner had to catch most of them.
 areas, market copy, FAQs. `/pricing`, the hubs, footer, nav, `llms.txt` and
 `sitemap.xml` all read from it. **Never hard-code a price anywhere else.**
 
-- `TIERS` — three collections, identical everywhere. Core 8h, Signature 10h
-  with a second shooter for six, Story Weekend 12h over two days.
-- `REGIONS` — **seven**. Three carry `primary: true` and a `prices` map, and
-  those are the only ones with published figures: Montréal, Toronto, Vancouver.
-  Four have a page but no `prices` key at all: Whistler is the exception that
-  DOES have prices because the 2027 sheet puts it inside the Vancouver region;
-  Tofino/Vancouver Island, Banff and Jasper are quoted on request.
-  **`prices` being absent is deliberate. Do not fill it in by extrapolating
-  from Vancouver — ask Arman for the figure.** `quoteFor()` returns `null` for
-  those and every `money()` helper renders "On request"; JSON-LD skips the
-  Offer entirely rather than emitting `price: null`.
-- `ADDONS` — fifteen. **A feature film and film prints are NOT add-ons**; they
-  are in every collection.
+- `TIERS` — **four** collections, identical everywhere. Rebuilt 2026-09-22 on
+  the *Canadian Wedding Photography Pricing* research PDF, which replaced the
+  three-collection Core / Signature / Heirloom ladder.
+- `REGIONS` — **seven**, and they no longer carry prices at all. One national
+  figure per collection; what changes between regions is the travel, and travel
+  is quoted per trip rather than published. `primary: true` marks the three that
+  get a page of their own.
+- `ADDONS` — fifteen, plus `QUOTED_ADDONS` for the two that are honestly
+  by-quote (extensive retouching, a content creator). **Social reels and film
+  prints are NOT add-ons**; they are in every collection.
+- `ENTRY` — `TIERS[0]`, used for every "collections from" line. It was called
+  `CORE` until the rename; if you see `CORE` anywhere it is stale.
 
-Live prices (Core / Signature / Story Weekend), from the 2027 sheets:
+Live prices, national, CAD before tax:
 
-| Montréal + Québec | Toronto + S. Ontario | Vancouver + Sea-to-Sky |
-|---|---|---|
-| 4,000 / 5,500 / 7,000 | 4,000 / 6,000 / 8,500 | 4,500 / 6,500 / 9,000 |
+| Essential 6h | Signature 8h | Complete 10h | Photo + Film 8h |
+|---|---|---|---|
+| 2,000 | 3,000 | 4,200 | 5,900 |
 
-Montréal's price also buys the Laurentians, the Townships, Québec City and
-Charlevoix. Toronto's also buys Niagara and the 1000 Islands. Vancouver's also
-buys the North Shore, Squamish and Whistler.
+Signature is the hero card and is flagged "most booked" on every surface.
+What the four actually differ by:
+
+- **Essential** — reels and film prints only. No engagement session, no feature
+  film, no album.
+- **Signature** — adds a 60-minute engagement session, a 1-minute graded film
+  and 2 rolls. **No album**: a C$1,200 album inside a C$3,000 collection is the
+  exact margin the research PDF warns about.
+- **Complete** — adds a second photographer for 4 hours, a 3-minute film, 4
+  rolls and the 10×10 Signature album.
+- **Photo + Film** — 8h photography alongside a dedicated filmmaker for 8h, a
+  3–5 minute film with licensed music, and the same album.
+
+**Where the album sits was my call, not his.** He asked to keep albums "included
+at the top tiers" in a four-tier card, which does not resolve on its own. I put
+it on the top two. If he wants it back on Signature, that is a `TIERS` edit plus
+a grep of the journal.
+
+**This was a price CUT.** The previous live card was 3,000 / 4,500 / 6,000, so
+the entry dropped 33% and the top of the old ladder dropped 30%. The PDF's own
+§8 says "do not lower the menu again" and its *next target* table
+(2,400 / 3,500 / 4,800 / 6,500) still sits below the old live prices at the
+bottom two tiers, which strongly suggests it was written from market benchmarks
+without knowledge of what this site was already charging. He was told this
+before the work started and confirmed the full rate card anyway.
 
 **Other key files**
 

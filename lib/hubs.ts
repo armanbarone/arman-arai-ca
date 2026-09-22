@@ -7,15 +7,15 @@
  * Shape mirrors armanarai.com's service-place hubs, which is why the city pages
  * render with the same hub- classes.
  *
- * The one commercial fact that appears up here is the Core price, in the hero
+ * The one commercial fact that appears up here is the entry price, in the hero
  * stat block. It is read from site.ts rather than typed, because it was typed
- * once and two cities drifted to C$4,500 and stayed wrong on a live page.
+ * once and two cities drifted to a stale figure and stayed wrong on a live page.
  */
 
-import { CORE } from "./site";
+import { ENTRY } from "./site";
 
-/** The Core price, for the hero stat block. One national figure, every city. */
-const CORE_STAT = { k: "Core collection", v: `C$${CORE.price.toLocaleString("en-CA")}` };
+/** The entry price, for the hero stat block. One national figure, every city. */
+const CORE_STAT = { k: "Essential collection", v: `C$${ENTRY.price.toLocaleString("en-CA")}` };
 
 export type Venue = { name: string; where: string; note: string };
 export type Season = { months: string; light: string; note: string };
@@ -86,7 +86,7 @@ export const HUBS: Record<string, HubContent> = {
       { months: "November to April", light: "Low all day", note: "Underrated. Snow reflects, the sun never climbs, and Old Montréal in falling snow is the best set the city has." },
     ],
     dayIntro:
-      "A Core wedding, eight hours, in the shape it usually takes here. Yours will differ; the arithmetic will not.",
+      "A Signature wedding, eight hours, in the shape it usually takes here. Yours will differ; the arithmetic will not.",
     day: [
       { time: "Hour 1–2", title: "Getting ready", body: "Two rooms if you are in two rooms, which is when a second photographer stops being optional. Details early, while the room is still tidy." },
       { time: "Hour 3", title: "First look, or not", body: "If you do one, it buys back the entire post-ceremony hour. If you do not, we take that hour out of the cocktail and I will say so in advance." },
@@ -121,7 +121,7 @@ export const HUBS: Record<string, HubContent> = {
       },
       {
         title: "Multi-day is quoted, not estimated",
-        body: "Days, venues, distance between them, whether two events share a day, and how many people are in each room. That decides crew, travel and editing volume, which is where the cost actually lives. One quote, itemised, and an extra two-hour event is C$900.",
+        body: "Days, venues, distance between them, whether two events share a day, and how many people are in each room. That decides crew, travel and editing volume, which is where the cost actually lives. One quote, itemised, and a rehearsal dinner or welcome event of up to three hours is C$1,000.",
       },
       {
         title: "The schedule includes arrival time",
@@ -146,7 +146,7 @@ export const HUBS: Record<string, HubContent> = {
       { months: "November to April", light: "Short and grey", note: "Weekday and off-season rates open up everywhere. Grey is soft light, and I will show you what that looks like." },
     ],
     dayIntro:
-      "A single-day Core wedding in the GTA. A multi-day celebration is built differently and quoted separately.",
+      "A single-day Signature wedding in the GTA. A multi-day celebration is built differently and quoted separately.",
     day: [
       { time: "Hour 1–2", title: "Getting ready, often two cities", body: "Mississauga and Scarborough are not one location. This is where a second photographer stops being a luxury." },
       { time: "Hour 3", title: "Travel, honestly costed", body: "The 401 on a June Saturday is a real number in the timeline, not an optimistic one." },
@@ -207,7 +207,7 @@ export const HUBS: Record<string, HubContent> = {
       { months: "Whistler in winter", light: "Blue and short", note: "Snow, blue hour at four, and a completely different day. Worth it if you actually want winter rather than tolerate it." },
     ],
     dayIntro:
-      "A Core wedding in the Lower Mainland. A Sea-to-Sky or Island day adds travel time and usually wants ten hours.",
+      "A Signature wedding in the Lower Mainland. A Sea-to-Sky or Island day adds travel time and usually wants ten hours.",
     day: [
       { time: "Hour 1–2", title: "Getting ready", body: "Hotel or house. Details first, then people, then the room once it is calm." },
       { time: "Hour 3", title: "The weather call", body: "By now we know which plan we are on. Both were scouted, so neither is a scramble." },
@@ -237,7 +237,7 @@ export const HUBS: Record<string, HubContent> = {
     different: [
       {
         title: "The same number as a Saturday in the city",
-        body: "Whistler, Squamish and Pemberton cost what everywhere costs. Core is C$3,000 here exactly as it is in Kitsilano, and regional dates are grouped whenever possible to keep travel low.",
+        body: "Whistler, Squamish and Pemberton cost what everywhere costs. Essential is C$2,000 here exactly as it is in Kitsilano, and Signature is C$3,000, and regional dates are grouped whenever possible to keep travel low.",
       },
       {
         title: "A valley plan, named before the date",
@@ -266,7 +266,7 @@ export const HUBS: Record<string, HubContent> = {
       { months: "May and November", light: "Grey and between", note: "The two months I would talk you out of. The alpine is neither snow nor open, and the odds of a textureless day are the highest of the year." },
     ],
     dayIntro:
-      "A Core wedding in the corridor. The mountain gets a vote, so the schedule carries slack where it matters.",
+      "A Signature wedding in the corridor. The mountain gets a vote, so the schedule carries slack where it matters.",
     day: [
       { time: "Hour 1–2", title: "Getting ready", body: "Usually the hotel, which is the whole argument for a village venue. No transfers, no weather exposure, and the light through those windows is good until noon." },
       { time: "Hour 3", title: "The mountain call", body: "By now we know whether the lift is running and whether the peak is in cloud. Both plans were scouted, so this is a decision rather than a scramble." },
@@ -292,7 +292,7 @@ export const HUBS: Record<string, HubContent> = {
       { k: "Best months", v: "Jun to Sep, and November" },
       { k: "From Vancouver", v: "Seven hours, door to door" },
       CORE_STAT,
-      { k: "Best collection", v: "Heirloom" },
+      { k: "Best collection", v: "Complete" },
     ],
     different: [
       {
@@ -326,7 +326,7 @@ export const HUBS: Record<string, HubContent> = {
       { months: "March to May", light: "Variable", note: "Rain without the drama of a real storm. The one stretch I would steer you away from." },
     ],
     dayIntro:
-      "An Heirloom day on the west coast, which is what I recommend here almost every time.",
+      "A Complete day on the west coast, which is what I recommend here almost every time.",
     day: [
       { time: "Friday", title: "Everyone arrives", body: "Two hours of welcome coverage. People have driven a long way and the first evening is frequently the warmest part of the whole weekend." },
       { time: "Hour 1–2", title: "Saturday morning", body: "Slow, and usually indoors with the weather doing something worth photographing through the glass." },

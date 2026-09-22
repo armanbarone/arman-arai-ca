@@ -24,7 +24,7 @@ import {
   HOME_SEQUENCE,
   at,
 } from "@/lib/images";
-import { CORE, MARKETS, SITE, TIERS } from "@/lib/site";
+import { ENTRY, MARKETS, SITE, TIERS } from "@/lib/site";
 
 /* ────────────────────────────────────────────────────────────────────────────
    Home, in the Darkroom Rite language ported from armanarai.com so the two
@@ -40,7 +40,7 @@ import { CORE, MARKETS, SITE, TIERS } from "@/lib/site";
 export const metadata: Metadata = {
   title: "Canadian Wedding Photographer — Toronto, Montréal, Vancouver",
   description:
-    "Documentary and editorial wedding photography across Canada. Three collections from C$3,000, the same price in every province. Destination weddings worldwide outside the USA, quoted.",
+    "Documentary and editorial wedding photography across Canada. Four collections from C$2,000, the same price in every province. Destination weddings worldwide outside the USA, quoted.",
   alternates: { canonical: "/" },
 };
 
@@ -97,13 +97,13 @@ const steps = [
 
 /* What is in every collection. The .com's "eight things you will never touch". */
 const carried = [
-  { t: "Six continuous hours", d: "The floor of every collection. Eight on Signature, ten on Heirloom." },
+  { t: "Six continuous hours", d: "The floor of every collection. Eight on Signature, ten on Complete." },
   { t: "Vertical social reels", d: "Cut from the day and sent in the first week, long before the gallery, while everyone is still asking to see something." },
   { t: "Film prints on the night", d: "Real prints handed to your guests before they go home, while the gallery is still weeks away." },
   { t: "A timeline that survives", d: "Built backwards from sunset, with one deliberate block of slack that absorbs the whole morning's drift." },
   { t: "A written family-photo plan", d: "Twelve groups and two callers, agreed before the day. This is the single largest block of time a big wedding gets back." },
-  { t: "A preview in 48 hours", d: "Thirty frames while the day is still in your head. Next day on Signature, 24 hours on Heirloom." },
-  { t: "The full gallery, dated", d: "Two weeks on Core, three on Signature and Heirloom. The date is in the contract, not in an email." },
+  { t: "A preview in 48 hours", d: "Thirty frames while the day is still in your head. Next day on Signature, 24 hours on Complete." },
+  { t: "The full gallery, dated", d: "Two weeks on Essential, three on everything above it. The date is in the contract, not in an email." },
   { t: "One price, wherever it happens", d: "A collection costs the same in every city. Travel stays separate, uses the lowest practical route and drops when regional dates can be grouped." },
 ];
 
@@ -178,7 +178,7 @@ export default function Home() {
 
               <p className="dr-lede" style={{ marginBottom: "2.2rem", maxWidth: "30rem" }}>
                 <strong>Documentary and editorial wedding photography, across Canada.</strong>{" "}
-                Three collections at one price in every province, with vertical social reels
+                Four collections at one price in every province, with vertical social reels
                 and film prints in every one and travel quoted openly on top. Destination
                 weddings too, anywhere outside the United States, quoted against the country
                 and the date.
@@ -338,8 +338,8 @@ export default function Home() {
               <h3 className="dr-h3">Film</h3>
               <p className="dr-p">
                 Vertical social reels in every collection, in the first week. A
-                colour-graded feature film above Core: one minute on Signature, three on
-                Heirloom. Real film too, two rolls on Signature and four on Heirloom,
+                colour-graded feature film above Essential: one minute on Signature, three on
+                Complete. Real film too, two rolls on Signature and four on Complete,
                 processed and scanned. And prints handed to your guests on the night, so
                 people leave holding something from the day.
               </p>
@@ -474,11 +474,11 @@ export default function Home() {
               <div className="dr-stack">
                 <p className="dr-eyebrow">What it costs</p>
                 <h2 className="dr-h2">
-                  Three collections, and one price{" "}
+                  Four collections, and one price{" "}
                   <span className="dr-flourish">wherever you marry</span>
                 </h2>
                 <p className="dr-p">
-                  Core is {money(CORE.price)} in Montréal, in Toronto, in Vancouver and in a
+                  Essential is {money(ENTRY.price)} in Montréal, in Toronto, in Vancouver and in a
                   field in Saskatchewan. The city does not move the number, because the work
                   does not change. Travel stays separate, is kept lean through early booking and
                   is reduced or waived when another regional date already covers the trip.

@@ -4,7 +4,7 @@ import { WEDDING_GALLERY } from "@/lib/wedding-gallery";
 import ReviewScreenshots from "@/components/weddings/ReviewScreenshots";
 import { Analytics } from "@vercel/analytics/next";
 import { ARMAN, CITY_WORK, at } from "@/lib/images";
-import { ALBUM_SPECS, CORE, SITE, TIERS } from "@/lib/site";
+import { ALBUM_SPECS, ENTRY, SITE, TIERS } from "@/lib/site";
 import WeddingCalendar, { BookingLink, BookingNavigation } from "../2728-cc-weddings/wedding-calendar";
 import HeroGallery from "./hero-gallery";
 import styles from "./weddings.module.css";
@@ -53,12 +53,12 @@ const albumPhotos = CITY_WORK.vancouver.filter((photo) => !alreadyShown.has(phot
 
 export const metadata: Metadata = {
   title: { absolute: "Vancouver Wedding Photographer — 2027 & 2028 | Arman Arai" },
-  description: `Serving Vancouver couples with creative wedding photography, from the North Shore to the Sea-to-Sky. Collections from ${money(CORE.price)}. Book a free call with Arman.`,
+  description: `Serving Vancouver couples with creative wedding photography, from the North Shore to the Sea-to-Sky. Collections from ${money(ENTRY.price)}. Book a free call with Arman.`,
   alternates: { canonical: `${SITE.url}/2728-cc-weddings-dark` },
   robots: { index: false, follow: true, googleBot: { index: false, follow: true } },
   openGraph: {
     title: "Serving Vancouver couples with creative wedding photography",
-    description: `Vancouver wedding photography for 2027 & 2028. Collections from ${money(CORE.price)}. Meet Arman and talk through your day.`,
+    description: `Vancouver wedding photography for 2027 & 2028. Collections from ${money(ENTRY.price)}. Meet Arman and talk through your day.`,
     url: `${SITE.url}/2728-cc-weddings-dark`,
     images: [{ url: at(hero.src, 1200), alt: hero.alt }],
   },
@@ -76,7 +76,7 @@ const questions = [
   ["What happens if it rains?", "We shoot. Between October and April a wet ceremony here is not the exception, so every timeline I build names a specific covered location I have already looked at, and I carry the lighting to make an indoor room work. Rain days are frequently the better gallery, but only when the backup was decided in advance rather than in a parking lot."],
   ["We’re getting married in Whistler or on Crown land. Anything different?", "Two things. Travel time up the Sea-to-Sky has to be counted properly in the timeline rather than hoped about, and anything on Crown land or in a provincial park needs its permit sorted well before the date. The photography costs the same as it does in the city."],
   ["Do we need to choose a collection before the call?", "No. Tell me what you’re planning and which parts of the day matter most to you. We’ll work out how much coverage fits, along with any travel or extras, before you decide."],
-  ["Is video included?", "Every collection includes vertical social reels. Signature also includes a 1-minute feature film, and Heirloom includes a 3-minute feature film. If you want a dedicated videographer, we can discuss that as an add-on."],
+  ["Is video included?", "Every collection includes vertical social reels. Signature also includes a 1-minute feature film, and Complete includes a 3-minute feature film. Photo + Film puts a dedicated filmmaker on the day for a longer piece, and that filmmaker can be added to any other collection."],
   ["What happens after our call?", "If you’d like to go ahead and your date is available, we’ll confirm your collection, the full quote and the contract. A signed contract and 30% retainer secure your date. The balance is due 30 days before the wedding. Booking a call doesn’t commit you to anything."],
 ];
 
@@ -98,7 +98,7 @@ export default function WeddingLandingPage() {
             <p className={styles.eyebrow}>Vancouver · 2027 & 2028 weddings</p>
             <h1 id="hero-title">Serving Vancouver couples with<br /><em>creative wedding photography</em></h1>
             <p className={styles.intro}>Beautiful portraits. The laughter you remember. The moments you missed. Wedding photography that gives you all three, from the North Shore to the Sea-to-Sky.</p>
-            <p className={styles.starting}>Collections from <strong>{money(CORE.price)}</strong><span>CAD before tax · travel quoted separately</span></p>
+            <p className={styles.starting}>Collections from <strong>{money(ENTRY.price)}</strong><span>CAD before tax · travel quoted separately</span></p>
             <BookingLink className={styles.button} placement="hero">Book a free discovery call <span aria-hidden="true">↗</span></BookingLink>
             <p className={styles.micro}>30 minutes with me, Arman. No obligation.</p>
           </div>

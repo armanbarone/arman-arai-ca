@@ -6,7 +6,7 @@ import { GALLERIES } from "@/lib/galleries";
 import { posts } from "@/lib/blog";
 import { hubBySlug } from "@/lib/hubs";
 import {
-  CORE,
+  ENTRY,
   MARKETS,
   SITE,
   TIERS,
@@ -63,7 +63,7 @@ export function cityMetadata(m: Market) {
   const title = m.titleQualifier
     ? `${m.city} Wedding Photographer — ${m.titleQualifier}`
     : `${m.city} Wedding Photographer`;
-  const priceLine = `Collections from ${money(CORE.price)}, the same figure here as in every other city. Travel quoted openly on top.`;
+  const priceLine = `Collections from ${money(ENTRY.price)}, the same figure here as in every other city. Travel quoted openly on top.`;
   return {
     title,
     description: `${m.angle}. Wedding photography in ${m.region}. ${priceLine}`,
@@ -90,7 +90,7 @@ export function citySchema(m: Market) {
       url,
       provider: { "@id": `${SITE.url}/#business` },
       areaServed: m.areas.map((a) => ({ "@type": "Place", name: a })),
-      // The collection price is national, so every city emits the same three
+      // The collection price is national, so every city emits the same four
       // offers. Travel is quoted per booking and is deliberately not in here.
       offers: TIERS.map((t) => ({
         "@type": "Offer",
@@ -498,7 +498,7 @@ export default function CityHub({ market: m }: { market: Market }) {
         <div className="hub-other">
           {others.map((o) => (
             <Link key={o.slug} href={`/${o.slug}-wedding-photographer`} className="hub-other-link">
-              {o.city} · from {money(CORE.price)}
+              {o.city} · from {money(ENTRY.price)}
             </Link>
           ))}
         </div>

@@ -100,7 +100,7 @@
 .aboutCopy > p:not(.eyebrow) { margin-top: 23px; color: #4f594e; font-size: 15px; line-height: 1.85; max-width: 480px; }
 .textLink { display: inline-flex; gap: 35px; padding: 12px 0 6px; border-bottom: 1px solid #7d897b; margin-top: 16px; font-size: 13px; }
 .collections { padding: 84px max(5.5%, calc((100% - 1424px) / 2)); background: #e8e8de; }
-.priceGrid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; margin-top: 42px; }
+.priceGrid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px; margin-top: 42px; }
 .priceCard, .featuredPrice { padding: 28px; border: 1px solid #c8ccbd; display: flex; flex-direction: column; }
 .featuredPrice { color: #f8f4e9; background: var(--green); border-color: var(--green); }
 .tierHeader { border-bottom: 1px solid #97a18d60; padding-bottom: 20px; margin-bottom: 28px; }
@@ -396,4 +396,9 @@
 @media (prefers-reduced-motion: reduce) {
   .dark *, .dark *::before, .dark *::after { transition: none !important; animation: none !important; }
   :global(html):has(.dark) { scroll-behavior: auto; }
+}
+
+/* Four collections: two-up in the middle band, one-up on phones (below). */
+@media (max-width: 1100px) and (min-width: 761px) {
+  .priceGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }

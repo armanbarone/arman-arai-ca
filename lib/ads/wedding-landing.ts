@@ -68,7 +68,7 @@ export const COMMON_FAQS: { q: string; a: string }[] = [
   },
   {
     q: "What does it actually cost?",
-    a: "Core is C$3,000 for six hours, Signature is C$4,500 for eight, Heirloom is C$6,000 for ten. Those are the whole prices of the collections, before tax, and they are the same figure in every Canadian city. Travel, where the date requires it, is quoted separately and agreed before you book.",
+    a: "Essential is C$2,000 for six hours, Signature is C$3,000 for eight with an engagement session, Complete is C$4,200 for ten with a second photographer for four of them, and Photo + Film is C$5,900 for eight hours with a dedicated filmmaker. Those are the whole prices of the collections, before tax, and they are the same figure in every Canadian city. Travel, where the date requires it, is quoted separately and agreed before you book.",
   },
   {
     q: "We are awkward in front of a camera.",
@@ -106,7 +106,7 @@ export const NATIONAL: LandingVariant = {
   ],
   metaTitle: "Wedding Photographer in Canada | Check Your Date — Arman Arai",
   metaDescription:
-    "Canadian wedding photography, documentary and editorial. Collections from C$3,000, the same price in every city. See full real wedding galleries and book a free 30-minute call.",
+    "Canadian wedding photography, documentary and editorial. Collections from C$2,000, the same price in every city. See full real wedding galleries and book a free 30-minute call.",
   path: BASE_PATH,
 };
 
@@ -125,7 +125,7 @@ function variantFor(market: Market): LandingVariant {
     tax: region?.tax ?? "",
     faqs: market.faqs,
     metaTitle: `Wedding Photographer in ${market.city} | Check Your Date — Arman Arai`,
-    metaDescription: `${market.city} wedding photography, documentary and editorial. Collections from C$3,000, the same price in every Canadian city. See full real wedding galleries and book a free 30-minute call.`,
+    metaDescription: `${market.city} wedding photography, documentary and editorial. Collections from C$2,000, the same price in every Canadian city. See full real wedding galleries and book a free 30-minute call.`,
     path: `${BASE_PATH}/${market.slug}`,
   };
 }

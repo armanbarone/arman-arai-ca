@@ -34,7 +34,7 @@ export const metadata: Metadata = {
 const FAQS = [
   {
     q: "Where do you photograph destination weddings?",
-    a: `${SCOPE.oneLine} That includes ${SCOPE.destinationExamples.slice(0, 8).join(", ")} and anywhere else the date can practically be reached. Couples usually find me for a Canadian wedding first and then ask about a wedding abroad; both are booked here, on the same three collections.`,
+    a: `${SCOPE.oneLine} That includes ${SCOPE.destinationExamples.slice(0, 8).join(", ")} and anywhere else the date can practically be reached. Couples usually find me for a Canadian wedding first and then ask about a wedding abroad; both are booked here, on the same four collections.`,
   },
   {
     q: "Why do you not work in the United States?",
@@ -74,7 +74,7 @@ const COMPARISON = [
   { row: "Price", canada: `Published: ${money(TIERS[0].price)} / ${money(TIERS[1].price)} / ${money(TIERS[2].price)}, the same in every province`, dest: "Quoted against the country, the venue and the date" },
   { row: "Travel", canada: "Its own line, reduced or waived when regional dates group", dest: "Built into the one quoted number, not added afterwards" },
   { row: "The photography", canada: "Documentary and editorial, one lead photographer", dest: "Identical. The work does not change with the postcode" },
-  { row: "What comes back", canada: "Coverage, social reels, film prints, and the film and album on Signature and Heirloom", dest: "Identical, and scoped with you when the quote is built" },
+  { row: "What comes back", canada: "Coverage, social reels, film prints, the feature film from Signature up, and the album on Complete and Photo + Film", dest: "Identical, and scoped with you when the quote is built" },
   { row: "Arrival", canada: "The day before, usually", dest: "Two to three days ahead, to scout in the real light" },
   { row: "Booking", canada: TERMS.retainer, dest: "The same retainer, on the same contract" },
 ];
@@ -172,7 +172,7 @@ export default function DestinationPage() {
             anything.
           </p>
           <p className="text-slate text-[0.95rem] leading-relaxed mt-8">
-            {SCOPE.destinationPricing} The three collections on{" "}
+            {SCOPE.destinationPricing} The four collections on{" "}
             <Link href="/pricing" className="text-rose hover:text-blush transition-colors">the pricing page</Link>{" "}
             are what a wedding in Canada costs, and they hold in every province. A wedding in
             Puglia is a different job, and pricing it as a Montréal wedding with a flight

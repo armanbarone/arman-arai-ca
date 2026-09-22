@@ -5,7 +5,7 @@ import { GALLERIES } from "@/lib/galleries";
 import {
   ANALOGUE, ARMAN, DOCUMENTARY, DREAMY_FINE_ART, EDITORIAL, FILM, FILM_STRIP, type Photo,
 } from "@/lib/images";
-import { ALBUM_SPECS, CORE, SITE, TIERS } from "@/lib/site";
+import { ALBUM_SPECS, ENTRY, SITE, TIERS } from "@/lib/site";
 import { COMMON_FAQS, galleryOrderFor, type LandingVariant } from "@/lib/ads/wedding-landing";
 import WeddingCalendar, { BookingLink, BookingNavigation } from "../2728-cc-weddings/wedding-calendar";
 import DateCheck from "./DateCheck";
@@ -50,9 +50,10 @@ const QUOTES = [
 ];
 
 const collectionFor: Record<string, string> = {
-  core: "A ceremony, the portraits and dinner in one place.",
+  essential: "A ceremony, the portraits and dinner in one place.",
   signature: "A getting-ready, a ceremony and the party that follows.",
-  heirloom: "A long day, from the first coffee to the last dance.",
+  complete: "A long day, from the first coffee to the last dance, with two of us on it.",
+  "photo-film": "The same day, with a filmmaker beside me so you can hear it too.",
 };
 
 export default function LandingPage({ variant }: { variant: LandingVariant }) {
@@ -86,7 +87,7 @@ export default function LandingPage({ variant }: { variant: LandingVariant }) {
             <h1 id="hero-title">{variant.h1}</h1>
             <p className={styles.intro}>{variant.intro}</p>
             <p className={styles.price}>
-              Collections from <strong>{money(CORE.price)}</strong>
+              Collections from <strong>{money(ENTRY.price)}</strong>
               <span>CAD before tax. The same price in every Canadian city, travel quoted separately.</span>
             </p>
             <div id={dateFirst ? "check-date" : undefined} className={styles.dateCheckPanel}><DateCheck city={city} wherePlaceholder={variant.wherePlaceholder} page={variant.path} classes={styles} instantAvailability={dateFirst} replyTiming={dateFirst ? "See availability, then choose a time for a free video call." : undefined} /></div>
@@ -196,7 +197,7 @@ export default function LandingPage({ variant }: { variant: LandingVariant }) {
           <div className={styles.sectionHead}>
             <div>
               <p className={styles.eyebrow}>What it costs</p>
-              <h2 id="prices-title">Three collections.<br /><em>Three whole numbers.</em></h2>
+              <h2 id="prices-title">Four collections.<br /><em>Four whole numbers.</em></h2>
             </div>
             <p>
               No tiers behind a form and no quote you have to earn. Pick the one
@@ -223,8 +224,8 @@ export default function LandingPage({ variant }: { variant: LandingVariant }) {
                   <li>{tier.delivery}</li>
                   {tier.film && <li>{tier.film}</li>}
                   {tier.rolls && <li>{tier.rolls}</li>}
-                  {tier.slug === "signature" && <li>{ALBUM_SPECS.signature.name}, {ALBUM_SPECS.signature.size}, {ALBUM_SPECS.signature.pages}</li>}
-                  {tier.slug === "heirloom" && <li>{ALBUM_SPECS.heirloom.name}, {ALBUM_SPECS.heirloom.size}, {ALBUM_SPECS.heirloom.pages}</li>}
+                  {tier.engagement && <li>{tier.engagement}</li>}
+                  {tier.album.includes("included") && <li>{ALBUM_SPECS.signature.name}, {ALBUM_SPECS.signature.size}, {ALBUM_SPECS.signature.pages}</li>}
                 </ul>
                 <BookingLink className={styles.tierLink} placement={`collection_${tier.slug}`}>
                   Talk about {tier.name} <span aria-hidden="true">↗</span>

@@ -3,7 +3,7 @@ import { Analytics } from "@vercel/analytics/next";
 import { ANALOGUE, ARMAN, DOCUMENTARY, DREAMY_FINE_ART, EDITORIAL, FILM, type Photo } from "@/lib/images";
 import type { WeddingCity } from "@/lib/ads/city-wedding-pages";
 import { GALLERIES } from "@/lib/galleries";
-import { ALBUM_SPECS, CORE, SITE, TIERS } from "@/lib/site";
+import { ALBUM_SPECS, ENTRY, SITE, TIERS } from "@/lib/site";
 import { proofByN, proofSrc } from "@/lib/reviews";
 import WeddingCalendar, { BookingLink, BookingNavigation } from "../2728-cc-weddings/wedding-calendar";
 import AlbumBrowser, { type LandingAlbum } from "./AlbumBrowser";
@@ -33,9 +33,19 @@ const questionsFor = (city: WeddingCity) => [
   [city.coverageQuestion, city.coverageAnswer],
   [city.planningQuestion, city.planningAnswer],
   ["We’re not comfortable posing. Will you help?", "Yes. I’ll give you clear, simple direction for portraits, including where to stand and what to do with your hands. During the ceremony and celebrations, you can focus on your guests while I photograph what happens."],
-  ["What is included, and what costs extra?", "Every collection includes photography by me, planning, a full edited online gallery with print permission, vertical social reels and film prints for your guests. Signature and Heirloom also include a feature film and printed album. Prices are in Canadian dollars before tax. Travel, where needed, is quoted separately and agreed before you book."],
+  ["What is included, and what costs extra?", "Every collection includes photography by me, planning, a full edited online gallery with print permission, vertical social reels and film prints for your guests. Signature adds an engagement session and a feature film; Complete and Photo + Film add a printed album, and Photo + Film a dedicated filmmaker. Prices are in Canadian dollars before tax. Travel, where needed, is quoted separately and agreed before you book."],
   ["How do we secure our wedding date?", "Once we’ve confirmed availability, your collection and the full quote, a signed contract and 30% retainer secure the date. The balance is due 30 days before the wedding. There’s no obligation to book after our consultation."],
 ];
+
+/* The one-line promise under the hours, per collection. Keyed by slug so a
+   renamed or added tier fails visibly here rather than silently rendering the
+   entry-level label, which is what happened when this was a slug ternary. */
+const TIER_STRAP: Record<string, string> = {
+  essential: "The essentials",
+  signature: "Photography + film + an engagement session",
+  complete: "Two photographers, a film and an album",
+  "photo-film": "A dedicated filmmaker on the day",
+};
 
 export default function CityWeddingLanding({ city, theme = "light" }: { city: WeddingCity; theme?: "light" | "dark" }) {
   const page = `wedding-photography/${city.slug}${theme === "dark" ? "-dark" : ""}`;
@@ -53,7 +63,7 @@ export default function CityWeddingLanding({ city, theme = "light" }: { city: We
           <p className={styles.eyebrow}>Your people. Your day. Your kind of photographs.</p>
           <h1 id="hero-title">{city.name} <br />wedding <br /><em>photography.</em></h1>
           <p className={styles.heroIntro}>Beautiful portraits. All the feeling in between.<br />And time to actually enjoy your wedding.</p>
-          <p className={styles.starting}>Collections from <strong>{money(CORE.price)}</strong><span>6, 8 or 10 hours · CAD before tax · travel extra</span></p>
+          <p className={styles.starting}>Collections from <strong>{money(ENTRY.price)}</strong><span>6, 8 or 10 hours · CAD before tax · travel extra</span></p>
           <div id="check-date" className={styles.dateCheckPanel}><DateCheck city={city.name} wherePlaceholder={`Your venue, or ${city.name} area`} page={`/${page}`} classes={styles} instantAvailability replyTiming="See availability, then choose a time for a free video call." /></div>
           <p className={styles.directCall}>Prefer to talk first? <BookingLink placement={`${city.slug}_hero_direct`}>Book a free consultation ↗</BookingLink></p>
         </div>
@@ -84,9 +94,9 @@ export default function CityWeddingLanding({ city, theme = "light" }: { city: We
       <section id="collections" className={styles.collections} aria-labelledby="collections-title">
         <div className={styles.sectionHeading}><div><p className={styles.eyebrow}>The collections / 03</p><h2 id="collections-title">Your day, with room<br /><em>for what matters.</em></h2></div><p>Start with the time you need. We’ll talk through your plans and find the right coverage together.</p></div>
         <div className={styles.priceGrid}>{TIERS.map((tier) => <article key={tier.slug} className={tier.slug === "signature" ? styles.featuredPrice : styles.priceCard}>
-          <div className={styles.tierHeader}><p>{tier.hours} hours of coverage</p><span>{tier.slug === "signature" ? "Photography + film + album" : tier.slug === "heirloom" ? "The fullest collection" : "The essentials"}</span></div>
+          <div className={styles.tierHeader}><p>{tier.hours} hours of coverage</p><span>{TIER_STRAP[tier.slug] ?? tier.strap}</span></div>
           <h3>{tier.name}</h3><p className={styles.price}>{money(tier.price)}<span>CAD before tax</span></p>
-          <ul><li>{tier.images}</li><li>{tier.preview}</li><li>{tier.delivery}</li>{tier.film && <li>{tier.film}</li>}{tier.rolls && <li>{tier.rolls}</li>}{tier.slug === "signature" && <li>{ALBUM_SPECS.signature.size} album · {ALBUM_SPECS.signature.pages}</li>}{tier.slug === "heirloom" && <li>{ALBUM_SPECS.heirloom.size} leather album · {ALBUM_SPECS.heirloom.pages}</li>}</ul>
+          <ul><li>{tier.images}</li><li>{tier.preview}</li><li>{tier.delivery}</li>{tier.film && <li>{tier.film}</li>}{tier.rolls && <li>{tier.rolls}</li>}{tier.engagement && <li>{tier.engagement}</li>}{tier.album.includes("included") && <li>{ALBUM_SPECS.signature.size} album · {ALBUM_SPECS.signature.pages}</li>}</ul>
           <BookingLink className={styles.collectionLink} placement={`${city.slug}_collection_${tier.slug}`}>Talk about {tier.name} <span aria-hidden="true">↗</span></BookingLink>
         </article>)}</div>
         <div className={styles.included}><h3>Always included.</h3><p>Photography by Arman. Timeline and family-photo planning. A full edited gallery with print permission. Social reels in the first week. Film prints for your guests on the night.</p></div>

@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import Script from "next/script";
 import { track } from "@vercel/analytics";
-import { CORE } from "@/lib/site";
+import { ENTRY } from "@/lib/site";
 import { completeWeddingBooking } from "@/lib/analytics";
 import { isCompletedWeddingBooking, weddingCalendarUrl, WEDDING_CALENDAR } from "@/lib/wedding-booking";
 
@@ -36,7 +36,7 @@ export function BookingNavigation({ classes, dateFirst = false }: { classes: Rec
     [section, hero, footer].forEach((el) => observer.observe(el));
     return () => observer.disconnect();
   }, [dateFirst]);
-  return <aside className={classes.stickyCta} hidden={hidden} aria-label={dateFirst ? "Check your wedding date" : "Book a wedding photography call"}><span>2027 & 2028 weddings<br /><strong>From C${CORE.price.toLocaleString("en-CA")}</strong><br />Before tax · travel extra</span>{dateFirst ? <a href="#check-date">Check your date ↗</a> : <BookingLink placement="mobile_bar">Book a free call ↗</BookingLink>}</aside>;
+  return <aside className={classes.stickyCta} hidden={hidden} aria-label={dateFirst ? "Check your wedding date" : "Book a wedding photography call"}><span>2027 & 2028 weddings<br /><strong>From C${ENTRY.price.toLocaleString("en-CA")}</strong><br />Before tax · travel extra</span>{dateFirst ? <a href="#check-date">Check your date ↗</a> : <BookingLink placement="mobile_bar">Book a free call ↗</BookingLink>}</aside>;
 }
 
 export default function WeddingCalendar({ page = "2728-cc-weddings", theme = "light", classes }: { page?: string; theme?: "light" | "dark"; classes: Record<string, string> }) {

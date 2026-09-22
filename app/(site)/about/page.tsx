@@ -29,7 +29,7 @@ const APPROACH = [
   {
     n: "II",
     title: "An engagement session",
-    body: "A C$700 add-on, and the one I recommend most. Not for the photographs. For the hour where you stop performing and I learn how the two of you actually stand.",
+    body: "Included from Signature up and a C$450 add-on on Essential, and the one I recommend most. Not for the photographs. For the hour where you stop performing and I learn how the two of you actually stand.",
   },
   {
     n: "III",
@@ -39,7 +39,7 @@ const APPROACH = [
   {
     n: "IV",
     title: "The return",
-    body: "A preview inside 48 hours, vertical social reels in the first week, and the full gallery within two weeks on Core, three on the tiers above it. Edited to what the room felt like, not to a preset that will date in three years.",
+    body: "A preview inside 48 hours, vertical social reels in the first week, and the full gallery within two weeks on Essential, three on the tiers above it. Edited to what the room felt like, not to a preset that will date in three years.",
   },
 ];
 

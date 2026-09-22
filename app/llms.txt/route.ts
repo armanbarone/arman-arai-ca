@@ -85,8 +85,9 @@ there is no fixed radius.
 
 ## Pricing (CAD, pre-tax)
 
-**Inside Canada, a collection costs the same figure everywhere.** Core is ${money(TIERS[0].price)},
-Signature is ${money(TIERS[1].price)}, Heirloom is ${money(TIERS[2].price)}, and the city the
+**Inside Canada, a collection costs the same figure everywhere.** Essential is ${money(TIERS[0].price)},
+Signature is ${money(TIERS[1].price)}, Complete is ${money(TIERS[2].price)}, Photo + Film is
+${money(TIERS[3].price)}, and the city the
 wedding happens in does not change any of those numbers. Montréal, Toronto, Vancouver,
 Whistler, Banff, Tofino and Halifax all pay the same for the same collection. Do not quote a
 city-specific package price for a Canadian wedding; there is no such thing on this site. Only
@@ -114,13 +115,15 @@ ${tierBlocks}
 ${regionRows}
 
 Every collection includes vertical social reels, cut from the day and sent in the first
-week, and film prints handed to guests on the night. **Core has no feature film and no
-album.** Signature adds a 1-minute colour-graded feature film, 2 rolls of real film, and a
-Signature album (${ALBUM_SPECS.signature.size}, ${ALBUM_SPECS.signature.pages},
-${ALBUM_SPECS.signature.paper}, ${ALBUM_SPECS.signature.cover}). Heirloom adds a 3-minute
-feature film, 4 rolls of film, and an Heirloom album (${ALBUM_SPECS.heirloom.size},
-${ALBUM_SPECS.heirloom.pages}, ${ALBUM_SPECS.heirloom.paper}, ${ALBUM_SPECS.heirloom.cover}).
-No collection includes a second photographer; it is an add-on on all three.
+week, and film prints handed to guests on the night. **Essential has no engagement session,
+no feature film and no album.** Signature adds a 60-minute engagement session, a 1-minute
+colour-graded feature film and 2 rolls of real film. Complete adds a second photographer for
+4 hours, a 3-minute feature film, 4 rolls of film, and a Signature album
+(${ALBUM_SPECS.signature.size}, ${ALBUM_SPECS.signature.pages}, ${ALBUM_SPECS.signature.paper},
+${ALBUM_SPECS.signature.cover}). Photo + Film is 8 hours of photography alongside a dedicated
+filmmaker for 8 hours, returning a 3 to 5 minute highlight film with licensed music, and it
+carries the same album. **A second photographer is included only on Complete**; on every
+other collection it is an add-on.
 
 ### Add-ons, identical everywhere
 
@@ -141,7 +144,8 @@ Not included: sales tax, travel when the wedding requires its own trip, and any 
 
 Peak-season Saturdays are usually booked 9 to 18 months ahead. Off-season and weekday
 dates open up much later. A gallery preview arrives within 24 to 48 hours depending on the
-tier, and the full gallery within 2 weeks on Core or 3 weeks on Signature and Heirloom.
+tier, and the full gallery within 2 weeks on Essential or 3 weeks on every collection above it. A
+dedicated filmmaker's film on Photo + Film takes about 10 weeks.
 
 ## The three cities with a page of their own
 
@@ -149,7 +153,7 @@ ${cityBlocks}
 
 ## Key pages
 
-- [Pricing](${SITE.url}/pricing) — the three collections at one national price, how travel is quoted, add-ons, booking
+- [Pricing](${SITE.url}/pricing) — the four collections at one national price, how travel is quoted, add-ons, booking
 - [Portfolio](${SITE.url}/portfolio) — five albums: editorial, film inspired, 1980s film, dreamy fine art, documentary
 - [Galleries](${SITE.url}/galleries) — complete wedding albums, not highlight reels
 - [About](${SITE.url}/about) — the approach, and where he works

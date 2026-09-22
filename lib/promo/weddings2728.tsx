@@ -34,7 +34,7 @@ import { HOME_GRID, LANDING_PAGE, at } from "@/lib/images";
 
 const IN = "#e8dfd0";
 
-const [CORE, SIGNATURE, HEIRLOOM] = TIERS;
+const [ENTRY, SIGNATURE, COMPLETE] = TIERS;
 const money = (n: number) => `$${n.toLocaleString("en-CA")}`;
 
 /** The review screenshots, from the set /reviews publishes. Intrinsic
@@ -57,7 +57,7 @@ const REVIEWS = [
 export function weddings2728Config(): PromoConfig {
   return {
     /* ── Price ────────────────────────────────────────────────────────────── */
-    priceFounding: CORE.price,
+    priceFounding: ENTRY.price,
     pricePrefix: "From",
     badge: "Booking 2027 and 2028",
     coversTitle: "What you get",
@@ -131,9 +131,9 @@ export function weddings2728Config(): PromoConfig {
       featuredLabel: "Most booked",
       items: [
         {
-          name: CORE.name,
-          price: money(CORE.price),
-          meta: `${CORE.hours} hours · ${CORE.images}`,
+          name: ENTRY.name,
+          price: money(ENTRY.price),
+          meta: `${ENTRY.hours} hours · ${ENTRY.images}`,
           blurb: "A ceremony and a dinner in one place, covered properly.",
           points: [
             "Six hours of coverage",
@@ -157,9 +157,9 @@ export function weddings2728Config(): PromoConfig {
           highlight: true,
         },
         {
-          name: HEIRLOOM.name,
-          price: money(HEIRLOOM.price),
-          meta: `${HEIRLOOM.hours} hours · ${HEIRLOOM.images}`,
+          name: COMPLETE.name,
+          price: money(COMPLETE.price),
+          meta: `${COMPLETE.hours} hours · ${COMPLETE.images}`,
           blurb: "The whole thing, from the empty room in the morning to the floor at the end.",
           points: [
             "Ten hours of coverage",
@@ -178,7 +178,7 @@ export function weddings2728Config(): PromoConfig {
     compare: {
       intro: "Worth comparing against what the same day costs once you have hired everyone it takes.",
       colA: "A photographer alone",
-      colB: "Photographer plus a videographer",
+      colB: "Photographer plus a filmmaker",
       colMine: `${SIGNATURE.name}, ${money(SIGNATURE.price)}`,
       rows: [
         { row: "Coverage", a: "Photography only", b: "Two vendors, two contracts", mine: "Photography and film, one contract" },
@@ -229,12 +229,12 @@ export function weddings2728Config(): PromoConfig {
           ],
         },
         {
-          title: "Signature and Heirloom add",
+          title: "Signature and Complete add",
           items: [
             "A colour-graded feature film of your day",
             "Real film, processed and scanned",
-            "A designed album, included rather than a credit toward one",
-            "A planning call, and a location scout on Heirloom",
+            "A designed album on Complete, included rather than a credit toward one",
+            "A planning call, and a location scout on Complete",
           ],
         },
       ],
@@ -270,7 +270,7 @@ export function weddings2728Config(): PromoConfig {
       },
       {
         q: "Does the price change depending on where we marry?",
-        a: `No. Core is ${money(CORE.price)} wherever your wedding is. Travel to your venue is quoted on top and agreed in writing before you book.`,
+        a: `No. Essential is ${money(ENTRY.price)} wherever your wedding is. Travel to your venue is quoted on top and agreed in writing before you book.`,
       },
       {
         q: "Which collection do we need?",
@@ -278,7 +278,7 @@ export function weddings2728Config(): PromoConfig {
       },
       {
         q: "Do you shoot video too?",
-        a: "Vertical social reels come with every collection. Signature and Heirloom add a colour-graded feature film of the day, shot alongside the photographs. A dedicated videographer is available as an add-on.",
+        a: "Vertical social reels come with every collection. Signature and Complete add a colour-graded feature film of the day, shot alongside the photographs. Photo + Film puts a dedicated filmmaker on the day for a longer piece, and that filmmaker can be added to any other collection.",
       },
       {
         q: "What if it rains?",

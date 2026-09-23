@@ -2,6 +2,15 @@
  *  Google and Meta load on the first view of any public page. The private client
  *  portal, the admin pages and the API routes carry no advertising tags. */
 export const GA4_ID = "G-V2GKTHF0W6";
+/** The "Arman Arai Weddings" Google tag, which is this site's own tag.
+ *  GT-W6VMNGBQ, AW-18464850778 and GT-WV3WTKLQ are three IDs for ONE container:
+ *  loading any of them loads the same thing, so the script is requested once,
+ *  by the GT- ID Google's own install screen hands out. Destinations are then
+ *  managed in the Google tag UI rather than by editing this file.
+ *  Do not add a second <script> for AW-18464850778; that double-loads it. */
+export const WEDDINGS_TAG_ID = "GT-W6VMNGBQ";
+/** The same container addressed by its Ads ID. Used only in `send_to` on a
+ *  conversion, which must name the Ads account rather than the GT- alias. */
 export const GOOGLE_ADS_ID = "AW-18464850778";
 export const META_PIXEL_ID = "1110472461323039";
 // Keep the existing booking goal paired with the account that owns its label.
@@ -72,9 +81,11 @@ export function startTracking() {
   w.gtag("consent", "default", { analytics_storage: "granted", ad_storage: "granted", ad_user_data: "granted", ad_personalization: "granted" });
   w.gtag("js", new Date());
   w.gtag("config", GA4_ID, { send_page_view: false });
-  w.gtag("config", GOOGLE_ADS_ID);
+  // One config per container. GOOGLE_ADS_ID is the same tag as WEDDINGS_TAG_ID,
+  // so configuring both would send this site's page views to Ads twice.
+  w.gtag("config", WEDDINGS_TAG_ID);
   w.gtag("config", SCHEDULE_CONVERSION_ID);
-  googleReady = loadTag("aa-google-tag", `https://www.googletagmanager.com/gtag/js?id=${GOOGLE_ADS_ID}`);
+  googleReady = loadTag("aa-google-tag", `https://www.googletagmanager.com/gtag/js?id=${WEDDINGS_TAG_ID}`);
 
   if (!w.fbq) {
     const fbq = function () { fbq.callMethod ? fbq.callMethod.apply(fbq, arguments as unknown as unknown[]) : fbq.queue.push(arguments); } as MetaTag;

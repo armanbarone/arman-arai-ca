@@ -3,7 +3,7 @@ import { Analytics } from "@vercel/analytics/next";
 import { ANALOGUE, ARMAN, DOCUMENTARY, DREAMY_FINE_ART, EDITORIAL, FILM, type Photo } from "@/lib/images";
 import type { WeddingCity } from "@/lib/ads/city-wedding-pages";
 import { GALLERIES } from "@/lib/galleries";
-import { ALBUM_SPECS, ENTRY, SITE, TIERS } from "@/lib/site";
+import { ALBUM_SPECS, ENTRY, SITE, TIERS, type Tier } from "@/lib/site";
 import { proofByN, proofSrc } from "@/lib/reviews";
 import WeddingCalendar, { BookingLink, BookingNavigation } from "../2728-cc-weddings/wedding-calendar";
 import AlbumBrowser, { type LandingAlbum } from "./AlbumBrowser";
@@ -47,10 +47,53 @@ const TIER_STRAP: Record<string, string> = {
   "photo-film": "A dedicated filmmaker on the day",
 };
 
-export default function CityWeddingLanding({ city, theme = "light" }: { city: WeddingCity; theme?: "light" | "dark" }) {
-  const page = `wedding-photography/${city.slug}${theme === "dark" ? "-dark" : ""}`;
-  const questions = questionsFor(city);
+export type IntroWeddingOffer = {
+  slug: string;
+  name: string;
+  price: number;
+  hours: number;
+  strap: string;
+  items: string[];
+  availability: string;
+};
+
+type CityWeddingLandingProps = {
+  city: WeddingCity;
+  theme?: "light" | "dark";
+  pageSlug?: string;
+  introOffer?: IntroWeddingOffer;
+  visibleTierSlugs?: string[];
+  coverageSummary?: string;
+  tierOverrides?: Record<string, Partial<Tier> & { hoursLabel?: string }>;
+};
+
+const coverageLabel = (hours: number[]) => {
+  const uniqueHours = [...new Set(hours)].sort((a, b) => a - b);
+  if (uniqueHours.length === 1) return `${uniqueHours[0]} hours`;
+  return `${uniqueHours.slice(0, -1).join(", ")} or ${uniqueHours.at(-1)} hours`;
+};
+
+export default function CityWeddingLanding({ city, theme = "light", pageSlug, introOffer, visibleTierSlugs, coverageSummary, tierOverrides }: CityWeddingLandingProps) {
+  const page = `wedding-photography/${pageSlug ?? `${city.slug}${theme === "dark" ? "-dark" : ""}`}`;
+  const visibleTiers = (visibleTierSlugs ? TIERS.filter((tier) => visibleTierSlugs.includes(tier.slug)) : TIERS)
+    .map((tier) => ({ ...tier, ...tierOverrides?.[tier.slug] }));
+  const coverageHours = coverageSummary ?? coverageLabel([...(introOffer ? [introOffer.hours] : []), ...visibleTiers.map((tier) => tier.hours)]);
+  const questions = introOffer
+    ? [
+        ...questionsFor(city).slice(0, 4),
+        [
+          `When is the ${introOffer.name} collection available?`,
+          introOffer.availability,
+        ],
+        [
+          "What is included, and what costs extra?",
+          `${introOffer.name} includes six continuous hours photographed by me, a 60-minute engagement photoshoot, planning, 400+ edited photographs, a 30-image preview within 48 hours, a private online gallery and print permission. Signature adds a feature film, social reels and film prints. Photo + Film adds 10 to 12 hours of coverage, a dedicated filmmaker and a printed album. Extra coverage and longer travel are quoted separately. Prices are in Canadian dollars before tax. Local Vancouver and Lower Mainland travel is included.`,
+        ],
+        ...questionsFor(city).slice(5),
+      ]
+    : questionsFor(city);
   const weddingAlbums = weddingAlbumsFor(city.albums);
+  const startingPrice = introOffer?.price ?? ENTRY.price;
   return <div className={`${styles.page}${theme === "dark" ? ` ${styles.dark}` : ""}`} data-landing-theme={theme} data-landing-city={city.slug}>
     <a className={styles.skip} href="#main">Skip to content</a>
     <header className={styles.header}>
@@ -63,7 +106,7 @@ export default function CityWeddingLanding({ city, theme = "light" }: { city: We
           <p className={styles.eyebrow}>Your people. Your day. Your kind of photographs.</p>
           <h1 id="hero-title">{city.name} <br />wedding <br /><em>photography.</em></h1>
           <p className={styles.heroIntro}>Beautiful portraits. All the feeling in between.<br />And time to actually enjoy your wedding.</p>
-          <p className={styles.starting}>Collections from <strong>{money(ENTRY.price)}</strong><span>6, 8 or 10 hours · CAD before tax · travel extra</span></p>
+          <p className={styles.starting}>Collections from <strong>{money(startingPrice)}</strong><span>{coverageHours} · CAD before tax · {introOffer ? "local travel included" : "travel extra"}</span></p>
           <div id="check-date" className={styles.dateCheckPanel}><DateCheck city={city.name} wherePlaceholder={`Your venue, or ${city.name} area`} page={`/${page}`} classes={styles} instantAvailability replyTiming="See availability, then choose a time for a free video call." /></div>
           <p className={styles.directCall}>Prefer to talk first? <BookingLink placement={`${city.slug}_hero_direct`}>Book a free consultation ↗</BookingLink></p>
         </div>
@@ -93,14 +136,19 @@ export default function CityWeddingLanding({ city, theme = "light" }: { city: We
 
       <section id="collections" className={styles.collections} aria-labelledby="collections-title">
         <div className={styles.sectionHeading}><div><p className={styles.eyebrow}>The collections / 03</p><h2 id="collections-title">Your day, with room<br /><em>for what matters.</em></h2></div><p>Start with the time you need. We’ll talk through your plans and find the right coverage together.</p></div>
-        <div className={styles.priceGrid}>{TIERS.map((tier) => <article key={tier.slug} className={tier.slug === "signature" ? styles.featuredPrice : styles.priceCard}>
-          <div className={styles.tierHeader}><p>{tier.hours} hours of coverage</p><span>{TIER_STRAP[tier.slug] ?? tier.strap}</span></div>
+        <div className={`${styles.priceGrid}${introOffer ? ` ${styles.priceGridExpanded}` : ""}`}>{introOffer && <article className={`${styles.priceCard} ${styles.introPriceCard}`}>
+          <div className={styles.tierHeader}><p>{introOffer.hours} hours of coverage</p><span>{introOffer.strap}</span></div>
+          <h3>{introOffer.name}</h3><p className={styles.price}>{money(introOffer.price)}<span>CAD before tax</span></p>
+          <ul>{introOffer.items.map((item) => <li key={item}>{item}</li>)}</ul>
+          <BookingLink className={styles.collectionLink} placement={`${city.slug}_collection_${introOffer.slug}`}>Talk about {introOffer.name} <span aria-hidden="true">↗</span></BookingLink>
+        </article>}{visibleTiers.map((tier) => <article key={tier.slug} className={tier.slug === "signature" ? styles.featuredPrice : styles.priceCard}>
+          <div className={styles.tierHeader}><p>{tier.hoursLabel ?? `${tier.hours} hours of coverage`}</p><span>{TIER_STRAP[tier.slug] ?? tier.strap}</span></div>
           <h3>{tier.name}</h3><p className={styles.price}>{money(tier.price)}<span>CAD before tax</span></p>
           <ul><li>{tier.images}</li><li>{tier.preview}</li><li>{tier.delivery}</li>{tier.film && <li>{tier.film}</li>}{tier.rolls && <li>{tier.rolls}</li>}{tier.engagement && <li>{tier.engagement}</li>}{tier.album.includes("included") && <li>{ALBUM_SPECS.signature.size} album · {ALBUM_SPECS.signature.pages}</li>}</ul>
           <BookingLink className={styles.collectionLink} placement={`${city.slug}_collection_${tier.slug}`}>Talk about {tier.name} <span aria-hidden="true">↗</span></BookingLink>
         </article>)}</div>
-        <div className={styles.included}><h3>Always included.</h3><p>Photography by Arman. Timeline and family-photo planning. A full edited gallery with print permission. Social reels in the first week. Film prints for your guests on the night.</p></div>
-        <p className={styles.travel}>Travel kept lean. Any travel is quoted separately and agreed before you book. All prices are in Canadian dollars before tax.</p>
+        <div className={styles.included}><h3>Always included.</h3><p>{introOffer ? "A 60-minute engagement photoshoot. Photography by Arman. Timeline and family-photo planning. A full edited gallery with print permission. Signature and Photo + Film also include social reels in the first week and film prints for your guests on the night." : "Photography by Arman. Timeline and family-photo planning. A full edited gallery with print permission. Social reels in the first week. Film prints for your guests on the night."}</p></div>
+        <p className={styles.travel}>{introOffer ? "Local travel within Vancouver and the Lower Mainland is included with Short Story. Longer travel is quoted separately and agreed before you book. " : "Travel kept lean. Any travel is quoted separately and agreed before you book. "}All prices are in Canadian dollars before tax.</p>
       </section>
 
       <section className={styles.reviews} aria-labelledby="reviews-title"><div className={styles.sectionHeading}><div><p className={styles.eyebrow}>When the photographs arrive</p><h2 id="reviews-title">I’ll let them<br /><em>tell you.</em></h2></div><p>A few words from the people on the other side of the camera. Tap a message to read the original.</p></div><div className={styles.reviewsGrid}>
@@ -114,6 +162,6 @@ export default function CityWeddingLanding({ city, theme = "light" }: { city: We
       <section id="book-a-call" className={styles.booking} aria-labelledby="booking-title"><div className={styles.bookingCopy}><p className={styles.eyebrow}>Your {city.name} wedding starts here</p><h2 id="booking-title" tabIndex={-1}>Bring your date.<br /><em>Tell me your plans.</em></h2><p>Choose a time for a free 30-minute video call with me. We’ll check your wedding date, talk about the photographs you love, and go through coverage and pricing.</p><ol><li><span>01</span> Choose a time that works for you.</li><li><span>02</span> Meet Arman and talk through your day.</li><li><span>03</span> Decide in your own time.</li></ol><p className={styles.bookingNote}>No obligation. No need to have it all figured out.<br />This calendar books our consultation, not your wedding date.</p></div><div className={styles.bookingCalendar}><WeddingCalendar page={page} theme={theme} classes={styles} /></div></section>
     </main>
     <footer className={styles.footer}><a href="#main" className={styles.footerBrand}>Arman Arai<span>Wedding photography · {city.name}</span></a><div><a href={`mailto:${SITE.email}`}>{SITE.email}</a><a href="/privacy-policy" target="_blank" rel="noopener noreferrer">Privacy policy</a><span>© {new Date().getFullYear()} Arman Arai</span></div></footer>
-    <BookingNavigation classes={styles} dateFirst /><Analytics />
+    <BookingNavigation classes={styles} dateFirst startingPrice={startingPrice} /><Analytics />
   </div>;
 }

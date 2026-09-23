@@ -15,7 +15,7 @@ export function BookingLink({ children, className, placement }: { children: Reac
   return <a href="#book-a-call" className={className} onClick={() => record("Wedding Call CTA", { placement })}>{children}</a>;
 }
 
-export function BookingNavigation({ classes, dateFirst = false }: { classes: Record<string, string>; dateFirst?: boolean }) {
+export function BookingNavigation({ classes, dateFirst = false, startingPrice = ENTRY.price }: { classes: Record<string, string>; dateFirst?: boolean; startingPrice?: number }) {
   const [hidden, setHidden] = useState(true);
   useEffect(() => {
     const section = document.getElementById("book-a-call");
@@ -36,7 +36,7 @@ export function BookingNavigation({ classes, dateFirst = false }: { classes: Rec
     [section, hero, footer].forEach((el) => observer.observe(el));
     return () => observer.disconnect();
   }, [dateFirst]);
-  return <aside className={classes.stickyCta} hidden={hidden} aria-label={dateFirst ? "Check your wedding date" : "Book a wedding photography call"}><span>2027 & 2028 weddings<br /><strong>From C${ENTRY.price.toLocaleString("en-CA")}</strong><br />Before tax · travel extra</span>{dateFirst ? <a href="#check-date">Check your date ↗</a> : <BookingLink placement="mobile_bar">Book a free call ↗</BookingLink>}</aside>;
+  return <aside className={classes.stickyCta} hidden={hidden} aria-label={dateFirst ? "Check your wedding date" : "Book a wedding photography call"}><span>2027 & 2028 weddings<br /><strong>From C${startingPrice.toLocaleString("en-CA")}</strong><br />Before tax · travel extra</span>{dateFirst ? <a href="#check-date">Check your date ↗</a> : <BookingLink placement="mobile_bar">Book a free call ↗</BookingLink>}</aside>;
 }
 
 export default function WeddingCalendar({ page = "2728-cc-weddings", theme = "light", classes }: { page?: string; theme?: "light" | "dark"; classes: Record<string, string> }) {

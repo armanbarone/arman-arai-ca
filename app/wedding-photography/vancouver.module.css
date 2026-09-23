@@ -101,7 +101,9 @@
 .textLink { display: inline-flex; gap: 35px; padding: 12px 0 6px; border-bottom: 1px solid #7d897b; margin-top: 16px; font-size: 13px; }
 .collections { padding: 84px max(5.5%, calc((100% - 1424px) / 2)); background: #e8e8de; }
 .priceGrid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px; margin-top: 42px; }
+.priceGridExpanded { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .priceCard, .featuredPrice { padding: 28px; border: 1px solid #c8ccbd; display: flex; flex-direction: column; }
+.introPriceCard { border-color: #a98c64; }
 .featuredPrice { color: #f8f4e9; background: var(--green); border-color: var(--green); }
 .tierHeader { border-bottom: 1px solid #97a18d60; padding-bottom: 20px; margin-bottom: 28px; }
 .tierHeader p { text-transform: uppercase; font-size: 10px; letter-spacing: .14em; }
@@ -361,6 +363,7 @@
 .dark .featuredPrice { color: var(--ink); background: var(--dark-card); border-color: #6a5030; box-shadow: inset 0 1px var(--gold); }
 .dark .priceGrid ul { color: var(--dark-body); }
 .dark .priceGrid li::before { color: var(--gold); }
+.dark .introPriceCard { border-color: var(--gold); }
 .dark .price > span, .dark .tierHeader span, .dark .travel { color: var(--muted); }
 .dark .reviewsGrid img { background: var(--dark-card); }
 .dark .reviewsGrid a span { color: var(--gold); }

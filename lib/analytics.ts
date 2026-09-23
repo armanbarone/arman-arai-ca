@@ -1,7 +1,12 @@
 /** Public marketing measurement. No names, emails or Calendly payloads are sent.
  *  Google and Meta load on the first view of any public page. The private client
  *  portal, the admin pages and the API routes carry no advertising tags. */
-export const GA4_ID = "G-V2GKTHF0W6";
+/** This site's OWN GA4 property. It is deliberately not G-V2GKTHF0W6, which is
+ *  armanarai.com's and was collecting both domains into one property. Google
+ *  Ads links to a GA4 *property*, not a data stream, so one shared property can
+ *  never feed the Elopements and Weddings accounts separately: each account saw
+ *  traffic from both websites. Keep this property for the .ca alone. */
+export const GA4_ID = "G-W7PGHWW7MF";
 /** The "Arman Arai Weddings" Google tag, which is this site's own tag.
  *  GT-W6VMNGBQ, AW-18464850778 and GT-WV3WTKLQ are three IDs for ONE container:
  *  loading any of them loads the same thing, so the script is requested once,

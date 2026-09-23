@@ -14,14 +14,22 @@ export const GA4_ID = "G-W7PGHWW7MF";
  *  managed in the Google tag UI rather than by editing this file.
  *  Do not add a second <script> for AW-18464850778; that double-loads it. */
 export const WEDDINGS_TAG_ID = "GT-W6VMNGBQ";
-/** The same container addressed by its Ads ID. Used only in `send_to` on a
- *  conversion, which must name the Ads account rather than the GT- alias. */
+/** The same container addressed by its Ads ID: the Google Ads account this site
+ *  belongs to. Nothing reads it now, because a booked call is measured by the
+ *  BOOKING_EVENT key event and imported from GA4, and an imported conversion
+ *  carries no send_to. Kept so the account this site reports into is written
+ *  down somewhere, and for the day a snippet-based conversion is added here. */
 export const GOOGLE_ADS_ID = "AW-18464850778";
 export const META_PIXEL_ID = "1110472461323039";
-// Keep the existing booking goal paired with the account that owns its label.
-// Installing another account's base tag does not migrate that conversion action.
-export const SCHEDULE_CONVERSION_ID = "AW-18154542346";
-export const SCHEDULE_CONVERSION_LABEL = "LzlaCPST9cMcEIqq4dBD";
+/* AW-18154542346 ("Arman Arai Elopements") used to load here, and a booked call
+   on this site was reported to it with that account's own conversion label.
+   That is armanarai.com's Ads account, and it is the reason the two accounts
+   each appeared to see the other site's traffic. It is deliberately gone.
+   A booked call is now measured by the BOOKING_EVENT key event below, imported
+   into "Arman Arai Weddings" (AW-18464850778) from this site's own GA4
+   property. Do not reintroduce another site's tag here to record a conversion:
+   a conversion label belongs to the account that created it, so borrowing one
+   credits the wrong account and pollutes both. */
 /** The GA4 event that means "a discovery call was actually booked", and nothing
  *  else. Mark THIS as the key event in GA4 and import it into Google Ads as the
  *  primary conversion. It is deliberately not `generate_lead`, which this site
@@ -95,7 +103,6 @@ export function startTracking() {
   // One config per container. GOOGLE_ADS_ID is the same tag as WEDDINGS_TAG_ID,
   // so configuring both would send this site's page views to Ads twice.
   w.gtag("config", WEDDINGS_TAG_ID);
-  w.gtag("config", SCHEDULE_CONVERSION_ID);
   googleReady = loadTag("aa-google-tag", `https://www.googletagmanager.com/gtag/js?id=${WEDDINGS_TAG_ID}`);
 
   if (!w.fbq) {
@@ -184,7 +191,6 @@ async function reportBooking(booking: Booking) {
       // fills, which are far cheaper to produce and worth much less.
       w.gtag?.("event", BOOKING_EVENT, { send_to: GA4_ID, method: "calendly_booking", landing_page: booking.page, transaction_id: booking.id, currency: "CAD" });
       w.gtag?.("event", "generate_lead", { send_to: GA4_ID, method: "calendly_booking", landing_page: booking.page, currency: "CAD" });
-      w.gtag?.("event", "conversion", { send_to: `${SCHEDULE_CONVERSION_ID}/${SCHEDULE_CONVERSION_LABEL}`, transaction_id: booking.id, currency: "CAD" });
       markSent(key);
     }),
     metaReady?.then((ready) => {

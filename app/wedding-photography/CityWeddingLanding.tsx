@@ -87,7 +87,7 @@ export default function CityWeddingLanding({ city, theme = "light", pageSlug, in
         ],
         [
           "What is included, and what costs extra?",
-          `${introOffer.name} includes six continuous hours photographed by me, a 60-minute engagement photoshoot, planning, 400+ edited photographs, a 30-image preview within 48 hours, a private online gallery and print permission. Signature adds a feature film, social reels and film prints. Photo + Film adds 10 to 12 hours of coverage, a dedicated filmmaker and a printed album. Extra coverage and longer travel are quoted separately. Prices are in Canadian dollars before tax. Local Vancouver and Lower Mainland travel is included.`,
+          `${introOffer.name} includes six continuous hours photographed by me, a 60-minute engagement photoshoot, planning, 400+ edited photographs, a 30-image preview within 48 hours, a private online gallery with print permission, 10 social media reels, printed mini photos handed to your guests at the end of the night and a roll of real film. Signature adds two more hours, a colour-graded feature film and a second roll. Photo + Film adds 10 to 12 hours of coverage, a dedicated filmmaker and a printed album. Extra coverage and longer travel are quoted separately. Prices are in Canadian dollars before tax. Local Vancouver and Lower Mainland travel is included.`,
         ],
         ...questionsFor(city).slice(5),
       ]
@@ -147,7 +147,7 @@ export default function CityWeddingLanding({ city, theme = "light", pageSlug, in
           <ul><li>{tier.images}</li><li>{tier.preview}</li><li>{tier.delivery}</li>{tier.film && <li>{tier.film}</li>}{tier.rolls && <li>{tier.rolls}</li>}{tier.engagement && <li>{tier.engagement}</li>}{tier.album.includes("included") && <li>{ALBUM_SPECS.signature.size} album · {ALBUM_SPECS.signature.pages}</li>}</ul>
           <BookingLink className={styles.collectionLink} placement={`${city.slug}_collection_${tier.slug}`}>Talk about {tier.name} <span aria-hidden="true">↗</span></BookingLink>
         </article>)}</div>
-        <div className={styles.included}><h3>Always included.</h3><p>{introOffer ? "A 60-minute engagement photoshoot. Photography by Arman. Timeline and family-photo planning. A full edited gallery with print permission. Signature and Photo + Film also include social reels in the first week and film prints for your guests on the night." : "Photography by Arman. Timeline and family-photo planning. A full edited gallery with print permission. Social reels in the first week. Film prints for your guests on the night."}</p></div>
+        <div className={styles.included}><h3>Always included.</h3><p>{introOffer ? "A 60-minute engagement photoshoot. Photography by Arman. Timeline and family-photo planning. A full edited gallery with print permission. Social reels, film prints handed to your guests on the night, and real film in every collection on this page." : "Photography by Arman. Timeline and family-photo planning. A full edited gallery with print permission. Social reels in the first week. Film prints for your guests on the night."}</p></div>
         <p className={styles.travel}>{introOffer ? "Local travel within Vancouver and the Lower Mainland is included with Short Story. Longer travel is quoted separately and agreed before you book. " : "Travel kept lean. Any travel is quoted separately and agreed before you book. "}All prices are in Canadian dollars before tax.</p>
       </section>
 

@@ -19,9 +19,9 @@ const shortStory: IntroWeddingOffer = {
     "30-image preview within 48 hours",
     "Full private online gallery within 2 weeks",
     "Local travel within Vancouver and the Lower Mainland",
-    "Sunday to Thursday availability",
-    "Friday or Saturday dates within 60 days, subject to availability",
-    "Not offered on peak Saturdays from May through October",
+    "10 social media reels",
+    "Printed mini photos for guests at the end of the night",
+    "1 roll of film included",
   ],
   availability: "Short Story is available Sunday through Thursday. Friday and Saturday dates can be booked within 60 days when the date remains open. It is not available on peak Saturdays from May through October. It is best suited to one-location weddings. For eight hours, choose Signature; for 10 to 12 hours with a dedicated filmmaker, choose Photo + Film.",
 };

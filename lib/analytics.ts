@@ -22,6 +22,12 @@ export const META_PIXEL_ID = "1110472461323039";
 // Installing another account's base tag does not migrate that conversion action.
 export const SCHEDULE_CONVERSION_ID = "AW-18154542346";
 export const SCHEDULE_CONVERSION_LABEL = "LzlaCPST9cMcEIqq4dBD";
+/** The GA4 event that means "a discovery call was actually booked", and nothing
+ *  else. Mark THIS as the key event in GA4 and import it into Google Ads as the
+ *  primary conversion. It is deliberately not `generate_lead`, which this site
+ *  also fires from the date-check form and the promo lead form. An Ads account
+ *  bidding on generate_lead optimises toward form fills rather than bookings. */
+export const BOOKING_EVENT = "book_appointment";
 export const BOOKING_KEY = "aa_ca_completed_booking_v1";
 const SENT_KEY = "aa_ca_booking_events_v1";
 const BOOKING_LIFETIME = 30 * 60 * 1000;
@@ -172,6 +178,11 @@ async function reportBooking(booking: Booking) {
       const key = `google:${booking.id}`;
       if (!ready || !permitted() || wasSent(key)) return;
       const w = window as TrackingWindow;
+      // A booked call ONLY. Mark this one as the GA4 key event and import it
+      // into Google Ads: generate_lead below also fires on the date-check form
+      // and the promo lead form, so bidding on generate_lead would chase form
+      // fills, which are far cheaper to produce and worth much less.
+      w.gtag?.("event", BOOKING_EVENT, { send_to: GA4_ID, method: "calendly_booking", landing_page: booking.page, transaction_id: booking.id, currency: "CAD" });
       w.gtag?.("event", "generate_lead", { send_to: GA4_ID, method: "calendly_booking", landing_page: booking.page, currency: "CAD" });
       w.gtag?.("event", "conversion", { send_to: `${SCHEDULE_CONVERSION_ID}/${SCHEDULE_CONVERSION_LABEL}`, transaction_id: booking.id, currency: "CAD" });
       markSent(key);

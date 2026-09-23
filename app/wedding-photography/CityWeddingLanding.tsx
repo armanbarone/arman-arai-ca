@@ -3,7 +3,7 @@ import { Analytics } from "@vercel/analytics/next";
 import { ANALOGUE, ARMAN, DOCUMENTARY, DREAMY_FINE_ART, EDITORIAL, FILM, type Photo } from "@/lib/images";
 import type { WeddingCity } from "@/lib/ads/city-wedding-pages";
 import { GALLERIES } from "@/lib/galleries";
-import { ALBUM_SPECS, ENTRY, SITE, TIERS } from "@/lib/site";
+import { ALBUM_SPECS, ENTRY, SITE, TIERS, type Tier } from "@/lib/site";
 import { proofByN, proofSrc } from "@/lib/reviews";
 import WeddingCalendar, { BookingLink, BookingNavigation } from "../2728-cc-weddings/wedding-calendar";
 import AlbumBrowser, { type LandingAlbum } from "./AlbumBrowser";
@@ -62,10 +62,22 @@ type CityWeddingLandingProps = {
   theme?: "light" | "dark";
   pageSlug?: string;
   introOffer?: IntroWeddingOffer;
+  visibleTierSlugs?: string[];
+  coverageSummary?: string;
+  tierOverrides?: Record<string, Partial<Tier> & { hoursLabel?: string }>;
 };
 
-export default function CityWeddingLanding({ city, theme = "light", pageSlug, introOffer }: CityWeddingLandingProps) {
+const coverageLabel = (hours: number[]) => {
+  const uniqueHours = [...new Set(hours)].sort((a, b) => a - b);
+  if (uniqueHours.length === 1) return `${uniqueHours[0]} hours`;
+  return `${uniqueHours.slice(0, -1).join(", ")} or ${uniqueHours.at(-1)} hours`;
+};
+
+export default function CityWeddingLanding({ city, theme = "light", pageSlug, introOffer, visibleTierSlugs, coverageSummary, tierOverrides }: CityWeddingLandingProps) {
   const page = `wedding-photography/${pageSlug ?? `${city.slug}${theme === "dark" ? "-dark" : ""}`}`;
+  const visibleTiers = (visibleTierSlugs ? TIERS.filter((tier) => visibleTierSlugs.includes(tier.slug)) : TIERS)
+    .map((tier) => ({ ...tier, ...tierOverrides?.[tier.slug] }));
+  const coverageHours = coverageSummary ?? coverageLabel([...(introOffer ? [introOffer.hours] : []), ...visibleTiers.map((tier) => tier.hours)]);
   const questions = introOffer
     ? [
         ...questionsFor(city).slice(0, 4),
@@ -75,7 +87,7 @@ export default function CityWeddingLanding({ city, theme = "light", pageSlug, in
         ],
         [
           "What is included, and what costs extra?",
-          `${introOffer.name} includes photography by me, planning, a full edited online gallery and print permission. Essential and the larger collections also include vertical social reels and film prints for your guests. Engagement sessions, a second photographer, filmmaking, albums and extra coverage depend on the collection or can be added separately. Prices are in Canadian dollars before tax. Local Vancouver travel is included; longer travel is quoted before you book.`,
+          `${introOffer.name} includes six continuous hours photographed by me, a 60-minute engagement photoshoot, planning, 400+ edited photographs, a 30-image preview within 48 hours, a private online gallery and print permission. Signature adds a feature film, social reels and film prints. Photo + Film adds 10 to 12 hours of coverage, a dedicated filmmaker and a printed album. Extra coverage and longer travel are quoted separately. Prices are in Canadian dollars before tax. Local Vancouver and Lower Mainland travel is included.`,
         ],
         ...questionsFor(city).slice(5),
       ]
@@ -94,7 +106,7 @@ export default function CityWeddingLanding({ city, theme = "light", pageSlug, in
           <p className={styles.eyebrow}>Your people. Your day. Your kind of photographs.</p>
           <h1 id="hero-title">{city.name} <br />wedding <br /><em>photography.</em></h1>
           <p className={styles.heroIntro}>Beautiful portraits. All the feeling in between.<br />And time to actually enjoy your wedding.</p>
-          <p className={styles.starting}>Collections from <strong>{money(startingPrice)}</strong><span>{introOffer ? "4, 6, 8 or 10 hours" : "6, 8 or 10 hours"} · CAD before tax · travel extra</span></p>
+          <p className={styles.starting}>Collections from <strong>{money(startingPrice)}</strong><span>{coverageHours} · CAD before tax · {introOffer ? "local travel included" : "travel extra"}</span></p>
           <div id="check-date" className={styles.dateCheckPanel}><DateCheck city={city.name} wherePlaceholder={`Your venue, or ${city.name} area`} page={`/${page}`} classes={styles} instantAvailability replyTiming="See availability, then choose a time for a free video call." /></div>
           <p className={styles.directCall}>Prefer to talk first? <BookingLink placement={`${city.slug}_hero_direct`}>Book a free consultation ↗</BookingLink></p>
         </div>
@@ -129,13 +141,13 @@ export default function CityWeddingLanding({ city, theme = "light", pageSlug, in
           <h3>{introOffer.name}</h3><p className={styles.price}>{money(introOffer.price)}<span>CAD before tax</span></p>
           <ul>{introOffer.items.map((item) => <li key={item}>{item}</li>)}</ul>
           <BookingLink className={styles.collectionLink} placement={`${city.slug}_collection_${introOffer.slug}`}>Talk about {introOffer.name} <span aria-hidden="true">↗</span></BookingLink>
-        </article>}{TIERS.map((tier) => <article key={tier.slug} className={tier.slug === "signature" ? styles.featuredPrice : styles.priceCard}>
-          <div className={styles.tierHeader}><p>{tier.hours} hours of coverage</p><span>{TIER_STRAP[tier.slug] ?? tier.strap}</span></div>
+        </article>}{visibleTiers.map((tier) => <article key={tier.slug} className={tier.slug === "signature" ? styles.featuredPrice : styles.priceCard}>
+          <div className={styles.tierHeader}><p>{tier.hoursLabel ?? `${tier.hours} hours of coverage`}</p><span>{TIER_STRAP[tier.slug] ?? tier.strap}</span></div>
           <h3>{tier.name}</h3><p className={styles.price}>{money(tier.price)}<span>CAD before tax</span></p>
           <ul><li>{tier.images}</li><li>{tier.preview}</li><li>{tier.delivery}</li>{tier.film && <li>{tier.film}</li>}{tier.rolls && <li>{tier.rolls}</li>}{tier.engagement && <li>{tier.engagement}</li>}{tier.album.includes("included") && <li>{ALBUM_SPECS.signature.size} album · {ALBUM_SPECS.signature.pages}</li>}</ul>
           <BookingLink className={styles.collectionLink} placement={`${city.slug}_collection_${tier.slug}`}>Talk about {tier.name} <span aria-hidden="true">↗</span></BookingLink>
         </article>)}</div>
-        <div className={styles.included}><h3>Always included.</h3><p>{introOffer ? "Photography by Arman. Timeline and family-photo planning. A full edited gallery with print permission. Essential and the larger collections also include social reels in the first week and film prints for your guests on the night." : "Photography by Arman. Timeline and family-photo planning. A full edited gallery with print permission. Social reels in the first week. Film prints for your guests on the night."}</p></div>
+        <div className={styles.included}><h3>Always included.</h3><p>{introOffer ? "A 60-minute engagement photoshoot. Photography by Arman. Timeline and family-photo planning. A full edited gallery with print permission. Signature and Photo + Film also include social reels in the first week and film prints for your guests on the night." : "Photography by Arman. Timeline and family-photo planning. A full edited gallery with print permission. Social reels in the first week. Film prints for your guests on the night."}</p></div>
         <p className={styles.travel}>{introOffer ? "Local travel within Vancouver and the Lower Mainland is included with Short Story. Longer travel is quoted separately and agreed before you book. " : "Travel kept lean. Any travel is quoted separately and agreed before you book. "}All prices are in Canadian dollars before tax.</p>
       </section>
 

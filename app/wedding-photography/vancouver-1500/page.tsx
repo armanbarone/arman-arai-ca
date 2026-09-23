@@ -9,20 +9,21 @@ const shortStory: IntroWeddingOffer = {
   slug: "short-story",
   name: "Short Story",
   price: 1500,
-  hours: 4,
-  strap: "A focused ceremony and portrait collection",
+  hours: 6,
+  strap: "Six hours. From the ceremony into the celebration.",
   items: [
-    "Photography by Arman",
-    "Planning call and timeline guidance",
-    "Ceremony, family photographs and couple portraits",
-    "Full edited high-resolution online gallery",
-    "Preview within five days",
-    "Personal printing rights",
+    "6 continuous hours photographed by Arman",
+    "60-minute engagement photoshoot",
+    "One planning call, timeline guidance and a family-photo plan",
+    "400+ edited high-resolution photographs with print permission",
+    "30-image preview within 48 hours",
+    "Full private online gallery within 2 weeks",
+    "Local travel within Vancouver and the Lower Mainland",
     "Sunday to Thursday availability",
     "Friday or Saturday dates within 60 days, subject to availability",
     "Not offered on peak Saturdays from May through October",
   ],
-  availability: "Short Story is available Sunday through Thursday. Friday and Saturday dates can be booked within 60 days when the date remains open. It is not available on peak Saturdays from May through October. For six hours or more, choose Essential or a larger collection.",
+  availability: "Short Story is available Sunday through Thursday. Friday and Saturday dates can be booked within 60 days when the date remains open. It is not available on peak Saturdays from May through October. It is best suited to one-location weddings. For eight hours, choose Signature; for 10 to 12 hours with a dedicated filmmaker, choose Photo + Film.",
 };
 
 export const metadata = cityWeddingMetadata(route.city, pagePath, {
@@ -31,5 +32,18 @@ export const metadata = cityWeddingMetadata(route.city, pagePath, {
 });
 
 export default function Vancouver1500Page() {
-  return <CityWeddingLanding city={route.city} theme="dark" pageSlug="vancouver-1500" introOffer={shortStory} />;
+  return <CityWeddingLanding
+    city={route.city}
+    theme="dark"
+    pageSlug="vancouver-1500"
+    introOffer={shortStory}
+    visibleTierSlugs={["signature", "photo-film"]}
+    coverageSummary="6, 8 or 10 to 12 hours"
+    tierOverrides={{
+      "photo-film": {
+        hoursLabel: "10 to 12 hours of photography and film",
+        images: "800+ edited images",
+      },
+    }}
+  />;
 }

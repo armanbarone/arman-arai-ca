@@ -527,7 +527,10 @@ export const TERMS = {
 
 /* ── Add-ons ───────────────────────────────────────────────────────────────*/
 
-export type Addon = { name: string; price: number; note: string; group: string };
+/* `priceMax` is set only where the honest answer is a range rather than a
+   figure, which so far is the framed print, where the size and the frame move
+   the number. Everything else stays a single number on purpose. */
+export type Addon = { name: string; price: number; priceMax?: number; note: string; group: string };
 
 export const ADDONS: Addon[] = [
   { group: "Coverage", name: "Extra coverage hour", price: 400, note: "One more hour on the day, editing included. Booked in advance and continuous with the collection." },
@@ -536,13 +539,18 @@ export const ADDONS: Addon[] = [
   { group: "Coverage", name: "Rehearsal dinner or welcome event", price: 1000, note: "Up to 3 hours on another day. A tea ceremony, a mehndi or a rehearsal dinner." },
   { group: "Sessions", name: "Engagement session", price: 450, note: "60 minutes, 50+ edited images. Included in Signature and above. Travel is separate only when the session requires its own trip." },
   { group: "Sessions", name: "Destination welcome session", price: 550, note: "45 minutes, when I am already on location. Not a standalone fly-out." },
+  { group: "Sessions", name: "Anniversary session", price: 400, note: "60 minutes, 40+ edited images, bookable any time in the twelve months after the wedding. The same two people, a year of marriage later." },
   { group: "Prints", name: `Signature album, ${ALBUM_SPECS.signature.size}`, price: 1200, note: `${ALBUM_SPECS.signature.pages}, ${ALBUM_SPECS.signature.paper}, ${ALBUM_SPECS.signature.cover}. Included in Complete and Photo + Film.` },
   { group: "Prints", name: `Heirloom album, ${ALBUM_SPECS.heirloom.size}`, price: 1800, note: `${ALBUM_SPECS.heirloom.pages}, ${ALBUM_SPECS.heirloom.paper}, ${ALBUM_SPECS.heirloom.cover}. The upgrade from the Signature album.` },
   { group: "Prints", name: "Parent album", price: 550, note: `${ALBUM_SPECS.parent.size}, ${ALBUM_SPECS.parent.pages}, ${ALBUM_SPECS.parent.paper}, ${ALBUM_SPECS.parent.cover}. Priced per copy.` },
+  { group: "Prints", name: "Fine-art print box", price: 400, note: "20 to 30 archival prints at 5×7 or 6×8 inches in a covered clamshell box, sequenced but loose, so they can be handed around a table. For the people who want the photographs in hand without an album." },
+  { group: "Prints", name: "Large framed fine-art print", price: 300, priceMax: 900, note: "One frame printed large, matted and framed, priced by size and frame. Chosen from the finished gallery rather than guessed at before the wedding." },
   { group: "Film and motion", name: "Dedicated filmmaker, 8 hours", price: 2900, note: "A dedicated filmmaker and a 3 to 5 minute highlight film, added to any collection. This is what Photo + Film already carries." },
   { group: "Film and motion", name: "Extra filmmaking hour", price: 250, note: "Booked in advance, alongside the filmmaker's eight." },
   { group: "Film and motion", name: "Full ceremony and speeches films", price: 650, note: "The whole ceremony and the whole speeches, edited long. Needs a multi-camera and audio plan confirmed in advance." },
+  { group: "Film and motion", name: "One more roll of film", price: 175, note: "A single extra roll, processing and scans included. No guaranteed frame count." },
   { group: "Film and motion", name: "Two-roll film add-on", price: 300, note: "Two more rolls, processing and scans. No guaranteed frame count." },
+  { group: "Film and motion", name: "Film Story, four rolls", price: 500, note: "Four more rolls carried through the whole day rather than saved for the portraits, processed and scanned. The cheapest roll on this list, because shooting film properly means shooting more of it." },
   { group: "Film and motion", name: "Drone add-on", price: 350, note: "Aerial stills and clips where it is legal and safe. Weather, venue rules and airspace can all cancel it on the day." },
   { group: "Delivery", name: "Seven-day gallery rush", price: 750, note: "Capacity-limited. I will not sell this every week." },
 ];

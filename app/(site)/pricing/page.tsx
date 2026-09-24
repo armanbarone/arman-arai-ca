@@ -32,6 +32,11 @@ export const metadata: Metadata = {
 const money = (n: number | null) =>
   n === null ? "On request" : `C$${n.toLocaleString("en-CA")}`;
 
+// Add-ons are one figure each except the framed print, where the size and the
+// frame genuinely move the number, so that one renders as a range.
+const addonPrice = (a: { price: number; priceMax?: number }) =>
+  a.priceMax ? `${money(a.price)}–${a.priceMax.toLocaleString("en-CA")}` : money(a.price);
+
 // One photograph per collection, so the page is not three columns of text.
 // Photo + Film gets the motion frame: the tier sells movement, so the card should show it.
 const TIER_PHOTO = [DREAMY_FINE_ART[6], EDITORIAL[5], FILM[5], FILM_STRIP[4]];
@@ -297,7 +302,7 @@ Every figure below is the whole price of that collection, in every city I work i
                   {ADDONS.filter((a) => a.group === group).map((a) => (
                     <li key={a.name} className="py-4 flex flex-col sm:flex-row sm:items-baseline gap-1.5 sm:gap-6">
                       <span className="font-serif text-cream text-[1.1rem] sm:w-64 shrink-0">{a.name}</span>
-                      <span className="text-rose text-[0.92rem] tracking-wide sm:w-24 shrink-0">{money(a.price)}</span>
+                      <span className="text-rose text-[0.92rem] tracking-wide sm:w-24 shrink-0 whitespace-nowrap">{addonPrice(a)}</span>
                       <span className="text-slate text-[0.88rem] leading-relaxed">{a.note}</span>
                     </li>
                   ))}

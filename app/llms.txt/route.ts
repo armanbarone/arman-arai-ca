@@ -35,7 +35,10 @@ export function GET() {
     ].join("\n"),
   ).join("\n\n");
 
-  const addons = ADDONS.map((a) => `- ${a.name}: ${money(a.price)}. ${a.note}`).join("\n");
+  const addons = ADDONS.map(
+    (a) =>
+      `- ${a.name}: ${money(a.price)}${a.priceMax ? ` to ${money(a.priceMax)}, by size` : ""}. ${a.note}`,
+  ).join("\n");
 
   const journal = posts
     .map((p) => `- [${p.title}](${SITE.url}/blog/${p.slug}) — ${p.excerpt}`)

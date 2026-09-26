@@ -741,6 +741,114 @@ export const posts: BlogPost[] = [
 `,
   },
 
+  {
+    slug: "vancouver-engagement-photo-locations",
+    title: "Where to Take Engagement Photos Around Vancouver",
+    subtitle:
+      "Fifteen locations from Crescent Beach to the Seymour treeline, chosen by season rather than by convenience, plus the free passes you now have to book before you go.",
+    date: "2026-09-25",
+    dateDisplay: "September 25, 2026",
+    readTime: "12 min read",
+    coverImage: `${CDN}/blog/vancouver-engagement-photo-locations/cover-seawall-skyline.webp`,
+    coverAlt:
+      "Couple on the Stanley Park seawall at sunset with the downtown Vancouver towers and the North Shore mountains behind them",
+    excerpt:
+      "Fifteen engagement photo locations around Vancouver, organised by the season each one is actually good in, with the passes and permits that now apply.",
+    topic: "Places",
+    city: "vancouver",
+    body: `
+<p><strong>An engagement session is the one shoot where you get to choose the location properly</strong>, because it is the only one with nothing else attached to it. No guests are driving to it. No caterer is holding dinner. Nobody is standing in a dress they cannot sit down in. If the forecast is wrong on Thursday you move it to Sunday, and the only two people inconvenienced are the two people in the photographs.</p>
+<p>That changes the whole basis of the decision. On a wedding day I choose a location by shelter, parking and how far you can walk in those shoes. For an engagement session almost none of that applies, so you can choose by what the place actually looks like in the month you are standing in it. These fifteen are the ones around Vancouver that repay that freedom, with the honest constraint on each and the passes that now apply before you drive out.</p>
+
+<h2>An engagement session is not a scaled-down wedding day</h2>
+<figure><img src="${CDN}/cities/vancouver/work/35-vancouver-skyline-dogs-balloons.webp" alt="Bride and groom walking two dogs on the grass with the downtown Vancouver skyline behind"><figcaption>The wedding day is the constrained shoot. The engagement session is the free one, and most couples get that backwards.</figcaption></figure>
+<p>Couples usually treat the engagement session as a rehearsal and pick somewhere near the venue. That is the wrong instinct, because it imports every constraint of the wedding day into the one shoot that does not have them.</p>
+<p><strong>The engagement session can move.</strong> That single fact is worth more than any location on this list. It means you can book a weekday at the end of October, watch the forecast for four days, and go on the grey damp morning that makes a rainforest look the way a rainforest is supposed to look. It means sunrise is available, which it almost never is on a wedding day. It means an hour of driving each way is a reasonable thing to spend.</p>
+<p>So the sorting question is not "where is convenient". It is <strong>"what month is it, and what does that month do well here"</strong>. Vancouver has a genuinely short season for fields and flowers, a long and reliable season for forest and rain, and a narrow window at altitude where there is snow but the road is still pleasant. Pick the place that matches the month and this city is very hard to beat. Pick the place you saw on a feed in July and shoot it in January and you will wonder why it looks nothing like the picture.</p>
+
+<h2>Golden Ears Provincial Park, for scale without a hike</h2>
+<figure><img src="${CDN}/blog/vancouver-engagement-photo-locations/golden-ears-alouette-lake-driftwood.webp" alt="Couple standing among driftwood on the gravel shore of Alouette Lake in Golden Ears Provincial Park at sunset"><figcaption>Alouette Lake gives you a wall of mountain on both sides from a car park, which is rare.</figcaption></figure>
+<p>Alouette Lake gives you the thing most couples are actually asking for when they say they want mountains: steep forested walls on both sides, a long sheet of water, and a gravel shore full of bleached driftwood you can put in the foreground. You get all of it a short walk from a parking lot, with no elevation gained.</p>
+<p><strong>The constraint is the day-use pass.</strong> BC Parks requires a free vehicle pass at the signed lots here from Friday to Monday and on holidays between 15 May and 7 September, and it is not required after 3:30pm. That last clause is the useful one: <strong>an evening session in summer skips the pass entirely</strong>, and evening is when this lake is at its best anyway.</p>
+
+<h2>Blackie Spit, for the biggest sky in the Lower Mainland</h2>
+<figure><img src="${CDN}/blog/vancouver-engagement-photo-locations/blackie-spit-tidal-flat-blue-hour.webp" alt="Couple walking on the wet tidal flat at Blackie Spit at blue hour with their reflection in the water"><figcaption>At low tide the flats at Crescent Beach turn into a mirror the width of the bay.</figcaption></figure>
+<p>Blackie Spit at Crescent Beach in Surrey is flat, low and open, which in a region full of vertical scenery is exactly why it is useful. The horizon sits low, the sky takes up most of the frame, and at low tide the flats hold a thin sheet of water that reflects the entire sky.</p>
+<p><strong>Check the tide table before you set the time, not after.</strong> This is the one location here where the tide matters more than the light. At high water it is a pleasant ordinary beach. At low water twenty minutes after sunset it is the best blue hour in the Lower Mainland, and the two states are a few hours apart on the same afternoon.</p>
+
+<h2>Stave Lake, for something that looks nothing like a park</h2>
+<figure><img src="${CDN}/blog/vancouver-engagement-photo-locations/stave-lake-bleached-stumps.webp" alt="Couple standing close together among bleached tree stumps on the grey shoreline of Stave Lake"><figcaption>A drawdown reservoir leaves bleached stumps standing in the shallows. It is strange and it photographs beautifully.</figcaption></figure>
+<p>Stave Lake out past Mission is a reservoir, and when the water is drawn down it leaves a wide pale shoreline of silt and gravel with bleached stumps standing in the shallows. It reads as slightly post-apocalyptic and it is the least generic backdrop within reach of the city.</p>
+<p><strong>It is not pretty in the ordinary sense and that is the point.</strong> Couples who want soft and romantic should go somewhere else on this list. Couples who want a frame nobody else on their feed has should go here on a flat grey day, which is when the stumps and the silt read best.</p>
+
+<h2>Cleveland Dam, for the Lions in four minutes</h2>
+<figure><img src="${CDN}/blog/vancouver-engagement-photo-locations/cleveland-dam-lookout-the-lions.webp" alt="Couple at the lookout railing above Capilano Lake with the twin peaks of the Lions across the valley"><figcaption>The shortest walk to a real mountain view anywhere on the North Shore.</figcaption></figure>
+<p>The lookout above Capilano Lake frames the twin peaks of the Lions almost perfectly, and it takes about four minutes from the car. There is no trail, no scramble and no change of shoes, which makes it the best location in the region for anyone with a mobility limit or a low tolerance for effort.</p>
+<p><strong>It is also the most weather-dependent place here.</strong> The whole value is the view up the valley, and on a low-cloud day there is no view up the valley. This is a location to hold loosely and go to on a clear cold afternoon, which is precisely the kind of decision an engagement session lets you make and a wedding day does not.</p>
+
+<h2>Pitt Lake, for mist and reeds at sunrise</h2>
+<figure><img src="${CDN}/blog/vancouver-engagement-photo-locations/pitt-lake-grant-narrows-reeds.webp" alt="Couple dancing on a dyke path among tall golden reeds at Pitt Lake with mist on the water and mountains behind"><figcaption>Grant Narrows in autumn, when the mist sits on the water until the sun clears the ridge.</figcaption></figure>
+<p>Grant Narrows at the south end of Pitt Lake is a wide flat wetland of tall golden marsh grass with mountains standing straight up out of the water at the far end. In autumn the mist sits on the surface until the sun gets over the ridge, and the dyke paths mean you can walk out into the middle of all that on level ground.</p>
+<p><strong>This one is worth getting up for.</strong> It is the strongest sunrise location on this list and a fairly ordinary midday one. If you are not willing to meet at first light, choose somewhere else and save yourself the drive.</p>
+
+<h2>Lighthouse Park, for granite, arbutus and rain</h2>
+<figure><img src="${CDN}/blog/vancouver-engagement-photo-locations/lighthouse-park-arbutus-granite.webp" alt="Couple standing close on mossy granite among arbutus trunks at Lighthouse Park after rain"><figcaption>Peeling red arbutus, old-growth fir and open rock, all in the same short walk.</figcaption></figure>
+<p>Lighthouse Park in West Vancouver has the best combination of old-growth forest and open granite anywhere near the city, with peeling red arbutus trunks that give you a foreground unlike anything else in the region. The rock runs down into the sea and the trees come almost all the way to it.</p>
+<p><strong>It is better in the rain than in the sun</strong>, which is a genuinely useful thing to know in a city that is wet for half the year. Wet granite, wet moss and wet arbutus bark all gain colour. The trail to the good rock takes ten to fifteen minutes over roots and a short descent, so wear something you can actually walk in and carry the other shoes.</p>
+
+<h2>Vedder River, for open gravel and no people</h2>
+<figure><img src="${CDN}/blog/vancouver-engagement-photo-locations/vedder-river-gravel-bars.webp" alt="Couple seen from behind walking across the pale gravel bars of the Vedder River in Chilliwack"><figcaption>Braided channels, bare cottonwoods and enough room that nobody walks through the frame.</figcaption></figure>
+<p>The Vedder in Chilliwack is a braided river running over wide pale gravel bars, with bare cottonwoods on the banks and low mountains close behind. The bars are big enough that you can walk right out into the middle of the river bed, which gives a sense of space that the forest locations cannot.</p>
+<p><strong>The real argument for it is emptiness.</strong> It is far enough east that you will mostly have it to yourselves, and on a session where you already feel self-conscious, having nobody walk through the back of the frame is worth more than most people expect.</p>
+
+<h2>Pacific Spirit Regional Park, for fog</h2>
+<figure><img src="${CDN}/blog/vancouver-engagement-photo-locations/pacific-spirit-fog-trail.webp" alt="Couple walking hand in hand away down a wide forest trail in heavy fog at Pacific Spirit Regional Park"><figcaption>Fog does the one thing a forest normally will not: it separates the trunks.</figcaption></figure>
+<p>Pacific Spirit is a proper second-growth rainforest with nothing man-made in most directions, ten minutes from Kitsilano. Straight trunks, sword fern, wide soft trails that let you photograph down their length.</p>
+<p><strong>Go when it is foggy.</strong> A forest in flat light is a wall of green and a forest in direct sun is unrecoverable contrast, but fog separates the trunks into layers and turns the far end of a trail into nothing. It is the single best weather condition available in this city and it is free. <strong>Note that Metro Vancouver treats commercial photography in its regional parks as something that can require a permit</strong>, which is a conversation I have before your date rather than on it.</p>
+
+<h2>Campbell Valley Regional Park, for autumn colour</h2>
+<figure><img src="${CDN}/blog/vancouver-engagement-photo-locations/campbell-valley-cedar-fence-autumn.webp" alt="Couple leaning on a split-rail cedar fence at Campbell Valley Regional Park with yellow maple leaves behind them"><figcaption>Bigleaf maples, split-rail fences and low October sun. A three-week window.</figcaption></figure>
+<p>Campbell Valley in Langley is gentle lowland country: bigleaf maples that turn properly yellow, split-rail cedar fences, hayfield edges and quiet trails. It is the most pastoral location within reach of Vancouver and the least dramatic, which suits some couples exactly.</p>
+<p><strong>Its season is about three weeks long.</strong> Mid-October into early November is when the maples are worth the drive and the rest of the year it is a nice ordinary park. <strong>Metro Vancouver states plainly that commercial photography at Campbell Valley requires a permit</strong>, so this is one to organise in advance rather than turn up to.</p>
+
+<h2>Mount Seymour, for snow that is half an hour away</h2>
+<figure><img src="${CDN}/blog/vancouver-engagement-photo-locations/mount-seymour-snow-slope.webp" alt="Couple playing in deep snow below snow-laden hemlocks on Mount Seymour"><figcaption>Snow-plastered hemlocks, deep powder and a road that goes all the way up.</figcaption></figure>
+<p>Seymour is the quietest of the three North Shore mountains and the one that feels most genuinely subalpine near the top. In winter the hemlocks get completely plastered and the snow is deep enough to play in, and unlike the other two you drive to it rather than buying a ticket.</p>
+<p><strong>Dress for it properly and plan for the pictures to be about the cold rather than in spite of it.</strong> The frames that work up here have people laughing at how cold they are. The ones that fail are the ones where somebody is trying to look serene in a coat that is not warm enough.</p>
+
+<h2>Grouse Mountain, for the city from above</h2>
+<figure><img src="${CDN}/blog/vancouver-engagement-photo-locations/grouse-mountain-city-below.webp" alt="Couple standing at a snowy viewing edge on Grouse Mountain looking out over Vancouver and the water at sunset"><figcaption>Alpine snow and the whole city in one frame, for the price of two gondola tickets.</figcaption></figure>
+<p>Grouse puts snow and the entire city in the same photograph, which no other accessible location here does. The view runs from the inlet across downtown to the Gulf Islands, and at the end of a winter afternoon the city goes blue while the sky over the water stays warm.</p>
+<p><strong>It is the only location on this list with an admission price.</strong> Reaching the top means the gondola, and the listed adult ticket is C$89 with a Lower Mainland rate of C$74, so budget for two before you decide. The alternative is Cypress, which is a drive rather than a ticket and gets you above the cloud on the right evening for nothing.</p>
+
+<h2>Downtown Vancouver, for a session that looks like a city</h2>
+<figure><img src="${CDN}/blog/vancouver-engagement-photo-locations/downtown-gastown-alley-night.webp" alt="Couple in a brick alley in Gastown at night lit by warm street lamps and neon, with wet cobbles"><figcaption>Gastown after dark. Wet brick and mixed light, which is a different photograph entirely.</figcaption></figure>
+<p>Vancouver has a real nineteenth and early twentieth century core around Gastown and the old financial district: stone cornices, painted brick, fire escapes and cobbles. It is the only location here that says city rather than coast, and for couples whose life together actually happens downtown it is the honest choice.</p>
+<p><strong>Shoot it at night, not in the afternoon.</strong> In daylight it is a nice old street. After dark, with wet cobbles and a mix of warm street lamps and neon, it becomes a genuinely different photograph, and rain helps rather than hurts. It is also the one location here that is completely immune to a bad forecast.</p>
+
+<h2>Lynn Canyon, for moss and green water</h2>
+<figure><img src="${CDN}/blog/vancouver-engagement-photo-locations/lynn-canyon-mossy-boulder.webp" alt="Couple sitting together on a moss-covered boulder on the floor of Lynn Canyon beside green water"><figcaption>The canyon floor, rather than the suspension bridge everybody photographs.</figcaption></figure>
+<p>Everybody photographs the suspension bridge and the better frames are underneath it. Down on the canyon floor there are broad moss-covered boulders, clear green pools and enormous cedars, and the light is soft all day because very little of it gets in.</p>
+<p><strong>That low light is the constraint.</strong> It is dark down there, so this wants to happen with hours in hand rather than at the end of the day, and it wants shoes with grip because the rock is permanently wet. Go in spring when the water is running hard and the moss is at its most absurd.</p>
+
+<h2>Buntzen Lake, for stillness</h2>
+<figure><img src="${CDN}/blog/vancouver-engagement-photo-locations/buntzen-lake-floating-dock.webp" alt="Couple on the floating dock at Buntzen Lake in early morning mist with forested ridges behind"><figcaption>Early morning on the floating dock, before the wind puts a texture on the water.</figcaption></figure>
+<p>Buntzen is a narrow lake held between steep forested ridges, with a coarse beach and a floating dock that gives you a strong line to build a frame around. Early in the morning the water is completely still and the reflection is clean, and the mist tends to sit on it until the sun gets over the ridge.</p>
+<p><strong>Summer now needs a pass and a time slot.</strong> BC Hydro runs free but mandatory vehicle parking passes here from 14 May to 7 September, booked for a morning, afternoon or all-day block, and the gates open at 8am with a closing time that moves from about 4:30pm in winter to as late as 8pm in summer. Book the morning block and you get the still water as well as the parking space.</p>
+
+<h2>Stanley Park, for old growth ten minutes from a hotel</h2>
+<figure><img src="${CDN}/blog/vancouver-engagement-photo-locations/stanley-park-old-growth-cedar.webp" alt="Couple standing small at the base of an enormous old-growth cedar in Stanley Park looking up the trunk"><figcaption>The interior, not the seawall. The trees are the reason to be there.</figcaption></figure>
+<p>The interior trails of Stanley Park hold genuine old-growth cedar and fir with trunks wide enough that two people standing at the base read as very small, and it is ten minutes from a downtown hotel lobby. For out-of-town couples with one free afternoon, nothing else in Canada offers that trade.</p>
+<p><strong>The Vancouver Park Board does not require a permit to take wedding photographs in a city park</strong>, unless you bring setup with you, at which point it becomes a photography permit. A ceremony is a different matter and does need one. The rules are at <a href="https://vancouver.ca/doing-business/park-wedding-permit.aspx" rel="nofollow">vancouver.ca</a>, and for an engagement session with two people and a camera you are fine.</p>
+
+<h2>What it costs, and when to actually do it</h2>
+<figure><img src="${CDN}/cities/vancouver/work/32-pink-cherry-blossom-street.webp" alt="Couple walking a Vancouver street under pink cherry blossom"><figcaption>Blossom is a two-week location. Almost everything in this city is a season rather than a place.</figcaption></figure>
+<p><strong>An engagement session is C$450 on its own, 60 minutes and 50 or more edited images, and it is already included in the Signature, Complete and Photo + Film collections.</strong> If you are booking one of those, the session is not an extra line on the invoice and there is no reason to skip it. Travel is separate only when the session needs its own trip, which for everything on this list it does not.</p>
+<p>Book it six to nine months before the wedding rather than six weeks. That gives you the season you want rather than the season you are left with, and it means the photographs exist in time to be useful for a save-the-date. <strong>It also means the first time you are photographed together is not the morning of your wedding</strong>, which is the actual reason the session is worth doing. An hour of being looked at through a lens teaches you both far more than any amount of reassurance from me.</p>
+<p>The wedding-day version of this question, where shelter and parking and walking distance start to matter again, is a different list and it is <a href="/blog/vancouver-wedding-photo-locations">here</a>. The collections are on the <a href="/pricing">pricing page</a>, the region in detail sits on the <a href="/vancouver-wedding-photographer">Vancouver page</a>, and passes and permits change from year to year, so I confirm the current rule in writing for your specific location before the date rather than trusting a blog post, including this one. <a href="/contact">Send me the month</a> and I will tell you which three of these are actually worth your time in it.</p>
+`,
+  },
+
   /* ────────────────────────────────────────── PRINCE EDWARD COUNTY ── */
   {
     slug: "prince-edward-county-wedding-venues",

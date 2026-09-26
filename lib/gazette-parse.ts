@@ -44,7 +44,12 @@ export function parseGazetteBody(html: string): GzBody {
   return { introParas, sections };
 }
 
+/* Page words for the section ornament. A long location round-up runs well past
+   fourteen sections, and a missing entry renders a bare "Page" with nothing
+   after it, so this list stays ahead of the longest post. */
 export const ORDINALS = [
   "one", "two", "three", "four", "five", "six", "seven",
   "eight", "nine", "ten", "eleven", "twelve", "thirteen", "fourteen",
+  "fifteen", "sixteen", "seventeen", "eighteen", "nineteen", "twenty",
+  "twenty-one", "twenty-two", "twenty-three", "twenty-four",
 ];

@@ -712,7 +712,7 @@ export const posts: BlogPost[] = [
 <h2>Gardens, for a short window and a guaranteed result</h2>
 <figure><img src="${CDN}/cities/vancouver/locations/nitobe-memorial-garden/01.webp" alt="Couple on a stone path in the Nitobe Memorial Garden at UBC"><figcaption>Nitobe is small, composed and booked. It rewards a plan and punishes improvisation.</figcaption></figure>
 <p><strong>Nitobe Memorial Garden</strong> and the <strong>UBC Botanical Garden</strong> are the two most composed spaces in the region, both operated by UBC and both requiring a booking. Nitobe in particular is a designed Japanese garden where every sightline is deliberate, which means twenty minutes there produces more usable frames than an hour somewhere wild.</p>
-<p><strong>Deer Lake Park</strong> in Burnaby is the opposite proposition: free, open, unbooked, with a boathouse, a meadow and a lake, all within a short walk of one another. It is the best value location in the region and the one I recommend most often to couples getting married in Burnaby or New Westminster.</p>
+<p><strong>Deer Lake Park</strong> in Burnaby is the opposite proposition: open and unfussy, with a boathouse, a meadow and a lake, all within a short walk of one another. It is the one I recommend most often to couples getting married in Burnaby or New Westminster. <strong>It is not, however, free for me.</strong> Burnaby's bylaw prices professional photography separately from ordinary park use, so I clear it with the city rather than simply turning up, and that is handled as part of the booking.</p>
 
 <h2>The Sea-to-Sky, if you have the hours</h2>
 <figure><img src="${CDN}/cities/vancouver/locations/porteau-cove/01.webp" alt="Couple on the shore at Porteau Cove with the fjord behind them"><figcaption>Porteau Cove is forty minutes up the highway and the first place the landscape changes completely.</figcaption></figure>
@@ -745,20 +745,20 @@ export const posts: BlogPost[] = [
     slug: "vancouver-engagement-photo-locations",
     title: "Where to Take Engagement Photos Around Vancouver",
     subtitle:
-      "Fifteen locations from Crescent Beach to the Seymour treeline, chosen by season rather than by convenience, plus the free passes you now have to book before you go.",
+      "Twenty-three locations from Crescent Beach to the Callaghan Valley, chosen by the season each one is actually good in, plus what every landowner charges a photographer to stand there.",
     date: "2026-09-25",
     dateDisplay: "September 25, 2026",
-    readTime: "12 min read",
+    readTime: "18 min read",
     coverImage: `${CDN}/blog/vancouver-engagement-photo-locations/cover-seawall-skyline.webp`,
     coverAlt:
       "Couple on the Stanley Park seawall at sunset with the downtown Vancouver towers and the North Shore mountains behind them",
     excerpt:
-      "Fifteen engagement photo locations around Vancouver, organised by the season each one is actually good in, with the passes and permits that now apply.",
+      "Twenty-three engagement photo locations around Vancouver, organised by season, with the fall-colour peak weeks, the winter snow elevations, and the permit fee for each park.",
     topic: "Places",
     city: "vancouver",
     body: `
 <p><strong>An engagement session is the one shoot where you get to choose the location properly</strong>, because it is the only one with nothing else attached to it. No guests are driving to it. No caterer is holding dinner. Nobody is standing in a dress they cannot sit down in. If the forecast is wrong on Thursday you move it to Sunday, and the only two people inconvenienced are the two people in the photographs.</p>
-<p>That changes the whole basis of the decision. On a wedding day I choose a location by shelter, parking and how far you can walk in those shoes. For an engagement session almost none of that applies, so you can choose by what the place actually looks like in the month you are standing in it. These fifteen are the ones around Vancouver that repay that freedom, with the honest constraint on each and the passes that now apply before you drive out.</p>
+<p>That changes the whole basis of the decision. On a wedding day I choose a location by shelter, parking and how far you can walk in those shoes. For an engagement session almost none of that applies, so you can choose by what the place actually looks like in the month you are standing in it. These twenty-three are the ones around Vancouver that repay that freedom, with the honest constraint on each, the season it actually works in, and what the landowner charges a photographer to stand there.</p>
 
 <h2>An engagement session is not a scaled-down wedding day</h2>
 <figure><img src="${CDN}/cities/vancouver/work/35-vancouver-skyline-dogs-balloons.webp" alt="Bride and groom walking two dogs on the grass with the downtown Vancouver skyline behind"><figcaption>The wedding day is the constrained shoot. The engagement session is the free one, and most couples get that backwards.</figcaption></figure>
@@ -840,6 +840,62 @@ export const posts: BlogPost[] = [
 <figure><img src="${CDN}/blog/vancouver-engagement-photo-locations/stanley-park-old-growth-cedar.webp" alt="Couple standing small at the base of an enormous old-growth cedar in Stanley Park looking up the trunk"><figcaption>The interior, not the seawall. The trees are the reason to be there.</figcaption></figure>
 <p>The interior trails of Stanley Park hold genuine old-growth cedar and fir with trunks wide enough that two people standing at the base read as very small, and it is ten minutes from a downtown hotel lobby. For out-of-town couples with one free afternoon, nothing else in Canada offers that trade.</p>
 <p><strong>The Vancouver Park Board does not require a permit to take wedding photographs in a city park</strong>, unless you bring setup with you, at which point it becomes a photography permit. A ceremony is a different matter and does need one. The rules are at <a href="https://vancouver.ca/doing-business/park-wedding-permit.aspx" rel="nofollow">vancouver.ca</a>, and for an engagement session with two people and a camera you are fine.</p>
+
+<h2>VanDusen Botanical Garden, for the strongest reds in the city</h2>
+<figure><img src="${CDN}/blog/vancouver-engagement-photo-locations/vandusen-japanese-maple-canopy.webp" alt="Couple standing beneath a scarlet Japanese maple at VanDusen Botanical Garden in autumn"><figcaption>Nothing wild in this region turns this colour. The reds at VanDusen were planted on purpose.</figcaption></figure>
+<p>If you want the deep scarlet that people picture when they say autumn, you will not find it in a Vancouver forest. Our native bigleaf maple goes yellow and brown. The reds come from Japanese maples, which means a planted garden, and VanDusen has the best collection of them in the city, arranged around a pond that doubles every one of them.</p>
+<p><strong>VanDusen charges for a portrait session and the number is reasonable: C$111 for up to four people plus GST, with the photographer's admission included and no booking required.</strong> That is the cheapest paid access on this list and it buys a density of colour that would take an hour of driving to approximate. Note the closing time rather than the opening one, because through October the gates shut at 5pm and in November at 2pm, which removes the last hour of light from the plan entirely.</p>
+
+<h2>Nitobe Memorial Garden, for a composed frame in twenty minutes</h2>
+<figure><img src="${CDN}/blog/vancouver-engagement-photo-locations/nitobe-arched-bridge-autumn.webp" alt="Couple pausing on the arched wooden bridge at Nitobe Memorial Garden with red maples and fallen leaves"><figcaption>Every sightline here was designed. You are working inside somebody else's composition, which is a gift.</figcaption></figure>
+<p>Nitobe is a formal Japanese stroll garden at UBC, small enough to walk in ten minutes and designed so that every turn of the path resolves into a deliberate view. The arched bridge, the stone lantern, the moss and the maples are all placed. Twenty minutes here produces more usable frames than an hour somewhere wild, because you are not hunting for a composition, you are choosing between ones that already exist.</p>
+<p><strong>UBC sells it as a booked session: C$300 for two hours covering up to fifteen people, and C$50 more to use the UBC Botanical Garden on the same day.</strong> The catch is the notice period. They want the request at least fifteen business days ahead, so this is a location you commit to in advance rather than one you switch to when the forecast turns. Through October it is open Tuesday to Sunday with last entry at 3:30pm.</p>
+
+<h2>Queen Elizabeth Park, for autumn without a fee</h2>
+<figure><img src="${CDN}/blog/vancouver-engagement-photo-locations/queen-elizabeth-quarry-garden-autumn.webp" alt="Couple walking a stone path in the Quarry Garden at Queen Elizabeth Park under low autumn sun"><figcaption>The Quarry Garden from the inside, which is the half of it most people never photograph.</figcaption></figure>
+<p>The Quarry Garden is a former stone quarry turned into a sunken garden, which means rock walls on three sides and a sheltered bowl that holds colour and blocks wind. Almost everyone photographs it from the rim looking down. The better frames are from inside it looking up, where the wall gives you a background that is neither sky nor foliage.</p>
+<p><strong>It is a Vancouver Park Board park, so an ordinary handheld session costs nothing and needs no permit.</strong> That combination, real autumn colour with no fee and no booking, makes it the best forecast-chasing location in the city. It is also the highest point in Vancouver, so the same trip gives you the skyline and the North Shore from the top without moving the car.</p>
+
+<h2>Derby Reach and Fort Langley, for river gold and a heritage street</h2>
+<figure><img src="${CDN}/blog/vancouver-engagement-photo-locations/derby-reach-fraser-river-mist.webp" alt="Couple at the edge of the Fraser River near Fort Langley in early morning mist with yellow leaves"><figcaption>The Fraser at first light in October, with the far bank still dissolved.</figcaption></figure>
+<p>Derby Reach runs along the Fraser just outside Fort Langley, with a leaf-strewn riverside path, a weathered split-rail fence and tall cottonwoods and birches that turn a clean yellow. The river is wide and flat here, and on an October morning it holds mist until well after sunrise.</p>
+<p><strong>Pair it with the village and you get two completely different looks in one trip</strong>, riverbank gold and then heritage brick and clapboard five minutes away. Two warnings. Metro Vancouver's published photography permit names Campbell Valley and Aldergrove rather than Derby Reach, so I confirm the position for a paid session in writing beforehand. And the National Historic Site is a separate jurisdiction from the village around it: commercial photography inside the fort needs a Parks Canada permit, four weeks of notice and a refundable damage deposit, so we stay outside it unless you specifically want the fort.</p>
+
+<h2>Minnekhada Regional Park, for marsh and low cloud</h2>
+<figure><img src="${CDN}/blog/vancouver-engagement-photo-locations/minnekhada-marsh-autumn.webp" alt="Couple laughing together on a dyke trail through tawny marsh grass at Minnekhada Regional Park"><figcaption>Cottonwood and alder on the ridge, tawny grass at eye level, and a ceiling of cloud.</figcaption></figure>
+<p>Minnekhada in Coquitlam is a large marsh ringed by a steep forested ridge, with dyke trails that take you out into the middle of it on level ground. The colour here is cottonwood and alder rather than maple, so it is gold and rust rather than red, and the real subject is the contrast between the open wet middle and the dark wall of forest around it.</p>
+<p><strong>It is at its best on exactly the day most people would cancel.</strong> Low cloud sitting halfway down the ridge, no sun, mist on the water. The gates matter more than the weather here though: they open at 7am and can close as early as 5pm, and the road toward the lodge is seasonally restricted, so we check the gate on the day rather than assuming.</p>
+
+<h2>The Callaghan Valley, for snow you can actually count on</h2>
+<figure><img src="${CDN}/blog/vancouver-engagement-photo-locations/callaghan-valley-snow-dusk.webp" alt="Couple close together at dusk among heavily snow-laden conifers in the Callaghan Valley"><figcaption>The Callaghan at the blue end of the afternoon, which is when snow stops being white and starts being interesting.</figcaption></figure>
+<p>If the brief is a winter wonderland, this is the strongest answer near Vancouver. The Callaghan sits west of Whistler at roughly 840 to 930 metres, and the wider conservancy averages around 275 centimetres of snowpack, which is the difference between hoping for snow and booking it. You drive to the gate and walk the ticketed snowshoe network from there.</p>
+<p><strong>It is the one place on this list where a deep-snow photograph is a plan rather than a gamble.</strong> Two honest caveats. Whistler Olympic Park runs on its own winter schedule and the snowshoe admission is separate, so the date gets confirmed against their operating calendar before anything else. And the backcountry beyond the groomed network is a different proposition entirely, which is not where we go.</p>
+
+<h2>Cypress and Hollyburn, for snow-plastered trees half an hour from the city</h2>
+<figure><img src="${CDN}/blog/vancouver-engagement-photo-locations/cypress-hollyburn-snow-ghosts.webp" alt="Couple in snowshoes walking away between two enormous snow-plastered hemlocks in fog at Cypress"><figcaption>Wind-driven snow turns the hemlocks into white shapes. Fog between them is the whole photograph.</figcaption></figure>
+<p>The nordic area at Cypress gives you the single most photogenic winter feature in the region, mountain hemlocks so completely plastered with wind-driven snow that they read as sculpted white forms rather than trees. Walking a snowshoe trail between two of them in fog is the closest thing to a guaranteed winter frame within forty minutes of downtown.</p>
+<p><strong>Two practical things decide whether this works.</strong> Winter tyres are required on Cypress Bowl Road from 1 October to 30 April and that is enforced, so the car matters as much as the coat. And the marked backcountry trails here, Hollyburn Peak included, travel through avalanche terrain according to BC Parks, so we stay on the inbound nordic network with a snowshoe ticket, which runs from about C$24. The photograph you want is on the groomed trail anyway.</p>
+
+<h2>Lightning Lake in Manning Park, for a frozen lake and a full day</h2>
+<figure><img src="${CDN}/blog/vancouver-engagement-photo-locations/manning-lightning-lake-frozen.webp" alt="Couple standing on the snowy shore of a frozen Lightning Lake in Manning Park with snow-laden spruce"><figcaption>Lightning Lake sits at about 1,247 metres, which is why it looks like this when Vancouver is raining.</figcaption></figure>
+<p>Lightning Lake sits at roughly 1,247 metres with a plowed day-use area and a shore trail, spruce and fir laden right down to the water line, and a long flat frozen surface running away between the ridges. It is the most complete winter landscape on this list and the one that least resembles anywhere near a city.</p>
+<p><strong>The cost is the day, not the money.</strong> Manning is around two and a half to three hours out in good conditions, and winter is not good conditions, so this is a full day rather than an afternoon. Highway 3 is a designated winter tyre route. We also stay on the shore: a lake that looks frozen is not evidence that it will hold two people, and I will not put you out on ice I have not seen assessed.</p>
+
+<h2>What the ground costs, park by park</h2>
+<figure><img src="${CDN}/cities/vancouver/locations/nitobe-memorial-garden/01.webp" alt="Couple on a stone path in the Nitobe Memorial Garden at UBC"><figcaption>Whether a session is free or C$300 depends entirely on who owns the grass.</figcaption></figure>
+<p>A paid photographer is not treated the same way by every landowner, and the difference between two locations twenty minutes apart can be three hundred dollars. These are the published figures as they stand, and they are the reason I ask where before I ask when.</p>
+<table><thead><tr><th>Who owns it</th><th>What a session costs</th></tr></thead><tbody>
+<tr><td>Vancouver Park Board (Stanley, Queen Elizabeth)</td><td>Free, no permit, unless we bring setup</td></tr>
+<tr><td>VanDusen Botanical Garden</td><td>C$111 for up to four people, plus GST</td></tr>
+<tr><td>UBC gardens (Nitobe, Botanical)</td><td>C$300 for two hours, C$50 more for both</td></tr>
+<tr><td>Burnaby (Deer Lake, Central Park)</td><td>C$286.80 simple, C$414.15 complex</td></tr>
+<tr><td>Metro Vancouver (Campbell Valley, Aldergrove)</td><td>C$200 application, then C$75 a day or C$200 a year</td></tr>
+<tr><td>BC Parks (Golden Ears, Alice Lake, Manning)</td><td>C$200 application plus C$100 for a minor shoot</td></tr>
+<tr><td>Whistler municipal land</td><td>C$125 application, C$300 a day, plus licence and deposit</td></tr>
+<tr><td>Sea to Sky Gondola</td><td>Pre-approval required, tickets plus an unpublished fee</td></tr>
+</tbody></table>
+<p><strong>Two of those are worth acting on.</strong> The Metro Vancouver annual permit at C$200 covers both Campbell Valley and Aldergrove, which pays for itself on the third session of the year. And Whistler is administratively heavy for a one-hour shoot, which is why the Callaghan and Cypress get recommended ahead of it for winter.</p>
+<p>These figures move. I check the current rule for your specific location in writing before your date rather than trusting a published page, this one included.</p>
 
 <h2>What it costs, and when to actually do it</h2>
 <figure><img src="${CDN}/cities/vancouver/work/32-pink-cherry-blossom-street.webp" alt="Couple walking a Vancouver street under pink cherry blossom"><figcaption>Blossom is a two-week location. Almost everything in this city is a season rather than a place.</figcaption></figure>

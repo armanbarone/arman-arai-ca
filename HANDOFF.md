@@ -301,18 +301,29 @@ Everything in this list is live and was verified with a real HTTP check.
   globals.css (which `inlineCss` puts on every route). `lib/clips.ts` is empty,
   so the feature is currently inert: a before/after build diff showed **zero
   route-size change on either site**. See §9 before adding a clip.
-- **`/wedding-photography/vancouver-pricing`** (2026-09-28), the pricing-request
-  ads page. Same photographs and offer as `/vancouver-1500`, but ONE action:
-  a seven-field form (names, email, mobile, date or season, venue, coverage,
-  budget) under the headline, and every other link on the page scrolls to it.
-  Sending it replaces the page with a thank-you view: date result, pricing with
-  the best-fit collection marked, the Calendly calendar prefilled with their
-  name and email, and an email/text alternative to the call. Short Story is not
-  shown as the fit on a date it does not run (`shortStoryOnDate`). The offer
-  itself now lives in `lib/ads/short-story.ts`, read by both Vancouver pages and
-  the contact API. The lead arrives as "Pricing request — Vancouver — <names>";
-  GA4 gets `wedding_inquiry`, which must be marked a key event and imported into
-  Google Ads as the primary conversion for campaigns pointed at this page.
+- **`/wedding-photography/{vancouver,toronto,montreal}-pricing`** (2026-09-28),
+  the pricing-request ads pages, one per market, built from `InquiryLanding.tsx`
+  + `InquiryFunnel.tsx`. Owner's rules, in his words: "there are only 3
+  packages: 3k, 4.2k and 5.9k" (Signature, Complete, Photo + Film, read from
+  TIERS); "There is no checking the date" (no page, screen or email may say a
+  date is open, available or booked); and ONE action: the only button is
+  "Get Pricing", repeated with the same label in the header, the sticky bar and
+  the closing section, never as three equal buttons on the collection cards.
+  WhatsApp/text (778-302-5231, on WhatsApp) is the secondary line. The form
+  captures the lead, then the page becomes the thank-you view: pricing with the
+  best fit marked, the prefilled calendar, and email/WhatsApp/text instead.
+  Toronto and Montréal carry "No travel costs" (owner, for now); Vancouver keeps
+  "local travel included". Market data: `lib/ads/pricing-request.ts`.
+  The C$1,500 Short Story package is gone; `/wedding-photography/vancouver-1500`
+  308s to the Vancouver pricing page.
+  **Auto-reply:** `lib/auto-reply.ts`. Within a minute of the form, Claude
+  (claude-opus-5, low effort, `fallbacks: "default"`, 20 s cap) writes the
+  personal part of an email to the couple; the price table, calendar button and
+  WhatsApp link are rendered from lib/site.ts under it, and the text is checked
+  (prices, links, date claims, length) before sending, else a template goes.
+  Arman is BCC'd. Needs `ANTHROPIC_API_KEY` in the Vercel project; without it
+  no auto-reply is sent and the lead email says so. The lead arrives as
+  "Pricing request — <City> — <names>"; GA4 gets `wedding_inquiry`.
 
 ---
 

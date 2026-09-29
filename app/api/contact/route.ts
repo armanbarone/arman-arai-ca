@@ -1,7 +1,13 @@
-import { NextRequest, NextResponse } from "next/server";
-import { checkWeddingDate, weddingToday } from "@/lib/wedding-availability";
-import { BUDGET_OPTIONS, COVERAGE_OPTIONS, SEASON_PATTERN, SHORT_STORY, recommendCollection, shortStoryOnDate } from "@/lib/ads/short-story";
+import { after, NextRequest, NextResponse } from "next/server";
+import { checkWeddingDate } from "@/lib/wedding-availability";
+import { BUDGET_OPTIONS, COVERAGE_OPTIONS, SEASON_PATTERN, pricingMarket, recommendCollection, weekdayOf } from "@/lib/ads/pricing-request";
+import { WEDDING_CITIES } from "@/lib/ads/city-wedding-pages";
+import { autoReplyEnabled, sendInquiryAutoReply, type PricingInquiry } from "@/lib/auto-reply";
 import { tierBySlug } from "@/lib/site";
+
+// The pricing-request auto-reply runs after the response, inside this
+// function's lifetime: one Claude call capped at 20 seconds, then Resend.
+export const maxDuration = 60;
 
 function escapeHtml(value: unknown) {
   return String(value ?? "").replace(/[&<>"']/g, (character) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[character]!);
@@ -54,11 +60,11 @@ export async function POST(req: NextRequest) {
     }
 
     const isDateCheck = type === "wedding-date-check";
-    // The pricing-request form on /wedding-photography/vancouver-pricing. A
-    // couple without a date sends a season instead, so only a real date is
-    // checked against the calendar.
+    // The pricing-request form on /wedding-photography/<city>-pricing. It
+    // checks no calendar: a date is validated as a real future day and
+    // nothing more. A couple without a date sends a season instead.
     const isInquiry = type === "wedding-inquiry";
-    const availability = isDateCheck || (isInquiry && body.weddingDate) ? checkWeddingDate(body.weddingDate) : null;
+    const availability = isDateCheck ? checkWeddingDate(body.weddingDate) : null;
     if (availability && "error" in availability) {
       return NextResponse.json({ error: availability.error }, { status: 400 });
     }
@@ -74,8 +80,8 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    let shortStory: boolean | null = null;
     let inquiryRows: [string, string][] = [];
+    let autoReply: PricingInquiry | null = null;
     if (isInquiry) {
       for (const [key, max] of [["name", 80], ["email", 100], ["phone", 30], ["location", 90]] as const) {
         if (typeof body[key] !== "string" || !body[key].trim() || body[key].length > max) {
@@ -94,25 +100,29 @@ export async function POST(req: NextRequest) {
       if (!coverage || !budget) {
         return NextResponse.json({ error: "Please choose your coverage and your budget." }, { status: 400 });
       }
-      if (!body.weddingDate && !(typeof body.weddingSeason === "string" && SEASON_PATTERN.test(body.weddingSeason))) {
+      if (body.weddingDate) {
+        const valid = checkWeddingDate(body.weddingDate);
+        if ("error" in valid) return NextResponse.json({ error: valid.error }, { status: 400 });
+      } else if (!(typeof body.weddingSeason === "string" && SEASON_PATTERN.test(body.weddingSeason))) {
         return NextResponse.json({ error: "Choose your wedding date, or roughly when it will be." }, { status: 400 });
       }
-      const dated = availability && "availability" in availability ? availability : null;
-      shortStory = dated ? shortStoryOnDate(dated.date, weddingToday()) : null;
-      const shown = recommendCollection(coverage.value, budget.value, shortStory);
-      const shownName = shown.slug === SHORT_STORY.slug ? SHORT_STORY.name : tierBySlug(shown.slug)?.name ?? shown.slug;
-      const weekday = dated ? new Intl.DateTimeFormat("en-CA", { weekday: "long", timeZone: "UTC" }).format(new Date(`${dated.date}T12:00:00Z`)) : "";
+      const market = pricingMarket(String(body.pricingMarket ?? ""));
+      const cityName = WEDDING_CITIES.find((city) => city.slug === market?.slug)?.name;
+      if (!market || !cityName) return NextResponse.json({ error: "Please reload the page and try again." }, { status: 400 });
+      const fit = tierBySlug(recommendCollection(coverage.value, budget.value).slug)!;
+      autoReply = autoReplyEnabled()
+        ? { names: body.name, email: body.email, weddingDate: body.weddingDate || undefined, weddingSeason: body.weddingSeason || undefined, location: body.location, coverage: coverage.value, budget: budget.value, cityName, market, page: `wedding-photography/${market.slug}-pricing` }
+        : null;
       inquiryRows = [
         ["Names", body.name],
         ["Email", body.email],
         ["Mobile", body.phone],
-        ["Wedding date", dated ? `${dated.date} (${weekday})` : `No date yet: ${body.weddingSeason}`],
-        ...(dated ? ([["Availability", dated.availability]] as [string, string][]) : []),
-        ["Short Story that day", shortStory === null ? "No date yet" : shortStory ? "Yes" : `No, not offered on this ${weekday}`],
+        ["Wedding date", body.weddingDate ? `${body.weddingDate} (${weekdayOf(body.weddingDate)})` : `No date yet: ${body.weddingSeason}`],
         ["Where", body.location],
         ["Coverage", coverage.label],
         ["Budget", budget.label],
-        ["Shown as best fit", shownName],
+        ["Shown as best fit", `${fit.name}, C$${fit.price.toLocaleString("en-CA")}`],
+        ["Auto-reply", autoReply ? "Sending to the couple within a minute; you are BCC'd" : "Off: ANTHROPIC_API_KEY is not set in Vercel"],
       ];
     }
 
@@ -133,6 +143,7 @@ export async function POST(req: NextRequest) {
       message: body.message ?? "",
       referral: body.referral ?? "",
       // Pricing-request form. Empty on every other form.
+      pricingMarket: body.pricingMarket ?? "",
       coverage: body.coverage ?? "",
       budget: body.budget ?? "",
       weddingSeason: body.weddingSeason ?? "",
@@ -235,7 +246,14 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Your inquiry could not be sent. Please try again or email i@armanarai.com." }, { status: 503 });
     }
 
-    return NextResponse.json({ success: true, ...(availability && "availability" in availability ? availability : {}), ...(isInquiry ? { shortStory } : {}) });
+    // The couple's email goes out after this response, so the form never waits
+    // on the model. after() keeps the function alive until it is sent.
+    if (autoReply) {
+      const inquiry = autoReply;
+      after(() => sendInquiryAutoReply(inquiry));
+    }
+
+    return NextResponse.json({ success: true, ...(availability && "availability" in availability ? availability : {}), ...(isInquiry ? { autoReply: Boolean(autoReply) } : {}) });
   } catch (err) {
     console.error("Contact API error:", err);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });

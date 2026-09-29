@@ -57,6 +57,10 @@ const nextConfig: NextConfig = {
       // couple arriving from those links is actually looking for.
       { source: "/destination", destination: "/pricing", permanent: true },
       { source: "/collections", destination: "/pricing", permanent: true },
+      // The C$1,500 Short Story ads page. The package is gone (owner,
+      // 2026-09-28); the Vancouver ads now land on the pricing-request page,
+      // and a click on an old final URL keeps its ?gclid through this.
+      { source: "/wedding-photography/vancouver-1500", destination: "/wedding-photography/vancouver-pricing", permanent: true },
       // Common alternate spellings of the city pages, so a mistyped or
       // externally-linked shape never 404s.
       ...CITIES.flatMap((city) => [

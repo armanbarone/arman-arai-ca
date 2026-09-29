@@ -3,12 +3,12 @@ import { weddingCityRoute } from "@/lib/ads/city-wedding-pages";
 import { cityWeddingMetadata } from "@/lib/ads/city-wedding-metadata";
 import { pricingMarket, pricingTiers } from "@/lib/ads/pricing-request";
 
-/* The vancouver pricing-request ads page. noindex like every ads page, and out of
+/* The montreal pricing-request ads page. noindex like every ads page, and out of
    the sitemap. The layout and the one-action rule live in InquiryLanding. */
-const route = weddingCityRoute("vancouver")!;
-const market = pricingMarket("vancouver")!;
+const route = weddingCityRoute("montreal")!;
+const market = pricingMarket("montreal")!;
 
-export const metadata = cityWeddingMetadata(route.city, "/wedding-photography/vancouver-pricing", {
+export const metadata = cityWeddingMetadata(route.city, "/wedding-photography/montreal-pricing", {
   entryPrice: Math.min(...pricingTiers().map((tier) => tier.price)),
 });
 

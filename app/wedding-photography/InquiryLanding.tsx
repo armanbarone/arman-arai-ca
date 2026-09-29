@@ -2,63 +2,57 @@ import Image from "next/image";
 import { Analytics } from "@vercel/analytics/next";
 import { ARMAN } from "@/lib/images";
 import type { WeddingCity } from "@/lib/ads/city-wedding-pages";
-import { COVERAGE_OPTIONS, type IntroWeddingOffer } from "@/lib/ads/short-story";
-import { ALBUM_SPECS, SITE, TIERS, type Tier } from "@/lib/site";
+import { pricingTiers, tierItems, type PricingMarket } from "@/lib/ads/pricing-request";
+import { SITE } from "@/lib/site";
+import { autoReplyEnabled } from "@/lib/auto-reply";
 import { proofByN, proofSrc } from "@/lib/reviews";
 import { BookingNavigation } from "../2728-cc-weddings/wedding-calendar";
 import AlbumBrowser from "./AlbumBrowser";
 import { money, questionsFor, stylesOfWork, TIER_STRAP, weddingAlbumsFor } from "./CityWeddingLanding";
-import InquiryFunnel, { CheckDateLink, InquiryForm, type FunnelCollection } from "./InquiryFunnel";
+import InquiryFunnel, { CTA_LABEL, FORM_ID, InquiryForm, MessageLinks, type FunnelCollection } from "./InquiryFunnel";
 import styles from "./vancouver.module.css";
 import funnel from "./inquiry.module.css";
 
-/* The pricing-request ads page. Same photographs, albums, reviews and
- * collections as CityWeddingLanding with an intro offer, but one action
- * instead of three: every link on the page leads to the form under the
- * headline, and the calendar only appears once the form is sent (see
- * InquiryFunnel). There is no "book a call" section to scroll to. */
+/* The pricing-request ads page, one per market: /wedding-photography/<city>-pricing.
+ *
+ * Same photographs, albums and reviews as the city's other ads pages. ONE
+ * action: the form under the headline. The header button, the sticky phone
+ * bar and the closing button are that same action with the same label, and
+ * nothing else on the page is a button. The collection cards carry no links
+ * of their own: three equal buttons side by side is what the brief ruled out.
+ * The calendar only appears once the form is sent (see InquiryFunnel). */
 
-type InquiryLandingProps = {
-  city: WeddingCity;
-  pageSlug: string;
-  offer: IntroWeddingOffer;
-  tierSlugs: string[];
-  tierOverrides: Record<string, Partial<Tier> & { hoursLabel?: string }>;
-  coverageSummary: string;
-};
-
-/** The same lines the collection cards show, in the same order. */
-const tierItems = (tier: Tier) => [
-  tier.images, tier.preview, tier.delivery, tier.film, tier.rolls, tier.engagement,
-  tier.album.includes("included") ? `${ALBUM_SPECS.signature.size} album · ${ALBUM_SPECS.signature.pages}` : "",
-].filter(Boolean);
-const coverageFor = (slug: string) => COVERAGE_OPTIONS.find((option) => option.slug === slug)?.value;
-
-export default function InquiryLanding({ city, pageSlug, offer, tierSlugs, tierOverrides, coverageSummary }: InquiryLandingProps) {
-  const page = `wedding-photography/${pageSlug}`;
+export default function InquiryLanding({ city, market }: { city: WeddingCity; market: PricingMarket }) {
+  const page = `wedding-photography/${market.slug}-pricing`;
   const phone = SITE.phone.replace(/^\+1\s*/, "");
-  const tiers = TIERS.filter((tier) => tierSlugs.includes(tier.slug)).map((tier) => ({ ...tier, ...tierOverrides[tier.slug] }));
-  const collections: FunnelCollection[] = [
-    { slug: offer.slug, name: offer.name, hoursLabel: `${offer.hours} hours of coverage`, strap: offer.strap, price: offer.price, items: offer.items },
-    ...tiers.map((tier) => ({ slug: tier.slug, name: tier.name, hoursLabel: tier.hoursLabel ?? `${tier.hours} hours of coverage`, strap: TIER_STRAP[tier.slug] ?? tier.strap, price: tier.price, items: tierItems(tier) })),
-  ];
+  const tiers = pricingTiers();
+  const from = Math.min(...tiers.map((tier) => tier.price));
+  const hours = [...new Set(tiers.map((tier) => tier.hours))].sort((a, b) => a - b).join(" or ");
+  const collections: FunnelCollection[] = tiers.map((tier) => ({ slug: tier.slug, name: tier.name, hoursLabel: `${tier.hours} hours of coverage`, price: tier.price, items: tierItems(tier) }));
   const shared = questionsFor(city);
   const questions: string[][] = [
-    ["How do we check whether our date is available?", "Fill in the short form at the top of this page. You’ll see straight away whether your date is open and what each collection costs, and you can choose a time for a free video call if you’d like one. Checking a date does not reserve it."],
-    shared[1], shared[2], shared[3],
-    ["Do we have to book a video call?", `No. The call is there if you’d like to meet before you decide. If you’d rather keep it to email or text, reply to my email or text me at ${phone}.`],
-    [`When is the ${offer.name} collection available?`, offer.availability],
-    ["What is included, and what costs extra?", offer.includedAnswer],
-    shared[5],
+    // Read at build time, like every env var on a static page: adding the key
+    // in Vercel needs a redeploy, which also switches this answer over.
+    ["What happens after we send the form?", autoReplyEnabled()
+      ? `Your pricing appears on screen straight away, with the collection that fits what you told me, and a note from me follows by email a minute later. From there you can choose a time for a free 30-minute video call, reply to that email, or message me on WhatsApp or by text at ${phone}.`
+      : `Your pricing appears on screen straight away, with the collection that fits what you told me, and I reply personally the same day. From there you can choose a time for a free 30-minute video call, or message me on WhatsApp or by text at ${phone}.`],
+    [city.coverageQuestion, market.coverageAnswer],
+    shared[2], shared[3],
+    ["Do we have to book a video call?", "No. The call is there if you’d like to meet before you decide. If you’d rather keep it to email, WhatsApp or text, that works too."],
+    ["What is included, and what costs extra?", `Every collection includes photography by me, a 60-minute engagement session, planning, a full edited gallery with print permission, vertical social reels and film prints for your guests. Complete adds a second photographer for four hours, a longer film and a printed album; Photo + Film adds a dedicated filmmaker and a printed album. Prices are in Canadian dollars before tax. ${market.travelNote}`],
+    // Not shared[5]: that answer opens "Once we've confirmed availability",
+    // and these pages confirm nothing about a date.
+    ["How do we secure our wedding date?", "Once you’ve chosen your collection and we’ve agreed the details, a signed contract and a 30% retainer secure the date. The balance is due 30 days before the wedding. There’s no obligation to book after our call."],
   ];
   const weddingAlbums = weddingAlbumsFor(city.albums);
+  const cta = <>{CTA_LABEL} <span aria-hidden="true">↗</span></>;
 
   return <div className={`${styles.page} ${styles.dark}`} data-landing-theme="dark" data-landing-city={city.slug}>
     <a className={styles.skip} href="#main">Skip to content</a>
-    <InquiryFunnel collections={collections} city={city.name} page={page} phone={phone} phoneE164={SITE.phoneE164} travelNote={offer.travelNote}>
+    <InquiryFunnel collections={collections} city={city.name} page={page} phone={phone} phoneE164={SITE.phoneE164} travelNote={market.travelNote}>
       <header className={styles.header}>
         <a className={styles.wordmark} href="#main" aria-label="Arman Arai, top of page">Arman Arai<span>WEDDING PHOTOGRAPHY</span></a>
-        <nav aria-label="Page navigation"><a className={styles.navLink} href="#albums">The photographs</a><a className={styles.navLink} href="#collections">Collections</a><a className={styles.headerCta} href="#check-date">Check your date <span aria-hidden="true">↗</span></a></nav>
+        <nav aria-label="Page navigation"><a className={styles.navLink} href="#albums">The photographs</a><a className={styles.navLink} href="#collections">Collections</a><a className={styles.headerCta} href={`#${FORM_ID}`}>{cta}</a></nav>
       </header>
       <main id="main">
         <section className={funnel.hero} aria-labelledby="hero-title">
@@ -66,16 +60,16 @@ export default function InquiryLanding({ city, pageSlug, offer, tierSlugs, tierO
             <p className={`${styles.eyebrow} ${funnel.heroEyebrow}`}>Your people. Your day. Your kind of photographs.</p>
             <h1 id="hero-title" className={funnel.heroTitle}>{city.name} <br />wedding <br /><em>photography.</em></h1>
             <p className={styles.heroIntro}>Beautiful portraits. All the feeling in between.<br />And time to actually enjoy your wedding.</p>
-            <p className={styles.starting}>Collections from <strong>{money(offer.price)}</strong><span>{coverageSummary} · CAD before tax · {offer.travelShort}</span></p>
+            <p className={styles.starting}>Collections from <strong>{money(from)}</strong><span>{hours} hours · CAD before tax · {market.travelShort}</span></p>
           </div>
           <div className={`${styles.heroArt} ${funnel.heroArt}`}>
             <figure className={`${styles.heroImage} ${funnel.heroImage}`}><Image src={city.hero.src} alt={city.hero.alt} style={city.heroPosition ? { objectPosition: city.heroPosition } : undefined} fill priority fetchPriority="high" quality={68} sizes="(max-width: 760px) 80vw, (max-width: 1600px) 38vw, 608px" /><figcaption>A day you felt. Photographs you keep.</figcaption></figure>
             <figure className={styles.heroInset}><Image src={city.inset.src} alt={city.inset.alt} fill quality={68} sizes="(max-width: 760px) 28vw, (max-width: 1600px) 14vw, 224px" /></figure>
             <span className={styles.heroSideNote}>Documentary feeling / Editorial eye</span>
           </div>
-          <div id="check-date" className={`${styles.dateCheckPanel} ${funnel.formPanel}`}>
-            <InquiryForm city={city.name} page={`/${page}`} />
-            <p className={styles.directCall}>Rather text? <a href={`sms:${SITE.phoneE164}`}>{phone}</a></p>
+          <div id={FORM_ID} className={`${styles.dateCheckPanel} ${funnel.formPanel}`}>
+            <InquiryForm city={city.name} market={market.slug} page={`/${page}`} />
+            <p className={styles.directCall}>Rather message? <MessageLinks phone={phone} phoneE164={SITE.phoneE164} city={city.name} /></p>
           </div>
         </section>
         <div className={styles.factBar}><span>{city.coverage[0]}</span><span>{city.coverage[1]}</span><span>Photographed by Arman</span></div>
@@ -88,32 +82,24 @@ export default function InquiryLanding({ city, pageSlug, offer, tierSlugs, tierO
           <p className={styles.albumHint}>Open an album to see every photograph. <span>Swipe to explore the collections →</span></p>
           <div className={styles.weddingHeading}><div><p className={styles.eyebrow}>Wedding stories / 02</p><h2>The whole day.<br /><em>All the way through.</em></h2></div><p>Three complete wedding stories from the portfolio, with the preparations, the ceremony and everything that followed.</p></div>
           <AlbumBrowser albums={weddingAlbums} label="Complete wedding stories" />
-          <div className={styles.workBottom}><a href="#check-date">Like what you see? Check your date <span aria-hidden="true">↗</span></a></div>
         </section>
 
         <section className={styles.about} aria-labelledby="about-title">
           <div className={styles.portraitWrap}><figure className={styles.portrait}><Image src={ARMAN.src} alt={ARMAN.alt} fill quality={78} sizes="(max-width: 760px) 85vw, 38vw" /></figure><span className={styles.signature}>See you on the other side of the camera.</span></div>
-          <div className={styles.aboutCopy}><p className={styles.eyebrow}>Your photographer</p><h2 id="about-title">Hi, I’m Arman.<br /><em>Let’s make this easy.</em></h2><p>You don’t need to arrive knowing how to pose. I’ll help with that.</p><p>I’ll give you direction when it helps, make time for the family photographs, and let you get back to your favourite people. In between, I’m watching for the laughter, the glances and the moments you couldn’t have planned.</p><p>{city.about}</p><a className={styles.textLink} href="#check-date">Check your date and pricing <span aria-hidden="true">↗</span></a></div>
+          <div className={styles.aboutCopy}><p className={styles.eyebrow}>Your photographer</p><h2 id="about-title">Hi, I’m Arman.<br /><em>Let’s make this easy.</em></h2><p>You don’t need to arrive knowing how to pose. I’ll help with that.</p><p>I’ll give you direction when it helps, make time for the family photographs, and let you get back to your favourite people. In between, I’m watching for the laughter, the glances and the moments you couldn’t have planned.</p><p>{city.about}</p></div>
         </section>
 
         <section id="collections" className={styles.collections} aria-labelledby="collections-title">
-          <div className={styles.sectionHeading}><div><p className={styles.eyebrow}>The collections / 03</p><h2 id="collections-title">Your day, with room<br /><em>for what matters.</em></h2></div><p>Start with the time you need. Send your date and you’ll see which collection fits, straight away.</p></div>
+          <div className={styles.sectionHeading}><div><p className={styles.eyebrow}>The collections / 03</p><h2 id="collections-title">Your day, with room<br /><em>for what matters.</em></h2></div><p>Three collections, one price each. Tell me about your day and I’ll point you to the one that fits.</p></div>
           <div className={`${styles.priceGrid} ${styles.priceGridExpanded}`}>
-            <article className={`${styles.priceCard} ${styles.introPriceCard}`}>
-              <div className={styles.tierHeader}><p>{offer.hours} hours of coverage</p><span>{offer.strap}</span></div>
-              <h3>{offer.name}</h3><p className={styles.price}>{money(offer.price)}<span>CAD before tax</span></p>
-              <ul>{offer.items.map((item) => <li key={item}>{item}</li>)}</ul>
-              <CheckDateLink className={styles.collectionLink} coverage={coverageFor(offer.slug)}>Check your date for {offer.name} <span aria-hidden="true">↗</span></CheckDateLink>
-            </article>
             {tiers.map((tier) => <article key={tier.slug} className={tier.slug === "signature" ? styles.featuredPrice : styles.priceCard}>
-              <div className={styles.tierHeader}><p>{tier.hoursLabel ?? `${tier.hours} hours of coverage`}</p><span>{TIER_STRAP[tier.slug] ?? tier.strap}</span></div>
+              <div className={styles.tierHeader}><p>{tier.hours} hours of coverage</p><span>{TIER_STRAP[tier.slug] ?? tier.strap}</span></div>
               <h3>{tier.name}</h3><p className={styles.price}>{money(tier.price)}<span>CAD before tax</span></p>
               <ul>{tierItems(tier).map((item) => <li key={item}>{item}</li>)}</ul>
-              <CheckDateLink className={styles.collectionLink} coverage={coverageFor(tier.slug)}>Check your date for {tier.name} <span aria-hidden="true">↗</span></CheckDateLink>
             </article>)}
           </div>
-          <div className={styles.included}><h3>Always included.</h3><p>{offer.alwaysIncluded}</p></div>
-          <p className={styles.travel}>{offer.travelNote} All prices are in Canadian dollars before tax.</p>
+          <div className={styles.included}><h3>Always included.</h3><p>Photography by Arman. A 60-minute engagement session. Timeline and family-photo planning. A full edited gallery with print permission. Vertical social reels in the first week. Film prints handed to your guests on the night, and real film in every collection.</p></div>
+          <p className={styles.travel}>{market.travelNote} All prices are in Canadian dollars before tax.</p>
         </section>
 
         <section className={styles.reviews} aria-labelledby="reviews-title"><div className={styles.sectionHeading}><div><p className={styles.eyebrow}>When the photographs arrive</p><h2 id="reviews-title">I’ll let them<br /><em>tell you.</em></h2></div><p>A few words from the people on the other side of the camera. Tap a message to read the original.</p></div><div className={styles.reviewsGrid}>
@@ -125,11 +111,11 @@ export default function InquiryLanding({ city, pageSlug, offer, tierSlugs, tierO
         <section className={styles.faq} aria-labelledby="faq-title"><div><p className={styles.eyebrow}>A few things before we meet</p><h2 id="faq-title">You might<br /><em>be wondering.</em></h2></div><div className={styles.questions}>{questions.map(([q, a]) => <details key={q}><summary>{q}<span aria-hidden="true">+</span></summary><p>{a}</p></details>)}</div></section>
 
         <section className={funnel.finalCta} aria-labelledby="final-title">
-          <div className={styles.bookingCopy}><p className={styles.eyebrow}>Your {city.name} wedding starts here</p><h2 id="final-title">Bring your date.<br /><em>Get your pricing.</em></h2><p>One short form. You’ll see straight away whether your date is open and what each collection costs.</p></div>
-          <div className={styles.bookingCopy}><ol><li><span>01</span> Tell me your date and your plans.</li><li><span>02</span> See your availability and pricing on the spot.</li><li><span>03</span> Pick a time for a free video call, or just reply by email or text.</li></ol><a className={`${styles.button} ${funnel.finalButton}`} href="#check-date">Check My Date & Get Pricing <span aria-hidden="true">↗</span></a></div>
+          <div className={styles.bookingCopy}><p className={styles.eyebrow}>Your {city.name} wedding starts here</p><h2 id="final-title">Tell me about your day.<br /><em>Get your pricing.</em></h2><p>One short form, and your pricing appears straight away.</p></div>
+          <div className={styles.bookingCopy}><ol><li><span>01</span> Tell me your date and your plans.</li><li><span>02</span> See your pricing, with the collection that fits.</li><li><span>03</span> Pick a time for a free video call, or just reply by email, WhatsApp or text.</li></ol><a className={`${styles.button} ${funnel.finalButton}`} href={`#${FORM_ID}`}>{cta}</a></div>
         </section>
       </main>
-      <BookingNavigation classes={styles} dateFirst startingPrice={offer.price} note={`Before tax · ${offer.travelShort}`} />
+      <BookingNavigation classes={styles} startingPrice={from} note={`Before tax · ${market.travelShort}`} form={{ id: FORM_ID, label: CTA_LABEL }} />
     </InquiryFunnel>
     <footer className={styles.footer}><a href="#main" className={styles.footerBrand}>Arman Arai<span>Wedding photography · {city.name}</span></a><div><a href={`mailto:${SITE.email}`}>{SITE.email}</a><a href="/privacy-policy" target="_blank" rel="noopener noreferrer">Privacy policy</a><span>© {new Date().getFullYear()} Arman Arai</span></div></footer>
     <Analytics />

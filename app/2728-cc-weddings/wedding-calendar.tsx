@@ -15,11 +15,14 @@ export function BookingLink({ children, className, placement }: { children: Reac
   return <a href="#book-a-call" className={className} onClick={() => record("Wedding Call CTA", { placement })}>{children}</a>;
 }
 
-export function BookingNavigation({ classes, dateFirst = false, startingPrice = ENTRY.price, note = "Before tax · travel extra" }: { classes: Record<string, string>; dateFirst?: boolean; startingPrice?: number; note?: string }) {
+/** The mobile sticky bar. `form` points it at a form on the page instead of
+ *  the calendar: the bar hides while that form is on screen and its one
+ *  button scrolls back to it, with the same label as the form's own button. */
+export function BookingNavigation({ classes, dateFirst = false, startingPrice = ENTRY.price, note = "Before tax · travel extra", form }: { classes: Record<string, string>; dateFirst?: boolean; startingPrice?: number; note?: string; form?: { id: string; label: string } }) {
   const [hidden, setHidden] = useState(true);
   useEffect(() => {
     const section = document.getElementById("book-a-call");
-    const hero = document.getElementById(dateFirst ? "check-date" : "hero-title");
+    const hero = document.getElementById(form ? form.id : dateFirst ? "check-date" : "hero-title");
     const footer = document.querySelector("footer");
     // The pricing-request page has no calendar section until the form is sent.
     if (!hero || !footer || typeof IntersectionObserver === "undefined") return;
@@ -36,7 +39,8 @@ export function BookingNavigation({ classes, dateFirst = false, startingPrice = 
     });
     [section, hero, footer].forEach((el) => { if (el) observer.observe(el); });
     return () => observer.disconnect();
-  }, [dateFirst]);
+  }, [dateFirst, form?.id]);
+  if (form) return <aside className={classes.stickyCta} hidden={hidden} aria-label={form.label}><span>2027 & 2028 weddings<br /><strong>From C${startingPrice.toLocaleString("en-CA")}</strong><br />{note}</span><a href={`#${form.id}`}>{form.label} ↗</a></aside>;
   return <aside className={classes.stickyCta} hidden={hidden} aria-label={dateFirst ? "Check your wedding date" : "Book a wedding photography call"}><span>2027 & 2028 weddings<br /><strong>From C${startingPrice.toLocaleString("en-CA")}</strong><br />{note}</span>{dateFirst ? <a href="#check-date">Check your date ↗</a> : <BookingLink placement="mobile_bar">Book a free call ↗</BookingLink>}</aside>;
 }
 

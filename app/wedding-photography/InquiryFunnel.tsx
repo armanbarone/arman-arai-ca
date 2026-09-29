@@ -2,8 +2,8 @@
 
 import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from "react";
 import { trackWeddingInquiry } from "@/lib/analytics";
-import { BUDGET_OPTIONS, COVERAGE_OPTIONS, recommendCollection, seasonOptions } from "@/lib/ads/short-story";
-import { weddingToday, type WeddingAvailability } from "@/lib/wedding-availability";
+import { BUDGET_OPTIONS, COVERAGE_OPTIONS, longDate, recommendCollection, seasonOptions, weekdayOf } from "@/lib/ads/pricing-request";
+import { weddingToday } from "@/lib/wedding-availability";
 import WeddingCalendar from "../2728-cc-weddings/wedding-calendar";
 import { ATTRIBUTION_KEYS, gclidFromCookie } from "./DateCheck";
 import styles from "./vancouver.module.css";
@@ -12,32 +12,44 @@ import funnel from "./inquiry.module.css";
 /* The pricing-request funnel: ad → this page → one form → pricing and the
  * calendar on the same screen.
  *
+ * One action. The form's button is the only button on the page, and every
+ * other call to action on it is that same button, with the same words,
+ * scrolling back to the form. WhatsApp and text sit under it as a quiet line.
+ *
  * The form is the conversion, not the call. It is sent before anything else
  * happens, so a couple who never books a time has still left a name, an email
- * and a mobile number. Once it is sent the whole page is replaced by the
- * thank-you view: their date, their pricing with the collection that fits
- * marked, the calendar with their name and email already filled in, and a way
- * to carry on by email or text instead.
+ * and a mobile number, and the auto-reply (lib/auto-reply.ts) reaches their
+ * inbox within a minute. The page checks no calendar and says nothing about
+ * whether a date is free.
  */
 
-export type FunnelCollection = { slug: string; name: string; hoursLabel: string; strap: string; price: number; items: string[] };
+export const FORM_ID = "get-pricing";
+export const CTA_LABEL = "Get Pricing";
+
+export type FunnelCollection = { slug: string; name: string; hoursLabel: string; price: number; items: string[] };
 
 type Sent = {
   names: string;
   email: string;
   date?: string;
   season?: string;
-  availability?: WeddingAvailability;
-  /** Whether Short Story runs on their date; null without an exact date. */
-  shortStory: boolean | null;
+  location: string;
   coverage: string;
   budget: string;
+  /** True when the server has queued the auto-reply email. */
+  emailed: boolean;
 };
 
 const FunnelContext = createContext<(sent: Sent) => void>(() => {});
 const money = (amount: number) => `C$${amount.toLocaleString("en-CA")}`;
-const longDate = (date: string) => new Intl.DateTimeFormat("en-CA", { dateStyle: "long", timeZone: "UTC" }).format(new Date(`${date}T12:00:00Z`));
-const weekdayOf = (date: string) => new Intl.DateTimeFormat("en-CA", { weekday: "long", timeZone: "UTC" }).format(new Date(`${date}T12:00:00Z`));
+
+type Contact = { phone: string; phoneE164: string };
+const whatsappHref = (phoneE164: string, text: string) => `https://wa.me/${phoneE164.replace(/\D/g, "")}?text=${encodeURIComponent(text)}`;
+
+/** WhatsApp or text, as the secondary line under the form and on the thank-you view. */
+export function MessageLinks({ phone, phoneE164, city }: Contact & { city: string }) {
+  return <><a href={whatsappHref(phoneE164, `Hi Arman, I'm asking about wedding photography in ${city}.`)} target="_blank" rel="noopener noreferrer">WhatsApp</a> or <a href={`sms:${phoneE164}`}>text</a> <span className={funnel.nowrap}>{phone}</span></>;
+}
 
 export default function InquiryFunnel({ children, collections, city, page, phone, phoneE164, travelNote }: {
   children: ReactNode;
@@ -45,15 +57,13 @@ export default function InquiryFunnel({ children, collections, city, page, phone
   city: string;
   /** "wedding-photography/vancouver-pricing", as the calendar's utm_content. */
   page: string;
-  phone: string;
-  phoneE164: string;
   travelNote: string;
-}) {
+} & Contact) {
   const [sent, setSent] = useState<Sent | null>(null);
   const show = (value: Sent) => { setSent(value); window.scrollTo({ top: 0 }); };
   const edit = () => {
     setSent(null);
-    requestAnimationFrame(() => document.getElementById("check-date")?.scrollIntoView());
+    requestAnimationFrame(() => document.getElementById(FORM_ID)?.scrollIntoView());
   };
   return <FunnelContext.Provider value={show}>
     <div hidden={!!sent}>{children}</div>
@@ -61,16 +71,7 @@ export default function InquiryFunnel({ children, collections, city, page, phone
   </FunnelContext.Provider>;
 }
 
-/** Any "check your date" link below the hero. On a collection card it also
- *  preselects that card's coverage, so the form already says which one. */
-export function CheckDateLink({ coverage, className, children }: { coverage?: string; className?: string; children: ReactNode }) {
-  return <a href="#check-date" className={className} onClick={() => {
-    const select = document.getElementById("inq-coverage") as HTMLSelectElement | null;
-    if (select && coverage) select.value = coverage;
-  }}>{children}</a>;
-}
-
-export function InquiryForm({ city, page }: { city: string; page: string }) {
+export function InquiryForm({ city, market, page }: { city: string; market: string; page: string }) {
   const send = useContext(FunnelContext);
   const [status, setStatus] = useState<"idle" | "sending" | "error">("idle");
   const [error, setError] = useState("");
@@ -102,6 +103,7 @@ export function InquiryForm({ city, page }: { city: string; page: string }) {
     const payload = {
       type: "wedding-inquiry",
       subjectLabel: `Pricing request — ${city}`,
+      pricingMarket: market,
       name: value("names"),
       email: value("email"),
       phone: value("phone"),
@@ -117,20 +119,17 @@ export function InquiryForm({ city, page }: { city: string; page: string }) {
       const res = await fetch("/api/contact", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
       const data = await res.json();
       if (!res.ok || data.success !== true) throw new Error(data.error || "That did not send. Please try again or email i@armanarai.com.");
-      // The inquiry has been delivered by now, so never ask for it twice: an
-      // unexpected answer about the date only means the date is not shown.
-      const checked = payload.weddingDate && data.date === payload.weddingDate && ["available", "unavailable"].includes(data.availability);
       try { trackWeddingInquiry(page); } catch { /* Analytics must never interrupt a lead. */ }
       setStatus("idle");
       send({
         names: payload.name,
         email: payload.email,
-        date: checked ? payload.weddingDate : undefined,
+        date: payload.weddingDate || undefined,
         season: payload.weddingSeason || undefined,
-        availability: checked ? data.availability : undefined,
-        shortStory: typeof data.shortStory === "boolean" ? data.shortStory : null,
+        location: payload.location,
         coverage: payload.coverage,
         budget: payload.budget,
+        emailed: data.autoReply === true,
       });
     } catch (err) {
       setError(err instanceof Error ? err.message : "That did not send.");
@@ -141,7 +140,7 @@ export function InquiryForm({ city, page }: { city: string; page: string }) {
   }
 
   return <form className={styles.check} onSubmit={onSubmit} aria-labelledby="inq-title">
-    <p className={styles.checkTitle} id="inq-title">Your date and your pricing</p>
+    <p className={styles.checkTitle} id="inq-title">Get your pricing</p>
     {/* Honeypot. No human ever sees this; anything that fills it is dropped. */}
     <input type="text" name="company" tabIndex={-1} autoComplete="off" aria-hidden="true" className={styles.honeypot} />
     <div className={styles.checkRow}>
@@ -181,11 +180,11 @@ export function InquiryForm({ city, page }: { city: string; page: string }) {
     </div>
     {status === "error" && <p className={styles.checkError} role="alert">{error}</p>}
     <button className={styles.checkButton} type="submit" disabled={status === "sending"}>
-      {status === "sending" ? "Checking your date…" : "Check My Date & Get Pricing"}
+      {status === "sending" ? "Sending…" : CTA_LABEL}
       <span aria-hidden="true">↗</span>
     </button>
     <p className={styles.checkMicro}>
-      See your availability and pricing straight away. Answered the same day, by me. <a href="/privacy-policy" target="_blank" rel="noopener noreferrer">Privacy policy</a>.
+      Your pricing appears straight away. Answered the same day, by me. <a href="/privacy-policy" target="_blank" rel="noopener noreferrer">Privacy policy</a>.
     </p>
   </form>;
 }
@@ -195,44 +194,32 @@ function ThankYou({ sent, collections, city, page, phone, phoneE164, travelNote,
   collections: FunnelCollection[];
   city: string;
   page: string;
-  phone: string;
-  phoneE164: string;
   travelNote: string;
   onEdit: () => void;
-}) {
+} & Contact) {
   const heading = useRef<HTMLHeadingElement>(null);
   useEffect(() => { heading.current?.focus({ preventScroll: true }); }, []);
 
-  const fit = recommendCollection(sent.coverage, sent.budget, sent.shortStory);
-  const weekday = sent.date ? weekdayOf(sent.date) : "";
-  const coverage = COVERAGE_OPTIONS.find((option) => option.value === sent.coverage)?.label;
-  const reason = fit.shortStoryUnavailable
-    ? `Short Story isn’t offered on your ${weekday}, so this is the closest fit.`
-    : fit.basis === "coverage" ? `Matches the ${coverage} you asked for.`
-      : fit.basis === "budget" ? "Closest to the budget you gave."
-        : "The collection most couples book.";
-  const booked = sent.availability === "unavailable";
-  const title = !sent.date ? `Thank you, ${sent.names}.` : booked ? `I’m booked on ${longDate(sent.date)}.` : `${longDate(sent.date)} is open.`;
-  const lead = !sent.date
-    ? "Here’s your pricing. Once you’ve settled on a date, send it over and I’ll check it straight away."
-    : booked
-      ? "I’m already committed that day. If your date can still move, change it and I’ll check again. Your pricing is below either way."
-      : `Your ${weekday} is available, ${sent.names}. Here’s your pricing, and a time for a free video call if you’d like one.`;
+  const fit = recommendCollection(sent.coverage, sent.budget);
+  const coverage = COVERAGE_OPTIONS.find((option) => option.value === sent.coverage)?.label.toLowerCase();
+  const reason = fit.basis === "coverage" ? `Matches the ${coverage} you asked for.`
+    : fit.basis === "budget" ? "Closest to the budget you gave."
+      : "The collection most couples book.";
+  const when = sent.date ? `your ${weekdayOf(sent.date)}, ${longDate(sent.date)}` : sent.season && sent.season !== "Later than that" ? sent.season : "";
+  const lead = `Here’s your pricing${when ? ` for ${when}` : ""}${sent.location ? ` at ${sent.location}` : ""}.${sent.emailed ? ` I’ve sent it to ${sent.email} as well, with a note about your day.` : ""}`;
 
   return <section className={funnel.thanks} aria-labelledby="thanks-title">
     <header className={styles.header}><span className={styles.wordmark}>Arman Arai<span>WEDDING PHOTOGRAPHY</span></span></header>
     <div className={funnel.thanksGrid}>
       <div className={funnel.thanksCopy}>
-        <p className={styles.eyebrow}>Your date check · {city}</p>
-        <h1 id="thanks-title" ref={heading} tabIndex={-1} className={funnel.thanksTitle}>{title}</h1>
+        <p className={styles.eyebrow}>Your pricing · {city}</p>
+        <h1 id="thanks-title" ref={heading} tabIndex={-1} className={funnel.thanksTitle}>Thank you, {sent.names}.</h1>
         <p className={funnel.thanksLead}>{lead}</p>
         <ol className={funnel.pricing} aria-label="Your pricing">
           {collections.map((collection) => {
             const best = collection.slug === fit.slug;
-            const unavailable = collection.slug === "short-story" && sent.shortStory === false;
-            return <li key={collection.slug} className={`${funnel.collection}${best ? ` ${funnel.best}` : ""}${unavailable ? ` ${funnel.unavailable}` : ""}`}>
+            return <li key={collection.slug} className={`${funnel.collection}${best ? ` ${funnel.best}` : ""}`}>
               {best && <p className={funnel.bestTag}>Best fit · {reason}</p>}
-              {unavailable && <p className={funnel.unavailableNote}>Not offered on your {weekday}.</p>}
               <details open={best}>
                 <summary>
                   <span className={funnel.collectionName}>{collection.name}<small>{collection.hoursLabel}</small></span>
@@ -252,8 +239,8 @@ function ThankYou({ sent, collections, city, page, phone, phoneE164, travelNote,
         <WeddingCalendar page={page} theme="dark" classes={styles} prefill={{ name: sent.names, email: sent.email }} />
       </div>
       <div className={funnel.noCall}>
-        <p><strong>Rather not do a call?</strong> That’s fine. I’ll reply to {sent.email} the same day, or text me at <a href={`sms:${phoneE164}`}>{phone}</a>.</p>
-        <p className={styles.checkMicro}>Checking a date doesn’t reserve it. A signed contract and a 30% retainer do.</p>
+        <p><strong>Rather not do a call?</strong> That’s fine. {sent.emailed ? "Reply to my email, or message me on " : `I’ll reply to ${sent.email} the same day, or message me on `}<MessageLinks phone={phone} phoneE164={phoneE164} city={city} />.</p>
+        <p className={styles.checkMicro}>A signed contract and a 30% retainer secure your date.</p>
         <button type="button" className={styles.checkAnother} onClick={onEdit}>Change my details</button>
       </div>
     </div>

@@ -55,7 +55,7 @@
 .noCall { grid-area: nocall; border-top: .5px solid var(--line); padding-top: 22px; font-size: 14px; line-height: 1.8; color: var(--dark-body); }
 .noCall strong { font-weight: 400; color: var(--ink); }
 .noCall a { color: var(--gold) !important; text-decoration: underline !important; text-underline-offset: 3px; white-space: nowrap; }
-.formPanel a[href^="sms:"] { white-space: nowrap; }
+.nowrap { white-space: nowrap; }
 
 @media (max-width: 1100px) {
   .hero { padding-top: 45px; column-gap: 4%; }

@@ -22,7 +22,7 @@ import type { WeddingAvailability } from "@/lib/wedding-availability";
 /** Google Ads writes the click id into _gcl_aw as "GCL.<ts>.<gclid>". Reading
  *  it back covers a visitor who lands on the ad and comes back to the form on a
  *  URL that no longer carries ?gclid. Same helper as components/promo/LeadForm. */
-function gclidFromCookie(): string {
+export function gclidFromCookie(): string {
   const m = /(?:^|;\s*)_gcl_aw=([^;]*)/.exec(document.cookie);
   if (!m) return "";
   const parts = decodeURIComponent(m[1]).split(".");
@@ -31,7 +31,7 @@ function gclidFromCookie(): string {
 
 type Attribution = Record<string, string>;
 
-const ATTRIBUTION_KEYS = [
+export const ATTRIBUTION_KEYS = [
   "utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term",
 ] as const;
 

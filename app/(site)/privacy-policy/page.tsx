@@ -47,9 +47,10 @@ export default function PrivacyPolicy() {
             <li>Email address and phone number</li>
             <li>Wedding date, venue, and location</li>
             <li>Guest count and how you found me</li>
+            <li>The coverage you want and your approximate photography budget</li>
             <li>Any message or story you choose to share</li>
           </ul>
-          <p style={{ marginTop: 12 }}>I also collect aggregate traffic data: which pages are visited, roughly how long for, the type of device, and the country the request came from. Vercel measures aggregate traffic without cookies. Google and Meta also measure page visits, ad attribution and completed call bookings using browser identifiers. See Third Party Services below.</p>
+          <p style={{ marginTop: 12 }}>I also collect aggregate traffic data: which pages are visited, roughly how long for, the type of device, and the country the request came from. Vercel measures aggregate traffic without cookies. Google and Meta also measure page visits, submitted inquiries, ad attribution and completed call bookings using browser identifiers. See Third Party Services below.</p>
         </Section>
 
         <Section title="How I Use Your Information">
@@ -71,7 +72,7 @@ export default function PrivacyPolicy() {
             <li><strong style={{ color: "var(--text)" }}>Cloudflare</strong>: serves the photographs on this site from cdn.armanarai.ca and sits in front of it as a CDN. Cloudflare keeps standard request logs.</li>
             <li><strong style={{ color: "var(--text)" }}>Calendly</strong>: powers the scheduling calendar embedded on the contact and wedding landing pages. It loads only if you scroll to it, and only then does it set its own cookies. If you book a time, the name, email and any details you enter go to Calendly to create the appointment.</li>
           </ul>
-          <p style={{ marginTop: 12 }}><strong style={{ color: "var(--text)" }}>Google Analytics 4 and Google Ads</strong> measure visits, advertising attribution and completed discovery-call bookings. <strong style={{ color: "var(--text)" }}>Meta Pixel</strong> measures page visits, submitted inquiries and completed bookings for advertising attribution. All three load when a public page loads. These services may process data outside Canada under their own privacy policies. Website conversion events do not include the name, email or answers you enter in Calendly.</p>
+          <p style={{ marginTop: 12 }}><strong style={{ color: "var(--text)" }}>Google Analytics 4 and Google Ads</strong> measure visits, submitted inquiries, advertising attribution and completed discovery-call bookings. <strong style={{ color: "var(--text)" }}>Meta Pixel</strong> measures page visits, submitted inquiries and completed bookings for advertising attribution. All three load when a public page loads. These services may process data outside Canada under their own privacy policies. Website conversion events do not include the name, email or answers you enter in Calendly.</p>
         </Section>
 
         <Section title="Cookies">

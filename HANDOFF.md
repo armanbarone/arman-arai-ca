@@ -301,6 +301,18 @@ Everything in this list is live and was verified with a real HTTP check.
   globals.css (which `inlineCss` puts on every route). `lib/clips.ts` is empty,
   so the feature is currently inert: a before/after build diff showed **zero
   route-size change on either site**. See §9 before adding a clip.
+- **`/wedding-photography/vancouver-pricing`** (2026-09-28), the pricing-request
+  ads page. Same photographs and offer as `/vancouver-1500`, but ONE action:
+  a seven-field form (names, email, mobile, date or season, venue, coverage,
+  budget) under the headline, and every other link on the page scrolls to it.
+  Sending it replaces the page with a thank-you view: date result, pricing with
+  the best-fit collection marked, the Calendly calendar prefilled with their
+  name and email, and an email/text alternative to the call. Short Story is not
+  shown as the fit on a date it does not run (`shortStoryOnDate`). The offer
+  itself now lives in `lib/ads/short-story.ts`, read by both Vancouver pages and
+  the contact API. The lead arrives as "Pricing request — Vancouver — <names>";
+  GA4 gets `wedding_inquiry`, which must be marked a key event and imported into
+  Google Ads as the primary conversion for campaigns pointed at this page.
 
 ---
 

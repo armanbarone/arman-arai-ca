@@ -1,6 +1,6 @@
 export const WEDDING_CALENDAR = "https://calendly.com/i-armanarai/30-minute-meeting-wedding";
 
-export function weddingCalendarUrl(search: string, hostname: string, embedded = true, options: { page?: string; theme?: "light" | "dark" } = {}) {
+export function weddingCalendarUrl(search: string, hostname: string, embedded = true, options: { page?: string; theme?: "light" | "dark"; prefill?: { name?: string; email?: string } } = {}) {
   const incoming = new URLSearchParams(search);
   const params = new URLSearchParams();
   if (embedded) {
@@ -17,8 +17,14 @@ export function weddingCalendarUrl(search: string, hostname: string, embedded = 
     if (value) params.set(key, value);
   }
   if (!params.has("utm_source")) params.set("utm_source", options.page ?? "2728-cc-weddings");
+  // Calendly's own prefill parameters: a couple who has just sent the
+  // pricing-request form should not type their name and email a second time.
+  if (options.prefill?.name) params.set("name", options.prefill.name);
+  if (options.prefill?.email) params.set("email", options.prefill.email);
   if (options.page && !params.has("utm_content")) params.set("utm_content", options.page);
-  return `${WEDDING_CALENDAR}?${params}`;
+  // %20, not "+", for spaces: Calendly's widget re-encodes the URL it is given
+  // and would show a prefilled "Sarah & James" as "Sarah+&+James".
+  return `${WEDDING_CALENDAR}?${params.toString().replace(/\+/g, "%20")}`;
 }
 
 // An unrelated frame or an arbitrary postMessage must never cause a booking redirect.

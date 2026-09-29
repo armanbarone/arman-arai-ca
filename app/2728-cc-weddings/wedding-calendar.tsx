@@ -15,13 +15,14 @@ export function BookingLink({ children, className, placement }: { children: Reac
   return <a href="#book-a-call" className={className} onClick={() => record("Wedding Call CTA", { placement })}>{children}</a>;
 }
 
-export function BookingNavigation({ classes, dateFirst = false, startingPrice = ENTRY.price }: { classes: Record<string, string>; dateFirst?: boolean; startingPrice?: number }) {
+export function BookingNavigation({ classes, dateFirst = false, startingPrice = ENTRY.price, note = "Before tax · travel extra" }: { classes: Record<string, string>; dateFirst?: boolean; startingPrice?: number; note?: string }) {
   const [hidden, setHidden] = useState(true);
   useEffect(() => {
     const section = document.getElementById("book-a-call");
     const hero = document.getElementById(dateFirst ? "check-date" : "hero-title");
     const footer = document.querySelector("footer");
-    if (!section || !hero || !footer || typeof IntersectionObserver === "undefined") return;
+    // The pricing-request page has no calendar section until the form is sent.
+    if (!hero || !footer || typeof IntersectionObserver === "undefined") return;
     let bookingVisible = false;
     let heroVisible = true;
     let footerVisible = false;
@@ -33,13 +34,13 @@ export function BookingNavigation({ classes, dateFirst = false, startingPrice = 
       }
       setHidden(bookingVisible || heroVisible || footerVisible);
     });
-    [section, hero, footer].forEach((el) => observer.observe(el));
+    [section, hero, footer].forEach((el) => { if (el) observer.observe(el); });
     return () => observer.disconnect();
   }, [dateFirst]);
-  return <aside className={classes.stickyCta} hidden={hidden} aria-label={dateFirst ? "Check your wedding date" : "Book a wedding photography call"}><span>2027 & 2028 weddings<br /><strong>From C${startingPrice.toLocaleString("en-CA")}</strong><br />Before tax · travel extra</span>{dateFirst ? <a href="#check-date">Check your date ↗</a> : <BookingLink placement="mobile_bar">Book a free call ↗</BookingLink>}</aside>;
+  return <aside className={classes.stickyCta} hidden={hidden} aria-label={dateFirst ? "Check your wedding date" : "Book a wedding photography call"}><span>2027 & 2028 weddings<br /><strong>From C${startingPrice.toLocaleString("en-CA")}</strong><br />{note}</span>{dateFirst ? <a href="#check-date">Check your date ↗</a> : <BookingLink placement="mobile_bar">Book a free call ↗</BookingLink>}</aside>;
 }
 
-export default function WeddingCalendar({ page = "2728-cc-weddings", theme = "light", classes }: { page?: string; theme?: "light" | "dark"; classes: Record<string, string> }) {
+export default function WeddingCalendar({ page = "2728-cc-weddings", theme = "light", classes, prefill }: { page?: string; theme?: "light" | "dark"; classes: Record<string, string>; prefill?: { name?: string; email?: string } }) {
   const container = useRef<HTMLDivElement>(null);
   const widget = useRef<HTMLDivElement>(null);
   const completed = useRef(false);
@@ -47,9 +48,11 @@ export default function WeddingCalendar({ page = "2728-cc-weddings", theme = "li
   const [direct, setDirect] = useState(`${WEDDING_CALENDAR}?utm_source=${encodeURIComponent(page)}`);
   const [loaded, setLoaded] = useState(false);
   const [scriptReady, setScriptReady] = useState(false);
+  const prefillName = prefill?.name;
+  const prefillEmail = prefill?.email;
 
   useEffect(() => {
-    const options = { page, theme };
+    const options = { page, theme, prefill: { name: prefillName, email: prefillEmail } };
     setDirect(weddingCalendarUrl(window.location.search, window.location.hostname, false, options));
     const mountCalendar = () => setSrc(weddingCalendarUrl(window.location.search, window.location.hostname, true, options));
     if (!container.current || typeof IntersectionObserver === "undefined") { mountCalendar(); return; }
@@ -58,7 +61,7 @@ export default function WeddingCalendar({ page = "2728-cc-weddings", theme = "li
     }, { rootMargin: "650px" });
     observer.observe(container.current);
     return () => observer.disconnect();
-  }, [page, theme]);
+  }, [page, theme, prefillName, prefillEmail]);
 
   useEffect(() => {
     if (!scriptReady || !src || !widget.current) return;

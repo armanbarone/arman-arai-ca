@@ -36,6 +36,14 @@ export const META_PIXEL_ID = "1110472461323039";
  *  also fires from the date-check form and the promo lead form. An Ads account
  *  bidding on generate_lead optimises toward form fills rather than bookings. */
 export const BOOKING_EVENT = "book_appointment";
+/** The GA4 event for a sent pricing-request form on /wedding-photography/
+ *  vancouver-pricing. That page is built so the form, not the call, is the
+ *  conversion: it asks for a mobile number, the coverage and a budget, which
+ *  makes it a qualified lead rather than the four-field date check the note
+ *  on BOOKING_EVENT warns about. Mark it as a GA4 key event and import it
+ *  into Google Ads as the primary conversion for campaigns pointed at that
+ *  page, counted once per click. */
+export const INQUIRY_EVENT = "wedding_inquiry";
 export const BOOKING_KEY = "aa_ca_completed_booking_v1";
 const SENT_KEY = "aa_ca_booking_events_v1";
 const BOOKING_LIFETIME = 30 * 60 * 1000;
@@ -146,6 +154,15 @@ export function trackLead(method: string) {
   const w = window as TrackingWindow;
   w.gtag?.("event", "generate_lead", { send_to: GA4_ID, method, currency: "CAD" });
   w.fbq?.("track", "Lead");
+}
+
+export function trackWeddingInquiry(page: string) {
+  if (!permitted()) return;
+  startTracking();
+  const w = window as TrackingWindow;
+  // No names, emails or phone numbers: the page path is the only detail sent.
+  w.gtag?.("event", INQUIRY_EVENT, { send_to: GA4_ID, landing_page: page, currency: "CAD" });
+  trackLead("wedding_inquiry");
 }
 
 export function bookingFromMessage(data: unknown, page: string, fallbackId: string, now = Date.now()): Booking {

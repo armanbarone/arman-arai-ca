@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { checkWeddingDate } from "@/lib/wedding-availability";
+import { checkWeddingDate, weddingToday } from "@/lib/wedding-availability";
+import { BUDGET_OPTIONS, COVERAGE_OPTIONS, SEASON_PATTERN, SHORT_STORY, recommendCollection, shortStoryOnDate } from "@/lib/ads/short-story";
+import { tierBySlug } from "@/lib/site";
 
 function escapeHtml(value: unknown) {
   return String(value ?? "").replace(/[&<>"']/g, (character) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[character]!);
@@ -52,7 +54,11 @@ export async function POST(req: NextRequest) {
     }
 
     const isDateCheck = type === "wedding-date-check";
-    const availability = isDateCheck ? checkWeddingDate(body.weddingDate) : null;
+    // The pricing-request form on /wedding-photography/vancouver-pricing. A
+    // couple without a date sends a season instead, so only a real date is
+    // checked against the calendar.
+    const isInquiry = type === "wedding-inquiry";
+    const availability = isDateCheck || (isInquiry && body.weddingDate) ? checkWeddingDate(body.weddingDate) : null;
     if (availability && "error" in availability) {
       return NextResponse.json({ error: availability.error }, { status: 400 });
     }
@@ -66,6 +72,48 @@ export async function POST(req: NextRequest) {
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(body.email)) {
         return NextResponse.json({ error: "Please enter a valid email address." }, { status: 400 });
       }
+    }
+
+    let shortStory: boolean | null = null;
+    let inquiryRows: [string, string][] = [];
+    if (isInquiry) {
+      for (const [key, max] of [["name", 80], ["email", 100], ["phone", 30], ["location", 90]] as const) {
+        if (typeof body[key] !== "string" || !body[key].trim() || body[key].length > max) {
+          return NextResponse.json({ error: "Please fill in your names, email, mobile number and venue or area." }, { status: 400 });
+        }
+        body[key] = body[key].trim();
+      }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(body.email)) {
+        return NextResponse.json({ error: "Please enter a valid email address." }, { status: 400 });
+      }
+      if ((body.phone.match(/\d/g) ?? []).length < 7) {
+        return NextResponse.json({ error: "Please enter a mobile number I can text." }, { status: 400 });
+      }
+      const coverage = COVERAGE_OPTIONS.find((option) => option.value === body.coverage);
+      const budget = BUDGET_OPTIONS.find((option) => option.value === body.budget);
+      if (!coverage || !budget) {
+        return NextResponse.json({ error: "Please choose your coverage and your budget." }, { status: 400 });
+      }
+      if (!body.weddingDate && !(typeof body.weddingSeason === "string" && SEASON_PATTERN.test(body.weddingSeason))) {
+        return NextResponse.json({ error: "Choose your wedding date, or roughly when it will be." }, { status: 400 });
+      }
+      const dated = availability && "availability" in availability ? availability : null;
+      shortStory = dated ? shortStoryOnDate(dated.date, weddingToday()) : null;
+      const shown = recommendCollection(coverage.value, budget.value, shortStory);
+      const shownName = shown.slug === SHORT_STORY.slug ? SHORT_STORY.name : tierBySlug(shown.slug)?.name ?? shown.slug;
+      const weekday = dated ? new Intl.DateTimeFormat("en-CA", { weekday: "long", timeZone: "UTC" }).format(new Date(`${dated.date}T12:00:00Z`)) : "";
+      inquiryRows = [
+        ["Names", body.name],
+        ["Email", body.email],
+        ["Mobile", body.phone],
+        ["Wedding date", dated ? `${dated.date} (${weekday})` : `No date yet: ${body.weddingSeason}`],
+        ...(dated ? ([["Availability", dated.availability]] as [string, string][]) : []),
+        ["Short Story that day", shortStory === null ? "No date yet" : shortStory ? "Yes" : `No, not offered on this ${weekday}`],
+        ["Where", body.location],
+        ["Coverage", coverage.label],
+        ["Budget", budget.label],
+        ["Shown as best fit", shownName],
+      ];
     }
 
     const ghlData: Record<string, string> = {
@@ -84,6 +132,10 @@ export async function POST(req: NextRequest) {
       collection: body.collection ?? "",
       message: body.message ?? "",
       referral: body.referral ?? "",
+      // Pricing-request form. Empty on every other form.
+      coverage: body.coverage ?? "",
+      budget: body.budget ?? "",
+      weddingSeason: body.weddingSeason ?? "",
       // Landing-page fields (LeadForm). Empty on the site's own forms.
       preferredMonth: body.preferredMonth ?? "",
       location: body.location ?? "",
@@ -101,7 +153,7 @@ export async function POST(req: NextRequest) {
 
     const isQuick = type === "quick";
     // "founding" is what the ads landing pages send; subjectLabel names which one.
-    const isLanding = type === "founding" || isDateCheck;
+    const isLanding = type === "founding" || isDateCheck || isInquiry;
     const subject = isLanding
       ? `${body.subjectLabel || "Landing Page Inquiry"} — ${body.name}`
       : isQuick
@@ -117,7 +169,9 @@ export async function POST(req: NextRequest) {
       ["Landing page", body.page || ""],
     ].filter((r): r is [string, string] => Boolean(r[1]));
 
-    const rows: [string, string][] = isLanding
+    const rows: [string, string][] = isInquiry
+      ? [...inquiryRows, ...attribution]
+      : isLanding
       ? [
           ["Name", body.name ?? ""],
           ["Email", body.email ?? ""],
@@ -181,7 +235,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Your inquiry could not be sent. Please try again or email i@armanarai.com." }, { status: 503 });
     }
 
-    return NextResponse.json({ success: true, ...(availability && "availability" in availability ? availability : {}) });
+    return NextResponse.json({ success: true, ...(availability && "availability" in availability ? availability : {}), ...(isInquiry ? { shortStory } : {}) });
   } catch (err) {
     console.error("Contact API error:", err);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });

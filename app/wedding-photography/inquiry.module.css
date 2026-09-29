@@ -1,0 +1,75 @@
+/* The pricing-request page. Everything else on it is styled by
+   vancouver.module.css; these are the parts that page does not have. The
+   colours are that module's custom properties, set on .page.dark, so nothing
+   here repeats a palette. Selectors that must beat vancouver.module.css's
+   `.page h1` / `.page p` rules are two classes deep, because the order the two
+   modules load in is not guaranteed. */
+
+/* The hero, in three areas so the photograph can sit between the headline and
+   the form on a phone. A couple arriving from an ad should see the work on the
+   first screen, not only a form. */
+.hero { max-width: 1440px; margin: auto; display: grid; grid-template-columns: 1fr 1.04fr; grid-template-areas: "top art" "form art"; grid-template-rows: auto 1fr; column-gap: 6%; padding: 62px 5.5% 72px; }
+.heroTop { grid-area: top; }
+.heroTop .heroEyebrow { max-width: 370px; margin-bottom: 28px; }
+.hero .heroTitle { font-size: clamp(60px, 6.85vw, 105px); line-height: .92; margin-bottom: 28px; }
+.heroArt { grid-area: art; align-self: start; }
+.formPanel { grid-area: form; }
+
+.labelRow { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.dateToggle { background: none; border: 0; padding: 0; margin-bottom: 5px; font-size: 11px !important; color: var(--muted); text-decoration: underline; text-underline-offset: 3px; white-space: nowrap; }
+.dateToggle:hover { color: var(--gold); }
+.select { display: block; width: 100%; min-width: 0; height: 45px; border: 0; border-bottom: .5px solid #76624c; border-radius: 0; padding: 8px 18px 8px 0; background: transparent url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%23b8956a' stroke-width='1.2'/%3E%3C/svg%3E") no-repeat right 2px center; font: inherit; font-size: 16px; color: var(--ink); appearance: none; -webkit-appearance: none; color-scheme: dark; text-overflow: ellipsis; }
+.select:focus { border-bottom-color: var(--gold); }
+.select:invalid { color: var(--muted); }
+.select option { color: #e8e0d0; background: #141210; }
+
+/* The closing section, where the calendar used to be. It sends people back up
+   to the one form rather than offering a second way in. */
+.finalCta { padding: 85px max(5.5%, calc((100% - 1280px) / 2)); display: grid; grid-template-columns: 1fr 1fr; gap: 8%; align-items: center; background: var(--dark-surface); border-top: .5px solid var(--line); }
+.finalCta .finalButton { width: 100%; max-width: 440px; }
+
+/* The thank-you view that replaces the page once the form is sent. */
+.thanks { min-height: 80vh; }
+.thanksGrid { max-width: 1440px; margin: auto; padding: 56px 5.5% 80px; display: grid; grid-template-columns: .9fr 1.1fr; grid-template-areas: "copy next" "nocall next"; column-gap: 6%; row-gap: 30px; align-items: start; }
+.thanksCopy { grid-area: copy; }
+.thanksCopy .thanksTitle { font-size: clamp(46px, 5vw, 76px); line-height: 1; margin: 18px 0 20px; outline: none; }
+.thanksLead { font-size: 16px; line-height: 1.7; max-width: 500px; color: var(--dark-body); }
+.pricing { list-style: none; padding: 0; margin: 34px 0 0; border-top: .5px solid var(--line); }
+.collection { border-bottom: .5px solid var(--line); padding: 18px 0; }
+.collection summary { display: flex; justify-content: space-between; align-items: baseline; gap: 18px; list-style: none; cursor: pointer; }
+.collection summary::-webkit-details-marker { display: none; }
+.collectionName { font-family: var(--font-cormorant), Georgia, serif; font-size: 31px; line-height: 1.1; }
+.collectionName small { display: block; font-family: var(--font-jost), sans-serif; font-size: 11px; letter-spacing: .08em; color: var(--muted); margin-top: 4px; }
+.collectionPrice { font-family: var(--font-cormorant), Georgia, serif; font-size: 31px; line-height: 1.1; color: var(--gold); white-space: nowrap; }
+.collection ul { margin: 16px 0 4px; padding: 0; list-style: none; font-size: 13px; line-height: 1.8; color: var(--dark-body); }
+.collection li { position: relative; padding-left: 19px; margin-bottom: 6px; }
+.collection li::before { content: '✓'; position: absolute; left: 0; color: var(--gold); }
+.best { background: var(--dark-card); margin: 0 -16px; padding: 18px 16px; border-bottom-color: #6a5030; box-shadow: inset 0 1px var(--gold); }
+.collection .bestTag { font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--gold); margin-bottom: 10px; }
+.unavailable summary { opacity: .5; }
+.collection .unavailableNote { font-size: 12px; color: var(--muted); margin-top: 6px; }
+.thanksCopy .pricingNote { font-size: 11px; color: var(--muted); margin-top: 16px; }
+.nextStep { grid-area: next; }
+.nextStep .nextTitle { font-size: clamp(38px, 3.6vw, 54px); margin: 16px 0; }
+.nextStep > p:not(:first-child) { font-size: 14px; line-height: 1.8; color: var(--dark-body); margin-bottom: 22px; }
+.noCall { grid-area: nocall; border-top: .5px solid var(--line); padding-top: 22px; font-size: 14px; line-height: 1.8; color: var(--dark-body); }
+.noCall strong { font-weight: 400; color: var(--ink); }
+.noCall a { color: var(--gold) !important; text-decoration: underline !important; text-underline-offset: 3px; white-space: nowrap; }
+.formPanel a[href^="sms:"] { white-space: nowrap; }
+
+@media (max-width: 1100px) {
+  .hero { padding-top: 45px; column-gap: 4%; }
+  .hero .heroTitle { font-size: 76px; }
+}
+@media (max-width: 760px) {
+  .hero { grid-template-columns: 1fr; grid-template-areas: "top" "art" "form"; grid-template-rows: auto; padding: 24px 6% 55px; row-gap: 18px; }
+  /* Two lines, not three, so the photograph reaches the first screen. */
+  .hero .heroTitle { font-size: clamp(38px, 11.2vw, 58px); line-height: .98; margin-bottom: 16px; }
+  .hero .heroTitle br:first-of-type { display: none; }
+  .heroTop .heroEyebrow { max-width: none; font-size: 8px; letter-spacing: .14em; margin-bottom: 18px; }
+  .heroArt .heroImage { aspect-ratio: 3 / 2; }
+  .finalCta { grid-template-columns: 1fr; gap: 10px; padding: 55px 6%; }
+  .thanksGrid { grid-template-columns: 1fr; grid-template-areas: "copy" "next" "nocall"; padding: 36px 6% 60px; row-gap: 40px; }
+  .collectionName, .collectionPrice { font-size: 27px; }
+  .best { margin: 0 -12px; padding: 18px 12px; }
+}

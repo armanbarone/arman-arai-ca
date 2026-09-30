@@ -20,13 +20,13 @@ export const metadata: Metadata = {
     absolute: "Creative Wedding Photography, Built Around Your Day | Arman Arai",
   },
   description:
-    "No two weddings get the same plan. Collections from C$3,000, the same price wherever you marry, with travel kept separate and lean. Book a 30-minute call and find out if your date is open.",
+    "No two weddings get the same plan. Collections from C$3,000, the same price wherever you marry, with travel kept separate and lean. Book a 30-minute call and find out which collection fits.",
   robots: { index: false, follow: true },
   alternates: { canonical: `${SITE.url}/2728-weddings` },
   openGraph: {
     title: "Creative wedding photography, built around your day",
     description:
-      "Collections from C$3,000, the same price wherever you marry. Book a 30-minute call and find out if your date is open.",
+      "Collections from C$3,000, the same price wherever you marry. Book a 30-minute call and find out which collection fits.",
     url: `${SITE.url}/2728-weddings`,
     images: [{ url: LANDING_OG_IMAGE }],
   },

@@ -50,7 +50,6 @@ const QUOTES = [
 ];
 
 const collectionFor: Record<string, string> = {
-  essential: "A ceremony, the portraits and dinner in one place.",
   signature: "A getting-ready, a ceremony and the party that follows.",
   complete: "A long day, from the first coffee to the last dance, with two of us on it.",
   "photo-film": "The same day, with a filmmaker beside me so you can hear it too.",
@@ -110,7 +109,7 @@ export default function LandingPage({ variant }: { variant: LandingVariant }) {
         </section>
 
         <div className={styles.factBar} aria-label="At a glance">
-          <span>6, 8, 10 or 12 hours of coverage</span>
+          <span>8, 10 or 12 hours of coverage</span>
           <span>400 to 800+ edited images</span>
           <span>Preview in 24 to 48 hours</span>
           <span>Photographed by Arman, every time</span>
@@ -197,7 +196,7 @@ export default function LandingPage({ variant }: { variant: LandingVariant }) {
           <div className={styles.sectionHead}>
             <div>
               <p className={styles.eyebrow}>What it costs</p>
-              <h2 id="prices-title">Four collections.<br /><em>Four whole numbers.</em></h2>
+              <h2 id="prices-title">Three collections.<br /><em>Three whole numbers.</em></h2>
             </div>
             <p>
               No tiers behind a form and no quote you have to earn. Pick the one

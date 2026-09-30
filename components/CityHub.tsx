@@ -493,7 +493,7 @@ export default function CityHub({ market: m }: { market: Market }) {
       <section className="hub-section hub-section--close">
         <p className="hub-section-kicker">{m.city} dates</p>
         <h2 className="hub-section-h">Is yours open?</h2>
-        <InquireButton className="hub-cta hub-cta--big">Check your date</InquireButton>
+        <InquireButton className="hub-cta hub-cta--big">Start your inquiry</InquireButton>
         <p className="hub-colophon">{hub.colophon}</p>
         <div className="hub-other">
           {others.map((o) => (

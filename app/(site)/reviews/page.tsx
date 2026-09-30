@@ -94,7 +94,7 @@ export default function Reviews() {
               See complete weddings →
             </Link>
             <InquireButton className="inline-block bg-rose text-ivory text-[0.62rem] tracking-[0.2em] uppercase px-10 py-4 hover:bg-rose-dark transition-colors duration-300 cursor-pointer border-none">
-              Check your date
+              Start your inquiry
             </InquireButton>
           </div>
         </div>

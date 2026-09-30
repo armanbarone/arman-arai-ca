@@ -64,7 +64,7 @@ const CHAPTERS = [
     kicker: "The session",
     title: "An hour to stop performing",
     body: [
-      "An engagement session is included in Signature and every collection above it, and a C$450 add-on on Essential. It is the hour I recommend most often, and it is not really for the photographs.",
+      "An engagement session is included in every collection. It is the hour I recommend most often, and it is not really for the photographs.",
       "It is for the hour where you stop performing for the camera and I learn how the two of you actually stand next to each other. Couples who have done it are noticeably different at 4pm on the wedding day, and it shows in the frames.",
     ],
     photo: FILM[4],
@@ -89,7 +89,7 @@ const CHAPTERS = [
     title: "Something in their hands that night",
     body: [
       "Every collection includes vertical social reels sent in the first week, and film prints handed to your guests on the night, so people leave your wedding holding a photograph from it rather than waiting weeks for a link. It is the single most commented-on thing I do.",
-      "A colour-graded feature film follows on Signature and Complete, one minute and three minutes respectively, and Photo + Film returns a three to five minute piece shot by a dedicated filmmaker. So does a preview of stills, inside 48 hours on Essential, next day on Signature and 24 hours on Complete, while the day is still in your head.",
+      "A colour-graded feature film follows on Signature and Complete, one minute and three minutes respectively, and Photo + Film returns a three to five minute piece shot by a dedicated filmmaker. So does a preview of stills, next day on Signature and Photo + Film and within 24 hours on Complete, while the day is still in your head.",
     ],
     photo: EDITORIAL[10],
   },
@@ -100,7 +100,7 @@ const CHAPTERS = [
     kicker: "The return",
     title: "The whole day, in order",
     body: [
-      "The full gallery arrives within two weeks on Essential and three on everything above it, and the date is in the contract rather than in an email. It comes back as the day happened, start to finish, including the quiet parts a highlight reel leaves out.",
+      "The full gallery arrives within three weeks, and the date is in the contract rather than in an email. It comes back as the day happened, start to finish, including the quiet parts a highlight reel leaves out.",
       "The top two collections carry a real album rather than a credit toward one: the 10×10 Signature album, on Complete and on Photo + Film, with the 12×12 in full-grain leather available as an upgrade. A hard drive is not an heirloom, and nobody has ever taken a folder of JPEGs off a shelf to show someone.",
     ],
     photo: DREAMY_FINE_ART[1],
@@ -258,7 +258,7 @@ export default function Experience() {
         <div className="page-w page-px">
           <p className="text-[0.62rem] tracking-[0.32em] uppercase text-rose mb-5">And what it costs</p>
           <h2 className="font-serif font-light text-cream mb-6" style={{ fontSize: "clamp(1.9rem,3vw,3rem)" }}>
-            Four collections, <em className="italic text-rose">one price anywhere</em>
+            Three collections, <em className="italic text-rose">one price anywhere</em>
           </h2>
           <p className="text-blush text-[0.95rem] leading-relaxed max-w-2xl mx-auto mb-10 font-light">
             The same figure wherever the wedding happens. Travel stays separate, uses
@@ -276,7 +276,7 @@ export default function Experience() {
           </div>
           <div className="flex flex-wrap items-center justify-center gap-8">
             <InquireButton className="inline-block bg-rose text-ivory text-[0.68rem] tracking-[0.2em] uppercase px-10 py-4 hover:bg-rose-dark transition-colors duration-300 cursor-pointer border-none">
-              Check your date
+              Start your inquiry
             </InquireButton>
             <Link
               href="/pricing"

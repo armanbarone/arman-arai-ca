@@ -40,7 +40,7 @@ import { ENTRY, MARKETS, SITE, TIERS } from "@/lib/site";
 export const metadata: Metadata = {
   title: "Canadian Wedding Photographer — Toronto, Montréal, Vancouver",
   description:
-    "Documentary and editorial wedding photography across Canada. Four collections from C$2,000, the same price in every province. Destination weddings worldwide outside the USA, quoted.",
+    "Documentary and editorial wedding photography across Canada. Three collections from C$3,000, the same price in every province. Destination weddings worldwide outside the USA, quoted.",
   alternates: { canonical: "/" },
 };
 
@@ -103,7 +103,7 @@ const carried = [
   { t: "A timeline that survives", d: "Built backwards from sunset, with one deliberate block of slack that absorbs the whole morning's drift." },
   { t: "A written family-photo plan", d: "Twelve groups and two callers, agreed before the day. This is the single largest block of time a big wedding gets back." },
   { t: "A preview in 48 hours", d: "Thirty frames while the day is still in your head. Next day on Signature, 24 hours on Complete." },
-  { t: "The full gallery, dated", d: "Two weeks on Essential, three on everything above it. The date is in the contract, not in an email." },
+  { t: "The full gallery, dated", d: "Three weeks, on every collection. The date is in the contract, not in an email." },
   { t: "One price, wherever it happens", d: "A collection costs the same in every city. Travel stays separate, uses the lowest practical route and drops when regional dates can be grouped." },
 ];
 
@@ -178,7 +178,7 @@ export default function Home() {
 
               <p className="dr-lede" style={{ marginBottom: "2.2rem", maxWidth: "30rem" }}>
                 <strong>Documentary and editorial wedding photography, across Canada.</strong>{" "}
-                Four collections at one price in every province, with vertical social reels
+                Three collections at one price in every province, with vertical social reels
                 and film prints in every one and travel quoted openly on top. Destination
                 weddings too, anywhere outside the United States, quoted against the country
                 and the date.
@@ -186,7 +186,7 @@ export default function Home() {
 
               <div className="dr-cta-row">
                 <InquireButton className="dr-cta" style={{ cursor: "pointer" }}>
-                  Check your date
+                  Start your inquiry
                 </InquireButton>
                 <Link href="/experience" className="dr-cta-ghost">
                   Walk the whole day <span aria-hidden>&rarr;</span>
@@ -338,7 +338,7 @@ export default function Home() {
               <h3 className="dr-h3">Film</h3>
               <p className="dr-p">
                 Vertical social reels in every collection, in the first week. A
-                colour-graded feature film above Essential: one minute on Signature, three on
+                colour-graded feature film in every collection: one minute on Signature, three on
                 Complete. Real film too, two rolls on Signature and four on Complete,
                 processed and scanned. And prints handed to your guests on the night, so
                 people leave holding something from the day.
@@ -419,7 +419,7 @@ export default function Home() {
                     Walk the whole day
                   </Link>
                   <InquireButton className="dr-cta-ghost" style={{ cursor: "pointer" }}>
-                    Check your date <span aria-hidden>→</span>
+                    Start your inquiry <span aria-hidden>→</span>
                   </InquireButton>
                 </div>
               </div>
@@ -474,11 +474,11 @@ export default function Home() {
               <div className="dr-stack">
                 <p className="dr-eyebrow">What it costs</p>
                 <h2 className="dr-h2">
-                  Four collections, and one price{" "}
+                  Three collections, and one price{" "}
                   <span className="dr-flourish">wherever you marry</span>
                 </h2>
                 <p className="dr-p">
-                  Essential is {money(ENTRY.price)} in Montréal, in Toronto, in Vancouver and in a
+                  {ENTRY.name} is {money(ENTRY.price)} in Montréal, in Toronto, in Vancouver and in a
                   field in Saskatchewan. The city does not move the number, because the work
                   does not change. Travel stays separate, is kept lean through early booking and
                   is reduced or waived when another regional date already covers the trip.
@@ -606,7 +606,7 @@ export default function Home() {
             </p>
             <div className="dr-cta-row" style={{ justifyContent: "center" }}>
               <InquireButton className="dr-cta" style={{ cursor: "pointer" }}>
-                Check your date
+                Start your inquiry
               </InquireButton>
               <Link href="/pricing" className="dr-cta-ghost">
                 See what it costs <span aria-hidden>→</span>

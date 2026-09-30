@@ -2,7 +2,7 @@ import Image from "next/image";
 import { Analytics } from "@vercel/analytics/next";
 import { ARMAN } from "@/lib/images";
 import type { WeddingCity } from "@/lib/ads/city-wedding-pages";
-import { pricingTiers, tierItems, type PricingMarket } from "@/lib/ads/pricing-request";
+import { funnelCollections, pricingTiers, tierItems, type PricingMarket } from "@/lib/ads/pricing-request";
 import { SITE } from "@/lib/site";
 import { autoReplyEnabled } from "@/lib/auto-reply";
 import { proofByN, proofSrc } from "@/lib/reviews";
@@ -29,7 +29,7 @@ export default function InquiryLanding({ city, market }: { city: WeddingCity; ma
   const from = Math.min(...tiers.map((tier) => tier.price));
   const hourList = [...new Set(tiers.map((tier) => tier.hours))].sort((a, b) => a - b);
   const hours = `${hourList.slice(0, -1).join(", ")} or ${hourList.at(-1)}`;
-  const collections: FunnelCollection[] = tiers.map((tier) => ({ slug: tier.slug, name: tier.name, hoursLabel: `${tier.hours} hours of coverage`, price: tier.price, items: tierItems(tier) }));
+  const collections: FunnelCollection[] = funnelCollections();
   const shared = questionsFor(city);
   const questions: string[][] = [
     // Read at build time, like every env var on a static page: adding the key

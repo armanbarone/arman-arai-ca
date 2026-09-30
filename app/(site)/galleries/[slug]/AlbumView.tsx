@@ -134,7 +134,7 @@ export default function AlbumView({ gallery: g }: { gallery: Gallery }) {
           Your day, <em className="ga-script">the same way</em>
         </h2>
         <div className="ga-actions">
-          <InquireButton className="ga-cta">Check your date</InquireButton>
+          <InquireButton className="ga-cta">Start your inquiry</InquireButton>
           <Link href="/pricing" className="ga-back">
             See what a full day costs →
           </Link>

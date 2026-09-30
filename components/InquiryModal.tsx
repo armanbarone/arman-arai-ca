@@ -90,12 +90,11 @@ export default function InquiryModal() {
               Begin here
             </p>
             <h2 id="inquiry-modal-title" className="font-serif font-light text-cream mb-1" style={{ fontSize: "1.6rem" }}>
-              Is your date still open?
+              Tell me about your wedding.
             </h2>
             <p className="text-blush text-xs leading-relaxed mb-8">
-              Send the date and the city and I will tell you whether I am free, which
-              collection I would actually recommend, and what travel comes to. Inside two
-              business hours.
+              Send the date and the city and I will tell you which collection I would
+              actually recommend and what travel comes to. Inside two business hours.
             </p>
 
             <form onSubmit={handleSubmit} className="space-y-5">
@@ -214,7 +213,7 @@ export default function InquiryModal() {
                 disabled={status === "sending"}
                 className="w-full bg-rose text-ivory text-[0.62rem] tracking-[0.2em] uppercase py-4 hover:bg-rose transition-colors duration-300 disabled:opacity-60 mt-2"
               >
-                {status === "sending" ? "Sending..." : "Check my date"}
+                {status === "sending" ? "Sending..." : "Send my inquiry"}
               </button>
             </form>
           </>

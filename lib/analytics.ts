@@ -156,6 +156,12 @@ export function trackLead(method: string) {
   w.fbq?.("track", "Lead");
 }
 
+/** Where a sent pricing-request form lands: its own URL, so Google Ads can
+ *  count the inquiry by URL. PublicTracking leaves these pages alone; the page
+ *  starts the tags itself, and only when this tab really sent the form. */
+export const pricingThankYouPath = (market: string) => `/wedding-photography/${market}-pricing/thank-you`;
+export const isPricingThankYouPath = (path: string) => /^\/wedding-photography\/[a-z]+-pricing\/thank-you\/?$/.test(path);
+
 export function trackWeddingInquiry(page: string) {
   if (!permitted()) return;
   startTracking();

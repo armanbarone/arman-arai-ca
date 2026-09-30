@@ -26,7 +26,7 @@ const GROUPS = [
     faqs: [
       {
         q: "What does a wedding actually cost?",
-        a: `Four collections, at the same figure anywhere in Canada: ${TIERS.map((t) => `${t.name} ${money(t.price)}` + ` for ${t.hours} hours`).join(", ")}. The city does not change the number. Sales tax goes on top, and travel stays separate only when the wedding requires its own trip.`,
+        a: `Three collections, at the same figure anywhere in Canada: ${TIERS.map((t) => `${t.name} ${money(t.price)}` + ` for ${t.hours} hours`).join(", ")}. The city does not change the number. Sales tax goes on top, and travel stays separate only when the wedding requires its own trip.`,
       },
       {
         q: "Is anything added afterwards?",
@@ -37,8 +37,8 @@ const GROUPS = [
         a: "Thirty per cent to hold the date, with the balance due 30 days before the wedding. The balance can be split across instalments if that helps; say so and I will set it up that way from the start.",
       },
       {
-        q: "Is six hours enough?",
-        a: "For a ceremony and a dinner in one place, yes, and that is what Essential is. It stops being enough the moment there is a getting-ready across town or a reception that runs late, and then you are buying hours back at C$400 each. If your day has two locations, take Signature.",
+        q: "How many hours do we need?",
+        a: "Eight hours, which is Signature, covers most full weddings: a getting-ready, a ceremony and a reception. Once the day runs from the morning to the last dance, or two rooms need covering at once, take Complete at ten hours. Photo + Film runs twelve, with a dedicated filmmaker. An extra hour on any collection is C$400.",
       },
     ],
   },
@@ -55,11 +55,11 @@ const GROUPS = [
       },
       {
         q: "Is there a second photographer?",
-        a: "Not inside any collection. It is an add-on on all three, C$1,000 for six hours and C$1,500 for ten, because a second photographer is a real person being paid a real day rate and folding that into a package quietly is how it gets done badly. If the two of you are getting ready in different places, one photographer cannot be in both and I will say so rather than let you find out.",
+        a: "Complete includes one for four hours. On Signature and Photo + Film it is an add-on: C$800 for four hours, which is the minimum, and C$175 for each hour after that, because a second photographer is a real person being paid a real day rate and folding that into a package quietly is how it gets done badly. If the two of you are getting ready in different places, one photographer cannot be in both and I will say so rather than let you find out.",
       },
       {
         q: "Do you shoot video?",
-        a: "A colour-graded feature film cut from your day: one minute on Signature, three minutes on Complete. Essential has no feature film, only the social reels. It is shot alongside the photographs rather than by a separate operator, which is what makes it includable at all. A dedicated filmmaker is a different product: it is what Photo + Film carries at C$5,900, and it can be added to any other collection for C$2,900.",
+        a: "A colour-graded feature film cut from your day: one minute on Signature, three minutes on Complete. It is shot alongside the photographs rather than by a separate operator, which is what makes it includable at all. A dedicated filmmaker is a different product: it is what Photo + Film carries at C$5,900, and it can be added to any other collection for C$2,900.",
       },
     ],
   },
@@ -101,7 +101,7 @@ const GROUPS = [
       },
       {
         q: "When do the photographs arrive?",
-        a: "Social reels in the first week. A preview inside 48 hours on Essential, next day on Signature and Photo + Film, 24 hours on Complete. The full gallery within two weeks on Essential and three weeks on everything above it, because those carry a graded film and real rolls to develop. A dedicated filmmaker's film on Photo + Film takes ten weeks. The date is in the contract, not in an email.",
+        a: "Social reels in the first week. A preview the next day on Signature and Photo + Film, and within 24 hours on Complete. The full gallery within three weeks, because every collection carries a graded film and real rolls to develop. A dedicated filmmaker's film on Photo + Film takes ten weeks. The date is in the contract, not in an email.",
       },
       {
         q: "How far in advance should we book?",

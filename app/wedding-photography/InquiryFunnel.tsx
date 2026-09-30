@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from "react";
-import { trackWeddingInquiry } from "@/lib/analytics";
+import { pricingThankYouPath, trackPageView, trackWeddingInquiry } from "@/lib/analytics";
 import { BUDGET_OPTIONS, COVERAGE_OPTIONS, longDate, recommendCollection, seasonOptions, weekdayOf } from "@/lib/ads/pricing-request";
 import { weddingToday } from "@/lib/wedding-availability";
 import WeddingCalendar from "../2728-cc-weddings/wedding-calendar";
@@ -21,6 +21,12 @@ import funnel from "./inquiry.module.css";
  * and a mobile number, and the auto-reply (lib/auto-reply.ts) reaches their
  * inbox within a minute. The page checks no calendar and says nothing about
  * whether a date is free.
+ *
+ * A sent form moves the browser to its own URL,
+ * /wedding-photography/<city>-pricing/thank-you, so Google Ads can count an
+ * inquiry by URL. That page loads the Google tag only when this tab really
+ * sent the form (sessionStorage, see ThankYouFromSession); a typed or shared
+ * visit to it loads no tags and cannot count as a conversion.
  */
 
 export const FORM_ID = "get-pricing";
@@ -29,6 +35,8 @@ export const CTA_LABEL = "Get Pricing";
 export type FunnelCollection = { slug: string; name: string; hoursLabel: string; price: number; items: string[] };
 
 type Sent = {
+  market: string;
+  sentAt: number;
   names: string;
   email: string;
   date?: string;
@@ -41,6 +49,22 @@ type Sent = {
 };
 
 const FunnelContext = createContext<(sent: Sent) => void>(() => {});
+
+const SENT_KEY = "aa_ca_pricing_inquiry_v1";
+const REPORTED_KEY = "aa_ca_pricing_inquiry_reported_v1";
+const SENT_LIFETIME = 2 * 60 * 60 * 1000;
+
+/** True when the sent form was stored, so the thank-you URL can show it. */
+function storeSent(sent: Sent) {
+  try { sessionStorage.setItem(SENT_KEY, JSON.stringify(sent)); return true; } catch { return false; }
+}
+function readSent(market: string): Sent | null {
+  try {
+    const sent = JSON.parse(sessionStorage.getItem(SENT_KEY) || "null") as Sent | null;
+    if (!sent || sent.market !== market || typeof sent.names !== "string" || Date.now() - sent.sentAt > SENT_LIFETIME) return null;
+    return sent;
+  } catch { return null; }
+}
 const money = (amount: number) => `C$${amount.toLocaleString("en-CA")}`;
 
 type Contact = { phone: string; phoneE164: string };
@@ -119,9 +143,9 @@ export function InquiryForm({ city, market, page }: { city: string; market: stri
       const res = await fetch("/api/contact", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
       const data = await res.json();
       if (!res.ok || data.success !== true) throw new Error(data.error || "That did not send. Please try again or email i@armanarai.com.");
-      try { trackWeddingInquiry(page); } catch { /* Analytics must never interrupt a lead. */ }
-      setStatus("idle");
-      send({
+      const sent: Sent = {
+        market,
+        sentAt: Date.now(),
         names: payload.name,
         email: payload.email,
         date: payload.weddingDate || undefined,
@@ -130,7 +154,13 @@ export function InquiryForm({ city, market, page }: { city: string; market: stri
         coverage: payload.coverage,
         budget: payload.budget,
         emailed: data.autoReply === true,
-      });
+      };
+      // Its own URL, so the conversion can be counted by URL. Only if storage
+      // is blocked does the thank-you view open in place instead.
+      if (storeSent(sent)) { window.location.assign(pricingThankYouPath(market)); return; }
+      try { trackWeddingInquiry(page); } catch { /* Analytics must never interrupt a lead. */ }
+      setStatus("idle");
+      send(sent);
     } catch (err) {
       setError(err instanceof Error ? err.message : "That did not send.");
       setStatus("error");
@@ -189,14 +219,43 @@ export function InquiryForm({ city, market, page }: { city: string; market: stri
   </form>;
 }
 
-function ThankYou({ sent, collections, city, page, phone, phoneE164, travelNote, onEdit }: {
-  sent: Sent;
+type ThankYouProps = {
   collections: FunnelCollection[];
   city: string;
   page: string;
   travelNote: string;
-  onEdit: () => void;
-} & Contact) {
+} & Contact;
+
+/** The thank-you URL's content: the sent form from this tab, or a pointer
+ *  back to the form. Tags start here, and only for a real submission. */
+export function ThankYouFromSession({ market, ...props }: ThankYouProps & { market: string }) {
+  const [sent, setSent] = useState<Sent | null | undefined>(undefined);
+  useEffect(() => {
+    const found = readSent(market);
+    setSent(found);
+    if (!found) return;
+    try {
+      trackPageView();
+      if (sessionStorage.getItem(REPORTED_KEY) !== String(found.sentAt)) {
+        trackWeddingInquiry(`/${props.page}`);
+        sessionStorage.setItem(REPORTED_KEY, String(found.sentAt));
+      }
+    } catch { /* Analytics must never interrupt a lead. */ }
+  }, [market, props.page]);
+  if (sent === undefined) return null;
+  if (!sent) return <section className={funnel.thanks} aria-labelledby="thanks-title">
+    <header className={styles.header}><a className={styles.wordmark} href={`/${props.page}`}>Arman Arai<span>WEDDING PHOTOGRAPHY</span></a></header>
+    <div className={funnel.thanksGrid}><div className={funnel.thanksCopy}>
+      <p className={styles.eyebrow}>{props.city} wedding photography</p>
+      <h1 id="thanks-title" className={funnel.thanksTitle}>Your pricing starts here.</h1>
+      <p className={funnel.thanksLead}>This page opens once you send the short form. It takes a minute.</p>
+      <p style={{ marginTop: 24 }}><a className={styles.button} href={`/${props.page}#${FORM_ID}`}>{CTA_LABEL} <span aria-hidden="true">↗</span></a></p>
+    </div></div>
+  </section>;
+  return <ThankYou sent={sent} {...props} />;
+}
+
+function ThankYou({ sent, collections, city, page, phone, phoneE164, travelNote, onEdit }: ThankYouProps & { sent: Sent; onEdit?: () => void }) {
   const heading = useRef<HTMLHeadingElement>(null);
   useEffect(() => { heading.current?.focus({ preventScroll: true }); }, []);
 
@@ -241,7 +300,9 @@ function ThankYou({ sent, collections, city, page, phone, phoneE164, travelNote,
       <div className={funnel.noCall}>
         <p><strong>Rather not do a call?</strong> That’s fine. {sent.emailed ? "Reply to my email, or message me on " : `I’ll reply to ${sent.email} the same day, or message me on `}<MessageLinks phone={phone} phoneE164={phoneE164} city={city} />.</p>
         <p className={styles.checkMicro}>A signed contract and a 30% retainer secure your date.</p>
-        <button type="button" className={styles.checkAnother} onClick={onEdit}>Change my details</button>
+        {onEdit
+          ? <button type="button" className={styles.checkAnother} onClick={onEdit}>Change my details</button>
+          : <a className={styles.checkAnother} href={`/${page}#${FORM_ID}`}>Change my details</a>}
       </div>
     </div>
   </section>;

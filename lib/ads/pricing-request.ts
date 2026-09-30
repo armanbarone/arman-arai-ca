@@ -109,3 +109,8 @@ export const SEASON_PATTERN = /^(?:(?:Spring|Summer|Fall) 20\d\d|Winter 20\d\d\/
 
 export const longDate = (date: string) => new Intl.DateTimeFormat("en-CA", { dateStyle: "long", timeZone: "UTC" }).format(new Date(`${date}T12:00:00Z`));
 export const weekdayOf = (date: string) => new Intl.DateTimeFormat("en-CA", { weekday: "long", timeZone: "UTC" }).format(new Date(`${date}T12:00:00Z`));
+
+/** The collections as the form's thank-you view lists them. */
+export const funnelCollections = () => pricingTiers().map((tier) => ({
+  slug: tier.slug, name: tier.name, hoursLabel: `${tier.hours} hours of coverage`, price: tier.price, items: tierItems(tier),
+}));

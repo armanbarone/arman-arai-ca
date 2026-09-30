@@ -29,7 +29,7 @@ const APPROACH = [
   {
     n: "II",
     title: "An engagement session",
-    body: "Included from Signature up and a C$450 add-on on Essential, and the one I recommend most. Not for the photographs. For the hour where you stop performing and I learn how the two of you actually stand.",
+    body: "Included in every collection, and the one I recommend most. Not for the photographs. For the hour where you stop performing and I learn how the two of you actually stand.",
   },
   {
     n: "III",
@@ -39,7 +39,7 @@ const APPROACH = [
   {
     n: "IV",
     title: "The return",
-    body: "A preview inside 48 hours, vertical social reels in the first week, and the full gallery within two weeks on Essential, three on the tiers above it. Edited to what the room felt like, not to a preset that will date in three years.",
+    body: "A preview within a day, vertical social reels in the first week, and the full gallery within three weeks. Edited to what the room felt like, not to a preset that will date in three years.",
   },
 ];
 
@@ -242,7 +242,7 @@ export default function About() {
           </h2>
           <div className="flex flex-wrap items-center justify-center gap-8">
             <InquireButton className="inline-block bg-rose text-ivory text-[0.62rem] tracking-[0.2em] uppercase px-10 py-4 hover:bg-rose-dark transition-colors duration-300 cursor-pointer border-none">
-              Check your date
+              Start your inquiry
             </InquireButton>
             <Link
               href="/pricing"

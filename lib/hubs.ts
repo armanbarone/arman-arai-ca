@@ -15,7 +15,7 @@
 import { ENTRY } from "./site";
 
 /** The entry price, for the hero stat block. One national figure, every city. */
-const CORE_STAT = { k: "Essential collection", v: `C$${ENTRY.price.toLocaleString("en-CA")}` };
+const CORE_STAT = { k: "Collections from", v: `C$${ENTRY.price.toLocaleString("en-CA")}` };
 
 export type Venue = { name: string; where: string; note: string };
 export type Season = { months: string; light: string; note: string };
@@ -237,7 +237,7 @@ export const HUBS: Record<string, HubContent> = {
     different: [
       {
         title: "The same number as a Saturday in the city",
-        body: "Whistler, Squamish and Pemberton cost what everywhere costs. Essential is C$2,000 here exactly as it is in Kitsilano, and Signature is C$3,000, and regional dates are grouped whenever possible to keep travel low.",
+        body: "Whistler, Squamish and Pemberton cost what everywhere costs. Signature is C$3,000 here exactly as it is in Kitsilano, Complete is C$4,200, and regional dates are grouped whenever possible to keep travel low.",
       },
       {
         title: "A valley plan, named before the date",

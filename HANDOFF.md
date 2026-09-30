@@ -170,7 +170,7 @@ areas, market copy, FAQs. `/pricing`, the hubs, footer, nav, `llms.txt` and
 
 Live prices, national, CAD before tax:
 
-| Essential 6h | Signature 8h | Complete 10h | Photo + Film 12h |
+| Signature 8h | Complete 10h | Photo + Film 12h |
 |---|---|---|---|
 | 2,000 | 3,000 | 4,200 | 5,900 |
 
@@ -316,14 +316,27 @@ Everything in this list is live and was verified with a real HTTP check.
   "local travel included". Market data: `lib/ads/pricing-request.ts`.
   The C$1,500 Short Story package is gone; `/wedding-photography/vancouver-1500`
   308s to the Vancouver pricing page.
-  **Auto-reply:** `lib/auto-reply.ts`. Within a minute of the form, Claude
-  (claude-opus-5, low effort, `fallbacks: "default"`, 20 s cap) writes the
-  personal part of an email to the couple; the price table, calendar button and
-  WhatsApp link are rendered from lib/site.ts under it, and the text is checked
-  (prices, links, date claims, length) before sending, else a template goes.
-  Arman is BCC'd. Needs `ANTHROPIC_API_KEY` in the Vercel project; without it
-  no auto-reply is sent and the lead email says so. The lead arrives as
-  "Pricing request — <City> — <names>"; GA4 gets `wedding_inquiry`.
+  **Auto-reply:** `lib/auto-reply.ts`, briefed by `lib/auto-reply-brief.ts`
+  (everything the agent may say; prices read live from lib/site.ts). Model
+  `claude-sonnet-5-5` (owner's choice). Auth is Workload Identity Federation
+  ONLY, never an API key (owner: a stored key is a security risk): the
+  function's Vercel OIDC token (`@vercel/oidc`) is exchanged for a short-lived
+  Anthropic token. Needs ANTHROPIC_FEDERATION_RULE_ID, ANTHROPIC_ORGANIZATION_ID,
+  ANTHROPIC_SERVICE_ACCOUNT_ID (and ANTHROPIC_WORKSPACE_ID if the rule spans
+  workspaces). The Anthropic issuer's max token lifetime must be raised to
+  2 hours, because Vercel OIDC tokens live 2 hours and the default cap is 1.
+  The agent can answer SKIP for spam; nothing is sent. The text is checked
+  (prices, links, date claims, length; dashes replaced) before sending, else
+  a template goes. Arman is BCC'd.
+  **Conversion URL:** a sent form moves to
+  `/wedding-photography/<city>-pricing/thank-you`, so Google Ads can count by
+  URL. PublicTracking skips those paths; the page starts the tags itself only
+  when this tab sent the form (sessionStorage), so a direct visit loads no tags
+  and cannot count. GA4 `wedding_inquiry` fires once, on that page.
+  **Essential is gone site-wide (2026-09-30).** Three collections only; ENTRY is
+  Signature; every "from" is C$3,000. The C$450 engagement add-on went with it
+  (every collection includes the session). Main-site CTAs read "Start your
+  inquiry"; nothing on the main site promises to say whether a date is open.
 
 ---
 

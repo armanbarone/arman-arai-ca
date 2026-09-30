@@ -34,7 +34,7 @@ export const metadata: Metadata = {
 const FAQS = [
   {
     q: "Where do you photograph destination weddings?",
-    a: `${SCOPE.oneLine} That includes ${SCOPE.destinationExamples.slice(0, 8).join(", ")} and anywhere else the date can practically be reached. Couples usually find me for a Canadian wedding first and then ask about a wedding abroad; both are booked here, on the same four collections.`,
+    a: `${SCOPE.oneLine} That includes ${SCOPE.destinationExamples.slice(0, 8).join(", ")} and anywhere else the date can practically be reached. Couples usually find me for a Canadian wedding first and then ask about a wedding abroad; both are booked here, on the same three collections.`,
   },
   {
     q: "Why do you not work in the United States?",
@@ -172,7 +172,7 @@ export default function DestinationPage() {
             anything.
           </p>
           <p className="text-slate text-[0.95rem] leading-relaxed mt-8">
-            {SCOPE.destinationPricing} The four collections on{" "}
+            {SCOPE.destinationPricing} The three collections on{" "}
             <Link href="/pricing" className="text-rose hover:text-blush transition-colors">the pricing page</Link>{" "}
             are what a wedding in Canada costs, and they hold in every province. A wedding in
             Puglia is a different job, and pricing it as a Montréal wedding with a flight
@@ -302,7 +302,7 @@ export default function DestinationPage() {
           <p className="text-[0.62rem] tracking-[0.32em] uppercase text-blush mb-6">Tell me where</p>
           <p className="text-slate text-[0.95rem] mb-8 max-w-xl mx-auto">
             Send the country, the venue and the date. You will have a reply inside two business
-            hours saying whether the date is open and what the trip would cost.
+            hours saying what the trip would cost.
           </p>
           <InquireButton className="inline-block bg-rose text-ivory text-[0.68rem] tracking-[0.2em] uppercase px-10 py-4 hover:bg-rose-dark transition-colors duration-300 cursor-pointer border-none">
             Ask about a destination date

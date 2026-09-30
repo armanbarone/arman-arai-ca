@@ -55,8 +55,8 @@ export default function ContactForm() {
           Thank you
         </span>
         <p className="font-serif italic text-slate text-lg leading-relaxed max-w-sm">
-          That is in. I answer inside two business hours, and I will tell you straight away whether
-          the date is open.
+          That is in. I answer inside two business hours, with the collection I would
+          recommend and what travel comes to.
         </p>
       </div>
     );
@@ -117,9 +117,9 @@ export default function ContactForm() {
           <label htmlFor="collection" className="block text-[0.68rem] tracking-[0.18em] uppercase text-blush mb-2">Coverage you have in mind</label>
           <select id="collection" name="collection" className="form-input cursor-pointer" value={form.collection} onChange={set("collection")}>
             <option value="">Not sure yet, advise me</option>
-            <option>Essential — 6 hours</option>
-            <option>Signature — 8 hours</option>
-            <option>Complete — 10 hours</option>
+            <option>Signature, 8 hours</option>
+            <option>Complete, 10 hours</option>
+            <option>Photo + Film, 12 hours</option>
             <option>Multi-day, needs a custom quote</option>
           </select>
         </div>
@@ -166,7 +166,7 @@ export default function ContactForm() {
         disabled={status === "sending"}
         className="bg-rose text-ivory text-[0.62rem] tracking-[0.2em] uppercase px-10 py-4 hover:bg-rose-dark transition-colors duration-300 disabled:opacity-60 mt-2"
       >
-        {status === "sending" ? "Sending..." : "Check my date"}
+        {status === "sending" ? "Sending..." : "Send my inquiry"}
       </button>
     </form>
   );

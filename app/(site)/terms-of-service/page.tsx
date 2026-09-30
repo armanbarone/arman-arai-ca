@@ -44,7 +44,7 @@ export default function TermsOfService() {
         <Section title="Services">
           <p>This site sells wedding photography in Canada, and destination wedding photography anywhere in the world except the United States, where I do not work. I offer the following:</p>
           <ul style={{ paddingLeft: "1.25rem", marginTop: 10, display: "flex", flexDirection: "column", gap: 6 }}>
-            <li>Wedding day photography, in the four collections published on the pricing page</li>
+            <li>Wedding day photography, in the three collections published on the pricing page</li>
             <li>Engagement and welcome sessions, booked as add-ons at published prices</li>
             <li>A colour-graded feature film on the Signature and Complete collections, shot alongside the photography rather than by a separate operator, and a longer film shot by a dedicated filmmaker on the Photo + Film collection</li>
             <li>Vertical social reels and film prints handed to guests on the night, included in every collection</li>
@@ -100,7 +100,6 @@ export default function TermsOfService() {
             </thead>
             <tbody>
               {[
-                ["Essential", "30 images within 48 hours", "Within 2 weeks", "First week"],
                 ["Signature", "40 images next day", "3 weeks", "First week"],
                 ["Complete", "50 images within 24 hours", "3 weeks", "First week"],
                 ["Photo + Film", "40 images next day", "3 weeks, film in 10", "First week"],

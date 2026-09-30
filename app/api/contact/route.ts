@@ -6,7 +6,8 @@ import { autoReplyEnabled, sendInquiryAutoReply, type PricingInquiry } from "@/l
 import { tierBySlug } from "@/lib/site";
 
 // The pricing-request auto-reply runs after the response, inside this
-// function's lifetime: one Claude call capped at 20 seconds, then Resend.
+// function's lifetime: one federated token exchange, one Claude call capped
+// at 20 seconds, then Resend.
 export const maxDuration = 60;
 
 function escapeHtml(value: unknown) {
@@ -122,7 +123,7 @@ export async function POST(req: NextRequest) {
         ["Coverage", coverage.label],
         ["Budget", budget.label],
         ["Shown as best fit", `${fit.name}, C$${fit.price.toLocaleString("en-CA")}`],
-        ["Auto-reply", autoReply ? "Sending to the couple within a minute; you are BCC'd" : "Off: ANTHROPIC_API_KEY is not set in Vercel"],
+        ["Auto-reply", autoReply ? "Sending to the couple within a minute; you are BCC'd" : "Off: the Anthropic federation variables are not set in Vercel"],
       ];
     }
 

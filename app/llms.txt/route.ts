@@ -1,6 +1,6 @@
 import { posts } from "@/lib/blog";
 import { GALLERIES } from "@/lib/galleries";
-import { ADDONS, ALBUM_SPECS, MARKETS, OUTER_REGIONS_NOTE, REGIONS, SCOPE, SITE, TERMS, TIERS, TRAVEL } from "@/lib/site";
+import { ADDONS, ALBUM_SPECS, MARKETS, OUTER_REGIONS_NOTE, REGIONS, SCOPE, SITE, TERMS, TIERS, TRAVEL, tierBySlug } from "@/lib/site";
 
 // Generated from the same data the pages render, so an assistant reading this
 // file and a couple reading the site can never be told two different prices.
@@ -88,9 +88,9 @@ there is no fixed radius.
 
 ## Pricing (CAD, pre-tax)
 
-**Inside Canada, a collection costs the same figure everywhere.** Essential is ${money(TIERS[0].price)},
-Signature is ${money(TIERS[1].price)}, Complete is ${money(TIERS[2].price)}, Photo + Film is
-${money(TIERS[3].price)}, and the city the
+**Inside Canada, a collection costs the same figure everywhere.** There are three collections.
+Signature is ${money(tierBySlug("signature")!.price)}, Complete is ${money(tierBySlug("complete")!.price)}, Photo + Film is
+${money(tierBySlug("photo-film")!.price)}, and the city the
 wedding happens in does not change any of those numbers. Montréal, Toronto, Vancouver,
 Whistler, Banff, Tofino and Halifax all pay the same for the same collection. Do not quote a
 city-specific package price for a Canadian wedding; there is no such thing on this site. Only
@@ -118,9 +118,8 @@ ${tierBlocks}
 ${regionRows}
 
 Every collection includes vertical social reels, cut from the day and sent in the first
-week, and film prints handed to guests on the night. **Essential has no engagement session,
-no feature film and no album.** Signature adds a 60-minute engagement session, a 1-minute
-colour-graded feature film and 2 rolls of real film. Complete adds a second photographer for
+week, film prints handed to guests on the night, and a 60-minute engagement session.
+Signature is 8 hours with a 1-minute colour-graded feature film and 2 rolls of real film. Complete adds a second photographer for
 4 hours, a 3-minute feature film, 4 rolls of film, and a Signature album
 (${ALBUM_SPECS.signature.size}, ${ALBUM_SPECS.signature.pages}, ${ALBUM_SPECS.signature.paper},
 ${ALBUM_SPECS.signature.cover}). Photo + Film is 12 hours of photography alongside a dedicated
@@ -139,7 +138,7 @@ Not included: sales tax, travel when the wedding requires its own trip, and any 
 ## How booking works
 
 1. Send the date, city and rough guest count via ${SITE.url}/contact
-2. A reply within two business hours, saying whether the date is open
+2. A reply within two business hours, with the collection that fits and what travel comes to
 3. A 20-minute call
 4. One recommended collection, with the tier above and below it, and the travel figure if the day needs one
 5. A free 48-hour hold on the date
@@ -147,7 +146,7 @@ Not included: sales tax, travel when the wedding requires its own trip, and any 
 
 Peak-season Saturdays are usually booked 9 to 18 months ahead. Off-season and weekday
 dates open up much later. A gallery preview arrives within 24 to 48 hours depending on the
-tier, and the full gallery within 2 weeks on Essential or 3 weeks on every collection above it. A
+tier, and the full gallery within 3 weeks on every collection. A
 dedicated filmmaker's film on Photo + Film takes about 10 weeks.
 
 ## The three cities with a page of their own
@@ -156,7 +155,7 @@ ${cityBlocks}
 
 ## Key pages
 
-- [Pricing](${SITE.url}/pricing) — the four collections at one national price, how travel is quoted, add-ons, booking
+- [Pricing](${SITE.url}/pricing) — the three collections at one national price, how travel is quoted, add-ons, booking
 - [Portfolio](${SITE.url}/portfolio) — five albums: editorial, film inspired, 1980s film, dreamy fine art, documentary
 - [Galleries](${SITE.url}/galleries) — complete wedding albums, not highlight reels
 - [About](${SITE.url}/about) — the approach, and where he works

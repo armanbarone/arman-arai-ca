@@ -34,7 +34,7 @@ const questions = [
   ["Do you photograph weddings anywhere in Canada?", "Yes. Collection prices are the same across Canada. Travel stays separate, uses the leanest practical route, and is reduced or waived when I am already scheduled in your region."],
   ["Do we need to choose a collection before the call?", "No. Tell me what you’re planning and which parts of the day matter most to you. We’ll work out how much coverage fits, along with any travel or extras, before you decide."],
   ["Is video included?", "Every collection includes vertical social reels. Signature also includes a 1-minute feature film, and Complete includes a 3-minute feature film. Photo + Film puts a dedicated filmmaker on the day for a longer piece, and that filmmaker can be added to any other collection."],
-  ["What happens after our call?", "If you’d like to go ahead and your date is available, we’ll confirm your collection, the full quote and the contract. A signed contract and 30% retainer secure your date. The balance is due 30 days before the wedding. Booking a call doesn’t commit you to anything."],
+  ["What happens after our call?", "If you’d like to go ahead, we’ll confirm your collection, the full quote and the contract. A signed contract and 30% retainer secure your date. The balance is due 30 days before the wedding. Booking a call doesn’t commit you to anything."],
 ];
 
 export default function WeddingLandingPage() {
@@ -65,7 +65,7 @@ export default function WeddingLandingPage() {
           </figure>
         </section>
 
-        <div className={styles.factBar} aria-label="At a glance"><span>Photographed by Arman</span><span>6, 8, 10 or 12 hours of coverage</span><span>Weddings across Canada</span></div>
+        <div className={styles.factBar} aria-label="At a glance"><span>Photographed by Arman</span><span>8, 10 or 12 hours of coverage</span><span>Weddings across Canada</span></div>
 
         <section id="photographs" className={styles.work} aria-labelledby="work-title">
           <div className={styles.sectionHeading}>

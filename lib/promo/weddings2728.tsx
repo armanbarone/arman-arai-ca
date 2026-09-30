@@ -34,7 +34,11 @@ import { HOME_GRID, LANDING_PAGE, at } from "@/lib/images";
 
 const IN = "#e8dfd0";
 
-const [ENTRY, SIGNATURE, COMPLETE] = TIERS;
+/* The three collections by slug, not by position: TIERS lost Essential on
+   2026-09-28, and positional destructuring silently shifted every card. */
+const SIGNATURE = TIERS.find((t) => t.slug === "signature")!;
+const COMPLETE = TIERS.find((t) => t.slug === "complete")!;
+const PHOTO_FILM = TIERS.find((t) => t.slug === "photo-film")!;
 const money = (n: number) => `$${n.toLocaleString("en-CA")}`;
 
 /** The review screenshots, from the set /reviews publishes. Intrinsic
@@ -57,7 +61,7 @@ const REVIEWS = [
 export function weddings2728Config(): PromoConfig {
   return {
     /* ── Price ────────────────────────────────────────────────────────────── */
-    priceFounding: ENTRY.price,
+    priceFounding: SIGNATURE.price,
     pricePrefix: "From",
     badge: "Booking 2027 and 2028",
     coversTitle: "What you get",
@@ -79,11 +83,11 @@ export function weddings2728Config(): PromoConfig {
     h1Accent: "built around your day.",
     heroSub:
       "No two weddings get the same plan, and none of them get a shot list off the internet. " +
-      "Tell me what your day looks like on a 30-minute call and I will tell you whether your " +
-      "date is open and exactly what it costs.",
+      "Tell me what your day looks like on a 30-minute call and I will tell you which " +
+      "collection fits and exactly what it costs.",
     heroSubShort:
-      "No two weddings get the same plan. Book a 30-minute call: I will tell you if your date is " +
-      "open and exactly what it costs.",
+      "No two weddings get the same plan. Book a 30-minute call: I will tell you which collection " +
+      "fits and exactly what it costs.",
 
     /* ── The day: proof I know how a wedding runs ─────────────────────────── */
     timelineKicker: "",
@@ -131,27 +135,15 @@ export function weddings2728Config(): PromoConfig {
       featuredLabel: "Most booked",
       items: [
         {
-          name: ENTRY.name,
-          price: money(ENTRY.price),
-          meta: `${ENTRY.hours} hours · ${ENTRY.images}`,
-          blurb: "A ceremony and a dinner in one place, covered properly.",
-          points: [
-            "Six hours of coverage",
-            "Vertical social reels in the first week",
-            "Film prints for your guests on the night",
-            "Online gallery within 2 weeks, with prints and albums available to order",
-          ],
-        },
-        {
           name: SIGNATURE.name,
           price: money(SIGNATURE.price),
           meta: `${SIGNATURE.hours} hours · ${SIGNATURE.images}`,
           blurb: "Getting ready in one place, a reception in another. What most couples take.",
           points: [
             "Eight hours of coverage",
+            "A 60-minute engagement session",
             "A 1-minute feature film, colour graded",
             "2 rolls of real film, processed and scanned",
-            `A ${ALBUM_SPECS.signature.size} album included, ${ALBUM_SPECS.signature.pages}`,
             "Online gallery in 3 weeks",
           ],
           highlight: true,
@@ -163,10 +155,23 @@ export function weddings2728Config(): PromoConfig {
           blurb: "The whole thing, from the empty room in the morning to the floor at the end.",
           points: [
             "Ten hours of coverage",
+            "A second photographer for 4 hours",
             "A 3-minute feature film, colour graded",
             "4 rolls of real film, processed and scanned",
-            `A ${ALBUM_SPECS.heirloom.size} album in ${ALBUM_SPECS.heirloom.cover}`,
-            "Online gallery in 3 weeks",
+            `A ${ALBUM_SPECS.signature.size} album included, ${ALBUM_SPECS.signature.pages}`,
+          ],
+        },
+        {
+          name: PHOTO_FILM.name,
+          price: money(PHOTO_FILM.price),
+          meta: `${PHOTO_FILM.hours} hours · ${PHOTO_FILM.images}`,
+          blurb: "A day you want to hear as well as see.",
+          points: [
+            "Twelve hours of photography and film",
+            "A dedicated filmmaker for all 12 hours",
+            "A 3 to 5 minute highlight film with licensed music",
+            `A ${ALBUM_SPECS.signature.size} album included, ${ALBUM_SPECS.signature.pages}`,
+            "Online gallery in 3 weeks, the film in 10",
           ],
         },
       ],
@@ -266,15 +271,15 @@ export function weddings2728Config(): PromoConfig {
     faq: [
       {
         q: "What happens on the call?",
-        a: "Thirty minutes. You tell me the date, the venue and roughly how the day runs; I tell you whether I am free, which collection fits and what the travel costs. Nothing is taken on the call, and there is no follow-up sequence afterwards.",
+        a: "Thirty minutes. You tell me the date, the venue and roughly how the day runs; I tell you which collection fits and what the travel costs. Nothing is taken on the call, and there is no follow-up sequence afterwards.",
       },
       {
         q: "Does the price change depending on where we marry?",
-        a: `No. Essential is ${money(ENTRY.price)} wherever your wedding is. Travel to your venue is quoted on top and agreed in writing before you book.`,
+        a: `No. Signature is ${money(SIGNATURE.price)} wherever your wedding is. Travel to your venue is quoted on top and agreed in writing before you book.`,
       },
       {
         q: "Which collection do we need?",
-        a: "If the ceremony and the dinner are in one place, six hours is genuinely enough and I will say so. Once there is a getting-ready across town or a reception that runs late, eight is the honest answer. We settle it on the call.",
+        a: "Eight hours, which is Signature, covers a getting-ready, a ceremony and a reception. Once the day runs from the morning to the last dance, or two rooms need covering at once, Complete's ten hours and second photographer is the honest answer. We settle it on the call.",
       },
       {
         q: "Do you shoot video too?",
@@ -295,7 +300,7 @@ export function weddings2728Config(): PromoConfig {
       kicker: "Availability, live",
       title: "Pick a time. The calendar is right here.",
       blurb:
-        "Thirty minutes: whether your date is open, which collection fits your day, and what the travel costs. No deposit, no pressure, no follow-up sequence.",
+        "Thirty minutes: which collection fits your day, and what the travel costs. No deposit, no pressure, no follow-up sequence.",
     },
 
     finalKicker: "One wedding a day. 2027 and 2028 dates are open.",

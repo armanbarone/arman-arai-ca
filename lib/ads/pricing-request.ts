@@ -63,7 +63,7 @@ export const pricingMarket = (slug: string) => PRICING_MARKETS.find((market) => 
 export const COVERAGE_OPTIONS: { value: string; label: string; slug?: string }[] = [
   { value: "8", label: "8 hours", slug: "signature" },
   { value: "10", label: "10 hours", slug: "complete" },
-  { value: "photo-film", label: "Photo and film", slug: "photo-film" },
+  { value: "photo-film", label: "12 hours + film", slug: "photo-film" },
   { value: "unsure", label: "Not sure yet" },
 ];
 export const BUDGET_OPTIONS: { value: string; label: string; slug?: string }[] = [

@@ -123,8 +123,8 @@ no feature film and no album.** Signature adds a 60-minute engagement session, a
 colour-graded feature film and 2 rolls of real film. Complete adds a second photographer for
 4 hours, a 3-minute feature film, 4 rolls of film, and a Signature album
 (${ALBUM_SPECS.signature.size}, ${ALBUM_SPECS.signature.pages}, ${ALBUM_SPECS.signature.paper},
-${ALBUM_SPECS.signature.cover}). Photo + Film is 8 hours of photography alongside a dedicated
-filmmaker for 8 hours, returning a 3 to 5 minute highlight film with licensed music, and it
+${ALBUM_SPECS.signature.cover}). Photo + Film is 12 hours of photography alongside a dedicated
+filmmaker for 12 hours, returning a 3 to 5 minute highlight film with licensed music, and it
 carries the same album. **A second photographer is included only on Complete**; on every
 other collection it is an add-on.
 

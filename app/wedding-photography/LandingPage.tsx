@@ -110,7 +110,7 @@ export default function LandingPage({ variant }: { variant: LandingVariant }) {
         </section>
 
         <div className={styles.factBar} aria-label="At a glance">
-          <span>6, 8 or 10 hours of coverage</span>
+          <span>6, 8, 10 or 12 hours of coverage</span>
           <span>400 to 800+ edited images</span>
           <span>Preview in 24 to 48 hours</span>
           <span>Photographed by Arman, every time</span>

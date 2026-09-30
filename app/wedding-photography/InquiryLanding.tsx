@@ -27,7 +27,8 @@ export default function InquiryLanding({ city, market }: { city: WeddingCity; ma
   const phone = SITE.phone.replace(/^\+1\s*/, "");
   const tiers = pricingTiers();
   const from = Math.min(...tiers.map((tier) => tier.price));
-  const hours = [...new Set(tiers.map((tier) => tier.hours))].sort((a, b) => a - b).join(" or ");
+  const hourList = [...new Set(tiers.map((tier) => tier.hours))].sort((a, b) => a - b);
+  const hours = `${hourList.slice(0, -1).join(", ")} or ${hourList.at(-1)}`;
   const collections: FunnelCollection[] = tiers.map((tier) => ({ slug: tier.slug, name: tier.name, hoursLabel: `${tier.hours} hours of coverage`, price: tier.price, items: tierItems(tier) }));
   const shared = questionsFor(city);
   const questions: string[][] = [
@@ -39,7 +40,7 @@ export default function InquiryLanding({ city, market }: { city: WeddingCity; ma
     [city.coverageQuestion, market.coverageAnswer],
     shared[2], shared[3],
     ["Do we have to book a video call?", "No. The call is there if you’d like to meet before you decide. If you’d rather keep it to email, WhatsApp or text, that works too."],
-    ["What is included, and what costs extra?", `Every collection includes photography by me, a 60-minute engagement session, planning, a full edited gallery with print permission, vertical social reels and film prints for your guests. Complete adds a second photographer for four hours, a longer film and a printed album; Photo + Film adds a dedicated filmmaker and a printed album. Prices are in Canadian dollars before tax. ${market.travelNote}`],
+    ["What is included, and what costs extra?", `Every collection includes photography by me, a 60-minute engagement session, planning, a full edited gallery with print permission, vertical social reels and film prints for your guests. Complete adds a second photographer for four hours, a longer film and a printed album; Photo + Film runs 12 hours with a dedicated filmmaker and adds a printed album. Prices are in Canadian dollars before tax. ${market.travelNote}`],
     // Not shared[5]: that answer opens "Once we've confirmed availability",
     // and these pages confirm nothing about a date.
     ["How do we secure our wedding date?", "Once you’ve chosen your collection and we’ve agreed the details, a signed contract and a 30% retainer secure the date. The balance is due 30 days before the wedding. There’s no obligation to book after our call."],

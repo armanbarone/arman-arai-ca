@@ -170,7 +170,7 @@ areas, market copy, FAQs. `/pricing`, the hubs, footer, nav, `llms.txt` and
 
 Live prices, national, CAD before tax:
 
-| Essential 6h | Signature 8h | Complete 10h | Photo + Film 8h |
+| Essential 6h | Signature 8h | Complete 10h | Photo + Film 12h |
 |---|---|---|---|
 | 2,000 | 3,000 | 4,200 | 5,900 |
 
@@ -184,7 +184,7 @@ What the four actually differ by:
   exact margin the research PDF warns about.
 - **Complete** — adds a second photographer for 4 hours, a 3-minute film, 4
   rolls and the 10×10 Signature album.
-- **Photo + Film** — 8h photography alongside a dedicated filmmaker for 8h, a
+- **Photo + Film** — 12h photography alongside a dedicated filmmaker for 12h (owner, 2026-09-29), a
   3–5 minute film with licensed music, and the same album.
 
 **Where the album sits was my call, not his.** He asked to keep albums "included

@@ -19,7 +19,7 @@ import {
 export const metadata: Metadata = {
   title: "Wedding Photography Pricing — One Price, Anywhere in Canada",
   description:
-    "Four collections at one national price: Essential C$2,000 for 6 hours, Signature C$3,000 for 8, Complete C$4,200 for 10, and Photo + Film C$5,900 with a dedicated filmmaker. Travel stays separate and lean.",
+    "Four collections at one national price: Essential C$2,000 for 6 hours, Signature C$3,000 for 8, Complete C$4,200 for 10, and Photo + Film C$5,900 for 12 with a dedicated filmmaker. Travel stays separate and lean.",
   alternates: { canonical: "/pricing" },
   openGraph: {
     title: "Wedding Photography Pricing — Arman Arai",
@@ -79,7 +79,7 @@ Complete and Photo + Film both carry it. On Essential and Signature it is an add
   },
   {
     q: "Do you offer photo and video?",
-    a: "Yes, and there are two versions of it. A short colour-graded film cut from the day is included on Signature and Complete, shot alongside the photographs rather than by a second operator, which is why it is included rather than sold. A proper film is a different product: Photo + Film puts a dedicated filmmaker on the day for eight hours and returns a three to five minute piece with licensed music and your vows, at C$5,900, and that filmmaker can be added to any other collection for C$2,900. A filmmaker is not a camera add-on, and I will not bundle one in at a number that guarantees somebody does bad work.",
+    a: "Yes, and there are two versions of it. A short colour-graded film cut from the day is included on Signature and Complete, shot alongside the photographs rather than by a second operator, which is why it is included rather than sold. A proper film is a different product: Photo + Film puts a dedicated filmmaker on the day for twelve hours and returns a three to five minute piece with licensed music and your vows, at C$5,900, and a filmmaker for eight hours can be added to any other collection for C$2,900. A filmmaker is not a camera add-on, and I will not bundle one in at a number that guarantees somebody does bad work.",
   },
   {
     q: "How far in advance do couples book?",

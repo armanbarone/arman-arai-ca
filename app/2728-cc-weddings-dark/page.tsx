@@ -105,7 +105,7 @@ export default function WeddingLandingPage() {
           <HeroGallery slides={heroSlides} />
         </section>
 
-        <div className={styles.factBar} aria-label="At a glance"><span>Photographed by Arman</span><span>6, 8 or 10 hours of coverage</span><span>Vancouver · North Shore · Sea-to-Sky</span></div>
+        <div className={styles.factBar} aria-label="At a glance"><span>Photographed by Arman</span><span>6, 8, 10 or 12 hours of coverage</span><span>Vancouver · North Shore · Sea-to-Sky</span></div>
 
         <section id="photographs" className={styles.work} aria-labelledby="work-title">
           <div className={styles.sectionHeading}>

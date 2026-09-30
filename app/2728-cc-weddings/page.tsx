@@ -65,7 +65,7 @@ export default function WeddingLandingPage() {
           </figure>
         </section>
 
-        <div className={styles.factBar} aria-label="At a glance"><span>Photographed by Arman</span><span>6, 8 or 10 hours of coverage</span><span>Weddings across Canada</span></div>
+        <div className={styles.factBar} aria-label="At a glance"><span>Photographed by Arman</span><span>6, 8, 10 or 12 hours of coverage</span><span>Weddings across Canada</span></div>
 
         <section id="photographs" className={styles.work} aria-labelledby="work-title">
           <div className={styles.sectionHeading}>

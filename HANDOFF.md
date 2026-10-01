@@ -392,7 +392,9 @@ Everything in this list is live and was verified with a real HTTP check.
   roll"):** `HeroSlideshow.tsx`, five photos per city in `heroes`. Only the
   first is in the HTML; the second is added after the load event plus an idle
   moment, each later one while the one before shows; none appears before it
-  has loaded. 5.2 s hold, cross-fade, holds for reduced motion and hidden tabs.
+  has loaded. 5.2 s hold, cross-fade, holds only for hidden tabs. It does NOT
+  stop for prefers-reduced-motion: Windows reports that whenever "Animation
+  effects" is off, it was off on the owner's PC, and he saw a frozen hero.
   **Calgary & Banff and Victoria (2026-10-01):** `/wedding-photography/
   calgary-pricing` (h1 "Calgary & Banff", photos from cities/banff) and
   `victoria-pricing` (Hatley Castle and gardens from cities/vancouver/work and

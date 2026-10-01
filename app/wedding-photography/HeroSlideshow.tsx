@@ -11,9 +11,14 @@ import funnel from "./inquiry.module.css";
    is added to the page only once the page has finished loading and the
    browser is idle, and each photo after that only once the one before it is
    showing, so at most one extra photo is ever downloading. A photo is never
-   shown before it has loaded, so the hero never flashes empty. Holds still for
-   anyone who asks their system for reduced motion, and while the tab is
-   hidden. */
+   shown before it has loaded, so the hero never flashes empty. Holds while
+   the tab is hidden.
+
+   It does NOT stop for prefers-reduced-motion. It used to, and the owner saw
+   a frozen hero: Windows reports reduced motion whenever "Animation effects"
+   is off, which it was on his PC, and so does an iPhone with Reduce Motion
+   on. Nothing here moves; one photo dissolves into the next, which is the
+   transition Apple recommends in place of motion when Reduce Motion is on. */
 
 const HOLD_MS = 5200;
 
@@ -27,7 +32,6 @@ export default function HeroSlideshow({ photos, sizes }: { photos: HeroPhoto[]; 
   // Start only after the page itself has loaded, then wait for an idle moment.
   useEffect(() => {
     if (photos.length < 2) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     // Safari has no requestIdleCallback; a short timeout stands in for it.
     const hasIdle = typeof window.requestIdleCallback === "function";
     let handle: number | undefined;

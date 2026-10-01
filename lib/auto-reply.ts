@@ -263,7 +263,9 @@ export async function sendInquiryAutoReply(inquiry: PricingInquiry): Promise<voi
     if (written === "skip") { console.info("Auto-reply: skipped, not a wedding inquiry"); return; }
     if (written) { body = written.body; subject = written.subject; }
   } catch (error) {
-    console.warn("Auto-reply: Claude call failed", error instanceof Anthropic.APIError ? error.status : error);
+    // The status and the API's own message (it names the bad field on a 400);
+    // the request carries no secrets and neither does the error.
+    console.warn("Auto-reply: Claude call failed", error instanceof Anthropic.APIError ? `${error.status} ${error.message}` : error);
     if (lastClaims) console.warn("Auto-reply: identity token claims presented", JSON.stringify(lastClaims));
   }
   if (!body) { body = fallbackBody(inquiry, fitName); source = "template"; }

@@ -265,7 +265,7 @@ function ThankYou({ sent, collections, city, page, phone, phoneE164, travelNote,
     : fit.basis === "budget" ? "Closest to the budget you gave."
       : "The collection most couples book.";
   const when = sent.date ? `your ${weekdayOf(sent.date)}, ${longDate(sent.date)}` : sent.season && sent.season !== "Later than that" ? sent.season : "";
-  const lead = `Here’s your pricing${when ? ` for ${when}` : ""}${sent.location ? ` at ${sent.location}` : ""}.${sent.emailed ? ` I’ve sent it to ${sent.email} as well, with a note about your day.` : ""}`;
+  const lead = `Here’s your pricing${when ? ` for ${when}` : ""}${sent.location ? ` at ${sent.location}` : ""}.${sent.emailed ? ` A note from me about your day is on its way to ${sent.email}.` : ""}`;
 
   return <section className={funnel.thanks} aria-labelledby="thanks-title">
     <header className={styles.header}><span className={styles.wordmark}>Arman Arai<span>WEDDING PHOTOGRAPHY</span></span></header>

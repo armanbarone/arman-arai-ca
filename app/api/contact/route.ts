@@ -114,7 +114,7 @@ export async function POST(req: NextRequest) {
       const fit = tierBySlug(recommendation.slug)!;
       const stepUp = recommendation.stepUp ? tierBySlug(recommendation.stepUp) : undefined;
       autoReply = autoReplyEnabled()
-        ? { names: body.name, email: body.email, weddingDate: body.weddingDate || undefined, weddingSeason: body.weddingSeason || undefined, location: body.location, coverage: coverage.value, budget: budget.value, cityName, market, page: `wedding-photography/${market.slug}-pricing` }
+        ? { names: body.name, email: body.email, weddingDate: body.weddingDate || undefined, weddingSeason: body.weddingSeason || undefined, location: body.location, coverage: coverage.value, budget: budget.value, cityName, market, page: `wedding-photography/${market.slug}-pricing`, receivedAt: Date.now() }
         : null;
       inquiryRows = [
         ["Names", body.name],
@@ -126,7 +126,7 @@ export async function POST(req: NextRequest) {
         ["Budget", budget.label],
         ["Shown as best fit", `${fit.name}, C$${fit.price.toLocaleString("en-CA")}`],
         ...(stepUp ? ([["Suggested step up", `${stepUp.name}, C$${stepUp.price.toLocaleString("en-CA")}`]] as [string, string][]) : []),
-        ["Auto-reply", autoReply ? "Sending to the couple within a minute; you are BCC'd" : "Off: the Anthropic federation variables are not set in Vercel"],
+        ["Auto-reply", autoReply ? "Sending to the couple about 30 seconds after this; you are BCC'd" : "Off: the Anthropic federation variables are not set in Vercel"],
       ];
     }
 

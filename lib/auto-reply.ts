@@ -45,7 +45,14 @@ export type PricingInquiry = {
   market: PricingMarket;
   /** "wedding-photography/vancouver-pricing" */
   page: string;
+  /** When the form was sent (ms). The email waits until 30 seconds after it. */
+  receivedAt: number;
 };
+
+/* The couple gets the email about half a minute after pressing the button,
+   not the instant they press it (owner, 2026-10-01). The wait is the rest of
+   the 30 seconds once the note is written, so it never adds to a slow call. */
+const SEND_DELAY_MS = 30_000;
 
 // Owner's choice, 2026-09-30.
 const MODEL = "claude-sonnet-5-5";
@@ -160,23 +167,13 @@ const REPLY_SCHEMA = {
   type: "object",
   properties: {
     skip: { type: "boolean", description: "True only when the inquiry is plainly not from a couple planning a wedding." },
-    subject: { type: "string", description: "The subject line: 3 to 9 words, warm and specific to them." },
     body: { type: "string", description: "The personal note, plain text, paragraphs separated by a blank line, ending with Arman." },
   },
-  required: ["skip", "subject", "body"],
+  required: ["skip", "body"],
   additionalProperties: false,
 };
 
 type Written = { subject: string; body: string };
-
-/** A subject line the agent wrote, cleaned, or null if it breaks a rule. */
-export function checkedSubject(text: string): string | null {
-  const subject = text.replace(/[\r\n]+/g, " ").replace(/\s*[\u2013\u2014]\s*/g, ", ").trim();
-  if (subject.length < 8 || subject.length > 80) return null;
-  if (/https?:\/\/|www\.|\$|!|^re:/i.test(subject)) return null;
-  if (/\bavailab/i.test(subject)) return null;
-  return subject;
-}
 
 /** The agent's subject and note, "skip" for an inquiry it judged not to be a
  *  wedding, or null when the template should go instead. */
@@ -193,18 +190,21 @@ async function writeWithClaude(inquiry: PricingInquiry, fitName: string, basis: 
   });
   if (response.stop_reason !== "end_turn") return null;
   const text = response.content.filter((block): block is Anthropic.TextBlock => block.type === "text").map((block) => block.text).join("").trim();
-  let reply: { skip?: unknown; subject?: unknown; body?: unknown };
+  let reply: { skip?: unknown; body?: unknown };
   try { reply = JSON.parse(text); } catch { return null; }
   if (reply.skip === true) return "skip";
   const body = typeof reply.body === "string" ? checkedBody(reply.body) : null;
   if (!body) return null;
-  const subject = typeof reply.subject === "string" ? checkedSubject(reply.subject) : null;
-  return { subject: subject ?? fallbackSubject(inquiry), body };
+  return { subject: fallbackSubject(inquiry), body };
 }
 
+/** Fixed, so it always says plainly what the email is (owner, 2026-10-01:
+ *  "mention in the subject this is a reply to their inquiry"). */
 export function fallbackSubject(inquiry: PricingInquiry) {
   const name = greetingName(inquiry.names);
-  return name ? `${name}, your ${inquiry.cityName} wedding` : `Your ${inquiry.cityName} wedding`;
+  const when = inquiry.weddingDate ? longDate(inquiry.weddingDate) : inquiry.weddingSeason && inquiry.weddingSeason !== "Later than that" ? inquiry.weddingSeason : "";
+  const about = [name, when].filter(Boolean).join(", ");
+  return `Your wedding photography inquiry${about ? `: ${about}` : ""}`.replace(/[\r\n]+/g, " ").slice(0, 120);
 }
 
 /** The backup note when the agent is unavailable. Short on purpose: the
@@ -212,11 +212,13 @@ export function fallbackSubject(inquiry: PricingInquiry) {
 export function fallbackBody(inquiry: PricingInquiry, fitName: string) {
   const name = greetingName(inquiry.names);
   const when = whenPhrase(inquiry);
-  const details = [inquiry.location && `at ${inquiry.location}`, when && `on ${when}`].filter(Boolean).join(" ");
+  const coverage = COVERAGE_OPTIONS.find((option) => option.value === inquiry.coverage)?.label ?? "Not sure yet";
+  const details = [when && `on ${when}`, inquiry.location && `at ${inquiry.location}`].filter(Boolean).join(" ");
   return [
     `Hi ${name || "there"},`,
-    `Thank you for telling me about your wedding${details ? ` ${details}` : ""}. I would love to hear more about it.`,
-    `From what you shared, ${fitName} feels like the right fit. The easiest way to talk it through is a free 30-minute video call, and if you would rather just message, WhatsApp works too.`,
+    "Congratulations on your wedding! This is Arman, the photographer, replying to the inquiry you just sent through my website.",
+    `You're planning your wedding${details ? ` ${details}` : ""}, with ${coverage === "Not sure yet" ? "the hours still to be decided" : `${coverage.toLowerCase()} of coverage in mind`}. From what you shared, ${fitName} feels like the right fit.`,
+    "The easiest way to talk it through is a free 30-minute video call. If you would rather just message, WhatsApp works too.",
     "Arman",
   ].join("\n\n");
 }
@@ -290,6 +292,8 @@ export async function sendInquiryAutoReply(inquiry: PricingInquiry): Promise<voi
   }
   if (!body) { body = fallbackBody(inquiry, fitName); source = "template"; }
   const { html, text } = render(inquiry, body, fit.slug, fit.stepUp);
+  const wait = inquiry.receivedAt + SEND_DELAY_MS - Date.now();
+  if (wait > 0) await new Promise((resolve) => setTimeout(resolve, wait));
   try {
     const { Resend } = await import("resend");
     const { error } = await new Resend(process.env.RESEND_API_KEY).emails.send({

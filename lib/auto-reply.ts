@@ -5,7 +5,7 @@ import { SITE, tierBySlug } from "./site";
 import { inquiryBrief } from "./auto-reply-brief";
 import { weddingCalendarUrl } from "./wedding-booking";
 import {
-  BUDGET_OPTIONS, COVERAGE_OPTIONS, longDate, pricingTiers, recommendCollection, tierItems, weekdayOf,
+  BUDGET_OPTIONS, COVERAGE_OPTIONS, longDate, pricingTiers, recommendCollection, weekdayOf,
   type PricingMarket,
 } from "./ads/pricing-request";
 
@@ -136,7 +136,7 @@ function allowedAmounts() {
  *  here rather than failing the whole email. */
 export function checkedBody(text: string): string | null {
   const body = text.replace(/\r/g, "").replace(/(\d)\s*[\u2013\u2014]\s*(\d)/g, "$1 to $2").replace(/\s*[\u2013\u2014]\s*/g, ", ").trim();
-  if (body.length < 300 || body.length > 2200) return null;
+  if (body.length < 200 || body.length > 1500) return null;
   if (/https?:\/\/|www\.|\*\*|^#|^subject:/im.test(body)) return null;
   // No date claims of any kind: the site checks nothing.
   if (/\bavailab|\b(?:date|day)\b[^.]{0,40}\b(?:open|free|booked|held|reserved)\b/i.test(body)) return null;
@@ -149,56 +149,102 @@ export function checkedBody(text: string): string | null {
 
 /** The agent's note, "skip" for an inquiry it judged not to be a wedding, or
  *  null when the template should go instead. */
-async function writeWithClaude(inquiry: PricingInquiry, fitName: string, basis: string): Promise<string | "skip" | null> {
+/* The agent answers in this shape, so it can write the subject line too and
+   flag spam without free text that has to be parsed. */
+const REPLY_SCHEMA = {
+  type: "object",
+  properties: {
+    skip: { type: "boolean", description: "True only when the inquiry is plainly not from a couple planning a wedding." },
+    subject: { type: "string", description: "The subject line: 3 to 9 words, warm and specific to them." },
+    body: { type: "string", description: "The personal note, plain text, paragraphs separated by a blank line, ending with Arman." },
+  },
+  required: ["skip", "subject", "body"],
+  additionalProperties: false,
+};
+
+type Written = { subject: string; body: string };
+
+/** A subject line the agent wrote, cleaned, or null if it breaks a rule. */
+export function checkedSubject(text: string): string | null {
+  const subject = text.replace(/[\r\n]+/g, " ").replace(/\s*[\u2013\u2014]\s*/g, ", ").trim();
+  if (subject.length < 8 || subject.length > 80) return null;
+  if (/https?:\/\/|www\.|\$|!|^re:/i.test(subject)) return null;
+  if (/\bavailab/i.test(subject)) return null;
+  return subject;
+}
+
+/** The agent's subject and note, "skip" for an inquiry it judged not to be a
+ *  wedding, or null when the template should go instead. */
+async function writeWithClaude(inquiry: PricingInquiry, fitName: string, basis: string): Promise<Written | "skip" | null> {
   const api = claude();
   if (!api) return null;
   const response = await api.messages.create({
     model: MODEL,
     max_tokens: 4000,
     thinking: { type: "adaptive" },
-    output_config: { effort: "medium" },
+    output_config: { effort: "medium", format: { type: "json_schema", schema: REPLY_SCHEMA } },
     system: inquiryBrief(inquiry.market, inquiry.cityName),
     messages: [{ role: "user", content: inquiryPrompt(inquiry, fitName, basis) }],
   });
   if (response.stop_reason !== "end_turn") return null;
   const text = response.content.filter((block): block is Anthropic.TextBlock => block.type === "text").map((block) => block.text).join("").trim();
-  if (text === "SKIP") return "skip";
-  return checkedBody(text);
+  let reply: { skip?: unknown; subject?: unknown; body?: unknown };
+  try { reply = JSON.parse(text); } catch { return null; }
+  if (reply.skip === true) return "skip";
+  const body = typeof reply.body === "string" ? checkedBody(reply.body) : null;
+  if (!body) return null;
+  const subject = typeof reply.subject === "string" ? checkedSubject(reply.subject) : null;
+  return { subject: subject ?? fallbackSubject(inquiry), body };
 }
 
+export function fallbackSubject(inquiry: PricingInquiry) {
+  const name = greetingName(inquiry.names);
+  return name ? `${name}, your ${inquiry.cityName} wedding` : `Your ${inquiry.cityName} wedding`;
+}
+
+/** The backup note when the agent is unavailable. Short on purpose: the
+ *  pricing is in the table under it and on the screen they just saw. */
 export function fallbackBody(inquiry: PricingInquiry, fitName: string) {
-  const fit = tierBySlug(recommendCollection(inquiry.coverage, inquiry.budget).slug)!;
   const name = greetingName(inquiry.names);
   const when = whenPhrase(inquiry);
-  const details = [when && `for ${when}`, inquiry.location && `at ${inquiry.location}`].filter(Boolean).join(" ");
+  const details = [inquiry.location && `at ${inquiry.location}`, when && `on ${when}`].filter(Boolean).join(" ");
   return [
     `Hi ${name || "there"},`,
-    `Thank you for sending your wedding details${details ? ` ${details}` : ""}. From what you told me, ${fitName} looks like the right fit: ${fit.coverage.toLowerCase()}, ${fit.images.toLowerCase()} and ${fit.film ? fit.film.charAt(0).toLowerCase() + fit.film.slice(1) : fit.engagement.toLowerCase()}, at ${money(fit.price)} before tax. ${inquiry.market.travelNote}`,
-    "Your full pricing is below. The easiest next step is a free 30-minute video call, where we can talk through your day and the photographs you love. If a call doesn't suit you, reply to this email or message me on WhatsApp.",
+    `Thank you for telling me about your wedding${details ? ` ${details}` : ""}. I would love to hear more about it.`,
+    `From what you shared, ${fitName} feels like the right fit. The easiest way to talk it through is a free 30-minute video call, and if you would rather just message, WhatsApp works too.`,
     "Arman",
   ].join("\n\n");
+}
+
+/** An email button that renders as a big block in every client, Outlook
+ *  included: a full-width table cell, not a styled link alone. */
+function bigButton(href: string, label: string, background: string, color: string) {
+  return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 14px;"><tr><td align="center" bgcolor="${background}" style="background:${background};border-radius:8px;"><a href="${escapeHtml(href)}" style="display:block;padding:22px 20px;font-family:Arial,Helvetica,sans-serif;font-size:20px;font-weight:bold;line-height:1.2;color:${color};text-decoration:none;border-radius:8px;">${escapeHtml(label)}</a></td></tr></table>`;
 }
 
 function render(inquiry: PricingInquiry, body: string, fitSlug: string) {
   const calendar = weddingCalendarUrl("?utm_source=auto-reply-email&utm_medium=email", new URL(SITE.url).hostname, false, { page: inquiry.page, prefill: { name: inquiry.names, email: inquiry.email } });
   const whatsapp = `https://wa.me/${SITE.phoneE164.replace(/\D/g, "")}?text=${encodeURIComponent(`Hi Arman, it's ${inquiry.names}. We asked about wedding photography in ${inquiry.cityName}.`)}`;
   const tiers = pricingTiers();
-  const html = `<div style="font-family:Georgia,serif;max-width:560px;margin:0 auto;color:#2C2420;font-size:16px;line-height:1.65;">
+  const html = `<div style="font-family:Georgia,serif;max-width:560px;margin:0 auto;color:#2C2420;font-size:17px;line-height:1.65;">
   ${body.split(/\n{2,}/).map((p) => `<p style="margin:0 0 16px;">${escapeHtml(p).replace(/\n/g, "<br>")}</p>`).join("")}
-  <table style="width:100%;border-collapse:collapse;margin:26px 0 8px;border-top:1px solid #D9CEBC;">
-    ${tiers.map((tier) => `<tr><td style="padding:14px 0;border-bottom:1px solid #EDE7DA;vertical-align:top;"><strong style="font-weight:normal;font-size:19px;">${escapeHtml(tier.name)}</strong>${tier.slug === fitSlug ? ` <span style="font-family:Arial,sans-serif;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#A67268;">Best fit</span>` : ""}<br><span style="font-family:Arial,sans-serif;font-size:13px;color:#6B6258;">${escapeHtml(tierItems(tier).slice(0, 4).join(" · "))}</span></td><td style="padding:14px 0 14px 16px;border-bottom:1px solid #EDE7DA;text-align:right;vertical-align:top;white-space:nowrap;font-size:19px;">${money(tier.price)}</td></tr>`).join("")}
+  <div style="margin:28px 0 22px;">
+    ${bigButton(calendar, "Book your free video call", "#1A1612", "#F3EEDF")}
+    <p style="margin:-4px 0 18px;text-align:center;font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#6B6258;">30 minutes, no obligation. Pick any time that suits you.</p>
+    ${bigButton(whatsapp, "Message me on WhatsApp", "#25D366", "#FFFFFF")}
+  </div>
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;margin:8px 0 6px;border-top:1px solid #D9CEBC;">
+    ${tiers.map((tier) => `<tr><td style="padding:12px 0;border-bottom:1px solid #EDE7DA;font-size:18px;">${escapeHtml(tier.name)} <span style="font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#6B6258;">${tier.hours} hours</span>${tier.slug === fitSlug ? ` <span style="font-family:Arial,Helvetica,sans-serif;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#A67268;">Best fit</span>` : ""}</td><td style="padding:12px 0 12px 16px;border-bottom:1px solid #EDE7DA;text-align:right;white-space:nowrap;font-size:18px;">${money(tier.price)}</td></tr>`).join("")}
   </table>
-  <p style="margin:0 0 26px;font-family:Arial,sans-serif;font-size:12px;color:#6B6258;">Canadian dollars before tax. ${escapeHtml(inquiry.market.travelNote)}</p>
-  <p style="margin:0 0 12px;"><a href="${escapeHtml(calendar)}" style="display:inline-block;background:#1A1612;color:#F3EEDF;text-decoration:none;padding:13px 20px;font-family:Arial,sans-serif;font-size:14px;">Choose a time for a free video call</a></p>
-  <p style="margin:0 0 30px;font-family:Arial,sans-serif;font-size:14px;"><a href="${escapeHtml(whatsapp)}" style="color:#1A1612;">Message me on WhatsApp</a> &nbsp;·&nbsp; or just reply to this email</p>
-  <p style="margin:0;padding-top:16px;border-top:1px solid #EDE7DA;font-family:Arial,sans-serif;font-size:12px;color:#6B6258;">Arman Arai · Wedding photography · <a href="${SITE.url}" style="color:#6B6258;">${SITE.domain}</a> · ${escapeHtml(SITE.phone)}</p>
+  <p style="margin:0 0 26px;font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#6B6258;">Canadian dollars, before tax.</p>
+  <p style="margin:0;padding-top:16px;border-top:1px solid #EDE7DA;font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#6B6258;">Arman Arai · Wedding photography · <a href="${SITE.url}" style="color:#6B6258;">${SITE.domain}</a> · ${escapeHtml(SITE.phone)}</p>
 </div>`;
   const text = [
     body,
-    tiers.map((tier) => `${tier.name}${tier.slug === fitSlug ? " (best fit)" : ""}: ${money(tier.price)}`).join("\n"),
-    `Canadian dollars before tax. ${inquiry.market.travelNote}`,
-    `Choose a time for a free video call: ${calendar}`,
+    `Book your free video call: ${calendar}`,
     `Message me on WhatsApp: ${whatsapp}`,
+    tiers.map((tier) => `${tier.name}, ${tier.hours} hours${tier.slug === fitSlug ? " (best fit)" : ""}: ${money(tier.price)}`).join("\n"),
+    "Canadian dollars, before tax.",
     `Arman Arai · Wedding photography · ${SITE.domain} · ${SITE.phone}`,
   ].join("\n\n");
   return { html, text };
@@ -210,18 +256,18 @@ export async function sendInquiryAutoReply(inquiry: PricingInquiry): Promise<voi
   const fitName = tierBySlug(fit.slug)!.name;
   const basis = fit.basis === "coverage" ? "the coverage they asked for" : fit.basis === "budget" ? "their budget" : "neither, because they are unsure of both; Signature is the collection most couples book";
   let body: string | null = null;
+  let subject = fallbackSubject(inquiry);
   let source = "claude";
   try {
     const written = await writeWithClaude(inquiry, fitName, basis);
     if (written === "skip") { console.info("Auto-reply: skipped, not a wedding inquiry"); return; }
-    body = written;
+    if (written) { body = written.body; subject = written.subject; }
   } catch (error) {
     console.warn("Auto-reply: Claude call failed", error instanceof Anthropic.APIError ? error.status : error);
     if (lastClaims) console.warn("Auto-reply: identity token claims presented", JSON.stringify(lastClaims));
   }
   if (!body) { body = fallbackBody(inquiry, fitName); source = "template"; }
   const { html, text } = render(inquiry, body, fit.slug);
-  const subject = `Your wedding photography pricing, ${greetingName(inquiry.names) || inquiry.cityName}`.replace(/[\r\n]+/g, " ").slice(0, 120);
   try {
     const { Resend } = await import("resend");
     const { error } = await new Resend(process.env.RESEND_API_KEY).emails.send({

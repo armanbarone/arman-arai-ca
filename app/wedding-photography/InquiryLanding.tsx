@@ -39,7 +39,7 @@ export default function InquiryLanding({ city, market }: { city: WeddingCity; ma
     [city.coverageQuestion, market.coverageAnswer],
     [city.planningQuestion, city.planningAnswer], POSING_QUESTION,
     ["Do we have to book a video call?", "No. The call is there if you’d like to meet before you decide. If you’d rather keep it to email, WhatsApp or text, that works too."],
-    ["What is included, and what costs extra?", `Every collection includes photography by me, a 60-minute engagement session, planning, a full edited gallery with print permission, vertical social reels and film prints for your guests. Complete adds a second photographer for four hours, a longer film and a printed album; Photo + Film runs 12 hours with a dedicated filmmaker and adds a printed album. Prices are in Canadian dollars before tax. ${market.travelNote}`],
+    ["What is included, and what costs extra?", `Every collection includes photography by me, a 60-minute engagement session, planning, a full edited gallery with print permission, vertical social reels and film prints for your guests. Legacy adds a second photographer for four hours, a longer film and a printed album; Photo + Film runs 12 hours with a dedicated filmmaker and adds a printed album. Prices are in Canadian dollars before tax. ${market.travelNote}`],
     // These pages confirm nothing about a date, so this answer never says
     // "once we've confirmed availability".
     ["How do we secure our wedding date?", "Once you’ve chosen your collection and we’ve agreed the details, a signed contract and a non-refundable 30% deposit secure the date. Then 35% is due 60 days before the wedding, and the final 35% 30 days before. There’s no obligation to book after our call."],

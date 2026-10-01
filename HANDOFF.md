@@ -337,6 +337,14 @@ Everything in this list is live and was verified with a real HTTP check.
   Signature; every "from" is C$3,000. The C$450 engagement add-on went with it
   (every collection includes the session). Main-site CTAs read "Start your
   inquiry"; nothing on the main site promises to say whether a date is open.
+  **Collection renamed (2026-10-01):** Complete is now **Legacy** (owner: "complete
+  is just meh"). Display name only; the slug stays `complete`.
+  **Auto-reply email (2026-10-01):** the agent returns JSON {skip, subject, body}
+  (structured output) so it writes its own subject line. No travel, add-ons or
+  extra costs in this first email (owner). Two giant table-based buttons (book
+  the call, WhatsApp); a live calendar cannot be embedded in an email. Compact
+  price table (name, hours, price), no inclusion lists. The brief gives the
+  agent a voice from lines Arman uses on the site.
   **Old ads pages removed (2026-09-30):** `/wedding-photography`, every
   `/wedding-photography/<city>` and `-dark` page, Tofino/Whistler/Jasper, and the
   three `/2728-...` pages, with their templates (CityWeddingLanding, LandingPage,

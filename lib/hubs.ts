@@ -237,7 +237,7 @@ export const HUBS: Record<string, HubContent> = {
     different: [
       {
         title: "The same number as a Saturday in the city",
-        body: "Whistler, Squamish and Pemberton cost what everywhere costs. Signature is C$3,000 here exactly as it is in Kitsilano, Complete is C$4,200, and regional dates are grouped whenever possible to keep travel low.",
+        body: "Whistler, Squamish and Pemberton cost what everywhere costs. Signature is C$3,000 here exactly as it is in Kitsilano, Legacy is C$4,200, and regional dates are grouped whenever possible to keep travel low.",
       },
       {
         title: "A valley plan, named before the date",
@@ -292,7 +292,7 @@ export const HUBS: Record<string, HubContent> = {
       { k: "Best months", v: "Jun to Sep, and November" },
       { k: "From Vancouver", v: "Seven hours, door to door" },
       CORE_STAT,
-      { k: "Best collection", v: "Complete" },
+      { k: "Best collection", v: "Legacy" },
     ],
     different: [
       {
@@ -326,7 +326,7 @@ export const HUBS: Record<string, HubContent> = {
       { months: "March to May", light: "Variable", note: "Rain without the drama of a real storm. The one stretch I would steer you away from." },
     ],
     dayIntro:
-      "A Complete day on the west coast, which is what I recommend here almost every time.",
+      "A Legacy day on the west coast, which is what I recommend here almost every time.",
     day: [
       { time: "Friday", title: "Everyone arrives", body: "Two hours of welcome coverage. People have driven a long way and the first evening is frequently the warmest part of the whole weekend." },
       { time: "Hour 1–2", title: "Saturday morning", body: "Slow, and usually indoors with the weather doing something worth photographing through the glass." },

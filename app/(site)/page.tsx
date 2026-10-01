@@ -97,12 +97,12 @@ const steps = [
 
 /* What is in every collection. The .com's "eight things you will never touch". */
 const carried = [
-  { t: "Six continuous hours", d: "The floor of every collection. Eight on Signature, ten on Complete." },
+  { t: "Six continuous hours", d: "The floor of every collection. Eight on Signature, ten on Legacy." },
   { t: "Vertical social reels", d: "Cut from the day and sent in the first week, long before the gallery, while everyone is still asking to see something." },
   { t: "Film prints on the night", d: "Real prints handed to your guests before they go home, while the gallery is still weeks away." },
   { t: "A timeline that survives", d: "Built backwards from sunset, with one deliberate block of slack that absorbs the whole morning's drift." },
   { t: "A written family-photo plan", d: "Twelve groups and two callers, agreed before the day. This is the single largest block of time a big wedding gets back." },
-  { t: "A preview in 48 hours", d: "Thirty frames while the day is still in your head. Next day on Signature, 24 hours on Complete." },
+  { t: "A preview in 48 hours", d: "Thirty frames while the day is still in your head. Next day on Signature, 24 hours on Legacy." },
   { t: "The full gallery, dated", d: "Three weeks, on every collection. The date is in the contract, not in an email." },
   { t: "One price, wherever it happens", d: "A collection costs the same in every city. Travel stays separate, uses the lowest practical route and drops when regional dates can be grouped." },
 ];
@@ -339,7 +339,7 @@ export default function Home() {
               <p className="dr-p">
                 Vertical social reels in every collection, in the first week. A
                 colour-graded feature film in every collection: one minute on Signature, three on
-                Complete. Real film too, two rolls on Signature and four on Complete,
+                Legacy. Real film too, two rolls on Signature and four on Legacy,
                 processed and scanned. And prints handed to your guests on the night, so
                 people leave holding something from the day.
               </p>

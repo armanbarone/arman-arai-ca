@@ -19,7 +19,7 @@ import {
 export const metadata: Metadata = {
   title: "Wedding Photography Pricing — One Price, Anywhere in Canada",
   description:
-    "Three collections at one national price: Signature C$3,000 for 8 hours, Complete C$4,200 for 10, and Photo + Film C$5,900 for 12 with a dedicated filmmaker. Travel stays separate and lean.",
+    "Three collections at one national price: Signature C$3,000 for 8 hours, Legacy C$4,200 for 10, and Photo + Film C$5,900 for 12 with a dedicated filmmaker. Travel stays separate and lean.",
   alternates: { canonical: "/pricing" },
   openGraph: {
     title: "Wedding Photography Pricing — Arman Arai",
@@ -65,17 +65,17 @@ const FAQS = [
   },
   {
     q: "What are the social reels, and are they the feature film?",
-    a: "They are not. The reels are short vertical videos cut from the day and sent in the first week, long before the gallery is finished, so there is something to post while people are still asking. They are in every collection. The feature film is a separate, colour-graded piece with sound: one minute on Signature, three minutes on Complete, and three to five minutes on Photo + Film, where a dedicated filmmaker shoots it rather than me.",
+    a: "They are not. The reels are short vertical videos cut from the day and sent in the first week, long before the gallery is finished, so there is something to post while people are still asking. They are in every collection. The feature film is a separate, colour-graded piece with sound: one minute on Signature, three minutes on Legacy, and three to five minutes on Photo + Film, where a dedicated filmmaker shoots it rather than me.",
   },
   {
-    q: "What exactly is the album that comes with Complete?",
+    q: "What exactly is the album that comes with Legacy?",
     a: `${ALBUM_SPECS.signature.long}
 
-Complete and Photo + Film both carry it. On Signature it is an add-on at C$1,200. The bigger one is an upgrade from either. ${ALBUM_SPECS.heirloom.long}`,
+Legacy and Photo + Film both carry it. On Signature it is an add-on at C$1,200. The bigger one is an upgrade from either. ${ALBUM_SPECS.heirloom.long}`,
   },
   {
     q: "Do you offer photo and video?",
-    a: "Yes, and there are two versions of it. A short colour-graded film cut from the day is included on Signature and Complete, shot alongside the photographs rather than by a second operator, which is why it is included rather than sold. A proper film is a different product: Photo + Film puts a dedicated filmmaker on the day for twelve hours and returns a three to five minute piece with licensed music and your vows, at C$5,900, and a filmmaker for eight hours can be added to any other collection for C$2,900. A filmmaker is not a camera add-on, and I will not bundle one in at a number that guarantees somebody does bad work.",
+    a: "Yes, and there are two versions of it. A short colour-graded film cut from the day is included on Signature and Legacy, shot alongside the photographs rather than by a second operator, which is why it is included rather than sold. A proper film is a different product: Photo + Film puts a dedicated filmmaker on the day for twelve hours and returns a three to five minute piece with licensed music and your vows, at C$5,900, and a filmmaker for eight hours can be added to any other collection for C$2,900. A filmmaker is not a camera add-on, and I will not bundle one in at a number that guarantees somebody does bad work.",
   },
   {
     q: "How far in advance do couples book?",

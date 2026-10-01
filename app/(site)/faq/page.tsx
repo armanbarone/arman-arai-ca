@@ -38,7 +38,7 @@ const GROUPS = [
       },
       {
         q: "How many hours do we need?",
-        a: "Eight hours, which is Signature, covers most full weddings: a getting-ready, a ceremony and a reception. Once the day runs from the morning to the last dance, or two rooms need covering at once, take Complete at ten hours. Photo + Film runs twelve, with a dedicated filmmaker. An extra hour on any collection is C$400.",
+        a: "Eight hours, which is Signature, covers most full weddings: a getting-ready, a ceremony and a reception. Once the day runs from the morning to the last dance, or two rooms need covering at once, take Legacy at ten hours. Photo + Film runs twelve, with a dedicated filmmaker. An extra hour on any collection is C$400.",
       },
     ],
   },
@@ -55,11 +55,11 @@ const GROUPS = [
       },
       {
         q: "Is there a second photographer?",
-        a: "Complete includes one for four hours. On Signature and Photo + Film it is an add-on: C$800 for four hours, which is the minimum, and C$175 for each hour after that, because a second photographer is a real person being paid a real day rate and folding that into a package quietly is how it gets done badly. If the two of you are getting ready in different places, one photographer cannot be in both and I will say so rather than let you find out.",
+        a: "Legacy includes one for four hours. On Signature and Photo + Film it is an add-on: C$800 for four hours, which is the minimum, and C$175 for each hour after that, because a second photographer is a real person being paid a real day rate and folding that into a package quietly is how it gets done badly. If the two of you are getting ready in different places, one photographer cannot be in both and I will say so rather than let you find out.",
       },
       {
         q: "Do you shoot video?",
-        a: "A colour-graded feature film cut from your day: one minute on Signature, three minutes on Complete. It is shot alongside the photographs rather than by a separate operator, which is what makes it includable at all. A dedicated filmmaker is a different product: it is what Photo + Film carries at C$5,900, and it can be added to any other collection for C$2,900.",
+        a: "A colour-graded feature film cut from your day: one minute on Signature, three minutes on Legacy. It is shot alongside the photographs rather than by a separate operator, which is what makes it includable at all. A dedicated filmmaker is a different product: it is what Photo + Film carries at C$5,900, and it can be added to any other collection for C$2,900.",
       },
     ],
   },
@@ -101,7 +101,7 @@ const GROUPS = [
       },
       {
         q: "When do the photographs arrive?",
-        a: "Social reels in the first week. A preview the next day on Signature and Photo + Film, and within 24 hours on Complete. The full gallery within three weeks, because every collection carries a graded film and real rolls to develop. A dedicated filmmaker's film on Photo + Film takes ten weeks. The date is in the contract, not in an email.",
+        a: "Social reels in the first week. A preview the next day on Signature and Photo + Film, and within 24 hours on Legacy. The full gallery within three weeks, because every collection carries a graded film and real rolls to develop. A dedicated filmmaker's film on Photo + Film takes ten weeks. The date is in the contract, not in an email.",
       },
       {
         q: "How far in advance should we book?",

@@ -46,7 +46,7 @@ export default function TermsOfService() {
           <ul style={{ paddingLeft: "1.25rem", marginTop: 10, display: "flex", flexDirection: "column", gap: 6 }}>
             <li>Wedding day photography, in the three collections published on the pricing page</li>
             <li>Engagement and welcome sessions, booked as add-ons at published prices</li>
-            <li>A colour-graded feature film on the Signature and Complete collections, shot alongside the photography rather than by a separate operator, and a longer film shot by a dedicated filmmaker on the Photo + Film collection</li>
+            <li>A colour-graded feature film on the Signature and Legacy collections, shot alongside the photography rather than by a separate operator, and a longer film shot by a dedicated filmmaker on the Photo + Film collection</li>
             <li>Vertical social reels and film prints handed to guests on the night, included in every collection</li>
             <li>Timeline planning and a written family-photograph plan</li>
             <li>Optional add-ons at published prices: additional hours and events, a second photographer, sessions, albums, loose and framed prints, film, drone and dedicated video coverage</li>
@@ -101,7 +101,7 @@ export default function TermsOfService() {
             <tbody>
               {[
                 ["Signature", "40 images next day", "3 weeks", "First week"],
-                ["Complete", "50 images within 24 hours", "3 weeks", "First week"],
+                ["Legacy", "50 images within 24 hours", "3 weeks", "First week"],
                 ["Photo + Film", "40 images next day", "3 weeks, film in 10", "First week"],
               ].map((row) => (
                 <tr key={row[0]}>

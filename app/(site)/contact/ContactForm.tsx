@@ -118,7 +118,7 @@ export default function ContactForm() {
           <select id="collection" name="collection" className="form-input cursor-pointer" value={form.collection} onChange={set("collection")}>
             <option value="">Not sure yet, advise me</option>
             <option>Signature, 8 hours</option>
-            <option>Complete, 10 hours</option>
+            <option>Legacy, 10 hours</option>
             <option>Photo + Film, 12 hours</option>
             <option>Multi-day, needs a custom quote</option>
           </select>

@@ -74,7 +74,7 @@ const COMPARISON = [
   { row: "Price", canada: `Published: ${money(TIERS[0].price)} / ${money(TIERS[1].price)} / ${money(TIERS[2].price)}, the same in every province`, dest: "Quoted against the country, the venue and the date" },
   { row: "Travel", canada: "Its own line, reduced or waived when regional dates group", dest: "Built into the one quoted number, not added afterwards" },
   { row: "The photography", canada: "Documentary and editorial, one lead photographer", dest: "Identical. The work does not change with the postcode" },
-  { row: "What comes back", canada: "Coverage, social reels, film prints, the feature film from Signature up, and the album on Complete and Photo + Film", dest: "Identical, and scoped with you when the quote is built" },
+  { row: "What comes back", canada: "Coverage, social reels, film prints, the feature film from Signature up, and the album on Legacy and Photo + Film", dest: "Identical, and scoped with you when the quote is built" },
   { row: "Arrival", canada: "The day before, usually", dest: "Two to three days ahead, to scout in the real light" },
   { row: "Booking", canada: TERMS.retainer, dest: "The same deposit and schedule, on the same contract" },
 ];

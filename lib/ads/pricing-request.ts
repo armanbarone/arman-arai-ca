@@ -1,6 +1,6 @@
 /* The pricing-request ads pages: /wedding-photography/<city>-pricing.
  *
- * Three collections, and only three: Signature, Complete and Photo + Film,
+ * Three collections, and only three: Signature, Legacy and Photo + Film,
  * read from TIERS in lib/site.ts so a price change there reaches these pages,
  * the thank-you screen and the auto-reply email at once. Source: the owner,
  * 2026-09-28 ("there are only 3 packages: 3k, 4.2k and 5.9k").

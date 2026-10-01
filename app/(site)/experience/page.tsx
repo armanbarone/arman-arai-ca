@@ -89,7 +89,7 @@ const CHAPTERS = [
     title: "Something in their hands that night",
     body: [
       "Every collection includes vertical social reels sent in the first week, and film prints handed to your guests on the night, so people leave your wedding holding a photograph from it rather than waiting weeks for a link. It is the single most commented-on thing I do.",
-      "A colour-graded feature film follows on Signature and Complete, one minute and three minutes respectively, and Photo + Film returns a three to five minute piece shot by a dedicated filmmaker. So does a preview of stills, next day on Signature and Photo + Film and within 24 hours on Complete, while the day is still in your head.",
+      "A colour-graded feature film follows on Signature and Legacy, one minute and three minutes respectively, and Photo + Film returns a three to five minute piece shot by a dedicated filmmaker. So does a preview of stills, next day on Signature and Photo + Film and within 24 hours on Legacy, while the day is still in your head.",
     ],
     photo: EDITORIAL[10],
   },
@@ -101,7 +101,7 @@ const CHAPTERS = [
     title: "The whole day, in order",
     body: [
       "The full gallery arrives within three weeks, and the date is in the contract rather than in an email. It comes back as the day happened, start to finish, including the quiet parts a highlight reel leaves out.",
-      "The top two collections carry a real album rather than a credit toward one: the 10×10 Signature album, on Complete and on Photo + Film, with the 12×12 in full-grain leather available as an upgrade. A hard drive is not an heirloom, and nobody has ever taken a folder of JPEGs off a shelf to show someone.",
+      "The top two collections carry a real album rather than a credit toward one: the 10×10 Signature album, on Legacy and on Photo + Film, with the 12×12 in full-grain leather available as an upgrade. A hard drive is not an heirloom, and nobody has ever taken a folder of JPEGs off a shelf to show someone.",
     ],
     photo: DREAMY_FINE_ART[1],
   },

@@ -97,7 +97,7 @@ export const SCOPE = {
 } as const;
 
 /* ── The ladder ─────────────────────────────────────────────────────────────
- * Three collections: Signature, Complete and Photo + Film. `price` is the whole
+ * Three collections: Signature, Legacy and Photo + Film. `price` is the whole
  * price of the collection anywhere in Canada. Travel is handled separately and
  * kept lean; see TRAVEL. Essential (C$2,000, six hours) was removed on
  * 2026-09-28 (owner: "there are only 3 packages: 3k, 4.2k and 5.9k"). ENTRY
@@ -208,7 +208,7 @@ export const TIERS: Tier[] = [
   },
   {
     slug: "complete",
-    name: "Complete",
+    name: "Legacy",
     strap: "Ten hours",
     coverage: "10 continuous hours",
     hours: 10,
@@ -406,7 +406,7 @@ export const REGIONS: Region[] = [
     tax: "5% GST, plus 7% PST where applicable",
     marketRange: "Quoted against the venue and the date",
     season: "June to September, with a storm season worth having from November",
-    bestTier: "Complete",
+    bestTier: "Legacy",
     promise: "Coastal weddings, with the ferry and the drive west planned rather than hoped about.",
     travel: "Early-booked low-cost air, the ferry and only the road time the venue requires. Grouped regional dates can reduce or remove the travel fee.",
     risk: "Tofino is not a day trip. It wants the ten-hour collection and an extra night on the ground.",
@@ -421,7 +421,7 @@ export const REGIONS: Region[] = [
     tax: "5% GST in Alberta",
     marketRange: "Quoted against the venue and the date",
     season: "June to September for the alpine, December to March for snow",
-    bestTier: "Complete",
+    bestTier: "Legacy",
     promise: "Mountain wedding coverage with the Parks Canada paperwork done before the date.",
     travel: "Early-booked low-cost air, a practical rental car and only the mountain nights the schedule requires.",
     risk: "Parks Canada permits, shuttle-only access to Moraine Lake, and July hotel rates.",
@@ -436,7 +436,7 @@ export const REGIONS: Region[] = [
     tax: "5% GST in Alberta",
     marketRange: "Quoted against the venue and the date",
     season: "June to September, and a dark-sky season worth planning for",
-    bestTier: "Complete",
+    bestTier: "Legacy",
     promise: "The quieter half of the Rockies, with the long drives counted properly.",
     travel: "Early-booked low-cost air into Edmonton or Calgary, then the most practical ground route for the date.",
     risk: "Distance. Everything in Jasper is further apart than the map suggests.",
@@ -511,12 +511,12 @@ export type Addon = { name: string; price: number; priceMax?: number; note: stri
 
 export const ADDONS: Addon[] = [
   { group: "Coverage", name: "Extra coverage hour", price: 400, note: "One more hour on the day, editing included. Booked in advance and continuous with the collection." },
-  { group: "Coverage", name: "Second photographer, 4 hours", price: 800, note: "Four hours is the minimum. Placed where two angles genuinely matter rather than spread thin across the day. Included in Complete." },
+  { group: "Coverage", name: "Second photographer, 4 hours", price: 800, note: "Four hours is the minimum. Placed where two angles genuinely matter rather than spread thin across the day. Included in Legacy." },
   { group: "Coverage", name: "Extra second-photographer hour", price: 175, note: "Added on top of the four-hour minimum." },
   { group: "Coverage", name: "Rehearsal dinner or welcome event", price: 1000, note: "Up to 3 hours on another day. A tea ceremony, a mehndi or a rehearsal dinner." },
   { group: "Sessions", name: "Destination welcome session", price: 550, note: "45 minutes, when I am already on location. Not a standalone fly-out." },
   { group: "Sessions", name: "Anniversary session", price: 400, note: "60 minutes, 40+ edited images, bookable any time in the twelve months after the wedding. The same two people, a year of marriage later." },
-  { group: "Prints", name: `Signature album, ${ALBUM_SPECS.signature.size}`, price: 1200, note: `${ALBUM_SPECS.signature.pages}, ${ALBUM_SPECS.signature.paper}, ${ALBUM_SPECS.signature.cover}. Included in Complete and Photo + Film.` },
+  { group: "Prints", name: `Signature album, ${ALBUM_SPECS.signature.size}`, price: 1200, note: `${ALBUM_SPECS.signature.pages}, ${ALBUM_SPECS.signature.paper}, ${ALBUM_SPECS.signature.cover}. Included in Legacy and Photo + Film.` },
   { group: "Prints", name: `Heirloom album, ${ALBUM_SPECS.heirloom.size}`, price: 1800, note: `${ALBUM_SPECS.heirloom.pages}, ${ALBUM_SPECS.heirloom.paper}, ${ALBUM_SPECS.heirloom.cover}. The upgrade from the Signature album.` },
   { group: "Prints", name: "Parent album", price: 550, note: `${ALBUM_SPECS.parent.size}, ${ALBUM_SPECS.parent.pages}, ${ALBUM_SPECS.parent.paper}, ${ALBUM_SPECS.parent.cover}. Priced per copy.` },
   { group: "Prints", name: "Fine-art print box", price: 400, note: "20 to 30 archival prints at 5×7 or 6×8 inches in a covered clamshell box, sequenced but loose, so they can be handed around a table. For the people who want the photographs in hand without an album." },
@@ -587,7 +587,7 @@ export const MARKETS: Market[] = [
     body: [
       "The work here is documentary and editorial: I photograph what happens rather than staging a version of it, then I direct properly for the twenty minutes of portraits where direction is what you actually want. That distinction matters more in Montréal than anywhere else I work, because the market is full of packages that promise a number of images and say nothing about how the day will feel.",
       "I have already made the mistakes: I know which side of Place d'Armes is lit at five in July and which at five in October, that the Plateau photographs best in falling snow, and which venues lose the light an hour earlier than the couple expects.",
-      "A collection costs the same here as it costs anywhere in Canada: Signature is C$3,000 for eight hours with an engagement session, Complete is C$4,200 for ten with a second photographer, and Photo + Film is C$5,900 for twelve with a dedicated filmmaker. Travel is kept separate, booked early and reduced or waived when I am already scheduled in the region.",
+      "A collection costs the same here as it costs anywhere in Canada: Signature is C$3,000 for eight hours with an engagement session, Legacy is C$4,200 for ten with a second photographer, and Photo + Film is C$5,900 for twelve with a dedicated filmmaker. Travel is kept separate, booked early and reduced or waived when I am already scheduled in the region.",
     ],
     faqs: [
       {
@@ -596,7 +596,7 @@ export const MARKETS: Market[] = [
       },
       {
         q: "How is travel handled around Québec?",
-        a: "The collection costs the same wherever the day happens: C$3,000 for Signature, C$4,200 for Complete. Travel is based only on the route the date requires, and it is reduced or waived when I am already scheduled in the region.",
+        a: "The collection costs the same wherever the day happens: C$3,000 for Signature, C$4,200 for Legacy. Travel is based only on the route the date requires, and it is reduced or waived when I am already scheduled in the region.",
       },
       {
         q: "We are having a civil ceremony with a notaire. Is that too small?",
@@ -622,7 +622,7 @@ export const MARKETS: Market[] = [
     body: [
       "So I scope by event rather than by package. How many days, how many venues, how far apart, whether any two events share a day, how many people are in each room, and which twenty minutes of the whole thing you would be heartbroken to lose. Those six answers decide crew, travel and editing volume, which is where the cost actually lives. They also produce a timeline that survives contact with Highway 401 traffic on a Saturday in June, which no flat package has ever done.",
       "The part that gets underestimated is editing capacity rather than shooting capacity. A three-day celebration produces something like fifteen to twenty thousand frames. A photographer whose workflow is built for one Saturday will take four or five months to return that gallery and will quote you eight weeks when you ask. I would rather tell you the real number at the start, which is why the delivery date goes in the contract as a date.",
-      "The collection costs what it costs anywhere: Signature C$3,000, Complete C$4,200, Photo + Film C$5,900. Travel uses the lowest practical early-booked route and is reduced or waived when I am already scheduled nearby. Niagara, the 1000 Islands, Muskoka and Prince Edward County all buy the same collections at the same figures.",
+      "The collection costs what it costs anywhere: Signature C$3,000, Legacy C$4,200, Photo + Film C$5,900. Travel uses the lowest practical early-booked route and is reduced or waived when I am already scheduled nearby. Niagara, the 1000 Islands, Muskoka and Prince Edward County all buy the same collections at the same figures.",
     ],
     faqs: [
       {
@@ -656,7 +656,7 @@ export const MARKETS: Market[] = [
       "Three products in one region: a Lower Mainland wedding, a Sea-to-Sky or Whistler day, and Vancouver Island. They differ by access and weather, not by how the photographs are made.",
     body: [
       "For a city wedding the work is the same as anywhere: a timeline that respects the light, coverage that does not run out before the dancing, and portraits that take twenty minutes rather than an hour and a half. The local difference is rain. Between October and April a wet ceremony is not the exception, so every timeline I build has a covered plan that is a real plan, scouted in advance, not a shrug on the day.",
-      "Sea-to-Sky is a different job. Whistler and Squamish need travel time counted properly, and anything on Crown land or in a provincial park needs its permit sorted well before the date. The photography costs the same as it does anywhere else: Signature C$3,000 and Complete C$4,200. Travel is kept lean with early-booked low-cost routes and grouped regional dates.",
+      "Sea-to-Sky is a different job. Whistler and Squamish need travel time counted properly, and anything on Crown land or in a provincial park needs its permit sorted well before the date. The photography costs the same as it does anywhere else: Signature C$3,000 and Legacy C$4,200. Travel is kept lean with early-booked low-cost routes and grouped regional dates.",
       "Premium local photography in this market runs roughly C$5,800 to C$7,500 for a full day, and multi-service mountain packages start around C$8,500 once vendors are bundled in. If that bundled day is what you want, I will tell you honestly what it costs to build. If you want the photography, Signature is C$3,000 and travel stays separate.",
     ],
     faqs: [
@@ -666,7 +666,7 @@ export const MARKETS: Market[] = [
       },
       {
         q: "Do you cover Vancouver Island and Tofino?",
-        a: "Yes. The collection costs the same there as everywhere, C$3,000 for Signature and C$4,200 for Complete. The Island adds a ferry and Tofino adds three hours of highway beyond the flight, which is a genuinely different trip, so the travel is quoted against your actual venue and date. What I will not do is pretend Tofino is a day trip: it wants ten hours and an extra night on the ground.",
+        a: "Yes. The collection costs the same there as everywhere, C$3,000 for Signature and C$4,200 for Legacy. The Island adds a ferry and Tofino adds three hours of highway beyond the flight, which is a genuinely different trip, so the travel is quoted against your actual venue and date. What I will not do is pretend Tofino is a day trip: it wants ten hours and an extra night on the ground.",
       },
       {
         q: "Are permits really necessary?",
@@ -687,7 +687,7 @@ export const MARKETS: Market[] = [
       "Ninety minutes north of Vancouver and inside the same number. The corridor is a logistics problem before it is an aesthetic one, and the logistics are the part you are actually paying me for.",
     body: [
       "There are three Whistler weddings and they are not interchangeable. A village wedding happens at a hotel or a restaurant with everything walkable, which is the easiest version and the one that survives bad weather. An alpine wedding puts the ceremony at the top of a lift, which is the most spectacular and the most exposed to cloud. A lake wedding at Green Lake or Lost Lake sits between the two: outdoors, reachable by road, and low enough to stay under the weather most days.",
-      "A wedding at the Chateau costs exactly what a wedding in Kitsilano costs, and what one in Old Montréal costs: Signature C$3,000, Complete C$4,200, Photo + Film C$5,900. The mountain does not make the photography more expensive. Travel is kept lean through early booking, practical routes and grouped regional dates.",
+      "A wedding at the Chateau costs exactly what a wedding in Kitsilano costs, and what one in Old Montréal costs: Signature C$3,000, Legacy C$4,200, Photo + Film C$5,900. The mountain does not make the photography more expensive. Travel is kept lean through early booking, practical routes and grouped regional dates.",
       "What the corridor asks for is honesty about time. Lifts close, they hold for wind on days that look fine from the valley, and they move a wedding party far more slowly than anyone plans for. Every Whistler timeline I build names a valley-level ceremony site we switch to if the lift is held. That single line is the difference between a day that works and an afternoon spent waiting.",
     ],
     faqs: [
@@ -732,7 +732,7 @@ export const MARKETS: Market[] = [
       },
       {
         q: "Which collection do you recommend out here?",
-        a: "Complete, and I would say so even if it were the cheaper option. The travel has already turned your wedding into a two-day event for everyone attending, there is always a Friday, and the Friday evening light on that coast is frequently better than anything Saturday produces.",
+        a: "Legacy, and I would say so even if it were the cheaper option. The travel has already turned your wedding into a two-day event for everyone attending, there is always a Friday, and the Friday evening light on that coast is frequently better than anything Saturday produces.",
       },
     ],
   },
@@ -756,7 +756,7 @@ export const MARKETS: Market[] = [
     faqs: [
       {
         q: "What does a Banff wedding cost to photograph?",
-        a: "The photography is published and it is the same as everywhere: C$3,000 for Signature, C$4,200 for Complete and C$5,900 for Photo + Film. Travel is kept to the route the date actually requires and reduced or waived when regional dates can be grouped.",
+        a: "The photography is published and it is the same as everywhere: C$3,000 for Signature, C$4,200 for Legacy and C$5,900 for Photo + Film. Travel is kept to the route the date actually requires and reduced or waived when regional dates can be grouped.",
       },
       {
         q: "Do we really need a permit?",

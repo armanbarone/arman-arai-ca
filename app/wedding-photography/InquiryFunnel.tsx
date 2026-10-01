@@ -4,8 +4,8 @@ import { createContext, useContext, useEffect, useRef, useState, type ReactNode 
 import { pricingThankYouPath, trackPageView, trackWeddingInquiry } from "@/lib/analytics";
 import { BUDGET_OPTIONS, COVERAGE_OPTIONS, longDate, recommendCollection, seasonOptions, weekdayOf } from "@/lib/ads/pricing-request";
 import { weddingToday } from "@/lib/wedding-availability";
-import WeddingCalendar from "../2728-cc-weddings/wedding-calendar";
-import { ATTRIBUTION_KEYS, gclidFromCookie } from "./DateCheck";
+import WeddingCalendar from "./wedding-calendar";
+import { ATTRIBUTION_KEYS, gclidFromCookie } from "@/lib/attribution";
 import styles from "./vancouver.module.css";
 import funnel from "./inquiry.module.css";
 
@@ -299,7 +299,7 @@ function ThankYou({ sent, collections, city, page, phone, phoneE164, travelNote,
       </div>
       <div className={funnel.noCall}>
         <p><strong>Rather not do a call?</strong> That’s fine. {sent.emailed ? "Reply to my email, or message me on " : `I’ll reply to ${sent.email} the same day, or message me on `}<MessageLinks phone={phone} phoneE164={phoneE164} city={city} />.</p>
-        <p className={styles.checkMicro}>A signed contract and a 30% retainer secure your date.</p>
+        <p className={styles.checkMicro}>A signed contract and a non-refundable 30% deposit secure your date.</p>
         {onEdit
           ? <button type="button" className={styles.checkAnother} onClick={onEdit}>Change my details</button>
           : <a className={styles.checkAnother} href={`/${page}#${FORM_ID}`}>Change my details</a>}

@@ -61,6 +61,23 @@ const nextConfig: NextConfig = {
       // 2026-09-28); the Vancouver ads now land on the pricing-request page,
       // and a click on an old final URL keeps its ?gclid through this.
       { source: "/wedding-photography/vancouver-1500", destination: "/wedding-photography/vancouver-pricing", permanent: true },
+      // The older ads pages, removed 2026-09-30 (owner: "get rid of those older
+      // ad pages"). Each lands on the page that now sells the same city, and the
+      // ?gclid of an old ad click comes with it.
+      { source: "/wedding-photography", destination: "/pricing", permanent: true },
+      ...(["vancouver", "toronto", "montreal"] as const).flatMap((city) => [
+        { source: `/wedding-photography/${city}`, destination: `/wedding-photography/${city}-pricing`, permanent: true },
+        { source: `/wedding-photography/${city}-dark`, destination: `/wedding-photography/${city}-pricing`, permanent: true },
+      ]),
+      ...(["banff", "whistler", "tofino", "jasper"] as const).flatMap((city) => [
+        { source: `/wedding-photography/${city}`, destination: `/${city}-wedding-photographer`, permanent: true },
+        { source: `/wedding-photography/${city}-dark`, destination: `/${city}-wedding-photographer`, permanent: true },
+      ]),
+      { source: "/wedding-photography/victoria", destination: "/pricing", permanent: true },
+      { source: "/wedding-photography/victoria-dark", destination: "/pricing", permanent: true },
+      { source: "/2728-weddings", destination: "/pricing", permanent: true },
+      { source: "/2728-cc-weddings", destination: "/pricing", permanent: true },
+      { source: "/2728-cc-weddings-dark", destination: "/wedding-photography/vancouver-pricing", permanent: true },
       // Common alternate spellings of the city pages, so a mistyped or
       // externally-linked shape never 404s.
       ...CITIES.flatMap((city) => [

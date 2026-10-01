@@ -337,6 +337,20 @@ Everything in this list is live and was verified with a real HTTP check.
   Signature; every "from" is C$3,000. The C$450 engagement add-on went with it
   (every collection includes the session). Main-site CTAs read "Start your
   inquiry"; nothing on the main site promises to say whether a date is open.
+  **Old ads pages removed (2026-09-30):** `/wedding-photography`, every
+  `/wedding-photography/<city>` and `-dark` page, Tofino/Whistler/Jasper, and the
+  three `/2728-...` pages, with their templates (CityWeddingLanding, LandingPage,
+  DateCheck, lib/promo, components/promo). next.config.ts forwards each old URL:
+  Vancouver/Toronto/Montréal to their pricing page, Banff/Whistler/Tofino/Jasper
+  to the city hub, the rest to /pricing. Shared bits moved: the calendar to
+  `app/wedding-photography/wedding-calendar.tsx`, content helpers to
+  `landing-content.ts`, ad attribution to `lib/attribution.ts`.
+  **Payment terms (owner, 2026-09-30):** a non-refundable 30% deposit, then two
+  instalments of 35%. The brief and the pricing pages say this; the due dates
+  of the two 35% payments are NOT yet known, so nothing states them. The FAQ,
+  terms of service, TERMS in site.ts and the client portal (which still uses
+  the elopement 6/3/1-month schedule) are still the old wording until he gives
+  the dates.
 
 ---
 

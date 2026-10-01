@@ -6,9 +6,9 @@ import { funnelCollections, pricingTiers, tierItems, type PricingMarket } from "
 import { SITE } from "@/lib/site";
 import { autoReplyEnabled } from "@/lib/auto-reply";
 import { proofByN, proofSrc } from "@/lib/reviews";
-import { BookingNavigation } from "../2728-cc-weddings/wedding-calendar";
+import { BookingNavigation } from "./wedding-calendar";
 import AlbumBrowser from "./AlbumBrowser";
-import { money, questionsFor, stylesOfWork, TIER_STRAP, weddingAlbumsFor } from "./CityWeddingLanding";
+import { money, POSING_QUESTION, stylesOfWork, TIER_STRAP, weddingAlbumsFor } from "./landing-content";
 import InquiryFunnel, { CTA_LABEL, FORM_ID, InquiryForm, MessageLinks, type FunnelCollection } from "./InquiryFunnel";
 import styles from "./vancouver.module.css";
 import funnel from "./inquiry.module.css";
@@ -30,7 +30,6 @@ export default function InquiryLanding({ city, market }: { city: WeddingCity; ma
   const hourList = [...new Set(tiers.map((tier) => tier.hours))].sort((a, b) => a - b);
   const hours = `${hourList.slice(0, -1).join(", ")} or ${hourList.at(-1)}`;
   const collections: FunnelCollection[] = funnelCollections();
-  const shared = questionsFor(city);
   const questions: string[][] = [
     // Read at build time, like every env var on a static page: adding the key
     // in Vercel needs a redeploy, which also switches this answer over.
@@ -38,12 +37,12 @@ export default function InquiryLanding({ city, market }: { city: WeddingCity; ma
       ? `Your pricing appears on screen straight away, with the collection that fits what you told me, and a note from me follows by email a minute later. From there you can choose a time for a free 30-minute video call, reply to that email, or message me on WhatsApp or by text at ${phone}.`
       : `Your pricing appears on screen straight away, with the collection that fits what you told me, and I reply personally the same day. From there you can choose a time for a free 30-minute video call, or message me on WhatsApp or by text at ${phone}.`],
     [city.coverageQuestion, market.coverageAnswer],
-    shared[2], shared[3],
+    [city.planningQuestion, city.planningAnswer], POSING_QUESTION,
     ["Do we have to book a video call?", "No. The call is there if you’d like to meet before you decide. If you’d rather keep it to email, WhatsApp or text, that works too."],
     ["What is included, and what costs extra?", `Every collection includes photography by me, a 60-minute engagement session, planning, a full edited gallery with print permission, vertical social reels and film prints for your guests. Complete adds a second photographer for four hours, a longer film and a printed album; Photo + Film runs 12 hours with a dedicated filmmaker and adds a printed album. Prices are in Canadian dollars before tax. ${market.travelNote}`],
-    // Not shared[5]: that answer opens "Once we've confirmed availability",
-    // and these pages confirm nothing about a date.
-    ["How do we secure our wedding date?", "Once you’ve chosen your collection and we’ve agreed the details, a signed contract and a 30% retainer secure the date. The balance is due 30 days before the wedding. There’s no obligation to book after our call."],
+    // These pages confirm nothing about a date, so this answer never says
+    // "once we've confirmed availability".
+    ["How do we secure our wedding date?", "Once you’ve chosen your collection and we’ve agreed the details, a signed contract and a non-refundable 30% deposit secure the date. The remaining 70% is paid in two instalments of 35%. There’s no obligation to book after our call."],
   ];
   const weddingAlbums = weddingAlbumsFor(city.albums);
   const cta = <>{CTA_LABEL} <span aria-hidden="true">↗</span></>;

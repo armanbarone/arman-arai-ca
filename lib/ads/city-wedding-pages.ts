@@ -19,12 +19,17 @@ export type WeddingCity = {
 // City photographs stay in their existing canadian-wedding/cities R2 folders.
 // Keep these scene-setting selections separate from the complete client albums.
 const described = (photo: Photo, alt: string): Photo => ({ ...photo, alt });
+/* A frame from a complete wedding album (lib/galleries.ts). The pricing-page
+   heroes use the city's own real work (owner, 2026-10-01): Vancouver from the
+   hub's work set, Montréal and Toronto from their dedicated albums. The
+   generated "places" PNGs that held these slots carry Higgsfield job ids. */
+const albumFrame = (slug: string, frame: string, alt: string): Photo => ({ src: `https://cdn.armanarai.ca/galleries/${slug}/${frame}.webp`, alt });
 const defaultAlbums = ["luca-lauren", "elisha-michael", "nicole-js"];
 
 export const WEDDING_CITIES: WeddingCity[] = [
   {
     slug: "vancouver", name: "Vancouver",
-    hero: CITY_PHOTOS.vancouver.hero,
+    hero: described(CITY_WORK.vancouver[14], "A bride reclining on a motorboat at a Vancouver marina at sunset, the groom standing behind her"),
     inset: CITY_WORK.vancouver[15],
     interlude: [CITY_PHOTOS.vancouver.places[0], CITY_PHOTOS.vancouver.places[1], CITY_WORK.vancouver[3]],
     coverage: ["Vancouver & the Lower Mainland", "North Shore & Sea-to-Sky"],
@@ -37,8 +42,8 @@ export const WEDDING_CITIES: WeddingCity[] = [
   },
   {
     slug: "toronto", name: "Toronto",
-    hero: CITY_WORK.toronto[3],
-    inset: CITY_PHOTOS.toronto.places[0],
+    hero: albumFrame("elisha-michael", "035", "Guests throwing petals as a couple leaves a stone chapel in the Niagara hills"),
+    inset: albumFrame("elisha-michael", "015", "The stone chapel in the Niagara hills from above, guests seated along the path"),
     interlude: [CITY_WORK.toronto[0], described(CITY_WORK.toronto[9], "A wedding party under umbrellas among blossoming trees in Niagara"), CITY_PHOTOS.toronto.places[1]],
     coverage: ["Toronto & the GTA", "City celebrations & Ontario weekends"],
     about: "From a downtown celebration to a garden wedding outside the city, we’ll make time for the portraits without losing the afternoon to travel. Your people and your plans come first.",
@@ -50,8 +55,8 @@ export const WEDDING_CITIES: WeddingCity[] = [
   },
   {
     slug: "montreal", name: "Montréal",
-    hero: CITY_PHOTOS.montreal.hero, heroPosition: "50% 42%",
-    inset: CITY_PHOTOS.montreal.places[1],
+    hero: albumFrame("luca-lauren", "039", "The Notre-Dame Basilica interior in blue and gold as the bride's train follows her up the aisle"),
+    inset: albumFrame("luca-lauren", "015", "A couple kissing in front of a stone building in Old Montréal, black and white"),
     interlude: [CITY_PHOTOS.montreal.places[0], CITY_PHOTOS.montreal.places[2], CITY_PHOTOS.montreal.places[3]],
     coverage: ["Montréal & the surrounding area", "Old Port, city rooms & country estates"],
     about: "From a celebration in Old Montréal to a wedding in the Townships, we’ll plan portraits around the places you love and the time you want with your guests. A few quiet moments together, then back to the party.",

@@ -2,14 +2,14 @@ import Image from "next/image";
 import { Analytics } from "@vercel/analytics/next";
 import { ARMAN } from "@/lib/images";
 import type { WeddingCity } from "@/lib/ads/city-wedding-pages";
-import { funnelCollections, pricingTiers, tierItems, type PricingMarket } from "@/lib/ads/pricing-request";
+import { CTA_LABEL, FORM_ID, funnelCollections, pricingTiers, tierItems, type PricingMarket } from "@/lib/ads/pricing-request";
 import { SITE } from "@/lib/site";
 import { autoReplyEnabled } from "@/lib/auto-reply";
 import { proofByN, proofSrc } from "@/lib/reviews";
 import { BookingNavigation } from "./wedding-calendar";
 import AlbumBrowser from "./AlbumBrowser";
 import { money, POSING_QUESTION, stylesOfWork, TIER_STRAP, weddingAlbumsFor } from "./landing-content";
-import InquiryFunnel, { CTA_LABEL, FORM_ID, InquiryForm, MessageLinks, type FunnelCollection } from "./InquiryFunnel";
+import InquiryFunnel, { InquiryForm, MessageLinks, type FunnelCollection } from "./InquiryFunnel";
 import styles from "./vancouver.module.css";
 import funnel from "./inquiry.module.css";
 

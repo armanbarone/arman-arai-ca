@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from "react";
 import { pricingThankYouPath, trackPageView, trackWeddingInquiry } from "@/lib/analytics";
-import { BUDGET_OPTIONS, COVERAGE_OPTIONS, STEP_UP_REASON, longDate, recommendCollection, seasonOptions, weekdayOf } from "@/lib/ads/pricing-request";
+import { BUDGET_OPTIONS, COVERAGE_OPTIONS, CTA_LABEL, FORM_ID, STEP_UP_REASON, longDate, recommendCollection, seasonOptions, weekdayOf } from "@/lib/ads/pricing-request";
 import { weddingToday } from "@/lib/wedding-availability";
 import WeddingCalendar from "./wedding-calendar";
 import { ATTRIBUTION_KEYS, gclidFromCookie } from "@/lib/attribution";
@@ -29,8 +29,6 @@ import funnel from "./inquiry.module.css";
  * visit to it loads no tags and cannot count as a conversion.
  */
 
-export const FORM_ID = "get-pricing";
-export const CTA_LABEL = "Get Pricing";
 
 export type FunnelCollection = { slug: string; name: string; hoursLabel: string; price: number; items: string[] };
 

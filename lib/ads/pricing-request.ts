@@ -11,6 +11,13 @@
  */
 import { TIERS, type Tier } from "../site";
 
+/* The form's anchor and the one button label. Here, not in the "use client"
+   InquiryFunnel: a plain value exported from a client module reaches a server
+   component as a client reference, and `#${FORM_ID}` then printed the
+   reference's error text into the header and closing buttons' hrefs. */
+export const FORM_ID = "get-pricing";
+export const CTA_LABEL = "Get Pricing";
+
 export const PRICING_TIER_SLUGS = ["signature", "complete", "photo-film"] as const;
 export const pricingTiers = (): Tier[] => PRICING_TIER_SLUGS.map((slug) => TIERS.find((tier) => tier.slug === slug)!);
 

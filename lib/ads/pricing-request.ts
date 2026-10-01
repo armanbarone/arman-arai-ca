@@ -32,7 +32,11 @@ export function tierItems(tier: Tier): string[] {
 
 /** Per market: the travel rule, and a coverage answer that does not contradict
  *  it. Toronto and Montréal carry no travel costs for now (owner, 2026-09-28).
- *  Vancouver keeps the rule its ads page already published. */
+ *  Vancouver keeps the rule its ads page already published. Calgary & Banff
+ *  and Victoria (added 2026-10-01) carry the rule the rest of the site already
+ *  publishes for the Rockies and the island: travel is quoted against the
+ *  venue before booking. If the owner says "no travel costs" for them, it is
+ *  these lines, as for Toronto. */
 export type PricingMarket = {
   slug: string;
   /** For the price line and the sticky bar: "no travel costs". */
@@ -60,6 +64,18 @@ export const PRICING_MARKETS: PricingMarket[] = [
     travelShort: "no travel costs",
     travelNote: "No travel costs.",
     coverageAnswer: "Yes. Montréal, Laval, the South Shore, the Laurentians and the Eastern Townships, with no travel costs.",
+  },
+  {
+    slug: "calgary",
+    travelShort: "travel quoted before you book",
+    travelNote: "Travel is quoted against your venue, kept to the route your date actually requires, and agreed before you book.",
+    coverageAnswer: "Yes. Calgary, Banff, Lake Louise, Canmore, Kananaskis and the Bow Valley. Travel is quoted against your venue and agreed before you book.",
+  },
+  {
+    slug: "victoria",
+    travelShort: "travel quoted before you book",
+    travelNote: "Victoria is a ferry and a short drive. Travel is quoted against your venue and agreed before you book.",
+    coverageAnswer: "Yes. Victoria, Oak Bay, Saanich, Sidney, the West Shore and the rest of Vancouver Island. Travel is quoted against your venue and agreed before you book.",
   },
 ];
 export const pricingMarket = (slug: string) => PRICING_MARKETS.find((market) => market.slug === slug);

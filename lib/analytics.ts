@@ -15,11 +15,17 @@ export const GA4_ID = "G-W7PGHWW7MF";
  *  Do not add a second <script> for AW-18464850778; that double-loads it. */
 export const WEDDINGS_TAG_ID = "GT-W6VMNGBQ";
 /** The same container addressed by its Ads ID: the Google Ads account this site
- *  belongs to. Nothing reads it now, because a booked call is measured by the
- *  BOOKING_EVENT key event and imported from GA4, and an imported conversion
- *  carries no send_to. Kept so the account this site reports into is written
- *  down somewhere, and for the day a snippet-based conversion is added here. */
+ *  belongs to. A booked call is measured by the BOOKING_EVENT key event and
+ *  imported from GA4; a sent pricing form is also reported straight to Ads,
+ *  as LEAD_FORM_CONVERSION. */
 export const GOOGLE_ADS_ID = "AW-18464850778";
+/** "Submit lead form" in Google Ads, from the event snippet the owner pasted
+ *  (2026-10-01). That snippet wraps the call in gtag_report_conversion() for a
+ *  click; on a thank-you page the same event is sent when the page opens for a
+ *  form this tab really sent, once per form (trackWeddingInquiry). The tag
+ *  that carries it is WEDDINGS_TAG_ID, the same container, so no second
+ *  script loads for it. */
+export const LEAD_FORM_CONVERSION = `${GOOGLE_ADS_ID}/ySE3CPyOtYsdENqG3eRE`;
 export const META_PIXEL_ID = "1110472461323039";
 /* AW-18154542346 ("Arman Arai Elopements") used to load here, and a booked call
    on this site was reported to it with that account's own conversion label.
@@ -162,12 +168,17 @@ export function trackLead(method: string) {
 export const pricingThankYouPath = (market: string) => `/wedding-photography/${market}-pricing/thank-you`;
 export const isPricingThankYouPath = (path: string) => /^\/wedding-photography\/[a-z]+-pricing\/thank-you\/?$/.test(path);
 
-export function trackWeddingInquiry(page: string) {
+/** One sent pricing form: GA4's INQUIRY_EVENT and Google Ads' "Submit lead
+ *  form" conversion. `formId` (when the form was sent) becomes the Ads
+ *  transaction_id, so a reload that slips past the once-per-form guard is
+ *  still counted once. */
+export function trackWeddingInquiry(page: string, formId?: string) {
   if (!permitted()) return;
   startTracking();
   const w = window as TrackingWindow;
   // No names, emails or phone numbers: the page path is the only detail sent.
   w.gtag?.("event", INQUIRY_EVENT, { send_to: GA4_ID, landing_page: page, currency: "CAD" });
+  w.gtag?.("event", "conversion", { send_to: LEAD_FORM_CONVERSION, ...(formId ? { transaction_id: `ca-lead-${formId}` } : {}) });
   trackLead("wedding_inquiry");
 }
 

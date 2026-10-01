@@ -29,6 +29,8 @@ const described = (photo: Photo, alt: string): Photo => ({ ...photo, alt });
    album. The generated "places" PNGs that held these slots carry Higgsfield
    job ids. Every frame here was checked in the desktop and phone crops. */
 const albumFrame = (slug: string, frame: string, alt: string): Photo => ({ src: `https://cdn.armanarai.ca/galleries/${slug}/${frame}.webp`, alt });
+/** A photograph from the cities/ folder on the .ca bucket. */
+const cityFrame = (key: string, alt: string): Photo => ({ src: `https://cdn.armanarai.ca/cities/${key}.webp`, alt });
 const defaultAlbums = ["luca-lauren", "elisha-michael", "nicole-js"];
 
 export const WEDDING_CITIES: WeddingCity[] = [
@@ -90,27 +92,53 @@ export const WEDDING_CITIES: WeddingCity[] = [
     albums: ["luca-lauren", "nicole-js", "parsa-marjan"],
   },
   {
-    slug: "banff", name: "Banff",
-    heroes: [CITY_WORK.banff[5]],
-    inset: described(CITY_WORK.banff[10], "A couple dancing among trees above a mountain valley in golden light"),
-    interlude: [described(CITY_WORK.banff[0], "A lakeside wedding ceremony beneath golden autumn trees in the Rockies"), CITY_WORK.banff[1], described(CITY_WORK.banff[8], "A wedding couple laughing together in a wooden canoe on Lake Louise")],
-    coverage: ["Banff & Lake Louise", "Canmore & the Bow Valley"],
-    about: "A mountain backdrop, your favourite people, and time to take it all in. We’ll build the photography around your ceremony and reception, with room for portraits and a plan for changing weather.",
-    coverageQuestion: "Do you photograph weddings in Lake Louise and Canmore too?",
-    coverageAnswer: "Yes. Banff, Lake Louise, Canmore and the Bow Valley. Tell me where your ceremony and reception will be, and we’ll work through coverage, portrait locations and any travel together.",
+    /* Calgary, sold with Banff and the Rockies (owner, 2026-10-01: "calgary
+       (banff)"). The photographs are the Banff work in the cities/banff
+       folder; the hub's own alt text is wrong for some of them, so each one
+       here is described from the photograph itself. */
+    slug: "calgary", name: "Calgary & Banff",
+    heroes: [
+      cityFrame("banff/banff-53", "A couple on a rock above the turquoise water of Moraine Lake, the peaks behind them"),
+      cityFrame("banff/banff-14", "A couple at a flower-dressed ceremony arch on a lawn beneath the Rockies"),
+      cityFrame("banff/banff-46", "A couple dancing on a mountain slope as the sun breaks through the pines"),
+      cityFrame("banff/banff-25", "A couple close together with their guests behind them above a turquoise mountain lake"),
+      cityFrame("banff/banff-54", "A couple embracing above a mountain lake under a pink evening sky"),
+    ],
+    inset: cityFrame("banff/banff-34", "A groom kissing his bride's cheek through her veil, black and white"),
+    interlude: [
+      cityFrame("banff/banff-24", "A ceremony in a mountain meadow, guests standing among golden autumn trees"),
+      cityFrame("banff/banff-55", "A couple laughing together in a wooden canoe on Lake Louise"),
+      cityFrame("banff/banff-56", "Northern lights over a mountain lake behind a couple"),
+    ],
+    coverage: ["Calgary & area", "Banff, Canmore & the Rockies"],
+    about: "From a celebration in Calgary to a ceremony in the Rockies, we’ll build the photography around your day, with room for mountain portraits and a plan for changing weather. Your people and your plans come first.",
+    coverageQuestion: "Do you photograph weddings in Banff, Lake Louise and Canmore too?",
+    coverageAnswer: "Yes. Calgary, Banff, Lake Louise, Canmore, Kananaskis and the Bow Valley.",
     planningQuestion: "Can mountain portraits fit around a full wedding day?",
     planningAnswer: "Yes. We’ll choose locations that suit your venue, the light and the time available, with an indoor or sheltered alternative. We’ll discuss access, travel time and any location requirements before settling the photography plan.",
     albums: defaultAlbums,
   },
   {
+    /* Victoria has no folder of its own: Hatley Castle and its gardens come
+       from the Vancouver work set and the Vancouver Island folder. */
     slug: "victoria", name: "Victoria",
-    heroes: [CITY_WORK.vancouver[2]],
-    inset: described(CITY_WORK.tofino[6], "A wedding couple beside a forested cliff on a Vancouver Island beach"),
-    interlude: [described(CITY_WORK.tofino[7], "A wedding couple and their family beside a white carriage in a sunlit garden"), described(CITY_WORK.tofino[4], "A couple on a rocky Vancouver Island shoreline in shafts of golden light"), CITY_WORK.vancouver[9]],
+    heroes: [
+      cityFrame("vancouver/work/40-hatley-castle-grand-front", "A couple seated on the lawn in front of Hatley Castle in late sun"),
+      cityFrame("vancouver-island/vancouver-island-21", "A bride and groom running across a garden lawn beside a stone urn"),
+      cityFrame("vancouver-island/vancouver-island-24", "A couple on a garden walkway below Hatley Castle, the castle lit at dusk"),
+      cityFrame("vancouver-island/vancouver-island-20", "A groom waving as his bride steps down from a white carriage, a boy running ahead with a basket of petals"),
+      cityFrame("vancouver-island/vancouver-island-19", "A couple walking the garden path toward the front of Hatley Castle"),
+    ],
+    inset: cityFrame("vancouver/work/20-castle-terrace-monochrome", "A couple holding hands on a castle terrace, black and white"),
+    interlude: [
+      cityFrame("vancouver/work/17-hatley-castle-walkway", "A couple on a stone walkway below Hatley Castle"),
+      cityFrame("vancouver-island/vancouver-island-25", "A couple in the middle of a formal hedged garden, tall firs all around"),
+      cityFrame("vancouver-island/vancouver-island-17", "A couple on a driftwood shore as sunbeams cut through the morning mist"),
+    ],
     coverage: ["Victoria & Greater Victoria", "Gardens, heritage rooms & the coast"],
     about: "From a garden ceremony to a celebration by the water, we’ll make space for photographs that feel like you. We’ll keep the portrait plan close to your day, so you can get back to the people who came to celebrate.",
     coverageQuestion: "Do you cover Greater Victoria and the rest of the island?",
-    coverageAnswer: "Yes. Victoria, Oak Bay, Saanich, Sidney, the West Shore and weddings elsewhere on Vancouver Island. Share your venue and date, and we’ll confirm the coverage and any travel costs before you book.",
+    coverageAnswer: "Yes. Victoria, Oak Bay, Saanich, Sidney, the West Shore and weddings elsewhere on Vancouver Island.",
     planningQuestion: "What if the weather changes during our garden or coastal wedding?",
     planningAnswer: "We’ll choose a covered or indoor portrait option alongside the outdoor plan. If there’s a break in the weather, we can step out for a few photographs without turning the whole day into a photo session.",
     albums: defaultAlbums,

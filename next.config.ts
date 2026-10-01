@@ -73,8 +73,10 @@ const nextConfig: NextConfig = {
         { source: `/wedding-photography/${city}`, destination: `/${city}-wedding-photographer`, permanent: true },
         { source: `/wedding-photography/${city}-dark`, destination: `/${city}-wedding-photographer`, permanent: true },
       ]),
-      { source: "/wedding-photography/victoria", destination: "/pricing", permanent: true },
-      { source: "/wedding-photography/victoria-dark", destination: "/pricing", permanent: true },
+      // Victoria and Calgary have pricing pages again (2026-10-01).
+      { source: "/wedding-photography/victoria", destination: "/wedding-photography/victoria-pricing", permanent: true },
+      { source: "/wedding-photography/victoria-dark", destination: "/wedding-photography/victoria-pricing", permanent: true },
+      { source: "/wedding-photography/calgary", destination: "/wedding-photography/calgary-pricing", permanent: true },
       { source: "/2728-weddings", destination: "/pricing", permanent: true },
       { source: "/2728-cc-weddings", destination: "/pricing", permanent: true },
       { source: "/2728-cc-weddings-dark", destination: "/wedding-photography/vancouver-pricing", permanent: true },

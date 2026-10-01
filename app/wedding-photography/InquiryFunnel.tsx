@@ -156,7 +156,7 @@ export function InquiryForm({ city, market, page }: { city: string; market: stri
       // Its own URL, so the conversion can be counted by URL. Only if storage
       // is blocked does the thank-you view open in place instead.
       if (storeSent(sent)) { window.location.assign(pricingThankYouPath(market)); return; }
-      try { trackWeddingInquiry(page); } catch { /* Analytics must never interrupt a lead. */ }
+      try { trackWeddingInquiry(page, String(sent.sentAt)); } catch { /* Analytics must never interrupt a lead. */ }
       setStatus("idle");
       send(sent);
     } catch (err) {
@@ -235,7 +235,7 @@ export function ThankYouFromSession({ market, ...props }: ThankYouProps & { mark
     try {
       trackPageView();
       if (sessionStorage.getItem(REPORTED_KEY) !== String(found.sentAt)) {
-        trackWeddingInquiry(`/${props.page}`);
+        trackWeddingInquiry(`/${props.page}`, String(found.sentAt));
         sessionStorage.setItem(REPORTED_KEY, String(found.sentAt));
       }
     } catch { /* Analytics must never interrupt a lead. */ }

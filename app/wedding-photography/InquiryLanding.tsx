@@ -35,7 +35,7 @@ export default function InquiryLanding({ city, market }: { city: WeddingCity; ma
     // Read at build time, like every env var on a static page: adding the key
     // in Vercel needs a redeploy, which also switches this answer over.
     ["What happens after we send the form?", autoReplyEnabled()
-      ? `Your pricing appears on screen straight away, with the collection that fits what you told me, and a note from me follows by email a minute later. From there you can choose a time for a free 30-minute video call, reply to that email, or message me on WhatsApp or by text at ${phone}.`
+      ? `Your pricing appears on screen straight away, with the collection that fits what you told me, and a note from me follows by email about 30 seconds later. From there you can choose a time for a free 30-minute video call, reply to that email, or message me on WhatsApp or by text at ${phone}.`
       : `Your pricing appears on screen straight away, with the collection that fits what you told me, and I reply personally the same day. From there you can choose a time for a free 30-minute video call, or message me on WhatsApp or by text at ${phone}.`],
     [city.coverageQuestion, market.coverageAnswer],
     [city.planningQuestion, city.planningAnswer], POSING_QUESTION,

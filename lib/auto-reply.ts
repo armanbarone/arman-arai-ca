@@ -5,7 +5,7 @@ import { SITE, tierBySlug } from "./site";
 import { inquiryBrief } from "./auto-reply-brief";
 import { weddingCalendarUrl } from "./wedding-booking";
 import {
-  BUDGET_OPTIONS, COVERAGE_OPTIONS, longDate, pricingTiers, recommendCollection, weekdayOf,
+  BUDGET_OPTIONS, COVERAGE_OPTIONS, STEP_UP_REASON, longDate, pricingTiers, recommendCollection, weekdayOf,
   type PricingMarket,
 } from "./ads/pricing-request";
 
@@ -112,7 +112,12 @@ function inquiryPrompt(inquiry: PricingInquiry, fitName: string, basis: string) 
   const coverage = COVERAGE_OPTIONS.find((option) => option.value === inquiry.coverage)?.label ?? "Not sure yet";
   const budget = BUDGET_OPTIONS.find((option) => option.value === inquiry.budget)?.label ?? "Not sure yet";
   const when = inquiry.weddingDate ? whenPhrase(inquiry) : `No exact date yet. Roughly: ${inquiry.weddingSeason ?? "not given"}`;
+  const stepUp = recommendCollection(inquiry.coverage, inquiry.budget).stepUp;
+  const stepUpLine = stepUp
+    ? `The collection one step up, worth mentioning once as something to consider: ${tierBySlug(stepUp)!.name}, because: ${STEP_UP_REASON[stepUp]}`
+    : "Do not suggest a bigger collection for this couple.";
   return `Write the email for this inquiry. The collection that fits best is ${fitName}, chosen from ${basis}.
+${stepUpLine}
 
 <inquiry>
 Names: ${asData(inquiry.names)}
@@ -222,19 +227,33 @@ function bigButton(href: string, label: string, background: string, color: strin
   return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 14px;"><tr><td align="center" bgcolor="${background}" style="background:${background};border-radius:8px;"><a href="${escapeHtml(href)}" style="display:block;padding:22px 20px;font-family:Arial,Helvetica,sans-serif;font-size:20px;font-weight:bold;line-height:1.2;color:${color};text-decoration:none;border-radius:8px;">${escapeHtml(label)}</a></td></tr></table>`;
 }
 
-function render(inquiry: PricingInquiry, body: string, fitSlug: string) {
+/** What the couple sent, played back briefly so the email reads as an answer
+ *  to them. Contact details stay out; they already know their own. */
+function detailsBlock(inquiry: PricingInquiry) {
+  const when = whenPhrase(inquiry) || "Date to be decided";
+  const coverage = COVERAGE_OPTIONS.find((option) => option.value === inquiry.coverage)?.label ?? "Not sure yet";
+  const budget = BUDGET_OPTIONS.find((option) => option.value === inquiry.budget)?.label ?? "Not sure yet";
+  const rows: [string, string][] = [["Date", when], ["Where", inquiry.location], ["Coverage", coverage], ["Budget", budget]];
+  return `<div style="margin:6px 0 24px;padding:16px 18px;background:#F7F3EC;border-radius:8px;font-family:Arial,Helvetica,sans-serif;font-size:14px;line-height:1.6;color:#2C2420;">
+    <p style="margin:0 0 8px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#9A7A54;">What you told me</p>
+    ${rows.map(([label, value]) => `<p style="margin:0;"><span style="color:#6B6258;">${label}:</span> ${escapeHtml(value)}</p>`).join("")}
+  </div>`;
+}
+
+function render(inquiry: PricingInquiry, body: string, fitSlug: string, stepUpSlug?: string) {
   const calendar = weddingCalendarUrl("?utm_source=auto-reply-email&utm_medium=email", new URL(SITE.url).hostname, false, { page: inquiry.page, prefill: { name: inquiry.names, email: inquiry.email } });
   const whatsapp = `https://wa.me/${SITE.phoneE164.replace(/\D/g, "")}?text=${encodeURIComponent(`Hi Arman, it's ${inquiry.names}. We asked about wedding photography in ${inquiry.cityName}.`)}`;
   const tiers = pricingTiers();
   const html = `<div style="font-family:Georgia,serif;max-width:560px;margin:0 auto;color:#2C2420;font-size:17px;line-height:1.65;">
   ${body.split(/\n{2,}/).map((p) => `<p style="margin:0 0 16px;">${escapeHtml(p).replace(/\n/g, "<br>")}</p>`).join("")}
   <div style="margin:28px 0 22px;">
-    ${bigButton(calendar, "Book your free video call", "#1A1612", "#F3EEDF")}
+    ${bigButton(calendar, "Book your free video call", "#B8956A", "#1A1612")}
     <p style="margin:-4px 0 18px;text-align:center;font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#6B6258;">30 minutes, no obligation. Pick any time that suits you.</p>
     ${bigButton(whatsapp, "Message me on WhatsApp", "#25D366", "#FFFFFF")}
   </div>
+  ${detailsBlock(inquiry)}
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;margin:8px 0 6px;border-top:1px solid #D9CEBC;">
-    ${tiers.map((tier) => `<tr><td style="padding:12px 0;border-bottom:1px solid #EDE7DA;font-size:18px;">${escapeHtml(tier.name)} <span style="font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#6B6258;">${tier.hours} hours</span>${tier.slug === fitSlug ? ` <span style="font-family:Arial,Helvetica,sans-serif;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#A67268;">Best fit</span>` : ""}</td><td style="padding:12px 0 12px 16px;border-bottom:1px solid #EDE7DA;text-align:right;white-space:nowrap;font-size:18px;">${money(tier.price)}</td></tr>`).join("")}
+    ${tiers.map((tier) => `<tr><td style="padding:12px 0;border-bottom:1px solid #EDE7DA;font-size:18px;">${escapeHtml(tier.name)} <span style="font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#6B6258;">${tier.hours} hours</span>${tier.slug === fitSlug ? ` <span style="font-family:Arial,Helvetica,sans-serif;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#9A7A54;">Best fit</span>` : tier.slug === stepUpSlug ? ` <span style="font-family:Arial,Helvetica,sans-serif;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#6B6258;">Worth a look</span>` : ""}</td><td style="padding:12px 0 12px 16px;border-bottom:1px solid #EDE7DA;text-align:right;white-space:nowrap;font-size:18px;">${money(tier.price)}</td></tr>`).join("")}
   </table>
   <p style="margin:0 0 26px;font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#6B6258;">Canadian dollars, before tax.</p>
   <p style="margin:0;padding-top:16px;border-top:1px solid #EDE7DA;font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#6B6258;">Arman Arai · Wedding photography · <a href="${SITE.url}" style="color:#6B6258;">${SITE.domain}</a> · ${escapeHtml(SITE.phone)}</p>
@@ -243,7 +262,8 @@ function render(inquiry: PricingInquiry, body: string, fitSlug: string) {
     body,
     `Book your free video call: ${calendar}`,
     `Message me on WhatsApp: ${whatsapp}`,
-    tiers.map((tier) => `${tier.name}, ${tier.hours} hours${tier.slug === fitSlug ? " (best fit)" : ""}: ${money(tier.price)}`).join("\n"),
+    `What you told me: ${[whenPhrase(inquiry) || "Date to be decided", inquiry.location, COVERAGE_OPTIONS.find((option) => option.value === inquiry.coverage)?.label ?? "Not sure yet", BUDGET_OPTIONS.find((option) => option.value === inquiry.budget)?.label ?? "Not sure yet"].join(" · ")}`,
+    tiers.map((tier) => `${tier.name}, ${tier.hours} hours${tier.slug === fitSlug ? " (best fit)" : tier.slug === stepUpSlug ? " (worth a look)" : ""}: ${money(tier.price)}`).join("\n"),
     "Canadian dollars, before tax.",
     `Arman Arai · Wedding photography · ${SITE.domain} · ${SITE.phone}`,
   ].join("\n\n");
@@ -269,7 +289,7 @@ export async function sendInquiryAutoReply(inquiry: PricingInquiry): Promise<voi
     if (lastClaims) console.warn("Auto-reply: identity token claims presented", JSON.stringify(lastClaims));
   }
   if (!body) { body = fallbackBody(inquiry, fitName); source = "template"; }
-  const { html, text } = render(inquiry, body, fit.slug);
+  const { html, text } = render(inquiry, body, fit.slug, fit.stepUp);
   try {
     const { Resend } = await import("resend");
     const { error } = await new Resend(process.env.RESEND_API_KEY).emails.send({

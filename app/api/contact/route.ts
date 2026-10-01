@@ -110,7 +110,9 @@ export async function POST(req: NextRequest) {
       const market = pricingMarket(String(body.pricingMarket ?? ""));
       const cityName = WEDDING_CITIES.find((city) => city.slug === market?.slug)?.name;
       if (!market || !cityName) return NextResponse.json({ error: "Please reload the page and try again." }, { status: 400 });
-      const fit = tierBySlug(recommendCollection(coverage.value, budget.value).slug)!;
+      const recommendation = recommendCollection(coverage.value, budget.value);
+      const fit = tierBySlug(recommendation.slug)!;
+      const stepUp = recommendation.stepUp ? tierBySlug(recommendation.stepUp) : undefined;
       autoReply = autoReplyEnabled()
         ? { names: body.name, email: body.email, weddingDate: body.weddingDate || undefined, weddingSeason: body.weddingSeason || undefined, location: body.location, coverage: coverage.value, budget: budget.value, cityName, market, page: `wedding-photography/${market.slug}-pricing` }
         : null;
@@ -123,6 +125,7 @@ export async function POST(req: NextRequest) {
         ["Coverage", coverage.label],
         ["Budget", budget.label],
         ["Shown as best fit", `${fit.name}, C$${fit.price.toLocaleString("en-CA")}`],
+        ...(stepUp ? ([["Suggested step up", `${stepUp.name}, C$${stepUp.price.toLocaleString("en-CA")}`]] as [string, string][]) : []),
         ["Auto-reply", autoReply ? "Sending to the couple within a minute; you are BCC'd" : "Off: the Anthropic federation variables are not set in Vercel"],
       ];
     }

@@ -79,14 +79,27 @@ export type Recommendation = {
   /** What the choice was made from: the coverage they asked for, their
    *  budget, or neither (Signature, the most-booked collection). */
   basis: "coverage" | "budget" | "default";
+  /** The collection one step up, offered once as worth a look (owner,
+   *  2026-10-01: upsell the next package). Absent at the top of the ladder,
+   *  and when the budget is under the first price, where a bigger number only
+   *  loses the couple. */
+  stepUp?: string;
+};
+
+/** Why the next collection up is worth a look, from what it adds in TIERS. */
+export const STEP_UP_REASON: Record<string, string> = {
+  complete: "Two more hours, a second photographer for four of them, and a printed album.",
+  "photo-film": "Twelve hours, with a dedicated filmmaker there all day and a longer film.",
 };
 
 export function recommendCollection(coverage: string, budget: string): Recommendation {
   const byCoverage = COVERAGE_OPTIONS.find((option) => option.value === coverage)?.slug;
   const byBudget = BUDGET_OPTIONS.find((option) => option.value === budget)?.slug;
-  if (byCoverage) return { slug: byCoverage, basis: "coverage" };
-  if (byBudget) return { slug: byBudget, basis: "budget" };
-  return { slug: "signature", basis: "default" };
+  const slug = byCoverage ?? byBudget ?? "signature";
+  const basis = byCoverage ? "coverage" : byBudget ? "budget" : "default";
+  const next = PRICING_TIER_SLUGS[PRICING_TIER_SLUGS.indexOf(slug as (typeof PRICING_TIER_SLUGS)[number]) + 1];
+  const stepUp = next && budget !== "under-3000" ? next : undefined;
+  return { slug, basis, ...(stepUp ? { stepUp } : {}) };
 }
 
 /** Seasons for a couple with no exact date, starting with the current one.

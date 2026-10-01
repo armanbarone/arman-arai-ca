@@ -345,6 +345,12 @@ Everything in this list is live and was verified with a real HTTP check.
   the call, WhatsApp); a live calendar cannot be embedded in an email. Compact
   price table (name, hours, price), no inclusion lists. The brief gives the
   agent a voice from lines Arman uses on the site.
+  **Upsell (owner, 2026-10-01):** recommendCollection() also returns `stepUp`,
+  the next collection up, offered once as "worth a look" in the email, on the
+  thank-you screen and in the lead email; never when the budget is under
+  C$3,000. The email plays back "What you told me" (date, venue, coverage,
+  budget). The book-a-call button is the site accent #B8956A with #1A1612 text.
+  One federation rule covers every city page; nothing is set up per city.
   **Old ads pages removed (2026-09-30):** `/wedding-photography`, every
   `/wedding-photography/<city>` and `-dark` page, Tofino/Whistler/Jasper, and the
   three `/2728-...` pages, with their templates (CityWeddingLanding, LandingPage,

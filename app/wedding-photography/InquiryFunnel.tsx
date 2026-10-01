@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from "react";
 import { pricingThankYouPath, trackPageView, trackWeddingInquiry } from "@/lib/analytics";
-import { BUDGET_OPTIONS, COVERAGE_OPTIONS, longDate, recommendCollection, seasonOptions, weekdayOf } from "@/lib/ads/pricing-request";
+import { BUDGET_OPTIONS, COVERAGE_OPTIONS, STEP_UP_REASON, longDate, recommendCollection, seasonOptions, weekdayOf } from "@/lib/ads/pricing-request";
 import { weddingToday } from "@/lib/wedding-availability";
 import WeddingCalendar from "./wedding-calendar";
 import { ATTRIBUTION_KEYS, gclidFromCookie } from "@/lib/attribution";
@@ -277,8 +277,10 @@ function ThankYou({ sent, collections, city, page, phone, phoneE164, travelNote,
         <ol className={funnel.pricing} aria-label="Your pricing">
           {collections.map((collection) => {
             const best = collection.slug === fit.slug;
+            const stepUp = collection.slug === fit.stepUp;
             return <li key={collection.slug} className={`${funnel.collection}${best ? ` ${funnel.best}` : ""}`}>
               {best && <p className={funnel.bestTag}>Best fit · {reason}</p>}
+              {stepUp && <p className={funnel.stepUpTag}>Worth a look · {STEP_UP_REASON[collection.slug]}</p>}
               <details open={best}>
                 <summary>
                   <span className={funnel.collectionName}>{collection.name}<small>{collection.hoursLabel}</small></span>

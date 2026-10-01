@@ -1,10 +1,13 @@
 import { CITY_PHOTOS, CITY_WORK, type Photo } from "../images";
 
+/** A hero photograph, with an optional object-position for the phone's wide crop. */
+export type HeroPhoto = Photo & { position?: string };
+
 export type WeddingCity = {
   slug: string;
   name: string;
-  hero: Photo;
-  heroPosition?: string;
+  /** The hero slideshow. The first loads with the page; the rest only after it (HeroSlideshow). */
+  heroes: HeroPhoto[];
   inset: Photo;
   interlude: Photo[];
   coverage: [string, string];
@@ -20,16 +23,24 @@ export type WeddingCity = {
 // Keep these scene-setting selections separate from the complete client albums.
 const described = (photo: Photo, alt: string): Photo => ({ ...photo, alt });
 /* A frame from a complete wedding album (lib/galleries.ts). The pricing-page
-   heroes use the city's own real work (owner, 2026-10-01): Vancouver from the
-   hub's work set, Montréal and Toronto from their dedicated albums. The
-   generated "places" PNGs that held these slots carry Higgsfield job ids. */
+   heroes are five of the city's own real photographs that roll one into the
+   next (owner, 2026-10-01): Vancouver from the hub's work set, Toronto from the
+   Niagara and Prince Edward County albums, Montréal from the Old Montréal
+   album. The generated "places" PNGs that held these slots carry Higgsfield
+   job ids. Every frame here was checked in the desktop and phone crops. */
 const albumFrame = (slug: string, frame: string, alt: string): Photo => ({ src: `https://cdn.armanarai.ca/galleries/${slug}/${frame}.webp`, alt });
 const defaultAlbums = ["luca-lauren", "elisha-michael", "nicole-js"];
 
 export const WEDDING_CITIES: WeddingCity[] = [
   {
     slug: "vancouver", name: "Vancouver",
-    hero: described(CITY_WORK.vancouver[14], "A bride reclining on a motorboat at a Vancouver marina at sunset, the groom standing behind her"),
+    heroes: [
+      described(CITY_WORK.vancouver[14], "A bride reclining on a motorboat at a Vancouver marina at sunset, the groom standing behind her"),
+      described(CITY_WORK.vancouver[6], "A bride walking a white dog along a downtown Vancouver street at dusk"),
+      CITY_WORK.vancouver[10],
+      described(CITY_WORK.vancouver[0], "A rainbow over the mountains as a storm clears behind an outdoor ceremony"),
+      described(CITY_WORK.vancouver[9], "A couple embracing beside the fountains of a formal garden"),
+    ],
     inset: CITY_WORK.vancouver[15],
     interlude: [CITY_PHOTOS.vancouver.places[0], CITY_PHOTOS.vancouver.places[1], CITY_WORK.vancouver[3]],
     coverage: ["Vancouver & the Lower Mainland", "North Shore & Sea-to-Sky"],
@@ -42,7 +53,13 @@ export const WEDDING_CITIES: WeddingCity[] = [
   },
   {
     slug: "toronto", name: "Toronto",
-    hero: albumFrame("elisha-michael", "035", "Guests throwing petals as a couple leaves a stone chapel in the Niagara hills"),
+    heroes: [
+      albumFrame("elisha-michael", "035", "Guests throwing petals as a couple leaves a stone chapel in the Niagara hills"),
+      albumFrame("eathon-jessica", "020", "A couple kissing under a floral arch at a glass pavilion in Prince Edward County"),
+      albumFrame("elisha-michael", "016", "A couple holding hands through their vows at the flower-framed chapel door"),
+      albumFrame("elisha-michael", "038", "A couple at the entrance of a candlelit reception tent at night"),
+      albumFrame("elisha-michael", "036", "A couple forehead to forehead under her veil in golden autumn light"),
+    ],
     inset: albumFrame("elisha-michael", "015", "The stone chapel in the Niagara hills from above, guests seated along the path"),
     interlude: [CITY_WORK.toronto[0], described(CITY_WORK.toronto[9], "A wedding party under umbrellas among blossoming trees in Niagara"), CITY_PHOTOS.toronto.places[1]],
     coverage: ["Toronto & the GTA", "City celebrations & Ontario weekends"],
@@ -55,7 +72,13 @@ export const WEDDING_CITIES: WeddingCity[] = [
   },
   {
     slug: "montreal", name: "Montréal",
-    hero: albumFrame("luca-lauren", "039", "The Notre-Dame Basilica interior in blue and gold as the bride's train follows her up the aisle"),
+    heroes: [
+      albumFrame("luca-lauren", "039", "The Notre-Dame Basilica interior in blue and gold as the bride's train follows her up the aisle"),
+      albumFrame("luca-lauren", "038", "A couple seated before the priest under stained glass during their church ceremony"),
+      { ...albumFrame("luca-lauren", "048", "A couple embracing on stone steps between tall columns in Old Montréal"), position: "50% 12%" },
+      albumFrame("luca-lauren", "032", "A couple under pink flowers with the Montréal skyline behind them"),
+      { ...albumFrame("luca-lauren", "050", "A bride and groom standing against an ivy-covered stone wall"), position: "50% 8%" },
+    ],
     inset: albumFrame("luca-lauren", "015", "A couple kissing in front of a stone building in Old Montréal, black and white"),
     interlude: [CITY_PHOTOS.montreal.places[0], CITY_PHOTOS.montreal.places[2], CITY_PHOTOS.montreal.places[3]],
     coverage: ["Montréal & the surrounding area", "Old Port, city rooms & country estates"],
@@ -68,7 +91,7 @@ export const WEDDING_CITIES: WeddingCity[] = [
   },
   {
     slug: "banff", name: "Banff",
-    hero: CITY_WORK.banff[5],
+    heroes: [CITY_WORK.banff[5]],
     inset: described(CITY_WORK.banff[10], "A couple dancing among trees above a mountain valley in golden light"),
     interlude: [described(CITY_WORK.banff[0], "A lakeside wedding ceremony beneath golden autumn trees in the Rockies"), CITY_WORK.banff[1], described(CITY_WORK.banff[8], "A wedding couple laughing together in a wooden canoe on Lake Louise")],
     coverage: ["Banff & Lake Louise", "Canmore & the Bow Valley"],
@@ -81,7 +104,7 @@ export const WEDDING_CITIES: WeddingCity[] = [
   },
   {
     slug: "victoria", name: "Victoria",
-    hero: CITY_WORK.vancouver[2],
+    heroes: [CITY_WORK.vancouver[2]],
     inset: described(CITY_WORK.tofino[6], "A wedding couple beside a forested cliff on a Vancouver Island beach"),
     interlude: [described(CITY_WORK.tofino[7], "A wedding couple and their family beside a white carriage in a sunlit garden"), described(CITY_WORK.tofino[4], "A couple on a rocky Vancouver Island shoreline in shafts of golden light"), CITY_WORK.vancouver[9]],
     coverage: ["Victoria & Greater Victoria", "Gardens, heritage rooms & the coast"],

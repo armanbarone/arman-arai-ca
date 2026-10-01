@@ -13,12 +13,12 @@ export function cityWeddingMetadata(city: WeddingCity, path: string, options: Ci
   const canonicalPath = options.canonicalPath ?? path;
   const title = `${city.name} Wedding Photography | From C$${entryPrice.toLocaleString("en-CA")} | Arman Arai`;
   const description = `${city.name} wedding photography by Arman Arai. Browse full wedding albums, see collections from C$${entryPrice.toLocaleString("en-CA")}, and book a free 30-minute consultation.`;
-  const image = imageLoader({ src: city.hero.src, width: 1200 });
+  const image = imageLoader({ src: city.heroes[0].src, width: 1200 });
   return {
     title: { absolute: title }, description,
     alternates: { canonical: `${SITE.url}${canonicalPath}` },
     robots: { index: false, follow: true, googleBot: { index: false, follow: true } },
-    openGraph: { title, description, url: `${SITE.url}${path}`, images: [{ url: image, alt: city.hero.alt }] },
+    openGraph: { title, description, url: `${SITE.url}${path}`, images: [{ url: image, alt: city.heroes[0].alt }] },
     twitter: { card: "summary_large_image", title, description, images: [image] },
   };
 }

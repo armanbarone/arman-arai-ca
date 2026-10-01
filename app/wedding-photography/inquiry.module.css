@@ -13,6 +13,11 @@
 .heroTop .heroEyebrow { max-width: 370px; margin-bottom: 28px; }
 .hero .heroTitle { font-size: clamp(60px, 6.85vw, 105px); line-height: .92; margin-bottom: 28px; }
 .heroArt { grid-area: art; align-self: start; }
+/* HeroSlideshow: the photos sit on top of each other and cross-fade. */
+.heroImage { overflow: hidden; }
+.heroImage .slide { opacity: 0; transition: opacity 1.4s ease; }
+.heroImage .slideActive { opacity: 1; }
+@media (prefers-reduced-motion: reduce) { .heroImage .slide { transition: none; } }
 .formPanel { grid-area: form; }
 
 .labelRow { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }

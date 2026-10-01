@@ -47,7 +47,7 @@ const PROCESS = [
   { n: "03", t: "A twenty minute call", b: "Not a sales call. I need to hear the shape of the day before I can quote it properly." },
   { n: "04", t: "One recommended collection", b: "With the one either side of it, the travel figure if your day needs one, and the tax, so you see the whole invoice before you decide." },
   { n: "05", t: "A 48-hour hold on the date", b: "Free, and I will tell you if someone else asks about it in the meantime." },
-  { n: "06", t: "Contract and retainer", b: "Thirty per cent to book. The balance is due 30 days before the wedding and it can be split." },
+  { n: "06", t: "Contract and deposit", b: "A non-refundable 30% deposit to book, then 35% due 60 days before the wedding and the final 35% 30 days before." },
 ];
 
 const FAQS = [

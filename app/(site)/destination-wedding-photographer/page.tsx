@@ -76,7 +76,7 @@ const COMPARISON = [
   { row: "The photography", canada: "Documentary and editorial, one lead photographer", dest: "Identical. The work does not change with the postcode" },
   { row: "What comes back", canada: "Coverage, social reels, film prints, the feature film from Signature up, and the album on Complete and Photo + Film", dest: "Identical, and scoped with you when the quote is built" },
   { row: "Arrival", canada: "The day before, usually", dest: "Two to three days ahead, to scout in the real light" },
-  { row: "Booking", canada: TERMS.retainer, dest: "The same retainer, on the same contract" },
+  { row: "Booking", canada: TERMS.retainer, dest: "The same deposit and schedule, on the same contract" },
 ];
 
 export default function DestinationPage() {

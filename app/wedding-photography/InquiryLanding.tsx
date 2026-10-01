@@ -42,7 +42,7 @@ export default function InquiryLanding({ city, market }: { city: WeddingCity; ma
     ["What is included, and what costs extra?", `Every collection includes photography by me, a 60-minute engagement session, planning, a full edited gallery with print permission, vertical social reels and film prints for your guests. Complete adds a second photographer for four hours, a longer film and a printed album; Photo + Film runs 12 hours with a dedicated filmmaker and adds a printed album. Prices are in Canadian dollars before tax. ${market.travelNote}`],
     // These pages confirm nothing about a date, so this answer never says
     // "once we've confirmed availability".
-    ["How do we secure our wedding date?", "Once you’ve chosen your collection and we’ve agreed the details, a signed contract and a non-refundable 30% deposit secure the date. The remaining 70% is paid in two instalments of 35%. There’s no obligation to book after our call."],
+    ["How do we secure our wedding date?", "Once you’ve chosen your collection and we’ve agreed the details, a signed contract and a non-refundable 30% deposit secure the date. Then 35% is due 60 days before the wedding, and the final 35% 30 days before. There’s no obligation to book after our call."],
   ];
   const weddingAlbums = weddingAlbumsFor(city.albums);
   const cta = <>{CTA_LABEL} <span aria-hidden="true">↗</span></>;

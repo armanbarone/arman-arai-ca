@@ -345,12 +345,13 @@ Everything in this list is live and was verified with a real HTTP check.
   to the city hub, the rest to /pricing. Shared bits moved: the calendar to
   `app/wedding-photography/wedding-calendar.tsx`, content helpers to
   `landing-content.ts`, ad attribution to `lib/attribution.ts`.
-  **Payment terms (owner, 2026-09-30):** a non-refundable 30% deposit, then two
-  instalments of 35%. The brief and the pricing pages say this; the due dates
-  of the two 35% payments are NOT yet known, so nothing states them. The FAQ,
-  terms of service, TERMS in site.ts and the client portal (which still uses
-  the elopement 6/3/1-month schedule) are still the old wording until he gives
-  the dates.
+  **Payment terms for weddings (owner, 2026-09-30):** a NON-REFUNDABLE 30% deposit
+  with the signed contract, 35% due 60 days before the wedding, the final 35%
+  30 days before. TERMS in site.ts is the source; the FAQ, pricing steps, terms
+  of service, llms.txt, the destination page, the pricing pages and the brief
+  all say it. The cancellation percentages now apply only to instalments paid.
+  The client portal (lib/portal) is NOT changed: owner, "elopements are
+  different, don't change them".
 
 ---
 

@@ -33,8 +33,8 @@ const GROUPS = [
         a: "Only what you choose, plus travel if your wedding needs it. Add-ons are listed with their prices. Travel uses the lowest practical early-booked route, and a permit, helicopter or other venue-specific requirement remains its own line.",
       },
       {
-        q: "What is the retainer?",
-        a: "Thirty per cent to hold the date, with the balance due 30 days before the wedding. The balance can be split across instalments if that helps; say so and I will set it up that way from the start.",
+        q: "How do the payments work?",
+        a: "Three payments. A non-refundable 30% deposit with the signed contract secures your date. Then 35% is due 60 days before the wedding, and the final 35% is due 30 days before.",
       },
       {
         q: "How many hours do we need?",

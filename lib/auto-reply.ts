@@ -75,6 +75,18 @@ export function autoReplyEnabled() {
    timeouts by default, which would push a slow reply past the minute the page
    promises, and the template covers a failure. */
 let client: Anthropic | undefined;
+/** The claims of the last identity token presented, never the token itself:
+ *  Anthropic answers every failed exchange with the same opaque 401, so these
+ *  are what show which part of the federation rule did not match. */
+let lastClaims: Record<string, unknown> | undefined;
+async function identityToken() {
+  const token = await getVercelOidcToken();
+  try {
+    const c = JSON.parse(Buffer.from(token.split(".")[1], "base64url").toString());
+    lastClaims = { iss: c.iss, aud: c.aud, sub: c.sub, environment: c.environment, lifetimeSeconds: c.exp - c.iat, hasJti: "jti" in c };
+  } catch { lastClaims = { undecodable: true }; }
+  return token;
+}
 function claude() {
   const config = federation();
   if (!config) return null;
@@ -83,7 +95,7 @@ function claude() {
     apiKey: null,
     authToken: null,
     baseURL,
-    credentials: oidcFederationProvider({ ...config, identityTokenProvider: () => getVercelOidcToken(), baseURL, fetch }),
+    credentials: oidcFederationProvider({ ...config, identityTokenProvider: identityToken, baseURL, fetch }),
     timeout: 20_000,
     maxRetries: 0,
   });
@@ -205,6 +217,7 @@ export async function sendInquiryAutoReply(inquiry: PricingInquiry): Promise<voi
     body = written;
   } catch (error) {
     console.warn("Auto-reply: Claude call failed", error instanceof Anthropic.APIError ? error.status : error);
+    if (lastClaims) console.warn("Auto-reply: identity token claims presented", JSON.stringify(lastClaims));
   }
   if (!body) { body = fallbackBody(inquiry, fitName); source = "template"; }
   const { html, text } = render(inquiry, body, fit.slug);

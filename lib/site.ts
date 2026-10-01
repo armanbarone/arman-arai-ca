@@ -92,7 +92,7 @@ export const SCOPE = {
   notes: [
     "Prices on this site are in Canadian dollars for every wedding, Canadian or destination.",
     "The legal marriage itself is yours to arrange with the local authority. Arman photographs the day; he does not file paperwork or act as an officiant.",
-    "Destination dates are held the same way Canadian dates are: a free 48-hour hold, then a contract and a 30% retainer.",
+    "Destination dates are held the same way Canadian dates are: a free 48-hour hold, then a contract and a non-refundable 30% deposit.",
   ],
 } as const;
 
@@ -491,10 +491,14 @@ export const TRAVEL = {
 /** What a collection costs, anywhere in Canada, before tax and travel. */
 export const priceOf = (tier: Tier): number => tier.price;
 
-/** Booking terms, identical everywhere. */
+/** Booking terms for weddings, identical everywhere. Three payments (owner,
+ *  2026-09-30): a non-refundable 30% deposit with the signed contract, 35% due
+ *  60 days before the wedding, and the final 35% 30 days before. Elopements on
+ *  armanarai.com have their own terms; do not mix them. */
 export const TERMS = {
-  retainer: "30% retainer secures your date",
-  balance: "Balance due 30 days before the wedding",
+  retainer: "A non-refundable 30% deposit secures your date",
+  balance: "35% due 60 days before the wedding, the final 35% 30 days before",
+  schedule: "Three payments: a non-refundable 30% deposit with the signed contract, 35% due 60 days before the wedding, and the final 35% due 30 days before.",
   extraHour: 400,
 } as const;
 

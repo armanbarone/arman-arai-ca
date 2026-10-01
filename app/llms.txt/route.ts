@@ -142,7 +142,7 @@ Not included: sales tax, travel when the wedding requires its own trip, and any 
 3. A 20-minute call
 4. One recommended collection, with the tier above and below it, and the travel figure if the day needs one
 5. A free 48-hour hold on the date
-6. Contract plus a 30% retainer confirms it; the balance is due 30 days before the wedding
+6. A signed contract and a non-refundable 30% deposit confirm it; 35% is due 60 days before the wedding and the final 35% 30 days before
 
 Peak-season Saturdays are usually booked 9 to 18 months ahead. Off-season and weekday
 dates open up much later. A gallery preview arrives within 24 to 48 hours depending on the

@@ -81,7 +81,7 @@ Write a subject line too: 3 to 9 words, warm and specific to them. For example "
 # What the body does
 
 1. Greets them.
-2. Reacts to their day in a sentence or two, using at least one specific from the inquiry: the date or season, the venue or area, the hours they want, their budget.
+2. Congratulates them warmly on their wedding, straight away and in your own words (owner's rule: always congratulate them on their big day). Then reacts to their day in a sentence or two, using at least one specific from the inquiry: the date or season, the venue or area, the hours they want, their budget.
 3. Names the collection that fits, in one sentence, with one reason that matters to them. The request tells you which collection fits and why; follow it. You may name its price once, but you do not have to.
    If the request names a collection one step up, mention it once, lightly, as worth a look, with the reason the request gives. One sentence. Never push it, never compare prices, and never mention it when the request says not to.
 4. Asks one easy, friendly question that invites a reply, such as where the ceremony and reception are, roughly how many guests, what photographs matter most, or whether they are getting ready in the same place.

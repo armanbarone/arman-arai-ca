@@ -388,6 +388,30 @@ Everything in this list is live and was verified with a real HTTP check.
   GA4 `book_appointment`. Import that GA4 event into Google Ads as Secondary.
   Do not use a "URL contains /thank-you" rule: it also matches the pricing
   thank-you pages, so every inquiry would count twice.
+  **Hero slideshow (owner, 2026-10-01: "a few pictures from that city that
+  roll"):** `HeroSlideshow.tsx`, five photos per city in `heroes`. Only the
+  first is in the HTML; the second is added after the load event plus an idle
+  moment, each later one while the one before shows; none appears before it
+  has loaded. 5.2 s hold, cross-fade, holds for reduced motion and hidden tabs.
+  **Calgary & Banff and Victoria (2026-10-01):** `/wedding-photography/
+  calgary-pricing` (h1 "Calgary & Banff", photos from cities/banff) and
+  `victoria-pricing` (Hatley Castle and gardens from cities/vancouver/work and
+  cities/vancouver-island). Travel line: "travel quoted before you book", the
+  rule the site already publishes for the Rockies and the island. The owner
+  has NOT said "no travel costs" for these two; if he does, it is the two
+  PRICING_MARKETS entries. Some cities/banff hub alt text describes the wrong
+  photograph (banff-46 is labelled a lantern at night; it is a golden-hour
+  dance), and CITY_WORK.tofino's alts are wrong for vancouver-island-06 and
+  -20, so the new pages carry alt text written from the photographs.
+  **Google Ads "Submit lead form":** `LEAD_FORM_CONVERSION` in lib/analytics.ts
+  (AW-18464850778/ySE3CPyOtYsdENqG3eRE, from the owner's pasted snippet) fires
+  in `trackWeddingInquiry`, beside GA4 `wedding_inquiry`, once per sent form,
+  transaction_id `ca-lead-<sentAt>`. The snippet's gtag_report_conversion()
+  is a click wrapper; on a thank-you page the event is sent on open instead.
+  One conversion shows as three requests (pagead/conversion, ccm/conversion,
+  1p-conversion) with the same oid: that is normal. Tags never run on
+  localhost; to test, map a hostname to 127.0.0.1 in Chrome and abort the
+  measurement hits so nothing reaches the real accounts.
 
 ---
 

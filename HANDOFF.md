@@ -147,6 +147,16 @@ These cost real time and the owner had to catch most of them.
     a cleanup**: it is destructive and outward-facing, so it needs asking first,
     every time, no matter how well the rule seems to fit.
 
+17. **I exported plain constants from a `"use client"` file and used them in a
+    server component.** `FORM_ID` and `CTA_LABEL` lived in `InquiryFunnel.tsx`.
+    The server-rendered `InquiryLanding.tsx` imported them, so it got a client
+    reference, not a string. ``href={`#${FORM_ID}`}`` printed the error text
+    into the link, and the header and closing "Get Pricing" buttons went
+    nowhere on every ads page, the only action on the page. tsc and the build
+    both passed. **Shared constants go in a plain lib module**
+    (`lib/ads/pricing-request.ts`), and after any change to the funnel, read
+    every button's real `href` in the rendered HTML.
+
 ---
 
 ## 3. Architecture
@@ -366,6 +376,18 @@ Everything in this list is live and was verified with a real HTTP check.
   all say it. The cancellation percentages now apply only to instalments paid.
   The client portal (lib/portal) is NOT changed: owner, "elopements are
   different, don't change them".
+  **Heroes (owner, 2026-10-01: "pictures that are about that location"):**
+  `lib/ads/city-wedding-pages.ts`. Vancouver is the marina motorboat frame from
+  the hub's CITY_WORK set (orca inset); Toronto is the elisha-michael chapel
+  exit (035, inset 015); Montréal is the luca-lauren Notre-Dame Basilica aisle
+  (039, inset 015, Old Montréal in black and white). The previous Vancouver
+  (lions-gate PNG) and Montréal (places PNGs) heroes were Higgsfield renders
+  (hf-job-id in the R2 PNG). **The Montréal three-photo interlude still uses
+  those AI PNGs** (CITY_PHOTOS.montreal.places).
+  **Secondary conversion:** a Calendly booking goes to `/thank-you`, which fires
+  GA4 `book_appointment`. Import that GA4 event into Google Ads as Secondary.
+  Do not use a "URL contains /thank-you" rule: it also matches the pricing
+  thank-you pages, so every inquiry would count twice.
 
 ---
 

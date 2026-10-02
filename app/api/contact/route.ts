@@ -1,6 +1,6 @@
 import { after, NextRequest, NextResponse } from "next/server";
 import { checkWeddingDate } from "@/lib/wedding-availability";
-import { BUDGET_OPTIONS, COVERAGE_OPTIONS, SEASON_PATTERN, pricingMarket, recommendCollection, weekdayOf } from "@/lib/ads/pricing-request";
+import { BUDGET_OPTIONS, COVERAGE_OPTIONS, GUEST_OPTIONS, SEASON_PATTERN, SETUP_OPTIONS, cleanDayDetails, labelOf, pricingMarket, priorityLabels, recommendCollection, weekdayOf } from "@/lib/ads/pricing-request";
 import { WEDDING_CITIES } from "@/lib/ads/city-wedding-pages";
 import { autoReplyEnabled, sendInquiryAutoReply, type PricingInquiry } from "@/lib/auto-reply";
 import { createGuide, guidePath, guideUrl } from "@/lib/guide";
@@ -112,15 +112,18 @@ export async function POST(req: NextRequest) {
       const market = pricingMarket(String(body.pricingMarket ?? ""));
       const cityName = WEDDING_CITIES.find((city) => city.slug === market?.slug)?.name;
       if (!market || !cityName) return NextResponse.json({ error: "Please reload the page and try again." }, { status: 400 });
-      const recommendation = recommendCollection(coverage.value, budget.value);
+      // The form's second step. Optional here, so a form loaded before it
+      // existed still goes through; the form itself requires all but the note.
+      const day = cleanDayDetails(body);
+      const recommendation = recommendCollection(coverage.value, budget.value, day);
       const fit = tierBySlug(recommendation.slug)!;
       const stepUp = recommendation.stepUp ? tierBySlug(recommendation.stepUp) : undefined;
       // The couple's own wedding guide (lib/guide.ts), made now so the email
       // and the thank-you screen can both link to it. Null if it could not be
       // saved; the inquiry goes through either way.
-      guideId = await createGuide({ market: market.slug, names: body.name, email: body.email, weddingDate: body.weddingDate || undefined, weddingSeason: body.weddingSeason || undefined, location: body.location, coverage: coverage.value, budget: budget.value });
+      guideId = await createGuide({ market: market.slug, names: body.name, email: body.email, weddingDate: body.weddingDate || undefined, weddingSeason: body.weddingSeason || undefined, location: body.location, coverage: coverage.value, budget: budget.value, ...day });
       autoReply = autoReplyEnabled()
-        ? { names: body.name, email: body.email, weddingDate: body.weddingDate || undefined, weddingSeason: body.weddingSeason || undefined, location: body.location, coverage: coverage.value, budget: budget.value, cityName, market, page: `wedding-photography/${market.slug}-pricing`, receivedAt: Date.now(), guideUrl: guideId ? guideUrl(guideId) : undefined }
+        ? { names: body.name, email: body.email, weddingDate: body.weddingDate || undefined, weddingSeason: body.weddingSeason || undefined, location: body.location, coverage: coverage.value, budget: budget.value, cityName, market, page: `wedding-photography/${market.slug}-pricing`, receivedAt: Date.now(), guideUrl: guideId ? guideUrl(guideId) : undefined, ...day }
         : null;
       inquiryRows = [
         ["Names", body.name],
@@ -128,6 +131,10 @@ export async function POST(req: NextRequest) {
         ["Mobile", body.phone],
         ["Wedding date", body.weddingDate ? `${body.weddingDate} (${weekdayOf(body.weddingDate)})` : `No date yet: ${body.weddingSeason}`],
         ["Where", body.location],
+        ["Guests", labelOf(GUEST_OPTIONS, day.guests) ?? "Not given"],
+        ["Ceremony and reception", labelOf(SETUP_OPTIONS, day.setup) ?? "Not given"],
+        ["What matters most", priorityLabels(day.priorities).join(", ") || "Not given"],
+        ...(day.note ? ([["Their note", day.note]] as [string, string][]) : []),
         ["Coverage", coverage.label],
         ["Budget", budget.label],
         ["Shown as best fit", `${fit.name}, C$${fit.price.toLocaleString("en-CA")}`],
@@ -158,6 +165,10 @@ export async function POST(req: NextRequest) {
       coverage: body.coverage ?? "",
       budget: body.budget ?? "",
       weddingSeason: body.weddingSeason ?? "",
+      guestBand: typeof body.guests === "string" ? body.guests : "",
+      setup: typeof body.setup === "string" ? body.setup : "",
+      priorities: Array.isArray(body.priorities) ? body.priorities.filter((p: unknown) => typeof p === "string").join(",") : "",
+      note: typeof body.note === "string" ? body.note.slice(0, 300) : "",
       // Landing-page fields (LeadForm). Empty on the site's own forms.
       preferredMonth: body.preferredMonth ?? "",
       location: body.location ?? "",

@@ -35,8 +35,8 @@ export default function InquiryLanding({ city, market }: { city: WeddingCity; ma
     // Read at build time, like every env var on a static page: adding the key
     // in Vercel needs a redeploy, which also switches this answer over.
     ["What happens after we send the form?", autoReplyEnabled()
-      ? `Your pricing appears on screen straight away, with the collection that fits what you told me, and a note from me follows by email about 30 seconds later. From there you can choose a time for a free 30-minute video call, reply to that email, or message me on WhatsApp or by text at ${phone}.`
-      : `Your pricing appears on screen straight away, with the collection that fits what you told me, and I reply personally the same day. From there you can choose a time for a free 30-minute video call, or message me on WhatsApp or by text at ${phone}.`],
+      ? `Your pricing guide is ready the moment you send it: your collection, how your day could run and how I’ll photograph what matters most to you, on one page made for you. A note from me follows by email about 30 seconds later. From there, pick a time for a free 30-minute video call, reply to that email, or message me on WhatsApp or by text at ${phone}.`
+      : `Your pricing guide is ready the moment you send it, on one page made for your day, and I reply personally the same day. From there, pick a time for a free 30-minute video call, or message me on WhatsApp or by text at ${phone}.`],
     [city.coverageQuestion, market.coverageAnswer],
     [city.planningQuestion, city.planningAnswer], POSING_QUESTION,
     ["Do we have to book a video call?", "No. The call is there if you’d like to meet before you decide. If you’d rather keep it to email, WhatsApp or text, that works too."],
@@ -58,9 +58,9 @@ export default function InquiryLanding({ city, market }: { city: WeddingCity; ma
       <main id="main">
         <section className={funnel.hero} aria-labelledby="hero-title">
           <div className={funnel.heroTop}>
-            <p className={`${styles.eyebrow} ${funnel.heroEyebrow}`}>Your people. Your day. Your kind of photographs.</p>
+            <p className={`${styles.eyebrow} ${funnel.heroEyebrow}`}>Photographed by Arman, start to finish.</p>
             <h1 id="hero-title" className={funnel.heroTitle}>{city.name} <br />wedding <br /><em>photography.</em></h1>
-            <p className={styles.heroIntro}>Beautiful portraits. All the feeling in between.<br />And time to actually enjoy your wedding.</p>
+            <p className={styles.heroIntro}>You’ll get the photographs you’ve been picturing, and a few you didn’t know to ask for.</p>
             <p className={styles.starting}>Collections from <strong>{money(from)}</strong><span>{hours} hours · CAD before tax · {market.travelShort}</span></p>
           </div>
           <div className={`${styles.heroArt} ${funnel.heroArt}`}>
@@ -81,20 +81,20 @@ export default function InquiryLanding({ city, market }: { city: WeddingCity; ma
         <section className={styles.firstQuote} aria-label="A client’s words"><span className={styles.quoteMark} aria-hidden="true">“</span><blockquote>Only one person understood our vision<br className={styles.desktopBreak} /> the way we were imagining it.</blockquote><a href={proofSrc(8)} target="_blank" rel="noopener noreferrer">Samantha · Google review <span aria-hidden="true">↗</span></a></section>
 
         <section id="albums" className={styles.workSection} aria-labelledby="work-title">
-          <div className={styles.sectionHeading}><div><p className={styles.eyebrow}>The portfolio / 01</p><h2 id="work-title">Find the feeling<br /><em>you came for.</em></h2></div><p>From the quiet moments to the dance floor. Explore the full collections and see what feels like you.</p></div>
+          <div className={styles.sectionHeading}><div><p className={styles.eyebrow}>The portfolio / 01</p><h2 id="work-title">See exactly<br /><em>what you’ll get.</em></h2></div><p>Five complete collections, from the quiet moments to the dance floor. Open any of them and look closely. Every gallery I deliver is held to this.</p></div>
           <AlbumBrowser albums={stylesOfWork} label="Five complete portfolio collections" compact />
           <p className={styles.albumHint}>Open an album to see every photograph. <span>Swipe to explore the collections →</span></p>
-          <div className={styles.weddingHeading}><div><p className={styles.eyebrow}>Wedding stories / 02</p><h2>The whole day.<br /><em>All the way through.</em></h2></div><p>Three complete wedding stories from the portfolio, with the preparations, the ceremony and everything that followed.</p></div>
+          <div className={styles.weddingHeading}><div><p className={styles.eyebrow}>Wedding stories / 02</p><h2>The whole day.<br /><em>All the way through.</em></h2></div><p>Three complete weddings, every photograph, from the first look to the last dance. The way you’ll receive yours.</p></div>
           <AlbumBrowser albums={weddingAlbums} label="Complete wedding stories" />
         </section>
 
         <section className={styles.about} aria-labelledby="about-title">
           <div className={styles.portraitWrap}><figure className={styles.portrait}><Image src={ARMAN.src} alt={ARMAN.alt} fill quality={78} sizes="(max-width: 760px) 85vw, 38vw" /></figure><span className={styles.signature}>See you on the other side of the camera.</span></div>
-          <div className={styles.aboutCopy}><p className={styles.eyebrow}>Your photographer</p><h2 id="about-title">Hi, I’m Arman.<br /><em>Let’s make this easy.</em></h2><p>You don’t need to arrive knowing how to pose. I’ll help with that.</p><p>I’ll give you direction when it helps, make time for the family photographs, and let you get back to your favourite people. In between, I’m watching for the laughter, the glances and the moments you couldn’t have planned.</p><p>{city.about}</p></div>
+          <div className={styles.aboutCopy}><p className={styles.eyebrow}>Your photographer</p><h2 id="about-title">Hi, I’m Arman.<br /><em>You’re in good hands.</em></h2><p>You don’t need to arrive knowing how to pose. I’ll guide you, simply and clearly, and you’ll still look like yourselves.</p><p>I know where the good moments happen, and I’m already standing there when they do: the glance before the vows, your dad’s face at the first dance, the friend who cries first. I make time for the family photographs, then give you back to your people.</p><p>{city.about}</p></div>
         </section>
 
         <section id="collections" className={styles.collections} aria-labelledby="collections-title">
-          <div className={styles.sectionHeading}><div><p className={styles.eyebrow}>The collections / 03</p><h2 id="collections-title">Your day, with room<br /><em>for what matters.</em></h2></div><p>Three collections, one price each. Tell me about your day and I’ll point you to the one that fits.</p></div>
+          <div className={styles.sectionHeading}><div><p className={styles.eyebrow}>The collections / 03</p><h2 id="collections-title">Three collections.<br /><em>No surprises.</em></h2></div><p>One price each, with everything listed. Tell me about your day and I’ll tell you which one fits.</p></div>
           <div className={`${styles.priceGrid} ${styles.priceGridExpanded}`}>
             {tiers.map((tier) => <article key={tier.slug} className={tier.slug === "signature" ? styles.featuredPrice : styles.priceCard}>
               <div className={styles.tierHeader}><p>{tier.hours} hours of coverage</p><span>{TIER_STRAP[tier.slug] ?? tier.strap}</span></div>
@@ -102,7 +102,7 @@ export default function InquiryLanding({ city, market }: { city: WeddingCity; ma
               <ul>{tierItems(tier).map((item) => <li key={item}>{item}</li>)}</ul>
             </article>)}
           </div>
-          <div className={styles.included}><h3>Always included.</h3><p>Photography by Arman. A 60-minute engagement session. Timeline and family-photo planning. A full edited gallery with print permission. Vertical social reels in the first week. Film prints handed to your guests on the night, and real film in every collection.</p></div>
+          <div className={styles.included}><h3>Always included.</h3><p>Photographed by me, start to finish. A preview of your photographs the next day. Film prints in your guests’ hands before the night is over. Vertical reels in your first week. A 60-minute engagement session, timeline and family-photo planning, a full edited gallery with print permission, and real film. Because waiting a month to see your own wedding is too long.</p></div>
           <p className={styles.travel}>{market.travelNote} All prices are in Canadian dollars before tax.</p>
         </section>
 
@@ -115,8 +115,8 @@ export default function InquiryLanding({ city, market }: { city: WeddingCity; ma
         <section className={styles.faq} aria-labelledby="faq-title"><div><p className={styles.eyebrow}>A few things before we meet</p><h2 id="faq-title">You might<br /><em>be wondering.</em></h2></div><div className={styles.questions}>{questions.map(([q, a]) => <details key={q}><summary>{q}<span aria-hidden="true">+</span></summary><p>{a}</p></details>)}</div></section>
 
         <section className={funnel.finalCta} aria-labelledby="final-title">
-          <div className={styles.bookingCopy}><p className={styles.eyebrow}>Your {city.name} wedding starts here</p><h2 id="final-title">Tell me about your day.<br /><em>Get your pricing.</em></h2><p>One short form, and your pricing appears straight away.</p></div>
-          <div className={styles.bookingCopy}><ol><li><span>01</span> Tell me your date and your plans.</li><li><span>02</span> See your pricing, with the collection that fits.</li><li><span>03</span> Pick a time for a free video call, or just reply by email, WhatsApp or text.</li></ol><a className={`${styles.button} ${funnel.finalButton}`} href={`#${FORM_ID}`}>{cta}</a></div>
+          <div className={styles.bookingCopy}><p className={styles.eyebrow}>Your {city.name} wedding starts here</p><h2 id="final-title">Tell me about your day.<br /><em>Get your pricing.</em></h2><p>Two quick steps, and your pricing guide is ready, made for your day.</p></div>
+          <div className={styles.bookingCopy}><ol><li><span>01</span> Tell me your date and what matters most to you.</li><li><span>02</span> Get your pricing guide, built around your answers.</li><li><span>03</span> Pick a time for a free video call, or just reply by email, WhatsApp or text.</li></ol><a className={`${styles.button} ${funnel.finalButton}`} href={`#${FORM_ID}`}>{cta}</a></div>
         </section>
       </main>
       <BookingNavigation classes={styles} startingPrice={from} note={`Before tax · ${market.travelShort}`} form={{ id: FORM_ID, label: CTA_LABEL }} />

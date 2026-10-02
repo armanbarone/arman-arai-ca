@@ -97,6 +97,54 @@ export const BUDGET_OPTIONS: { value: string; label: string; slug?: string }[] =
   { value: "unsure", label: "Not sure yet" },
 ];
 
+/* The form's second step (owner, 2026-10-01: "the inquiry form itself need
+   to be more personalized"). Every answer changes something the couple then
+   sees: the step-up and its reason, the day plan and the reviews on their
+   guide, and what the email talks about. A question nothing uses is worse
+   than no question, so never add one here without wiring it through. */
+export type Option = { value: string; label: string };
+export const GUEST_OPTIONS: Option[] = [
+  { value: "under-50", label: "Under 50" },
+  { value: "50-120", label: "50 to 120" },
+  { value: "120-200", label: "120 to 200" },
+  { value: "200-plus", label: "Over 200" },
+];
+export const SETUP_OPTIONS: Option[] = [
+  { value: "same", label: "Same place" },
+  { value: "different", label: "Different places" },
+  { value: "unsure", label: "Not sure yet" },
+];
+export const PRIORITY_OPTIONS: Option[] = [
+  { value: "candid", label: "Candid moments" },
+  { value: "family", label: "Family and friends" },
+  { value: "portraits", label: "Portraits of the two of us" },
+  { value: "party", label: "The party" },
+  { value: "film", label: "Film of the day" },
+];
+export const MAX_PRIORITIES = 2;
+export const NOTE_MAX = 300;
+
+/** The second step's answers. Optional everywhere on the server, so an
+ *  inquiry from a page loaded before the form changed still goes through. */
+export type DayDetails = { guests?: string; setup?: string; priorities?: string[]; note?: string };
+
+export const labelOf = (options: Option[], value?: string) => options.find((option) => option.value === value)?.label;
+export const priorityLabels = (values?: string[]) => (values ?? []).map((value) => labelOf(PRIORITY_OPTIONS, value)).filter((label): label is string => Boolean(label));
+/** "Candid moments and the party", lower-cased after the first. */
+export const prioritiesPhrase = (values?: string[]) => priorityLabels(values).map((label, i) => (i === 0 ? label : label.charAt(0).toLowerCase() + label.slice(1))).join(" and ");
+
+/** The second step's answers, cleaned: unknown values dropped, at most two
+ *  priorities, the note trimmed. Used by the route on whatever was posted. */
+export function cleanDayDetails(input: { guests?: unknown; setup?: unknown; priorities?: unknown; note?: unknown }): DayDetails {
+  const guests = GUEST_OPTIONS.some((option) => option.value === input.guests) ? String(input.guests) : undefined;
+  const setup = SETUP_OPTIONS.some((option) => option.value === input.setup) ? String(input.setup) : undefined;
+  const priorities = Array.isArray(input.priorities)
+    ? [...new Set(input.priorities.filter((value): value is string => PRIORITY_OPTIONS.some((option) => option.value === value)))].slice(0, MAX_PRIORITIES)
+    : [];
+  const note = typeof input.note === "string" ? input.note.replace(/\s+/g, " ").trim().slice(0, NOTE_MAX) : "";
+  return { ...(guests ? { guests } : {}), ...(setup ? { setup } : {}), ...(priorities.length ? { priorities } : {}), ...(note ? { note } : {}) };
+}
+
 export type Recommendation = {
   slug: string;
   /** What the choice was made from: the coverage they asked for, their
@@ -107,6 +155,8 @@ export type Recommendation = {
    *  and when the budget is under the first price, where a bigger number only
    *  loses the couple. */
   stepUp?: string;
+  /** Why, in their terms when their answers give one (guests, two places, film). */
+  stepUpReason?: string;
 };
 
 /** Why the next collection up is worth a look, from what it adds in TIERS. */
@@ -115,14 +165,31 @@ export const STEP_UP_REASON: Record<string, string> = {
   "photo-film": "Twelve hours, with a dedicated filmmaker there all day and a longer film.",
 };
 
-export function recommendCollection(coverage: string, budget: string): Recommendation {
+/* The collection that fits is still what they chose: the hours they asked
+   for, else their budget, else Signature. The second step only changes the
+   step-up and why: a couple who says film matters is pointed at Photo + Film,
+   and a big guest list or two places makes the case for Legacy's second
+   photographer in their own terms. */
+export function recommendCollection(coverage: string, budget: string, day: DayDetails = {}): Recommendation {
   const byCoverage = COVERAGE_OPTIONS.find((option) => option.value === coverage)?.slug;
   const byBudget = BUDGET_OPTIONS.find((option) => option.value === budget)?.slug;
   const slug = byCoverage ?? byBudget ?? "signature";
   const basis = byCoverage ? "coverage" : byBudget ? "budget" : "default";
+  if (budget === "under-3000") return { slug, basis };
+  const wantsFilm = day.priorities?.includes("film") ?? false;
   const next = PRICING_TIER_SLUGS[PRICING_TIER_SLUGS.indexOf(slug as (typeof PRICING_TIER_SLUGS)[number]) + 1];
-  const stepUp = next && budget !== "under-3000" ? next : undefined;
-  return { slug, basis, ...(stepUp ? { stepUp } : {}) };
+  const stepUp = wantsFilm && slug !== "photo-film" ? "photo-film" : next;
+  if (!stepUp) return { slug, basis };
+  const guests = labelOf(GUEST_OPTIONS, day.guests);
+  const bigDay = day.guests === "120-200" || day.guests === "200-plus";
+  const stepUpReason = stepUp === "photo-film" && wantsFilm
+    ? "You said film matters. Photo + Film puts a dedicated filmmaker beside me for all twelve hours."
+    : stepUp === "complete" && bigDay
+      ? `With ${guests!.toLowerCase()} guests, a second photographer for four hours means nobody is missed.`
+      : stepUp === "complete" && day.setup === "different"
+        ? "With the ceremony and reception in different places, Legacy adds two more hours and a second photographer for four of them."
+        : STEP_UP_REASON[stepUp];
+  return { slug, basis, stepUp, stepUpReason };
 }
 
 /** Seasons for a couple with no exact date, starting with the current one.

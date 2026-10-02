@@ -8,7 +8,7 @@
 
 .toldPanel { align-self: start; border-top: .5px solid var(--line); padding-top: 26px; margin-top: 8px; }
 .told { margin: 14px 0 18px; display: grid; gap: 8px; }
-.told div { display: grid; grid-template-columns: 96px 1fr; gap: 12px; font-size: 15px; line-height: 1.5; }
+.told div { display: grid; grid-template-columns: 150px 1fr; gap: 12px; font-size: 15px; line-height: 1.5; }
 .told dt { color: var(--muted); }
 .told dd { margin: 0; color: var(--ink); overflow-wrap: anywhere; }
 .page .changed { font-size: 13px; line-height: 1.7; color: var(--dark-body); margin-bottom: 26px; }
@@ -21,12 +21,19 @@
 
 .page .planNote { max-width: 640px; margin: -10px 0 24px; font-size: 15px; line-height: 1.7; color: var(--gold); }
 .plan, .steps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0 5%; }
-.plan li, .steps li { border-top: .5px solid var(--line); padding: 22px 0 26px; display: grid; gap: 8px; }
+.plan li, .steps li { border-top: .5px solid var(--line); padding: 22px 0 26px; display: grid; gap: 8px; align-content: start; }
 .plan strong, .steps strong { font-family: var(--font-cormorant), Georgia, serif; font-size: 28px; font-weight: 300; line-height: 1.1; color: var(--ink); }
 .plan span, .steps span { font-size: 14px; line-height: 1.75; color: var(--dark-body); }
 .steps { counter-reset: step; }
 .steps li { counter-increment: step; }
 .steps strong::before { content: counter(step) ". "; color: var(--gold); }
+
+.promises { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 6%; max-width: 1100px; }
+.promises article { border-top: .5px solid var(--gold); padding: 24px 0 8px; }
+.page .promises h3 { font-size: 34px; font-weight: 300; margin-bottom: 12px; color: var(--ink); }
+.page .promises p { font-size: 16px; line-height: 1.8; color: var(--dark-body); }
+.plan .marked { border-top-color: var(--gold); }
+.page .markTag { font-style: normal; font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--gold); }
 
 .albums { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px; }
 .album { display: grid; gap: 6px; }
@@ -49,9 +56,9 @@
 @media (max-width: 760px) {
   .page .title { font-size: clamp(38px, 10.5vw, 56px); }
   .section { padding: 55px 6%; }
-  .plan, .steps, .albums { grid-template-columns: 1fr; }
+  .plan, .steps, .albums, .promises { grid-template-columns: 1fr; }
   .albums { gap: 36px; }
   .booking { grid-template-columns: 1fr; grid-template-areas: "copy" "calendar"; row-gap: 28px; }
   .booking .bookingCopy { position: static; }
-  .told div { grid-template-columns: 84px 1fr; }
+  .told div { grid-template-columns: 112px 1fr; }
 }

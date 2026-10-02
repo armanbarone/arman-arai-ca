@@ -6,8 +6,8 @@ import { inquiryBrief } from "./auto-reply-brief";
 import { weddingCalendarUrl } from "./wedding-booking";
 import { WEDDING_CITIES } from "./ads/city-wedding-pages";
 import {
-  BUDGET_OPTIONS, COVERAGE_OPTIONS, STEP_UP_REASON, longDate, pricingTiers, recommendCollection, weekdayOf,
-  type PricingMarket,
+  BUDGET_OPTIONS, COVERAGE_OPTIONS, GUEST_OPTIONS, NOTE_MAX, SETUP_OPTIONS, labelOf, longDate, priorityLabels, prioritiesPhrase,
+  pricingTiers, recommendCollection, weekdayOf, type DayDetails, type PricingMarket,
 } from "./ads/pricing-request";
 
 /* The email a couple receives within a minute of sending the pricing-request
@@ -50,7 +50,7 @@ export type PricingInquiry = {
   receivedAt: number;
   /** Their wedding guide (lib/guide.ts). Without one, the email carries the price table. */
   guideUrl?: string;
-};
+} & DayDetails;
 
 /* The couple gets the email about half a minute after pressing the button,
    not the instant they press it (owner, 2026-10-01). The wait is the rest of
@@ -63,7 +63,7 @@ const money = (amount: number) => `C$${amount.toLocaleString("en-CA")}`;
 const escapeHtml = (value: string) => value.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!);
 /** Couple-supplied text goes into the prompt as data. Angle brackets are
  *  removed so a field cannot close the <inquiry> tag it sits in. */
-const asData = (value: string) => value.replace(/[<>]/g, "").replace(/\s+/g, " ").trim().slice(0, 120);
+const asData = (value: string, max = 120) => value.replace(/[<>]/g, "").replace(/\s+/g, " ").trim().slice(0, max);
 const greetingName = (names: string) => (/\p{L}/u.test(names) && names.length <= 60 ? names : "");
 
 function federation() {
@@ -122,10 +122,11 @@ function inquiryPrompt(inquiry: PricingInquiry, fitName: string, basis: string) 
   const coverage = COVERAGE_OPTIONS.find((option) => option.value === inquiry.coverage)?.label ?? "Not sure yet";
   const budget = BUDGET_OPTIONS.find((option) => option.value === inquiry.budget)?.label ?? "Not sure yet";
   const when = inquiry.weddingDate ? whenPhrase(inquiry) : `No exact date yet. Roughly: ${inquiry.weddingSeason ?? "not given"}`;
-  const stepUp = recommendCollection(inquiry.coverage, inquiry.budget).stepUp;
-  const stepUpLine = stepUp
-    ? `The collection one step up, worth mentioning once as something to consider: ${tierBySlug(stepUp)!.name}, because: ${STEP_UP_REASON[stepUp]}`
+  const rec = recommendCollection(inquiry.coverage, inquiry.budget, inquiry);
+  const stepUpLine = rec.stepUp
+    ? `The collection one step up, worth mentioning once as something to consider: ${tierBySlug(rec.stepUp)!.name}, because: ${rec.stepUpReason}`
     : "Do not suggest a bigger collection for this couple.";
+  const matters = priorityLabels(inquiry.priorities);
   const guideLine = inquiry.guideUrl
     ? `A wedding guide page has been made for this couple and is linked right under your note: their collection, how their hours could run, and photographs from ${inquiry.cityName}. Point to it once, in one short sentence, before the invitation to the call. Do not describe it beyond that.`
     : "No wedding guide page was made for this couple. Do not mention one.";
@@ -137,8 +138,12 @@ ${guideLine}
 Names: ${asData(inquiry.names)}
 Wedding date: ${when}
 Venue or area: ${asData(inquiry.location)}
+Guests: ${labelOf(GUEST_OPTIONS, inquiry.guests) ?? "Not given"}
+Ceremony and reception: ${labelOf(SETUP_OPTIONS, inquiry.setup) ?? "Not given"}
+What matters most to them: ${matters.length ? matters.join(", ") : "Not given"}
 Coverage asked for: ${coverage}
 Photography budget: ${budget}
+Their note: ${inquiry.note ? asData(inquiry.note, NOTE_MAX) : "None"}
 </inquiry>`;
 }
 
@@ -155,7 +160,7 @@ function allowedAmounts() {
  *  here rather than failing the whole email. */
 export function checkedBody(text: string): string | null {
   const body = text.replace(/\r/g, "").replace(/(\d)\s*[\u2013\u2014]\s*(\d)/g, "$1 to $2").replace(/\s*[\u2013\u2014]\s*/g, ", ").trim();
-  if (body.length < 200 || body.length > 1500) return null;
+  if (body.length < 200 || body.length > 1800) return null;
   if (/https?:\/\/|www\.|\*\*|^#|^subject:/im.test(body)) return null;
   // No date claims of any kind: the site checks nothing.
   if (/\bavailab|\b(?:date|day)\b[^.]{0,40}\b(?:open|free|booked|held|reserved)\b/i.test(body)) return null;
@@ -221,10 +226,12 @@ export function fallbackBody(inquiry: PricingInquiry, fitName: string) {
   const when = whenPhrase(inquiry);
   const coverage = COVERAGE_OPTIONS.find((option) => option.value === inquiry.coverage)?.label ?? "Not sure yet";
   const details = [when && `on ${when}`, inquiry.location && `at ${inquiry.location}`].filter(Boolean).join(" ");
+  const matters = prioritiesPhrase(inquiry.priorities);
   return [
     `Hi ${name || "there"},`,
     "Congratulations on your wedding! This is Arman, the photographer, replying to the inquiry you just sent through my website.",
     `You're planning your wedding${details ? ` ${details}` : ""}, with ${coverage === "Not sure yet" ? "the hours still to be decided" : `${coverage.toLowerCase()} of coverage in mind`}. From what you shared, ${fitName} feels like the right fit.`,
+    ...(matters ? [`You told me ${matters.charAt(0).toLowerCase() + matters.slice(1)} ${(inquiry.priorities?.length ?? 0) > 1 || /^(candid|family|portraits)$/.test(inquiry.priorities?.[0] ?? "") ? "matter" : "matters"} most${inquiry.guideUrl ? ", and your guide shows exactly how I'll make sure of it" : ", and I'll make sure of it"}.`] : []),
     ...(inquiry.guideUrl ? [`I've put together a page for your day, with your collection and photographs from ${inquiry.cityName}. It's just below.`] : []),
     "The easiest way to talk it through is a free 30-minute video call. If you would rather just message, WhatsApp works too.",
     "Arman",
@@ -243,7 +250,17 @@ function detailsBlock(inquiry: PricingInquiry) {
   const when = whenPhrase(inquiry) || "Date to be decided";
   const coverage = COVERAGE_OPTIONS.find((option) => option.value === inquiry.coverage)?.label ?? "Not sure yet";
   const budget = BUDGET_OPTIONS.find((option) => option.value === inquiry.budget)?.label ?? "Not sure yet";
-  const rows: [string, string][] = [["Date", when], ["Where", inquiry.location], ["Coverage", coverage], ["Budget", budget]];
+  const guests = labelOf(GUEST_OPTIONS, inquiry.guests);
+  const setup = labelOf(SETUP_OPTIONS, inquiry.setup);
+  const matters = priorityLabels(inquiry.priorities);
+  const rows: [string, string][] = [
+    ["Date", when], ["Where", inquiry.location],
+    ...(guests ? [["Guests", guests] as [string, string]] : []),
+    ...(setup ? [["Ceremony and reception", setup] as [string, string]] : []),
+    ...(matters.length ? [["What matters most", matters.join(", ")] as [string, string]] : []),
+    ["Coverage", coverage], ["Budget", budget],
+    ...(inquiry.note ? [["Your note", inquiry.note] as [string, string]] : []),
+  ];
   return `<div style="margin:6px 0 24px;padding:16px 18px;background:#F7F3EC;border-radius:8px;font-family:Arial,Helvetica,sans-serif;font-size:14px;line-height:1.6;color:#2C2420;">
     <p style="margin:0 0 8px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#9A7A54;">What you told me</p>
     ${rows.map(([label, value]) => `<p style="margin:0;"><span style="color:#6B6258;">${label}:</span> ${escapeHtml(value)}</p>`).join("")}
@@ -301,7 +318,7 @@ export function render(inquiry: PricingInquiry, body: string, fitSlug: string, s
 
 export async function sendInquiryAutoReply(inquiry: PricingInquiry): Promise<void> {
   const started = Date.now();
-  const fit = recommendCollection(inquiry.coverage, inquiry.budget);
+  const fit = recommendCollection(inquiry.coverage, inquiry.budget, inquiry);
   const fitName = tierBySlug(fit.slug)!.name;
   const basis = fit.basis === "coverage" ? "the coverage they asked for" : fit.basis === "budget" ? "their budget" : "neither, because they are unsure of both; Signature is the collection most couples book";
   let body: string | null = null;

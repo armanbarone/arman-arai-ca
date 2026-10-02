@@ -35,6 +35,11 @@ export type GuideRecord = {
   location: string;
   coverage: string;
   budget: string;
+  /** The form's second step, cleaned by cleanDayDetails. */
+  guests?: string;
+  setup?: string;
+  priorities?: string[];
+  note?: string;
 };
 
 const ID_PATTERN = /^[A-Za-z0-9_-]{22}$/;
@@ -116,3 +121,45 @@ export const DAY_PLAN: Record<string, { note?: string; rows: { part: string; wha
     ],
   },
 };
+
+/* What the guide promises for each thing a couple says matters most. The
+ * same promises the email may make (lib/auto-reply-brief.ts), and nothing a
+ * collection does not already include. */
+export const PRIORITY_PROMISE: Record<string, { title: string; promise: string }> = {
+  candid: { title: "Candid moments", promise: "Most of the day I stay out of your way and watch. The glance before the vows, the friend who cries first, the laugh you won’t remember having: I’m already standing where they happen." },
+  family: { title: "Family and friends", promise: "We plan the family photographs together before the day, name by name, so they take minutes and everyone gets back to the party. In between, I photograph your people the way they really are with you." },
+  portraits: { title: "Portraits of the two of you", promise: "You don’t need to know how to pose. I’ll give you clear, simple direction, where to stand and what to do with your hands, and you’ll still look like yourselves. The engagement session in every collection is where I learn how the two of you actually stand." },
+  party: { title: "The party", promise: "The entrances, the speeches, the first dance and the dance floor. Film prints go into your guests’ hands on the night, and your reels arrive in the first week, while everyone is still talking about it." },
+  film: { title: "Film of the day", promise: "Every collection includes a feature film. Photo + Film goes further: a dedicated filmmaker beside me for all twelve hours, with your vows or speeches in the film wherever the audio comes back clean." },
+};
+
+/** Which rows of the day plan each priority is about, so the guide can mark them. */
+export const PRIORITY_PLAN_PARTS: Record<string, string[]> = {
+  candid: ["Ceremony", "Cocktail hour", "Cocktail hour and the room"],
+  family: ["Family photographs"],
+  portraits: ["Portraits", "First look and portraits"],
+  party: ["Reception"],
+  film: [],
+};
+
+/* The reviews to show, led by the ones that speak to what matters to them.
+ * Quotes are word for word from the screenshots (lib/reviews.ts). */
+const REVIEW_BY_PRIORITY: Record<string, { n: number; who: string; quote: string }> = {
+  candid: { n: 10, who: "Brian", quote: "He somehow caught all the little moments we didn’t even notice." },
+  family: { n: 4, who: "Rachel", quote: "She said she never saw wedding photos this good all her life!" },
+  portraits: { n: 8, who: "Samantha", quote: "Only one person understood our vision the way we were imagining it." },
+  party: { n: 11, who: "Andrew", quote: "Thank you for an unforgettable night." },
+  film: { n: 6, who: "Stephanie", quote: "I reposted the announcement video and now everyone is asking who our videographer was." },
+};
+const DEFAULT_REVIEWS = [
+  { n: 10, who: "Brian", quote: "Every photo felt emotional and natural and full of life." },
+  { n: 4, who: "Rachel", quote: "She said she never saw wedding photos this good all her life!" },
+  { n: 1, who: "Justine", quote: "We are losing our mind over these previews." },
+  { n: 5, who: "Brianna", quote: "It’s everything I ever wanted and more." },
+];
+export function reviewsFor(priorities: string[] = []) {
+  const picked = priorities.map((p) => REVIEW_BY_PRIORITY[p]).filter(Boolean);
+  for (const review of DEFAULT_REVIEWS) if (picked.length < 3 && !picked.some((r) => r.n === review.n)) picked.push(review);
+  return picked.slice(0, 3);
+}
+

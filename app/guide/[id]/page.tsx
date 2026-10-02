@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { DAY_PLAN, readGuide } from "@/lib/guide";
+import { DAY_PLAN, PRIORITY_PLAN_PARTS, PRIORITY_PROMISE, readGuide, reviewsFor } from "@/lib/guide";
 import { WEDDING_CITIES } from "@/lib/ads/city-wedding-pages";
-import { BUDGET_OPTIONS, COVERAGE_OPTIONS, STEP_UP_REASON, funnelCollections, longDate, pricingMarket, recommendCollection, weekdayOf } from "@/lib/ads/pricing-request";
+import { BUDGET_OPTIONS, COVERAGE_OPTIONS, GUEST_OPTIONS, SETUP_OPTIONS, funnelCollections, labelOf, longDate, pricingMarket, priorityLabels, recommendCollection, weekdayOf } from "@/lib/ads/pricing-request";
 import { SITE, TERMS, tierBySlug } from "@/lib/site";
 import { proofByN, proofSrc } from "@/lib/reviews";
 import { weddingAlbumsFor } from "@/app/wedding-photography/landing-content";
@@ -35,11 +35,6 @@ export const metadata: Metadata = {
 };
 
 const money = (amount: number) => `C$${amount.toLocaleString("en-CA")}`;
-const REVIEWS = [
-  { n: 10, who: "Brian", quote: "Every photo felt emotional and natural and full of life." },
-  { n: 4, who: "Rachel", quote: "She said she never saw wedding photos this good all her life!" },
-  { n: 1, who: "Justine", quote: "We are losing our mind over these previews." },
-];
 
 export default async function GuidePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -52,7 +47,7 @@ export default async function GuidePage({ params }: { params: Promise<{ id: stri
     : record.weddingSeason && record.weddingSeason !== "Later than that" ? record.weddingSeason : "";
   const coverage = COVERAGE_OPTIONS.find((option) => option.value === record.coverage)?.label ?? "Not sure yet";
   const budget = BUDGET_OPTIONS.find((option) => option.value === record.budget)?.label ?? "Not sure yet";
-  const fit = recommendCollection(record.coverage, record.budget);
+  const fit = recommendCollection(record.coverage, record.budget, record);
   const fitTier = tierBySlug(fit.slug)!;
   const stepUpTier = fit.stepUp ? tierBySlug(fit.stepUp) : undefined;
   const reason = fit.basis === "coverage" ? `It matches the ${coverage.toLowerCase()} you asked for.`
@@ -63,7 +58,20 @@ export default async function GuidePage({ params }: { params: Promise<{ id: stri
   const albums = weddingAlbumsFor(city.albums);
   const phone = SITE.phone.replace(/^\+1\s*/, "");
   const page = `guide/${market.slug}`;
-  const told: [string, string][] = [["Date", when || "To be decided"], ["Where", record.location], ["Coverage", coverage], ["Budget", budget]];
+  const priorities = record.priorities ?? [];
+  const matters = priorityLabels(priorities);
+  const marked = new Set(priorities.flatMap((p) => PRIORITY_PLAN_PARTS[p] ?? []));
+  const reviews = reviewsFor(priorities);
+  const told: [string, string][] = [
+    ["Date", when || "To be decided"],
+    ["Where", record.location],
+    ...(record.guests ? [["Guests", labelOf(GUEST_OPTIONS, record.guests)!] as [string, string]] : []),
+    ...(record.setup ? [["Ceremony and reception", labelOf(SETUP_OPTIONS, record.setup)!] as [string, string]] : []),
+    ...(matters.length ? [["What matters most", matters.join(", ")] as [string, string]] : []),
+    ["Coverage", coverage],
+    ["Budget", budget],
+    ...(record.note ? [["Your note", record.note] as [string, string]] : []),
+  ];
   const balance = TERMS.balance.charAt(0).toUpperCase() + TERMS.balance.slice(1);
 
   return <div className={`${styles.page} ${styles.dark} ${guide.page}`} data-landing-theme="dark" data-landing-city={city.slug}>
@@ -76,7 +84,7 @@ export default async function GuidePage({ params }: { params: Promise<{ id: stri
         <div className={funnel.heroTop}>
           <p className={`${styles.eyebrow} ${funnel.heroEyebrow}`}>Your wedding guide · {city.name}</p>
           <h1 id="hero-title" className={`${funnel.heroTitle} ${guide.title}`}>{record.names},{" "}<br /><em>your wedding day.</em></h1>
-          <p className={styles.heroIntro}>Congratulations, and thank you for your inquiry. Everything for {when ? <strong className={guide.plain}>{when}</strong> : "your day"}{record.location ? <> at <strong className={guide.plain}>{record.location}</strong></> : null} is on this page: the collection that fits, how the day could run and photographs from {city.name}.</p>
+          <p className={styles.heroIntro}>Congratulations. I’ve read everything you sent me, and this page is built around it: {when ? <strong className={guide.plain}>{when}</strong> : "your day"}{record.location ? <> at <strong className={guide.plain}>{record.location}</strong></> : null}, the collection that fits, and how I’ll photograph the parts that matter most to you.</p>
         </div>
         <div className={`${styles.heroArt} ${funnel.heroArt}`}>
           <HeroConveyor
@@ -94,6 +102,14 @@ export default async function GuidePage({ params }: { params: Promise<{ id: stri
         </div>
       </section>
 
+      {matters.length ? <section className={guide.section} aria-labelledby="matters-title">
+        <div className={styles.sectionHeading}>
+          <div><p className={styles.eyebrow}>What matters to you</p><h2 id="matters-title">You told me.<br /><em>Here’s how I’ll deliver it.</em></h2></div>
+          <p>You picked {matters.length === 1 ? "one thing" : "two things"} out of everything a wedding day holds. That’s where my attention goes.</p>
+        </div>
+        <div className={guide.promises}>{priorities.map((p) => PRIORITY_PROMISE[p]).filter(Boolean).map((item) => <article key={item.title}><h3>{item.title}</h3><p>{item.promise}</p></article>)}</div>
+      </section> : null}
+
       <section className={guide.section} aria-labelledby="collection-title">
         <div className={styles.sectionHeading}>
           <div><p className={styles.eyebrow}>Your collection</p><h2 id="collection-title">{fitTier.name}.<br /><em>{money(fitTier.price)}.</em></h2></div>
@@ -106,7 +122,7 @@ export default async function GuidePage({ params }: { params: Promise<{ id: stri
               const stepUp = collection.slug === fit.stepUp;
               return <li key={collection.slug} className={`${funnel.collection}${best ? ` ${funnel.best}` : ""}`}>
                 {best && <p className={funnel.bestTag}>Best fit for you</p>}
-                {stepUp && <p className={funnel.stepUpTag}>Worth a look · {STEP_UP_REASON[collection.slug]}</p>}
+                {stepUp && <p className={funnel.stepUpTag}>Worth a look · {fit.stepUpReason}</p>}
                 <details open={best}>
                   <summary>
                     <span className={funnel.collectionName}>{collection.name}<small>{collection.hoursLabel}</small></span>
@@ -127,7 +143,7 @@ export default async function GuidePage({ params }: { params: Promise<{ id: stri
           <p>A shape, not a schedule. On our call we build your real timeline around {record.location || "your venue"}, your ceremony time and the people who matter most.</p>
         </div>
         {plan.note ? <p className={guide.planNote}>{plan.note}</p> : null}
-        <ol className={guide.plan}>{plan.rows.map((row) => <li key={row.part}><strong>{row.part}</strong><span>{row.what}</span></li>)}</ol>
+        <ol className={guide.plan}>{plan.rows.map((row) => <li key={row.part} className={marked.has(row.part) ? guide.marked : undefined}>{marked.has(row.part) ? <em className={guide.markTag}>Matters to you</em> : null}<strong>{row.part}</strong><span>{row.what}</span></li>)}</ol>
       </section>
 
       <section className={styles.interlude} aria-label={`Wedding photographs from ${city.name}`}>
@@ -136,8 +152,8 @@ export default async function GuidePage({ params }: { params: Promise<{ id: stri
 
       <section className={guide.section} aria-labelledby="albums-title">
         <div className={styles.sectionHeading}>
-          <div><p className={styles.eyebrow}>The whole day</p><h2 id="albums-title">Three complete<br /><em>weddings.</em></h2></div>
-          <p>Every photograph from three weddings, from the morning to the last dance, so you can see a whole day the way you would receive yours.</p>
+          <div><p className={styles.eyebrow}>The whole day</p><h2 id="albums-title">This is what<br /><em>you receive.</em></h2></div>
+          <p>Every photograph from three complete weddings, from the morning to the last dance, exactly as the couples received them.</p>
         </div>
         <div className={guide.albums}>
           {albums.map((album) => <a key={album.id} href={`/galleries/${album.id}`} target="_blank" rel="noopener noreferrer" className={guide.album}>
@@ -148,9 +164,9 @@ export default async function GuidePage({ params }: { params: Promise<{ id: stri
       </section>
 
       <section className={styles.reviews} aria-labelledby="reviews-title">
-        <div className={styles.sectionHeading}><div><p className={styles.eyebrow}>When the photographs arrive</p><h2 id="reviews-title">In their<br /><em>words.</em></h2></div><p>Tap a message to read the original.</p></div>
+        <div className={styles.sectionHeading}><div><p className={styles.eyebrow}>When the photographs arrive</p><h2 id="reviews-title">Don’t take<br /><em>my word for it.</em></h2></div><p>The couples who were where you are now. Tap a message to read the original.</p></div>
         <div className={styles.reviewsGrid}>
-          {REVIEWS.map(({ n, who, quote }) => { const proof = proofByN(n); return <figure key={n}><blockquote>“{quote}”</blockquote><figcaption>{who}</figcaption><a href={proofSrc(n)} target="_blank" rel="noopener noreferrer" aria-label={`Read ${who}’s original message`}><Image src={proofSrc(n)} alt={proof.alt} width={proof.w} height={proof.h} quality={80} sizes="(max-width: 760px) 78vw, 25vw" /><span>Read the original message ↗</span></a></figure>; })}
+          {reviews.map(({ n, who, quote }) => { const proof = proofByN(n); return <figure key={n}><blockquote>“{quote}”</blockquote><figcaption>{who}</figcaption><a href={proofSrc(n)} target="_blank" rel="noopener noreferrer" aria-label={`Read ${who}’s original message`}><Image src={proofSrc(n)} alt={proof.alt} width={proof.w} height={proof.h} quality={80} sizes="(max-width: 760px) 78vw, 25vw" /><span>Read the original message ↗</span></a></figure>; })}
         </div>
       </section>
 
@@ -170,7 +186,7 @@ export default async function GuidePage({ params }: { params: Promise<{ id: stri
         <div className={`${funnel.nextStep} ${guide.bookingCopy}`}>
           <p className={styles.eyebrow}>The next step</p>
           <h2 id="call-title" className={funnel.nextTitle}>A free 30-minute<br /><em>video call.</em></h2>
-          <p>Pick a time that suits you. We’ll talk through your day and the collection that fits. No obligation.</p>
+          <p>Pick a time that suits you. Bring your questions, your plans and anything you’re unsure about. I’ll take it from there. No obligation.</p>
           <div className={funnel.noCall}><p><strong>Rather not do a call?</strong> That’s fine. Reply to my email, or message me on <MessageLinks phone={phone} phoneE164={SITE.phoneE164} city={city.name} />.</p></div>
         </div>
         <div className={guide.calendar}><WeddingCalendar page={page} theme="dark" classes={styles} prefill={{ name: record.names, email: record.email }} /></div>

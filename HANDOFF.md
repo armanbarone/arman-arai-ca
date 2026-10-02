@@ -430,6 +430,26 @@ Everything in this list is live and was verified with a real HTTP check.
   the guide cannot be saved, the email carries the price table as before. The
   thank-you screen links to it, and Arman's lead email has a "Their guide" row.
   Locally there is no Blob token, so guides are written to the OS temp folder.
+  **Personal form, recap thank-you, confident voice (owner, 2026-10-01):**
+  the form is two steps. Step one: names, email, mobile, date or season,
+  venue. Step two (taps): guests (GUEST_OPTIONS), ceremony and reception in
+  the same place or not (SETUP_OPTIONS), up to two of what matters most
+  (PRIORITY_OPTIONS), coverage, budget, and an optional note. All in
+  lib/ads/pricing-request.ts with cleanDayDetails(); the route treats them as
+  optional so an old page still posts. Every answer is used: film points the
+  step-up at Photo + Film, 120+ guests or two places give Legacy's step-up a
+  reason in their terms (recommendCollection returns stepUpReason), the guide
+  gets a "What matters to you" section (PRIORITY_PROMISE), marks the matching
+  day-plan rows and picks reviews by priority (reviewsFor), and the email
+  speaks to them and never asks them again. The thank-you screen no longer
+  lists prices when a guide exists: it plays their answers back and has one
+  gold "Open your pricing guide" button above the calendar (the price list
+  shows only if the guide could not be saved). Voice: certain and specific
+  ("You'll get the photographs you've been picturing, and a few you didn't
+  know to ask for"), with the extras every collection includes as the proof;
+  never "the best" (every photographer says it, and unproven superlatives are
+  a Google Ads problem). The email brief carries the same rule and the
+  per-priority promises, and may answer their note only from the brief.
   **Google Ads "Submit lead form":** `LEAD_FORM_CONVERSION` in lib/analytics.ts
   (AW-18464850778/ySE3CPyOtYsdENqG3eRE, from the owner's pasted snippet) fires
   in `trackWeddingInquiry`, beside GA4 `wedding_inquiry`, once per sent form,

@@ -8,7 +8,7 @@ import { autoReplyEnabled } from "@/lib/auto-reply";
 import { proofByN, proofSrc } from "@/lib/reviews";
 import { BookingNavigation } from "./wedding-calendar";
 import AlbumBrowser from "./AlbumBrowser";
-import HeroSlideshow from "./HeroSlideshow";
+import HeroConveyor from "./HeroConveyor";
 import { money, POSING_QUESTION, stylesOfWork, TIER_STRAP, weddingAlbumsFor } from "./landing-content";
 import InquiryFunnel, { InquiryForm, MessageLinks, type FunnelCollection } from "./InquiryFunnel";
 import styles from "./vancouver.module.css";
@@ -64,8 +64,11 @@ export default function InquiryLanding({ city, market }: { city: WeddingCity; ma
             <p className={styles.starting}>Collections from <strong>{money(from)}</strong><span>{hours} hours · CAD before tax · {market.travelShort}</span></p>
           </div>
           <div className={`${styles.heroArt} ${funnel.heroArt}`}>
-            <figure className={`${styles.heroImage} ${funnel.heroImage}`}><HeroSlideshow photos={city.heroes} sizes="(max-width: 760px) 80vw, (max-width: 1600px) 38vw, 608px" /><figcaption>A day you felt. Photographs you keep.</figcaption></figure>
-            <figure className={styles.heroInset}><Image src={city.inset.src} alt={city.inset.alt} fill quality={68} sizes="(max-width: 760px) 28vw, (max-width: 1600px) 14vw, 224px" /></figure>
+            <HeroConveyor
+              photos={city.heroes}
+              large={{ className: `${styles.heroImage} ${funnel.heroImage}`, sizes: "(max-width: 760px) 80vw, (max-width: 1600px) 38vw, 608px", caption: "A day you felt. Photographs you keep." }}
+              small={{ className: styles.heroInset, sizes: "(max-width: 760px) 28vw, (max-width: 1600px) 14vw, 224px" }}
+            />
             <span className={styles.heroSideNote}>Documentary feeling / Editorial eye</span>
           </div>
           <div id={FORM_ID} className={`${styles.dateCheckPanel} ${funnel.formPanel}`}>

@@ -6,9 +6,10 @@ export type HeroPhoto = Photo & { position?: string };
 export type WeddingCity = {
   slug: string;
   name: string;
-  /** The hero slideshow. The first loads with the page; the rest only after it (HeroSlideshow). */
+  /** The hero conveyor (HeroConveyor): the large frame shows one, the small
+   *  frame the next, and both move up one on each beat. Only the first two
+   *  load with the page. Every photo here must work in both crops. */
   heroes: HeroPhoto[];
-  inset: Photo;
   interlude: Photo[];
   coverage: [string, string];
   about: string;
@@ -43,7 +44,6 @@ export const WEDDING_CITIES: WeddingCity[] = [
       described(CITY_WORK.vancouver[0], "A rainbow over the mountains as a storm clears behind an outdoor ceremony"),
       described(CITY_WORK.vancouver[9], "A couple embracing beside the fountains of a formal garden"),
     ],
-    inset: CITY_WORK.vancouver[15],
     interlude: [CITY_PHOTOS.vancouver.places[0], CITY_PHOTOS.vancouver.places[1], CITY_WORK.vancouver[3]],
     coverage: ["Vancouver & the Lower Mainland", "North Shore & Sea-to-Sky"],
     about: "From a celebration downtown to a day on the North Shore or up the Sea-to-Sky, we’ll make a photography plan that fits your wedding.",
@@ -62,7 +62,6 @@ export const WEDDING_CITIES: WeddingCity[] = [
       albumFrame("elisha-michael", "038", "A couple at the entrance of a candlelit reception tent at night"),
       albumFrame("elisha-michael", "036", "A couple forehead to forehead under her veil in golden autumn light"),
     ],
-    inset: albumFrame("elisha-michael", "015", "The stone chapel in the Niagara hills from above, guests seated along the path"),
     interlude: [CITY_WORK.toronto[0], described(CITY_WORK.toronto[9], "A wedding party under umbrellas among blossoming trees in Niagara"), CITY_PHOTOS.toronto.places[1]],
     coverage: ["Toronto & the GTA", "City celebrations & Ontario weekends"],
     about: "From a downtown celebration to a garden wedding outside the city, we’ll make time for the portraits without losing the afternoon to travel. Your people and your plans come first.",
@@ -81,7 +80,6 @@ export const WEDDING_CITIES: WeddingCity[] = [
       albumFrame("luca-lauren", "032", "A couple under pink flowers with the Montréal skyline behind them"),
       { ...albumFrame("luca-lauren", "050", "A bride and groom standing against an ivy-covered stone wall"), position: "50% 8%" },
     ],
-    inset: albumFrame("luca-lauren", "015", "A couple kissing in front of a stone building in Old Montréal, black and white"),
     interlude: [CITY_PHOTOS.montreal.places[0], CITY_PHOTOS.montreal.places[2], CITY_PHOTOS.montreal.places[3]],
     coverage: ["Montréal & the surrounding area", "Old Port, city rooms & country estates"],
     about: "From a celebration in Old Montréal to a wedding in the Townships, we’ll plan portraits around the places you love and the time you want with your guests. A few quiet moments together, then back to the party.",
@@ -104,7 +102,6 @@ export const WEDDING_CITIES: WeddingCity[] = [
       cityFrame("banff/banff-25", "A couple close together with their guests behind them above a turquoise mountain lake"),
       cityFrame("banff/banff-54", "A couple embracing above a mountain lake under a pink evening sky"),
     ],
-    inset: cityFrame("banff/banff-34", "A groom kissing his bride's cheek through her veil, black and white"),
     interlude: [
       cityFrame("banff/banff-24", "A ceremony in a mountain meadow, guests standing among golden autumn trees"),
       cityFrame("banff/banff-55", "A couple laughing together in a wooden canoe on Lake Louise"),
@@ -129,7 +126,6 @@ export const WEDDING_CITIES: WeddingCity[] = [
       cityFrame("vancouver-island/vancouver-island-20", "A groom waving as his bride steps down from a white carriage, a boy running ahead with a basket of petals"),
       cityFrame("vancouver-island/vancouver-island-19", "A couple walking the garden path toward the front of Hatley Castle"),
     ],
-    inset: cityFrame("vancouver/work/20-castle-terrace-monochrome", "A couple holding hands on a castle terrace, black and white"),
     interlude: [
       cityFrame("vancouver/work/17-hatley-castle-walkway", "A couple on a stone walkway below Hatley Castle"),
       cityFrame("vancouver-island/vancouver-island-25", "A couple in the middle of a formal hedged garden, tall firs all around"),

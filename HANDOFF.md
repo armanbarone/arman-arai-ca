@@ -388,13 +388,19 @@ Everything in this list is live and was verified with a real HTTP check.
   GA4 `book_appointment`. Import that GA4 event into Google Ads as Secondary.
   Do not use a "URL contains /thank-you" rule: it also matches the pricing
   thank-you pages, so every inquiry would count twice.
-  **Hero slideshow (owner, 2026-10-01: "a few pictures from that city that
-  roll"):** `HeroSlideshow.tsx`, five photos per city in `heroes`. Only the
-  first is in the HTML; the second is added after the load event plus an idle
-  moment, each later one while the one before shows; none appears before it
-  has loaded. 5.2 s hold, cross-fade, holds only for hidden tabs. It does NOT
-  stop for prefers-reduced-motion: Windows reports that whenever "Animation
-  effects" is off, it was off on the owner's PC, and he saw a frozen hero.
+  **Hero conveyor (owner, 2026-10-01):** `HeroConveyor.tsx`. The large frame
+  and the small frame are ONE queue, like the homepage's HeroCycler: the large
+  frame shows photo n, the small frame n+1, and on each beat the small frame's
+  photo moves into the large frame and the next photo takes the small frame.
+  (A first version rolled the large frame alone beside a fixed small photo;
+  he had to say it twice. "Roll" on this site means the HeroCycler conveyor.)
+  Five photos per city in `heroes`, each checked in the large desktop crop,
+  the large phone crop and the small 3:4 crop. Only the first two are in the
+  HTML; the next pair loads after the load event plus an idle moment, and a
+  beat waits until both incoming photos have loaded. 5 s hold, cross-fade,
+  holds only for hidden tabs. It does NOT stop for prefers-reduced-motion:
+  Windows reports that whenever "Animation effects" is off, it was off on the
+  owner's PC, and he saw a frozen hero.
   **Calgary & Banff and Victoria (2026-10-01):** `/wedding-photography/
   calgary-pricing` (h1 "Calgary & Banff", photos from cities/banff) and
   `victoria-pricing` (Hatley Castle and gardens from cities/vancouver/work and

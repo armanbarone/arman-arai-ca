@@ -44,6 +44,8 @@ type Sent = {
   budget: string;
   /** True when the server has queued the auto-reply email. */
   emailed: boolean;
+  /** "/guide/<id>", their wedding guide, when the server made one. */
+  guide?: string;
 };
 
 const FunnelContext = createContext<(sent: Sent) => void>(() => {});
@@ -51,6 +53,7 @@ const FunnelContext = createContext<(sent: Sent) => void>(() => {});
 const SENT_KEY = "aa_ca_pricing_inquiry_v1";
 const REPORTED_KEY = "aa_ca_pricing_inquiry_reported_v1";
 const SENT_LIFETIME = 2 * 60 * 60 * 1000;
+const GUIDE_PATH = /^\/guide\/[A-Za-z0-9_-]{22}$/;
 
 /** True when the sent form was stored, so the thank-you URL can show it. */
 function storeSent(sent: Sent) {
@@ -152,6 +155,7 @@ export function InquiryForm({ city, market, page }: { city: string; market: stri
         coverage: payload.coverage,
         budget: payload.budget,
         emailed: data.autoReply === true,
+        ...(typeof data.guide === "string" && GUIDE_PATH.test(data.guide) ? { guide: data.guide } : {}),
       };
       // Its own URL, so the conversion can be counted by URL. Only if storage
       // is blocked does the thank-you view open in place instead.
@@ -272,6 +276,7 @@ function ThankYou({ sent, collections, city, page, phone, phoneE164, travelNote,
         <p className={styles.eyebrow}>Your pricing · {city}</p>
         <h1 id="thanks-title" ref={heading} tabIndex={-1} className={funnel.thanksTitle}>Thank you, {sent.names}.</h1>
         <p className={funnel.thanksLead}>{lead}</p>
+        {sent.guide && GUIDE_PATH.test(sent.guide) ? <p className={funnel.guideLink}><a href={sent.guide} target="_blank" rel="noopener noreferrer">Open your wedding guide <span aria-hidden="true">↗</span></a> Your collection, how the day could run and photographs from {city}, on one page made for you{sent.emailed ? ". It’s in your email too." : "."}</p> : null}
         <ol className={funnel.pricing} aria-label="Your pricing">
           {collections.map((collection) => {
             const best = collection.slug === fit.slug;

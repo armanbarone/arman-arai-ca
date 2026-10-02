@@ -3,6 +3,7 @@ import { checkWeddingDate } from "@/lib/wedding-availability";
 import { BUDGET_OPTIONS, COVERAGE_OPTIONS, SEASON_PATTERN, pricingMarket, recommendCollection, weekdayOf } from "@/lib/ads/pricing-request";
 import { WEDDING_CITIES } from "@/lib/ads/city-wedding-pages";
 import { autoReplyEnabled, sendInquiryAutoReply, type PricingInquiry } from "@/lib/auto-reply";
+import { createGuide, guidePath, guideUrl } from "@/lib/guide";
 import { tierBySlug } from "@/lib/site";
 
 // The pricing-request auto-reply runs after the response, inside this
@@ -83,6 +84,7 @@ export async function POST(req: NextRequest) {
 
     let inquiryRows: [string, string][] = [];
     let autoReply: PricingInquiry | null = null;
+    let guideId: string | null = null;
     if (isInquiry) {
       for (const [key, max] of [["name", 80], ["email", 100], ["phone", 30], ["location", 90]] as const) {
         if (typeof body[key] !== "string" || !body[key].trim() || body[key].length > max) {
@@ -113,8 +115,12 @@ export async function POST(req: NextRequest) {
       const recommendation = recommendCollection(coverage.value, budget.value);
       const fit = tierBySlug(recommendation.slug)!;
       const stepUp = recommendation.stepUp ? tierBySlug(recommendation.stepUp) : undefined;
+      // The couple's own wedding guide (lib/guide.ts), made now so the email
+      // and the thank-you screen can both link to it. Null if it could not be
+      // saved; the inquiry goes through either way.
+      guideId = await createGuide({ market: market.slug, names: body.name, email: body.email, weddingDate: body.weddingDate || undefined, weddingSeason: body.weddingSeason || undefined, location: body.location, coverage: coverage.value, budget: budget.value });
       autoReply = autoReplyEnabled()
-        ? { names: body.name, email: body.email, weddingDate: body.weddingDate || undefined, weddingSeason: body.weddingSeason || undefined, location: body.location, coverage: coverage.value, budget: budget.value, cityName, market, page: `wedding-photography/${market.slug}-pricing`, receivedAt: Date.now() }
+        ? { names: body.name, email: body.email, weddingDate: body.weddingDate || undefined, weddingSeason: body.weddingSeason || undefined, location: body.location, coverage: coverage.value, budget: budget.value, cityName, market, page: `wedding-photography/${market.slug}-pricing`, receivedAt: Date.now(), guideUrl: guideId ? guideUrl(guideId) : undefined }
         : null;
       inquiryRows = [
         ["Names", body.name],
@@ -126,6 +132,7 @@ export async function POST(req: NextRequest) {
         ["Budget", budget.label],
         ["Shown as best fit", `${fit.name}, C$${fit.price.toLocaleString("en-CA")}`],
         ...(stepUp ? ([["Suggested step up", `${stepUp.name}, C$${stepUp.price.toLocaleString("en-CA")}`]] as [string, string][]) : []),
+        ["Their guide", guideId ? guideUrl(guideId) : "Could not be made; their email carries the price table instead"],
         ["Auto-reply", autoReply ? "Sending to the couple about 30 seconds after this; you are BCC'd" : "Off: the Anthropic federation variables are not set in Vercel"],
       ];
     }
@@ -257,7 +264,7 @@ export async function POST(req: NextRequest) {
       after(() => sendInquiryAutoReply(inquiry));
     }
 
-    return NextResponse.json({ success: true, ...(availability && "availability" in availability ? availability : {}), ...(isInquiry ? { autoReply: Boolean(autoReply) } : {}) });
+    return NextResponse.json({ success: true, ...(availability && "availability" in availability ? availability : {}), ...(isInquiry ? { autoReply: Boolean(autoReply), ...(guideId ? { guide: guidePath(guideId) } : {}) } : {}) });
   } catch (err) {
     console.error("Contact API error:", err);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });

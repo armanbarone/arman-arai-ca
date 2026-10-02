@@ -411,6 +411,25 @@ Everything in this list is live and was verified with a real HTTP check.
   photograph (banff-46 is labelled a lantern at night; it is a golden-hour
   dance), and CITY_WORK.tofino's alts are wrong for vancouver-island-06 and
   -20, so the new pages carry alt text written from the photographs.
+  **Wedding guide (owner, 2026-10-01, from a newsletter on pricing pages vs
+  pricing guides: "build a page on the fly and link it to the email, and then
+  ask for a call/msg"):** every sent pricing form makes a private page
+  `/guide/<id>` (lib/guide.ts, app/guide/[id]/). Only the couple's answers
+  are stored, in the private `ca-client-portal` Blob store under `guides/`,
+  keyed by a random 128-bit id. The page is rendered entirely from lib/site.ts
+  and the city's photos (no model writes any of it): their details as typed,
+  the best-fit collection and the step-up, a plan for that collection's hours
+  (DAY_PLAN, only claims the collection itself makes), the city's interlude
+  photos, the three wedding stories, three reviews (10, 4, 1), the 30/35/35
+  steps, then the calendar and WhatsApp. No travel, no date claims, the email
+  address only prefills Calendly. noindex, robots-disallowed, and no ad tags
+  (isPublicTrackingPath excludes /guide; a booking made there is reported on
+  /thank-you as "/guide", never with the id). The auto-reply email swaps its
+  price table for a "Your wedding guide" block (city photo cropped 3:2, dark
+  button) above the call and WhatsApp buttons; the note points to it once. If
+  the guide cannot be saved, the email carries the price table as before. The
+  thank-you screen links to it, and Arman's lead email has a "Their guide" row.
+  Locally there is no Blob token, so guides are written to the OS temp folder.
   **Google Ads "Submit lead form":** `LEAD_FORM_CONVERSION` in lib/analytics.ts
   (AW-18464850778/ySE3CPyOtYsdENqG3eRE, from the owner's pasted snippet) fires
   in `trackWeddingInquiry`, beside GA4 `wedding_inquiry`, once per sent form,

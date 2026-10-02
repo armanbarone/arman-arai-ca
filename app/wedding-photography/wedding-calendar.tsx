@@ -8,7 +8,7 @@ import { completeWeddingBooking } from "@/lib/analytics";
 import { isCompletedWeddingBooking, weddingCalendarUrl, WEDDING_CALENDAR } from "@/lib/wedding-booking";
 
 function record(name: string, properties: Record<string, string>) {
-  try { track(name, { page: window.location.pathname.replace(/^\/|\/$/g, ""), ...properties }); } catch { /* Analytics must never interrupt booking. */ }
+  try { track(name, { page: window.location.pathname.replace(/^\/guide\/.*/, "/guide").replace(/^\/|\/$/g, ""), ...properties }); } catch { /* Analytics must never interrupt booking. */ }
 }
 
 export function BookingLink({ children, className, placement }: { children: ReactNode; className?: string; placement: string }) {

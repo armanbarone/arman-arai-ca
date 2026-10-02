@@ -7,7 +7,7 @@ export const dynamic = "force-static";
 // details. They sit behind sign-in and send noindex headers; this file is the
 // polite notice on top of that. A crawler that matches a named group ignores
 // the "*" group, so every AI crawler group repeats the same private paths.
-const PRIVATE = ["/api/", "/portal", "/admin"];
+const PRIVATE = ["/api/", "/portal", "/admin", "/guide/"];
 
 const AI_CRAWLERS = [
   "GPTBot", "ChatGPT-User", "OAI-SearchBot", "ClaudeBot", "Claude-User", "Claude-SearchBot", "anthropic-ai",

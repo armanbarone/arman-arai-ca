@@ -4,6 +4,7 @@ import { getVercelOidcToken } from "@vercel/oidc";
 import { SITE, tierBySlug } from "./site";
 import { inquiryBrief } from "./auto-reply-brief";
 import { weddingCalendarUrl } from "./wedding-booking";
+import { WEDDING_CITIES } from "./ads/city-wedding-pages";
 import {
   BUDGET_OPTIONS, COVERAGE_OPTIONS, STEP_UP_REASON, longDate, pricingTiers, recommendCollection, weekdayOf,
   type PricingMarket,
@@ -47,6 +48,8 @@ export type PricingInquiry = {
   page: string;
   /** When the form was sent (ms). The email waits until 30 seconds after it. */
   receivedAt: number;
+  /** Their wedding guide (lib/guide.ts). Without one, the email carries the price table. */
+  guideUrl?: string;
 };
 
 /* The couple gets the email about half a minute after pressing the button,
@@ -123,8 +126,12 @@ function inquiryPrompt(inquiry: PricingInquiry, fitName: string, basis: string) 
   const stepUpLine = stepUp
     ? `The collection one step up, worth mentioning once as something to consider: ${tierBySlug(stepUp)!.name}, because: ${STEP_UP_REASON[stepUp]}`
     : "Do not suggest a bigger collection for this couple.";
+  const guideLine = inquiry.guideUrl
+    ? `A wedding guide page has been made for this couple and is linked right under your note: their collection, how their hours could run, and photographs from ${inquiry.cityName}. Point to it once, in one short sentence, before the invitation to the call. Do not describe it beyond that.`
+    : "No wedding guide page was made for this couple. Do not mention one.";
   return `Write the email for this inquiry. The collection that fits best is ${fitName}, chosen from ${basis}.
 ${stepUpLine}
+${guideLine}
 
 <inquiry>
 Names: ${asData(inquiry.names)}
@@ -218,6 +225,7 @@ export function fallbackBody(inquiry: PricingInquiry, fitName: string) {
     `Hi ${name || "there"},`,
     "Congratulations on your wedding! This is Arman, the photographer, replying to the inquiry you just sent through my website.",
     `You're planning your wedding${details ? ` ${details}` : ""}, with ${coverage === "Not sure yet" ? "the hours still to be decided" : `${coverage.toLowerCase()} of coverage in mind`}. From what you shared, ${fitName} feels like the right fit.`,
+    ...(inquiry.guideUrl ? [`I've put together a page for your day, with your collection and photographs from ${inquiry.cityName}. It's just below.`] : []),
     "The easiest way to talk it through is a free 30-minute video call. If you would rather just message, WhatsApp works too.",
     "Arman",
   ].join("\n\n");
@@ -242,31 +250,50 @@ function detailsBlock(inquiry: PricingInquiry) {
   </div>`;
 }
 
-function render(inquiry: PricingInquiry, body: string, fitSlug: string, stepUpSlug?: string) {
+/** The link to their guide: a photograph from their city, a line, a button.
+ *  The photograph is the guide's own first one, cropped wide (3:2) for email
+ *  so the button still shows on a phone's first screen. */
+function guideBlock(inquiry: PricingInquiry, guideUrl: string, hours: number) {
+  const photo = WEDDING_CITIES.find((city) => city.slug === inquiry.market.slug)?.heroes[0];
+  const image = photo ? photo.src.replace("https://cdn.armanarai.ca/", "https://cdn.armanarai.ca/cdn-cgi/image/format=jpeg,quality=78,width=1120,height=747,fit=cover,gravity=auto/") : null;
+  return `<div style="margin:28px 0 8px;">
+    ${image ? `<a href="${escapeHtml(guideUrl)}" style="display:block;text-decoration:none;"><img src="${escapeHtml(image)}" width="560" alt="${escapeHtml(photo!.alt)}" style="display:block;width:100%;max-width:560px;height:auto;border:0;border-radius:8px;"></a>` : ""}
+    <p style="margin:16px 0 6px;font-size:24px;line-height:1.2;">Your wedding guide</p>
+    <p style="margin:0 0 16px;font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.6;color:#6B6258;">Your collection, how your ${hours} hours could run and photographs from ${escapeHtml(inquiry.cityName)}, on one page made for you.</p>
+    ${bigButton(guideUrl, "Open your wedding guide", "#1A1612", "#E8C99A")}
+  </div>`;
+}
+
+/** Exported for previewing the email; sendInquiryAutoReply is the only real caller. */
+export function render(inquiry: PricingInquiry, body: string, fitSlug: string, stepUpSlug?: string) {
   const calendar = weddingCalendarUrl("?utm_source=auto-reply-email&utm_medium=email", new URL(SITE.url).hostname, false, { page: inquiry.page, prefill: { name: inquiry.names, email: inquiry.email } });
   const whatsapp = `https://wa.me/${SITE.phoneE164.replace(/\D/g, "")}?text=${encodeURIComponent(`Hi Arman, it's ${inquiry.names}. We asked about wedding photography in ${inquiry.cityName}.`)}`;
   const tiers = pricingTiers();
+  const guide = inquiry.guideUrl;
+  const hours = tierBySlug(fitSlug)!.hours;
+  const priceTable = `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;margin:8px 0 6px;border-top:1px solid #D9CEBC;">
+    ${tiers.map((tier) => `<tr><td style="padding:12px 0;border-bottom:1px solid #EDE7DA;font-size:18px;">${escapeHtml(tier.name)} <span style="font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#6B6258;">${tier.hours} hours</span>${tier.slug === fitSlug ? ` <span style="font-family:Arial,Helvetica,sans-serif;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#9A7A54;">Best fit</span>` : tier.slug === stepUpSlug ? ` <span style="font-family:Arial,Helvetica,sans-serif;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#6B6258;">Worth a look</span>` : ""}</td><td style="padding:12px 0 12px 16px;border-bottom:1px solid #EDE7DA;text-align:right;white-space:nowrap;font-size:18px;">${money(tier.price)}</td></tr>`).join("")}
+  </table>
+  <p style="margin:0 0 26px;font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#6B6258;">Canadian dollars, before tax.</p>`;
   const html = `<div style="font-family:Georgia,serif;max-width:560px;margin:0 auto;color:#2C2420;font-size:17px;line-height:1.65;">
   ${body.split(/\n{2,}/).map((p) => `<p style="margin:0 0 16px;">${escapeHtml(p).replace(/\n/g, "<br>")}</p>`).join("")}
-  <div style="margin:28px 0 22px;">
+  ${guide ? guideBlock(inquiry, guide, hours) : ""}
+  <div style="margin:${guide ? "10px" : "28px"} 0 22px;">
     ${bigButton(calendar, "Book your free video call", "#B8956A", "#1A1612")}
     <p style="margin:-4px 0 18px;text-align:center;font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#6B6258;">30 minutes, no obligation. Pick any time that suits you.</p>
     ${bigButton(whatsapp, "Message me on WhatsApp", "#25D366", "#FFFFFF")}
   </div>
   ${detailsBlock(inquiry)}
-  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;margin:8px 0 6px;border-top:1px solid #D9CEBC;">
-    ${tiers.map((tier) => `<tr><td style="padding:12px 0;border-bottom:1px solid #EDE7DA;font-size:18px;">${escapeHtml(tier.name)} <span style="font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#6B6258;">${tier.hours} hours</span>${tier.slug === fitSlug ? ` <span style="font-family:Arial,Helvetica,sans-serif;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#9A7A54;">Best fit</span>` : tier.slug === stepUpSlug ? ` <span style="font-family:Arial,Helvetica,sans-serif;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#6B6258;">Worth a look</span>` : ""}</td><td style="padding:12px 0 12px 16px;border-bottom:1px solid #EDE7DA;text-align:right;white-space:nowrap;font-size:18px;">${money(tier.price)}</td></tr>`).join("")}
-  </table>
-  <p style="margin:0 0 26px;font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#6B6258;">Canadian dollars, before tax.</p>
+  ${guide ? "" : priceTable}
   <p style="margin:0;padding-top:16px;border-top:1px solid #EDE7DA;font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#6B6258;">Arman Arai · Wedding photography · <a href="${SITE.url}" style="color:#6B6258;">${SITE.domain}</a> · ${escapeHtml(SITE.phone)}</p>
 </div>`;
   const text = [
     body,
+    ...(guide ? [`Your wedding guide: ${guide}`] : []),
     `Book your free video call: ${calendar}`,
     `Message me on WhatsApp: ${whatsapp}`,
     `What you told me: ${[whenPhrase(inquiry) || "Date to be decided", inquiry.location, COVERAGE_OPTIONS.find((option) => option.value === inquiry.coverage)?.label ?? "Not sure yet", BUDGET_OPTIONS.find((option) => option.value === inquiry.budget)?.label ?? "Not sure yet"].join(" · ")}`,
-    tiers.map((tier) => `${tier.name}, ${tier.hours} hours${tier.slug === fitSlug ? " (best fit)" : tier.slug === stepUpSlug ? " (worth a look)" : ""}: ${money(tier.price)}`).join("\n"),
-    "Canadian dollars, before tax.",
+    ...(guide ? [] : [tiers.map((tier) => `${tier.name}, ${tier.hours} hours${tier.slug === fitSlug ? " (best fit)" : tier.slug === stepUpSlug ? " (worth a look)" : ""}: ${money(tier.price)}`).join("\n"), "Canadian dollars, before tax."]),
     `Arman Arai · Wedding photography · ${SITE.domain} · ${SITE.phone}`,
   ].join("\n\n");
   return { html, text };

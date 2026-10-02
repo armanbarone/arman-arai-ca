@@ -66,7 +66,8 @@ let reporting: Promise<void> | undefined;
 const sentInMemory = new Set<string>();
 
 export function isPublicTrackingPath(path: string) {
-  return !/^\/(portal|admin|api)(?:\/|$)/.test(path);
+  // /guide/<id> shows one couple's names and venue: no advertising tags on it.
+  return !/^\/(portal|admin|api|guide)(?:\/|$)/.test(path);
 }
 
 function permitted() {
@@ -239,7 +240,8 @@ async function reportBooking(booking: Booking) {
 /** Only the trusted Calendly completion handler calls this. Ordinary thank-you
  * visits never create a marker and therefore never count as conversions. */
 export async function completeWeddingBooking(data: unknown) {
-  const booking = bookingFromMessage(data, window.location.pathname, crypto.randomUUID());
+  // A guide's id never leaves the page: a booking made there is reported as "/guide".
+  const booking = bookingFromMessage(data, window.location.pathname.replace(/^\/guide\/.*/, "/guide"), crypto.randomUUID());
   try {
     sessionStorage.setItem(BOOKING_KEY, JSON.stringify(booking));
     window.location.assign("/thank-you");

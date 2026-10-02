@@ -40,6 +40,8 @@
 .thanksCopy { grid-area: copy; }
 .thanksCopy .thanksTitle { font-size: clamp(46px, 5vw, 76px); line-height: 1; margin: 18px 0 20px; outline: none; }
 .thanksLead { font-size: 16px; line-height: 1.7; max-width: 500px; color: var(--dark-body); }
+.thanksCopy .guideLink { margin-top: 18px; max-width: 500px; font-size: 14px; line-height: 1.7; color: var(--dark-body); }
+.guideLink a { color: var(--gold) !important; text-decoration: underline !important; text-underline-offset: 3px; margin-right: 6px; white-space: nowrap; }
 .pricing { list-style: none; padding: 0; margin: 34px 0 0; border-top: .5px solid var(--line); }
 .collection { border-bottom: .5px solid var(--line); padding: 18px 0; }
 .collection summary { display: flex; justify-content: space-between; align-items: baseline; gap: 18px; list-style: none; cursor: pointer; }

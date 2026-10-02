@@ -1,0 +1,57 @@
+/* The wedding guide. Colours and type come from vancouver.module.css's dark
+   theme (.page.dark custom properties); this file only lays the guide out.
+   Selectors that must beat that module's `.page h1` / `.page p` rules are two
+   classes deep, because the order the modules load in is not guaranteed. */
+
+.page .title { font-size: clamp(48px, 5.6vw, 88px); overflow-wrap: anywhere; }
+.page .plain { font-weight: 400; color: var(--ink); }
+
+.toldPanel { align-self: start; border-top: .5px solid var(--line); padding-top: 26px; margin-top: 8px; }
+.told { margin: 14px 0 18px; display: grid; gap: 8px; }
+.told div { display: grid; grid-template-columns: 96px 1fr; gap: 12px; font-size: 15px; line-height: 1.5; }
+.told dt { color: var(--muted); }
+.told dd { margin: 0; color: var(--ink); overflow-wrap: anywhere; }
+.page .changed { font-size: 13px; line-height: 1.7; color: var(--dark-body); margin-bottom: 26px; }
+.changed a { color: var(--gold) !important; text-decoration: underline !important; text-underline-offset: 3px; }
+.page .cta { background: var(--gold); border-color: var(--gold); color: #1a1612 !important; }
+.page .cta:hover { background: #c9a87e; }
+
+.section { max-width: 1440px; margin: auto; padding: 90px 5.5%; border-top: .5px solid var(--line); }
+.collections { max-width: 760px; }
+
+.page .planNote { max-width: 640px; margin: -10px 0 24px; font-size: 15px; line-height: 1.7; color: var(--gold); }
+.plan, .steps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0 5%; }
+.plan li, .steps li { border-top: .5px solid var(--line); padding: 22px 0 26px; display: grid; gap: 8px; }
+.plan strong, .steps strong { font-family: var(--font-cormorant), Georgia, serif; font-size: 28px; font-weight: 300; line-height: 1.1; color: var(--ink); }
+.plan span, .steps span { font-size: 14px; line-height: 1.75; color: var(--dark-body); }
+.steps { counter-reset: step; }
+.steps li { counter-increment: step; }
+.steps strong::before { content: counter(step) ". "; color: var(--gold); }
+
+.albums { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px; }
+.album { display: grid; gap: 6px; }
+.albumImage { position: relative; display: block; aspect-ratio: 4 / 4.6; overflow: hidden; margin-bottom: 12px; background: var(--dark-card); }
+.albumImage img { object-fit: cover; transition: transform .9s cubic-bezier(.25,.46,.45,.94); }
+.album:hover .albumImage img { transform: scale(1.03); }
+.album strong { font-family: var(--font-cormorant), Georgia, serif; font-size: 28px; font-weight: 300; line-height: 1.1; }
+.album > span:not(.albumImage) { font-size: 13px; color: var(--dark-body); }
+.album .albumLink { color: var(--gold); text-decoration: underline; text-underline-offset: 4px; font-size: 12px; margin-top: 4px; }
+
+/* nextStep (inquiry.module.css) carries grid-area: next for the thank-you
+   grid; this grid names its own areas so that one cannot misplace it. */
+.booking { display: grid; grid-template-columns: .8fr 1.2fr; grid-template-areas: "copy calendar"; column-gap: 6%; align-items: start; }
+.booking .bookingCopy { grid-area: copy; position: sticky; top: 28px; }
+.booking .calendar { grid-area: calendar; min-width: 0; }
+
+@media (max-width: 1100px) {
+  .plan, .steps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 760px) {
+  .page .title { font-size: clamp(38px, 10.5vw, 56px); }
+  .section { padding: 55px 6%; }
+  .plan, .steps, .albums { grid-template-columns: 1fr; }
+  .albums { gap: 36px; }
+  .booking { grid-template-columns: 1fr; grid-template-areas: "copy" "calendar"; row-gap: 28px; }
+  .booking .bookingCopy { position: static; }
+  .told div { grid-template-columns: 84px 1fr; }
+}

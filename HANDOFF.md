@@ -450,6 +450,15 @@ Everything in this list is live and was verified with a real HTTP check.
   never "the best" (every photographer says it, and unproven superlatives are
   a Google Ads problem). The email brief carries the same rule and the
   per-priority promises, and may answer their note only from the brief.
+  **Email v3 (owner, 2026-10-02: "too convoluted"):** the note is 60 to 120
+  words in his shape: "Hi names, congratulations, this is Arman, the wedding
+  photographer, I got your inquiry about your wedding at <venue> on <date>",
+  then the expert's answer ("here's what I think is right for you": the
+  collection, its price and why, in terms of their answers), at most two
+  sentences on what matters to them or their note, then the guide and the
+  call. No recap of their answers (the "What you told me" box does that), no
+  question at the end. This replaces the 2026-10-01 "repeat their details"
+  rule; the opening still names venue and date exactly, so it is never vague.
   **Google Ads "Submit lead form":** `LEAD_FORM_CONVERSION` in lib/analytics.ts
   (AW-18464850778/ySE3CPyOtYsdENqG3eRE, from the owner's pasted snippet) fires
   in `trackWeddingInquiry`, beside GA4 `wedding_inquiry`, once per sent form,

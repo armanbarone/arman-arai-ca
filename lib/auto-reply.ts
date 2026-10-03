@@ -219,21 +219,27 @@ export function fallbackSubject(inquiry: PricingInquiry) {
   return `Your wedding photography inquiry${about ? `: ${about}` : ""}`.replace(/[\r\n]+/g, " ").slice(0, 120);
 }
 
-/** The backup note when the agent is unavailable. Short on purpose: the
- *  pricing is in the table under it and on the screen they just saw. */
+/** The backup note when the agent is unavailable, in the same shape the
+ *  owner gave (2026-10-02): who, what it is about, what is right for them. */
+const FIT_LINE: Record<string, string> = {
+  signature: "Eight hours covers a full wedding day, from getting ready to your first dance and the start of the dancing.",
+  complete: "Ten hours, with a second photographer for four of them, so a long day full of people is covered properly.",
+  "photo-film": "Twelve hours with a dedicated filmmaker beside me, so you get the whole day on film as well as in photographs.",
+};
+
 export function fallbackBody(inquiry: PricingInquiry, fitName: string) {
   const name = greetingName(inquiry.names);
   const when = whenPhrase(inquiry);
-  const coverage = COVERAGE_OPTIONS.find((option) => option.value === inquiry.coverage)?.label ?? "Not sure yet";
-  const details = [when && `on ${when}`, inquiry.location && `at ${inquiry.location}`].filter(Boolean).join(" ");
+  const about = [inquiry.location && `at ${inquiry.location}`, when && `on ${when}`].filter(Boolean).join(" ");
+  const fit = recommendCollection(inquiry.coverage, inquiry.budget, inquiry);
+  const tier = tierBySlug(fit.slug)!;
   const matters = prioritiesPhrase(inquiry.priorities);
+  const plural = (inquiry.priorities?.length ?? 0) > 1 || /^(candid|family|portraits)$/.test(inquiry.priorities?.[0] ?? "");
   return [
     `Hi ${name || "there"},`,
-    "Congratulations on your wedding! This is Arman, the photographer, replying to the inquiry you just sent through my website.",
-    `You're planning your wedding${details ? ` ${details}` : ""}, with ${coverage === "Not sure yet" ? "the hours still to be decided" : `${coverage.toLowerCase()} of coverage in mind`}. From what you shared, ${fitName} feels like the right fit.`,
-    ...(matters ? [`You told me ${matters.charAt(0).toLowerCase() + matters.slice(1)} ${(inquiry.priorities?.length ?? 0) > 1 || /^(candid|family|portraits)$/.test(inquiry.priorities?.[0] ?? "") ? "matter" : "matters"} most${inquiry.guideUrl ? ", and your guide shows exactly how I'll make sure of it" : ", and I'll make sure of it"}.`] : []),
-    ...(inquiry.guideUrl ? [`I've put together a page for your day, with your collection and photographs from ${inquiry.cityName}. It's just below.`] : []),
-    "The easiest way to talk it through is a free 30-minute video call. If you would rather just message, WhatsApp works too.",
+    `Congratulations! This is Arman, the wedding photographer. I got your inquiry about your wedding${about ? ` ${about}` : ""}.`,
+    `Here's what I think is right for you: ${fitName}, at ${money(tier.price)}. ${FIT_LINE[fit.slug] ?? ""}${matters ? ` And since ${matters.charAt(0).toLowerCase() + matters.slice(1)} ${plural ? "matter" : "matters"} most to you, that's exactly where my attention goes.` : ""}`.trim(),
+    `${inquiry.guideUrl ? "Everything is on the page I made for you, just below. " : ""}The easiest next step is a free 30-minute video call. If you'd rather just message, WhatsApp works too.`,
     "Arman",
   ].join("\n\n");
 }

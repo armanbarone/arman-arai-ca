@@ -6,11 +6,10 @@ import { CTA_LABEL, FORM_ID, funnelCollections, pricingTiers, tierItems, type Pr
 import { SITE } from "@/lib/site";
 import { autoReplyEnabled } from "@/lib/auto-reply";
 import { proofByN, proofSrc } from "@/lib/reviews";
-import { hubBySlug } from "@/lib/hubs";
 import { BookingNavigation } from "./wedding-calendar";
 import AlbumBrowser from "./AlbumBrowser";
 import HeroConveyor from "./HeroConveyor";
-import { money, POSING_QUESTION, stylesOfWork, TIER_STRAP, weddingAlbumsFor } from "./landing-content";
+import { money, stylesOfWork, TIER_STRAP, weddingAlbumsFor } from "./landing-content";
 import InquiryFunnel, { InquiryForm, MessageLinks, type FunnelCollection } from "./InquiryFunnel";
 import styles from "./vancouver.module.css";
 import funnel from "./inquiry.module.css";
@@ -18,10 +17,11 @@ import funnel from "./inquiry.module.css";
 /* The page tells one story, in the order a couple decides (owner, 2026-10-02:
  * "who this is for, who am I and how I can fulfill it ... why am I qualified
  * for this job, samples of similar jobs"): who it is for, who Arman is and why
- * he can be trusted with the day, what he knows about their city, complete
- * weddings, the collections, what couples say, and exactly how it works.
- * Every claim is one the site already makes: the about page, lib/site.ts and
- * the city notes in lib/hubs.ts. */
+ * he can be trusted with the day, complete weddings, the collections, what
+ * couples say, and exactly how it works. The five style collections sit in
+ * "Who this is for"; the local-knowledge section and the FAQ were removed
+ * (owner, 2026-10-02: "irrelevant", "unnecessary"). Every claim is one the
+ * site already makes: the about page and lib/site.ts. */
 const FOR_WHO: [string, string][] = [
   ["You want it to look like it felt.", "Real moments, true colour, and portraits that still look like the two of you in twenty years."],
   ["You’d rather be with your people.", "Simple direction for the portraits, then I step back and photograph what happens."],
@@ -52,23 +52,7 @@ export default function InquiryLanding({ city, market }: { city: WeddingCity; ma
   const hourList = [...new Set(tiers.map((tier) => tier.hours))].sort((a, b) => a - b);
   const hours = `${hourList.slice(0, -1).join(", ")} or ${hourList.at(-1)}`;
   const collections: FunnelCollection[] = funnelCollections();
-  const questions: string[][] = [
-    // Read at build time, like every env var on a static page: adding the key
-    // in Vercel needs a redeploy, which also switches this answer over.
-    ["What happens after we send the form?", autoReplyEnabled()
-      ? `Your pricing guide is ready the moment you send it: your collection, how your day could run and how I’ll photograph what matters most to you, on one page made for you. A note from me follows by email about 30 seconds later, including whether I’m available on your date. From there, pick a time for a free 30-minute video call, reply to that email, or message me on WhatsApp or by text at ${phone}.`
-      : `Your pricing guide is ready the moment you send it, on one page made for your day, and I reply personally the same day. From there, pick a time for a free 30-minute video call, or message me on WhatsApp or by text at ${phone}.`],
-    [city.coverageQuestion, market.coverageAnswer],
-    [city.planningQuestion, city.planningAnswer], POSING_QUESTION,
-    ["Do we have to book a video call?", "No. The call is there if you’d like to meet before you decide. If you’d rather keep it to email, WhatsApp or text, that works too."],
-    ["What is included, and what costs extra?", `Every collection includes photography by me, a 60-minute engagement session, planning, a full edited gallery with print permission, vertical social reels and film prints for your guests. Legacy adds a second photographer for four hours, a longer film and a printed album; Photo + Film runs 12 hours with a dedicated filmmaker and adds a printed album. Prices are in Canadian dollars before tax. ${market.travelNote}`],
-    // These pages confirm nothing about a date, so this answer never says
-    // "once we've confirmed availability".
-    ["How do we secure our wedding date?", "Once you’ve chosen your collection and we’ve agreed the details, a signed contract and a non-refundable 30% deposit secure the date. Then 35% is due 60 days before the wedding, and the final 35% 30 days before. There’s no obligation to book after our call."],
-  ];
   const weddingAlbums = weddingAlbumsFor(city.albums);
-  const hub = hubBySlug(city.hub);
-  const spots = city.spots.map((name) => hub?.venues.find((venue) => venue.name === name)).filter((venue): venue is NonNullable<typeof venue> => Boolean(venue));
   const how: [string, string][] = [
     ["Tell me about your day", autoReplyEnabled()
       ? "Two quick steps on this page. Your pricing guide is ready the moment you send it, and a note from me follows about 30 seconds later, including whether I’m available on your date."
@@ -114,6 +98,9 @@ export default function InquiryLanding({ city, market }: { city: WeddingCity; ma
         <section className={funnel.forWho} aria-labelledby="for-title">
           <div className={styles.sectionHeading}><div><p className={styles.eyebrow}>Who this is for</p><h2 id="for-title">Couples who want<br /><em>to be in their wedding.</em></h2></div><p>You’re planning a {city.name} wedding, and you want the day to feel like yours from the first look to the last dance.</p></div>
           <div className={funnel.forGrid}>{FOR_WHO.map(([title, body]) => <article key={title}><h3>{title}</h3><p>{body}</p></article>)}</div>
+          <div className={`${styles.weddingHeading} ${funnel.styleHeading}`}><div><p className={styles.eyebrow}>Find your style</p><h2>Five ways<br /><em>to tell it.</em></h2></div><p>Pick the one that feels like the two of you. Open any collection and look closely. Every gallery I deliver is held to this.</p></div>
+          <AlbumBrowser albums={stylesOfWork} label="Five complete portfolio collections" compact />
+          <p className={styles.albumHint}>Open an album to see every photograph. <span>Swipe to explore the collections →</span></p>
           <p className={funnel.forClose}>If that sounds like the two of you, you’re in the right place.</p>
         </section>
 
@@ -129,17 +116,9 @@ export default function InquiryLanding({ city, market }: { city: WeddingCity; ma
           </div>
         </section>
 
-        {spots.length ? <section className={funnel.local} aria-labelledby="local-title">
-          <div className={styles.sectionHeading}><div><p className={styles.eyebrow}>Local knowledge</p><h2 id="local-title">Where {city.name}<br /><em>looks its best.</em></h2></div><p>A few of the places I’ll suggest, and what each one gives a photograph.</p></div>
-          <div className={funnel.localGrid}>{spots.map((spot) => <article key={spot.name}><p className={styles.eyebrow}>{spot.where}</p><h3>{spot.name}</h3><p>{spot.note}</p></article>)}</div>
-        </section> : null}
-
         <section id="albums" className={styles.workSection} aria-labelledby="work-title">
           <div className={styles.sectionHeading}><div><p className={styles.eyebrow}>Weddings like yours</p><h2 id="work-title">Complete weddings.<br /><em>Every photograph.</em></h2></div><p>Three whole wedding days, from the first look to the last dance, the way the couples received them. Yours arrives the same way.</p></div>
           <AlbumBrowser albums={weddingAlbums} label="Complete wedding stories" />
-          <div className={styles.weddingHeading}><div><p className={styles.eyebrow}>Find your style</p><h2>Five ways<br /><em>to tell it.</em></h2></div><p>From the quiet moments to the dance floor. Open any collection and look closely. Every gallery I deliver is held to this.</p></div>
-          <AlbumBrowser albums={stylesOfWork} label="Five complete portfolio collections" compact />
-          <p className={styles.albumHint}>Open an album to see every photograph. <span>Swipe to explore the collections →</span></p>
         </section>
 
         <section className={styles.interlude} aria-label={`Wedding photographs from ${city.name}`}>{city.interlude.map((photo) => <figure key={photo.src}><Image src={photo.src} alt={photo.alt} fill quality={72} sizes="(max-width: 760px) 50vw, 33vw" /></figure>)}</section>
@@ -167,7 +146,6 @@ export default function InquiryLanding({ city, market }: { city: WeddingCity; ma
           <ol className={funnel.howSteps}>{how.map(([title, body], i) => <li key={title}><span>{String(i + 1).padStart(2, "0")}</span><strong>{title}</strong><p>{body}</p></li>)}</ol>
         </section>
 
-        <section className={styles.faq} aria-labelledby="faq-title"><div><p className={styles.eyebrow}>A few things before we meet</p><h2 id="faq-title">You might<br /><em>be wondering.</em></h2></div><div className={styles.questions}>{questions.map(([q, a]) => <details key={q}><summary>{q}<span aria-hidden="true">+</span></summary><p>{a}</p></details>)}</div></section>
 
         <section className={funnel.finalCta} aria-labelledby="final-title">
           <div className={styles.bookingCopy}><p className={styles.eyebrow}>Your {city.name} wedding starts here</p><h2 id="final-title">Tell me about your day.<br /><em>Get your pricing.</em></h2><p>Two quick steps, and your pricing guide is ready, made for your day.</p></div>

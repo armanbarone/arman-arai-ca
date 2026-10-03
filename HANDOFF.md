@@ -461,14 +461,14 @@ Everything in this list is live and was verified with a real HTTP check.
   rule; the opening still names venue and date exactly, so it is never vague.
   **Landing page story (owner, 2026-10-02: "who this is for, who am I and how
   I can fulfill it ... why am I qualified ... samples of similar jobs"):**
-  hero and form, then Who this is for (FOR_WHO), Who I am (QUALS, from the
-  about page's own words, plus Samantha's review), Where <city> looks its best
-  (the city's lib/hubs.ts place notes, chosen per city in `spots`; Vancouver
-  leaves out "Sea-to-Sky and Whistler" because its note says "same price",
-  which contradicts the Vancouver travel line), Complete weddings, style
-  collections, the city strip, collections, reviews, How it works (six
-  steps), FAQ, final CTA. Calgary uses the banff hub notes, Victoria the
-  tofino hub's island notes.
+  hero and form; Who this is for (FOR_WHO cards, then the five style
+  collections, "Five ways to tell it", inside the same section, as he asked);
+  Who I am (QUALS, from the about page's own words, plus Samantha's review);
+  Complete weddings; the city strip; collections; reviews; How it works (six
+  steps); final CTA. Removed the same day on his word: the local-knowledge
+  section ("irrelevant") and the FAQ ("unnecessary"). Do not bring either back.
+  The guide button in the email is rust (#A95C31, white text): the earlier
+  dark one vanished on a dark-mode mail background.
   **Lead source:** lib/lead-source.ts puts a coloured box at the top of every
   lead email and a [Google Ads] / [Meta Ads] / [Facebook/Instagram] tag on the
   subject. gclid (or wbraid/gbraid) proves a Google ad click; fbclid does not

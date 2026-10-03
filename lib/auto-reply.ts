@@ -294,7 +294,9 @@ function detailsBlock(inquiry: PricingInquiry) {
 
 /** The link to their guide: a photograph from their city, a line, a button.
  *  The photograph is the guide's own first one, cropped wide (3:2) for email
- *  so the button still shows on a phone's first screen. */
+ *  so the button still shows on a phone's first screen. The button is a mid
+ *  tone (rust) so it reads on white and on a dark-mode background alike, and
+ *  stays distinct from the gold call button. */
 function guideBlock(inquiry: PricingInquiry, guideUrl: string, hours: number) {
   const photo = WEDDING_CITIES.find((city) => city.slug === inquiry.market.slug)?.heroes[0];
   const image = photo ? photo.src.replace("https://cdn.armanarai.ca/", "https://cdn.armanarai.ca/cdn-cgi/image/format=jpeg,quality=78,width=1120,height=747,fit=cover,gravity=auto/") : null;
@@ -302,7 +304,7 @@ function guideBlock(inquiry: PricingInquiry, guideUrl: string, hours: number) {
     ${image ? `<a href="${escapeHtml(guideUrl)}" style="display:block;text-decoration:none;"><img src="${escapeHtml(image)}" width="560" alt="${escapeHtml(photo!.alt)}" style="display:block;width:100%;max-width:560px;height:auto;border:0;border-radius:8px;"></a>` : ""}
     <p style="margin:16px 0 6px;font-size:24px;line-height:1.2;">Your wedding guide</p>
     <p style="margin:0 0 16px;font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.6;color:#6B6258;">Your collection, how your ${hours} hours could run and photographs from ${escapeHtml(inquiry.cityName)}, on one page made for you.</p>
-    ${bigButton(guideUrl, "Open your wedding guide", "#1A1612", "#E8C99A")}
+    ${bigButton(guideUrl, "Open your wedding guide", "#A95C31", "#FFFFFF")}
   </div>`;
 }
 

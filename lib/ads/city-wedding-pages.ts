@@ -46,6 +46,10 @@ export const WEDDING_CITIES: WeddingCity[] = [
   {
     slug: "vancouver", name: "Vancouver",
     heroes: [
+      // The owner's main Vancouver hero (2026-10-02: "put the lions gate bridge
+      // in the hero segment"). First, so it is the photo that loads with the
+      // page; the phone's wide crop is lifted to keep the bridge towers in.
+      { ...CITY_PHOTOS.vancouver.hero, position: "50% 35%" },
       described(CITY_WORK.vancouver[14], "A bride reclining on a motorboat at a Vancouver marina at sunset, the groom standing behind her"),
       described(CITY_WORK.vancouver[6], "A bride walking a white dog along a downtown Vancouver street at dusk"),
       CITY_WORK.vancouver[10],

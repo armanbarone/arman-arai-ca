@@ -498,6 +498,11 @@ Everything in this list is live and was verified with a real HTTP check.
   STILL LIVE ELSEWHERE on the .ca: CITY_WORK.tofino and CITY_PHOTOS for the
   island (the /tofino-wedding-photographer hub) are the same labelled island
   files. Not changed; outside the ads pages.
+  **Lions Gate photo (owner, 2026-10-02: "put the lions gate bridge in the hero
+  segment like i told you before"):** it is the first Vancouver hero photo again
+  (CITY_PHOTOS.vancouver.hero, phone crop 50% 35%), by his explicit instruction,
+  knowing its original carries Google's AI-generated label. It stays out of the
+  "Recent work" gallery. Do not remove it from the hero again.
   **Section backgrounds alternate** (funnel.story on <main>, nth-of-type odd =
   var(--paper), even = #17140f), so no two sections in a row match.
   **Google Ads "Submit lead form":** `LEAD_FORM_CONVERSION` in lib/analytics.ts

@@ -8,7 +8,7 @@ import {
 } from "@/lib/ads/pricing-request";
 import { weddingToday } from "@/lib/wedding-availability";
 import WeddingCalendar from "./wedding-calendar";
-import { ATTRIBUTION_KEYS, gclidFromCookie } from "@/lib/attribution";
+import { ATTRIBUTION_KEYS, fbclidFromCookie, gclidFromCookie } from "@/lib/attribution";
 import styles from "./vancouver.module.css";
 import funnel from "./inquiry.module.css";
 
@@ -131,6 +131,7 @@ export function InquiryForm({ city, market, page }: { city: string; market: stri
       if (value) captured[key] = value;
     }
     captured.gclid = q.get("gclid") || q.get("wbraid") || q.get("gbraid") || gclidFromCookie();
+    captured.fbclid = q.get("fbclid") || fbclidFromCookie();
     setAttribution(captured);
   }, []);
 

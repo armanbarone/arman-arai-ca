@@ -4,6 +4,7 @@ import { BUDGET_OPTIONS, COVERAGE_OPTIONS, GUEST_OPTIONS, SEASON_PATTERN, SETUP_
 import { WEDDING_CITIES } from "@/lib/ads/city-wedding-pages";
 import { autoReplyEnabled, sendInquiryAutoReply, type PricingInquiry } from "@/lib/auto-reply";
 import { createGuide, guidePath, guideUrl } from "@/lib/guide";
+import { leadSource, leadSourceBox, leadSourceTag } from "@/lib/lead-source";
 import { tierBySlug } from "@/lib/site";
 
 // The pricing-request auto-reply runs after the response, inside this
@@ -115,6 +116,10 @@ export async function POST(req: NextRequest) {
       // The form's second step. Optional here, so a form loaded before it
       // existed still goes through; the form itself requires all but the note.
       const day = cleanDayDetails(body);
+      // Date checking is back, in the email only (owner, 2026-10-02): the
+      // booked list in lib/wedding-availability.ts says open or booked.
+      const dateCheck = body.weddingDate ? checkWeddingDate(body.weddingDate) : null;
+      const dateStatus = dateCheck && "availability" in dateCheck ? (dateCheck.availability === "unavailable" ? "booked" as const : "open" as const) : undefined;
       const recommendation = recommendCollection(coverage.value, budget.value, day);
       const fit = tierBySlug(recommendation.slug)!;
       const stepUp = recommendation.stepUp ? tierBySlug(recommendation.stepUp) : undefined;
@@ -123,7 +128,7 @@ export async function POST(req: NextRequest) {
       // saved; the inquiry goes through either way.
       guideId = await createGuide({ market: market.slug, names: body.name, email: body.email, weddingDate: body.weddingDate || undefined, weddingSeason: body.weddingSeason || undefined, location: body.location, coverage: coverage.value, budget: budget.value, ...day });
       autoReply = autoReplyEnabled()
-        ? { names: body.name, email: body.email, weddingDate: body.weddingDate || undefined, weddingSeason: body.weddingSeason || undefined, location: body.location, coverage: coverage.value, budget: budget.value, cityName, market, page: `wedding-photography/${market.slug}-pricing`, receivedAt: Date.now(), guideUrl: guideId ? guideUrl(guideId) : undefined, ...day }
+        ? { names: body.name, email: body.email, weddingDate: body.weddingDate || undefined, weddingSeason: body.weddingSeason || undefined, location: body.location, coverage: coverage.value, budget: budget.value, cityName, market, page: `wedding-photography/${market.slug}-pricing`, receivedAt: Date.now(), guideUrl: guideId ? guideUrl(guideId) : undefined, dateStatus, ...day }
         : null;
       inquiryRows = [
         ["Names", body.name],
@@ -140,10 +145,13 @@ export async function POST(req: NextRequest) {
         ["Shown as best fit", `${fit.name}, C$${fit.price.toLocaleString("en-CA")}`],
         ...(stepUp ? ([["Suggested step up", `${stepUp.name}, C$${stepUp.price.toLocaleString("en-CA")}`]] as [string, string][]) : []),
         ["Their guide", guideId ? guideUrl(guideId) : "Could not be made; their email carries the price table instead"],
+        ["Their date", dateStatus === "booked" ? "BOOKED: on your booked list. The email tells them you're not available that day." : dateStatus === "open" ? "Open. The email tells them you're available as of now, first come, first served." : "No exact date. The email says you have dates open in that season as of now."],
         ["Auto-reply", autoReply ? "Sending to the couple about 30 seconds after this; you are BCC'd" : "Off: the Anthropic federation variables are not set in Vercel"],
       ];
     }
 
+    // Google Ads, Meta or neither, for the owner's lead email (lib/lead-source.ts).
+    const source = leadSource(body);
     const ghlData: Record<string, string> = {
       source: "armanarai.ca",
       type: type ?? "quick",
@@ -180,6 +188,8 @@ export async function POST(req: NextRequest) {
       utm_content: body.utm_content ?? "",
       utm_term: body.utm_term ?? "",
       gclid: body.gclid ?? "",
+      fbclid: body.fbclid ?? "",
+      leadSource: source.label,
       landingPage: body.page ?? "",
       referrer: body.referrer ?? "",
     };
@@ -188,7 +198,7 @@ export async function POST(req: NextRequest) {
     // "founding" is what the ads landing pages send; subjectLabel names which one.
     const isLanding = type === "founding" || isDateCheck || isInquiry;
     const subject = isLanding
-      ? `${body.subjectLabel || "Landing Page Inquiry"} — ${body.name}`
+      ? `${leadSourceTag(source)}${body.subjectLabel || "Landing Page Inquiry"} — ${body.name}`
       : isQuick
         ? `New Inquiry — ${body.name}`
         : `Wedding Inquiry — ${body.name}${body.partnerName ? ` & ${body.partnerName}` : ""}`;
@@ -251,6 +261,7 @@ export async function POST(req: NextRequest) {
         <h2 style="font-size:1.3rem;font-weight:normal;border-bottom:1px solid #D9CEBC;padding-bottom:0.75rem;margin-bottom:1.5rem;">
           ${escapeHtml(isLanding ? (body.subjectLabel || "Landing Page Inquiry") : isQuick ? "New Website Inquiry" : "Wedding Inquiry")}
         </h2>
+        ${leadSourceBox(source)}
         <table style="width:100%;border-collapse:collapse;">
           ${rows.map(([label, value]) => `<tr><td style="padding:0.5rem 0;color:#A67268;font-size:0.75rem;text-transform:uppercase;letter-spacing:0.1em;width:140px;vertical-align:top;">${escapeHtml(label)}</td><td style="padding:0.5rem 0;">${escapeHtml(value)}</td></tr>`).join("")}
         </table>

@@ -50,6 +50,8 @@ export type PricingInquiry = {
   receivedAt: number;
   /** Their wedding guide (lib/guide.ts). Without one, the email carries the price table. */
   guideUrl?: string;
+  /** Their exact date against the booked list. Absent when they gave a season. */
+  dateStatus?: "open" | "booked";
 } & DayDetails;
 
 /* The couple gets the email about half a minute after pressing the button,
@@ -130,7 +132,13 @@ function inquiryPrompt(inquiry: PricingInquiry, fitName: string, basis: string) 
   const guideLine = inquiry.guideUrl
     ? `A wedding guide page has been made for this couple and is linked right under your note: their collection, how their hours could run, and photographs from ${inquiry.cityName}. Point to it once, in one short sentence, before the invitation to the call. Do not describe it beyond that.`
     : "No wedding guide page was made for this couple. Do not mention one.";
-  return `Write the email for this inquiry. The collection that fits best is ${fitName}, chosen from ${basis}.
+  const dateLine = inquiry.dateStatus === "booked"
+    ? "Their date: BOOKED. Arman is already booked on their date and is not available that day."
+    : inquiry.dateStatus === "open"
+      ? "Their date: OPEN. Arman is available on their date as of now."
+      : `Their date: no exact date, only a season (${inquiry.weddingSeason ?? "not given"}). Arman has dates open in it as of now.`;
+  return `Write the email for this inquiry. ${dateLine}
+The collection that fits best is ${fitName}, chosen from ${basis}.
 ${stepUpLine}
 ${guideLine}
 
@@ -158,12 +166,15 @@ function allowedAmounts() {
 /** The model's text, cleaned, or null if it breaks a rule it was given. Dashes
  *  of both kinds are banned in the brief; any that slip through are replaced
  *  here rather than failing the whole email. */
-export function checkedBody(text: string): string | null {
+export function checkedBody(text: string, dateStatus?: "open" | "booked"): string | null {
   const body = text.replace(/\r/g, "").replace(/(\d)\s*[\u2013\u2014]\s*(\d)/g, "$1 to $2").replace(/\s*[\u2013\u2014]\s*/g, ", ").trim();
   if (body.length < 200 || body.length > 1800) return null;
   if (/https?:\/\/|www\.|\*\*|^#|^subject:/im.test(body)) return null;
-  // No date claims of any kind: the site checks nothing.
-  if (/\bavailab|\b(?:date|day)\b[^.]{0,40}\b(?:open|free|booked|held|reserved)\b/i.test(body)) return null;
+  // The date, exactly as the request states it, and nothing is ever held:
+  // only the contract and the deposit secure a date.
+  if (/\b(?:hold|holding|held|reserve|reserved|reserving|pencil(?:led)?)\b[^.]{0,30}\b(?:date|day)\b|\b(?:date|day)\b[^.]{0,30}\b(?:held|reserved|on hold)\b/i.test(body)) return null;
+  if (dateStatus === "booked" && (!/\bbooked\b/i.test(body) || /\bavailable on\b|\bstill (?:open|free|available)\b/i.test(body))) return null;
+  if (dateStatus === "open" && (!/\bavailab/i.test(body) || /\balready booked\b|\bnot available\b|\bunavailable\b/i.test(body))) return null;
   const allowed = allowedAmounts();
   for (const amount of body.match(/(?:C\$|\$)\s?\d[\d,]*/g) ?? []) {
     if (!allowed.has(Number(amount.replace(/[^\d]/g, "")))) return null;
@@ -205,7 +216,7 @@ async function writeWithClaude(inquiry: PricingInquiry, fitName: string, basis: 
   let reply: { skip?: unknown; body?: unknown };
   try { reply = JSON.parse(text); } catch { return null; }
   if (reply.skip === true) return "skip";
-  const body = typeof reply.body === "string" ? checkedBody(reply.body) : null;
+  const body = typeof reply.body === "string" ? checkedBody(reply.body, inquiry.dateStatus) : null;
   if (!body) return null;
   return { subject: fallbackSubject(inquiry), body };
 }
@@ -230,7 +241,8 @@ const FIT_LINE: Record<string, string> = {
 export function fallbackBody(inquiry: PricingInquiry, fitName: string) {
   const name = greetingName(inquiry.names);
   const when = whenPhrase(inquiry);
-  const about = [inquiry.location && `at ${inquiry.location}`, when && `on ${when}`].filter(Boolean).join(" ");
+  // "on Saturday, …" for a date, "in Summer 2027" for a season.
+  const about = [inquiry.location && `at ${inquiry.location}`, when && (inquiry.weddingDate ? `on ${when}` : `in ${when}`)].filter(Boolean).join(" ");
   const fit = recommendCollection(inquiry.coverage, inquiry.budget, inquiry);
   const tier = tierBySlug(fit.slug)!;
   const matters = prioritiesPhrase(inquiry.priorities);
@@ -238,6 +250,13 @@ export function fallbackBody(inquiry: PricingInquiry, fitName: string) {
   return [
     `Hi ${name || "there"},`,
     `Congratulations! This is Arman, the wedding photographer. I got your inquiry about your wedding${about ? ` ${about}` : ""}.`,
+    inquiry.dateStatus === "booked"
+      ? `I'll be straight with you: I'm already booked on ${when}. If there's any flexibility in your date, I'd love to talk it through.`
+      : inquiry.dateStatus === "open"
+        ? `Good news: I'm available on ${when} as of now. Dates go first come, first served, so if you love what you see, don't wait too long.`
+        : inquiry.weddingSeason && inquiry.weddingSeason !== "Later than that"
+          ? `As of now I have dates open in ${inquiry.weddingSeason}, and they go first come, first served.`
+          : "As of now my calendar is open that far ahead, and dates go first come, first served.",
     `Here's what I think is right for you: ${fitName}, at ${money(tier.price)}. ${FIT_LINE[fit.slug] ?? ""}${matters ? ` And since ${matters.charAt(0).toLowerCase() + matters.slice(1)} ${plural ? "matter" : "matters"} most to you, that's exactly where my attention goes.` : ""}`.trim(),
     `${inquiry.guideUrl ? "Everything is on the page I made for you, just below. " : ""}The easiest next step is a free 30-minute video call. If you'd rather just message, WhatsApp works too.`,
     "Arman",

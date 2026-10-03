@@ -9,6 +9,7 @@ import { proofByN, proofSrc } from "@/lib/reviews";
 import { BookingNavigation } from "./wedding-calendar";
 import AlbumBrowser from "./AlbumBrowser";
 import HeroConveyor from "./HeroConveyor";
+import WorkGrid from "./WorkGrid";
 import { money, stylesOfWork, TIER_STRAP, weddingAlbumsFor } from "./landing-content";
 import InquiryFunnel, { InquiryForm, MessageLinks, type FunnelCollection } from "./InquiryFunnel";
 import styles from "./vancouver.module.css";
@@ -72,7 +73,9 @@ export default function InquiryLanding({ city, market }: { city: WeddingCity; ma
         <a className={styles.wordmark} href="#main" aria-label="Arman Arai, top of page">Arman Arai<span>WEDDING PHOTOGRAPHY</span></a>
         <nav aria-label="Page navigation"><a className={styles.navLink} href="#albums">The photographs</a><a className={styles.navLink} href="#collections">Collections</a><a className={styles.headerCta} href={`#${FORM_ID}`}>{cta}</a></nav>
       </header>
-      <main id="main">
+      {/* funnel.story alternates the section backgrounds (owner, 2026-10-02:
+          no two sections in a row on the same background). */}
+      <main id="main" className={funnel.story}>
         <section className={funnel.hero} aria-labelledby="hero-title">
           <div className={funnel.heroTop}>
             <p className={`${styles.eyebrow} ${funnel.heroEyebrow}`}>Photographed by Arman, start to finish.</p>
@@ -116,12 +119,17 @@ export default function InquiryLanding({ city, market }: { city: WeddingCity; ma
           </div>
         </section>
 
+        {city.work ? <section className={funnel.work} aria-labelledby="samples-title">
+          <div className={styles.sectionHeading}><div><p className={styles.eyebrow}>{city.work.eyebrow}</p><h2 id="samples-title">{city.work.title[0]}<br /><em>{city.work.title[1]}</em></h2></div><p>{city.work.lead}</p></div>
+          <WorkGrid photos={city.work.photos} place={city.work.place} />
+        </section> : null}
+
         <section id="albums" className={styles.workSection} aria-labelledby="work-title">
           <div className={styles.sectionHeading}><div><p className={styles.eyebrow}>Weddings like yours</p><h2 id="work-title">Complete weddings.<br /><em>Every photograph.</em></h2></div><p>Three whole wedding days, from the first look to the last dance, the way the couples received them. Yours arrives the same way.</p></div>
           <AlbumBrowser albums={weddingAlbums} label="Complete wedding stories" />
         </section>
 
-        <section className={styles.interlude} aria-label={`Wedding photographs from ${city.name}`}>{city.interlude.map((photo) => <figure key={photo.src}><Image src={photo.src} alt={photo.alt} fill quality={72} sizes="(max-width: 760px) 50vw, 33vw" /></figure>)}</section>
+        {city.work ? null : <section className={styles.interlude} aria-label={`Wedding photographs from ${city.name}`}>{city.interlude.map((photo) => <figure key={photo.src}><Image src={photo.src} alt={photo.alt} fill quality={72} sizes="(max-width: 760px) 50vw, 33vw" /></figure>)}</section>}
 
         <section id="collections" className={styles.collections} aria-labelledby="collections-title">
           <div className={styles.sectionHeading}><div><p className={styles.eyebrow}>The collections / 03</p><h2 id="collections-title">Three collections.<br /><em>No surprises.</em></h2></div><p>One price each, with everything listed. Tell me about your day and I’ll tell you which one fits.</p></div>

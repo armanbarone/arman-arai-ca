@@ -478,16 +478,28 @@ Everything in this list is live and was verified with a real HTTP check.
   BOOKED_WEDDING_DATES in lib/wedding-availability.ts (2027-08-28). Open dates
   get "available as of now, first come, first served"; booked dates are told
   plainly; checkedBody rejects contradictions and any "hold your date".
-  **OPEN QUESTION, photo provenance (2026-10-02):** the owner asked to use the
-  armanarai.com city hubs' photos as "samples of similar jobs". The .com
-  Vancouver hub's "What I've Shot" album (lib/vancouver-shot-album.ts in the
-  .com repo) is mostly `hf_<date>_<uuid>.png` files, Higgsfield's naming; 7 of
-  them carry an hf-job-id and one also Google's C2PA "trainedAlgorithmicMedia"
-  label (the Lions Gate couple). The .ca cities/vancouver/work set looks like
-  the same series (one file is named "24-pergola-walkway-second-reimagining"),
-  but its webp copies carry no metadata either way, and no frame used on the
-  pricing pages matched a job-id file by fingerprint. Not added to the pages
-  until he says which are photographs he took.
+  **Hub photos on the pricing pages (owner, 2026-10-02: "I told you to put it
+  in the landing pages. You do what I tell you to do."):** lib/ads/hub-work.ts,
+  shown by WorkGrid in a "Recent work" section after "Who I am" (12, then
+  "See all"), in place of the three-photo strip. BC_WORK (the .com Vancouver
+  hub's "What I've Shot" album, 36 photos) on Vancouver and Victoria,
+  BANFF_WORK (the .com Banff hub's "A few of mine", 6) on Calgary & Banff.
+  Copied as WebP to the .ca bucket under cities/<city>/hub/. The one rule
+  applied: a photo whose ORIGINAL carries Google's C2PA "trainedAlgorithmicMedia"
+  (AI-generated) label is not shown as his work. That kept out the Lions Gate
+  couple, Banff 00007.png, and every Vancouver Island original (all 25 plus the
+  "New" Hatley set, on the .com bucket under "Vancouver Island/"). The Victoria
+  slideshow and strip used .ca copies of those island files (fingerprint
+  distance 0 to 2), so they were replaced with Hatley Castle frames and BC
+  gallery photos. The .com Québec hub says in its own code that its photos are
+  not from a client shoot, so Montréal gets no hub section. Toronto has no .com
+  hub. Files with only a Higgsfield hf-job-id, or no metadata, were used: the
+  owner directed it, and a job id alone does not separate an edit from a render.
+  STILL LIVE ELSEWHERE on the .ca: CITY_WORK.tofino and CITY_PHOTOS for the
+  island (the /tofino-wedding-photographer hub) are the same labelled island
+  files. Not changed; outside the ads pages.
+  **Section backgrounds alternate** (funnel.story on <main>, nth-of-type odd =
+  var(--paper), even = #17140f), so no two sections in a row match.
   **Google Ads "Submit lead form":** `LEAD_FORM_CONVERSION` in lib/analytics.ts
   (AW-18464850778/ySE3CPyOtYsdENqG3eRE, from the owner's pasted snippet) fires
   in `trackWeddingInquiry`, beside GA4 `wedding_inquiry`, once per sent form,

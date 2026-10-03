@@ -1,4 +1,5 @@
 import { CITY_PHOTOS, CITY_WORK, type Photo } from "../images";
+import { BANFF_WORK, BC_WORK, type WorkPhoto } from "./hub-work";
 
 /** A hero photograph, with an optional object-position for the phone's wide crop. */
 export type HeroPhoto = Photo & { position?: string };
@@ -11,6 +12,10 @@ export type WeddingCity = {
    *  load with the page. Every photo here must work in both crops. */
   heroes: HeroPhoto[];
   interlude: Photo[];
+  /** Samples of similar work from the armanarai.com city hub, when it has
+   *  photographs that are his (lib/ads/hub-work.ts). Shown instead of the
+   *  three-photo interlude strip. */
+  work?: { eyebrow: string; title: [string, string]; lead: string; place: string; photos: WorkPhoto[] };
   coverage: [string, string];
   about: string;
   coverageQuestion: string;
@@ -30,6 +35,9 @@ const described = (photo: Photo, alt: string): Photo => ({ ...photo, alt });
    album. The generated "places" PNGs that held these slots carry Higgsfield
    job ids. Every frame here was checked in the desktop and phone crops. */
 const albumFrame = (slug: string, frame: string, alt: string): Photo => ({ src: `https://cdn.armanarai.ca/galleries/${slug}/${frame}.webp`, alt });
+/** A photograph from the BC gallery (the Vancouver hub album) by its number. */
+const bcFrame = (n: number, alt: string): Photo => ({ src: `https://cdn.armanarai.ca/cities/vancouver/hub/vancouver-hub-${String(n).padStart(2, "0")}.webp`, alt });
+
 /** A photograph from the cities/ folder on the .ca bucket. */
 const cityFrame = (key: string, alt: string): Photo => ({ src: `https://cdn.armanarai.ca/cities/${key}.webp`, alt });
 const defaultAlbums = ["luca-lauren", "elisha-michael", "nicole-js"];
@@ -45,6 +53,7 @@ export const WEDDING_CITIES: WeddingCity[] = [
       described(CITY_WORK.vancouver[9], "A couple embracing beside the fountains of a formal garden"),
     ],
     interlude: [CITY_PHOTOS.vancouver.places[0], CITY_PHOTOS.vancouver.places[1], CITY_WORK.vancouver[3]],
+    work: { eyebrow: "Recent work", title: ["Vancouver and", "the Sea-to-Sky."], lead: "Couples I’ve photographed across British Columbia, from the city’s gardens and beaches to the mountains an hour north.", place: "BC", photos: BC_WORK },
     coverage: ["Vancouver & the Lower Mainland", "North Shore & Sea-to-Sky"],
     about: "From a celebration downtown to a day on the North Shore or up the Sea-to-Sky, we’ll make a photography plan that fits your wedding.",
     coverageQuestion: "Do you cover the Lower Mainland and the Sea-to-Sky?",
@@ -107,6 +116,7 @@ export const WEDDING_CITIES: WeddingCity[] = [
       cityFrame("banff/banff-55", "A couple laughing together in a wooden canoe on Lake Louise"),
       cityFrame("banff/banff-56", "Northern lights over a mountain lake behind a couple"),
     ],
+    work: { eyebrow: "Recent work", title: ["Banff and", "the Rockies."], lead: "Couples I’ve photographed in the mountains west of Calgary.", place: "the Rockies", photos: BANFF_WORK },
     coverage: ["Calgary & area", "Banff, Canmore & the Rockies"],
     about: "From a celebration in Calgary to a ceremony in the Rockies, we’ll build the photography around your day, with room for mountain portraits and a plan for changing weather. Your people and your plans come first.",
     coverageQuestion: "Do you photograph weddings in Banff, Lake Louise and Canmore too?",
@@ -116,21 +126,25 @@ export const WEDDING_CITIES: WeddingCity[] = [
     albums: defaultAlbums,
   },
   {
-    /* Victoria has no folder of its own: Hatley Castle and its gardens come
-       from the Vancouver work set and the Vancouver Island folder. */
+    /* Victoria has no folder of its own. Hatley Castle comes from the
+       Vancouver work set and the rest from the BC gallery. The Vancouver
+       Island frames that were here are copies of originals carrying Google's
+       C2PA "AI-generated" label (Vancouver Island/*.png on the .com bucket,
+       fingerprint-matched 2026-10-02), so they are not shown as his work. */
     slug: "victoria", name: "Victoria",
     heroes: [
       cityFrame("vancouver/work/40-hatley-castle-grand-front", "A couple seated on the lawn in front of Hatley Castle in late sun"),
-      cityFrame("vancouver-island/vancouver-island-21", "A bride and groom running across a garden lawn beside a stone urn"),
-      cityFrame("vancouver-island/vancouver-island-24", "A couple on a garden walkway below Hatley Castle, the castle lit at dusk"),
-      cityFrame("vancouver-island/vancouver-island-20", "A groom waving as his bride steps down from a white carriage, a boy running ahead with a basket of petals"),
-      cityFrame("vancouver-island/vancouver-island-19", "A couple walking the garden path toward the front of Hatley Castle"),
+      bcFrame(14, "A couple walking hand in hand through a formal garden with a fountain"),
+      cityFrame("vancouver/work/20-castle-terrace-monochrome", "A couple holding hands on a castle terrace, black and white"),
+      bcFrame(3, "A couple standing in a garden under purple wisteria"),
+      bcFrame(18, "A couple walking the shoreline into the sun, her dress catching the light"),
     ],
     interlude: [
       cityFrame("vancouver/work/17-hatley-castle-walkway", "A couple on a stone walkway below Hatley Castle"),
-      cityFrame("vancouver-island/vancouver-island-25", "A couple in the middle of a formal hedged garden, tall firs all around"),
-      cityFrame("vancouver-island/vancouver-island-17", "A couple on a driftwood shore as sunbeams cut through the morning mist"),
+      bcFrame(4, "A couple embracing in a Japanese garden beside a wooden gate"),
+      bcFrame(13, "A couple sitting on the rocks below a waterfall"),
     ],
+    work: { eyebrow: "Recent work", title: ["Weddings and couples", "across BC."], lead: "Couples I’ve photographed across British Columbia, from formal gardens and quiet beaches to the mountains.", place: "BC", photos: BC_WORK },
     coverage: ["Victoria & Greater Victoria", "Gardens, heritage rooms & the coast"],
     about: "From a garden ceremony to a celebration by the water, we’ll make space for photographs that feel like you. We’ll keep the portrait plan close to your day, so you can get back to the people who came to celebrate.",
     coverageQuestion: "Do you cover Greater Victoria and the rest of the island?",

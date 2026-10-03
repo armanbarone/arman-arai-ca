@@ -137,3 +137,22 @@
   .forGrid, .howSteps { grid-template-columns: 1fr; row-gap: 22px; }
 }
 
+/* Alternating section backgrounds: no two sections in a row match (owner,
+   2026-10-02). !important because vancouver.module.css paints some sections
+   (.dark .workSection, .dark .collections) and those rules are as specific. */
+.story > section:nth-of-type(odd) { background: var(--paper) !important; }
+.story > section:nth-of-type(even) { background: #17140f !important; }
+
+/* Samples of similar work (WorkGrid). */
+.work { padding: 85px max(5.5%, calc((100% - 1424px) / 2)); }
+.workGrid { columns: 3; column-gap: 10px; }
+.workGrid figure { break-inside: avoid; margin: 0 0 10px; }
+.workGrid img { display: block; width: 100%; height: auto; }
+.work .workMore { display: block; margin: 26px auto 0; padding: 14px 22px; background: none; border: .5px solid var(--gold); color: var(--ink); font-size: 13px; letter-spacing: .04em; cursor: pointer; }
+.work .workMore:hover { background: var(--gold); color: #1a1612; }
+@media (max-width: 760px) {
+  .work { padding: 55px 6%; }
+  .workGrid { columns: 2; column-gap: 6px; }
+  .workGrid figure { margin-bottom: 6px; }
+}
+

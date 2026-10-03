@@ -16,7 +16,7 @@ export type LandingAlbum = {
 
 /** The same complete image sequences as /portfolio. Images inside a book are
  * only mounted when it opens, so the initial page pays for covers alone. */
-export default function AlbumBrowser({ albums, label, compact = false }: { albums: LandingAlbum[]; label: string; compact?: boolean }) {
+export default function AlbumBrowser({ albums, label, compact = false, inquiryAction }: { albums: LandingAlbum[]; label: string; compact?: boolean; inquiryAction?: { id: string; label: string } }) {
   const [selected, setSelected] = useState<LandingAlbum | null>(null);
   const dialog = useRef<HTMLDialogElement>(null);
   const opener = useRef<HTMLButtonElement | null>(null);
@@ -43,8 +43,8 @@ export default function AlbumBrowser({ albums, label, compact = false }: { album
   function book() {
     setSelected(null);
     requestAnimationFrame(() => {
-      const heading = document.getElementById("booking-title");
-      document.getElementById("book-a-call")?.scrollIntoView({ behavior: "instant", block: "start" });
+      const heading = document.getElementById(inquiryAction ? "inq-names" : "booking-title");
+      document.getElementById(inquiryAction?.id ?? "book-a-call")?.scrollIntoView({ behavior: "instant", block: "start" });
       heading?.focus({ preventScroll: true });
     });
   }
@@ -69,7 +69,7 @@ export default function AlbumBrowser({ albums, label, compact = false }: { album
           <h3>{chapter.title}</h3>
           <div className={styles.albumPhotos}>{chapter.photos.map((photo, photoIndex) => <figure key={`${photo.src}-${photoIndex}`}><Image src={photo.src} alt={photo.alt} width={photo.width ?? 1000} height={photo.height ?? 1400} quality={78} sizes="(max-width: 640px) 90vw, 44vw" loading="lazy" /></figure>)}</div>
         </section>)}
-        <div className={styles.dialogEnd}><h3>Can you picture your day here?</h3><button type="button" className={styles.button} onClick={book}>Book a free consultation <span aria-hidden="true">↗</span></button><button type="button" className={styles.textButton} onClick={() => setSelected(null)}>Back to the page</button></div>
+        <div className={styles.dialogEnd}><h3>Can you picture your day here?</h3><button type="button" className={styles.button} onClick={book}>{inquiryAction?.label ?? "Book a free consultation"} <span aria-hidden="true">↗</span></button><button type="button" className={styles.textButton} onClick={() => setSelected(null)}>Back to the page</button></div>
       </div>
     </dialog>}
   </>;

@@ -12,10 +12,11 @@ export type WeddingCity = {
    *  load with the page. Every photo here must work in both crops. */
   heroes: HeroPhoto[];
   interlude: Photo[];
-  /** Samples of similar work from the armanarai.com city hub, when it has
-   *  photographs that are his (lib/ads/hub-work.ts). Shown instead of the
-   *  three-photo interlude strip. */
-  work?: { eyebrow: string; title: [string, string]; lead: string; place: string; photos: WorkPhoto[] };
+  /** Samples of similar work from the armanarai.com city hub
+   *  (lib/ads/hub-work.ts), shown as a swipeable album like the hub's own
+   *  (owner, 2026-10-02: "an album that you can swipe not a full gallery"),
+   *  in place of the three-photo interlude strip. */
+  work?: { eyebrow: string; title: [string, string]; lead: string; album: string; photos: WorkPhoto[] };
   coverage: [string, string];
   about: string;
   coverageQuestion: string;
@@ -57,7 +58,7 @@ export const WEDDING_CITIES: WeddingCity[] = [
       described(CITY_WORK.vancouver[9], "A couple embracing beside the fountains of a formal garden"),
     ],
     interlude: [CITY_PHOTOS.vancouver.places[0], CITY_PHOTOS.vancouver.places[1], CITY_WORK.vancouver[3]],
-    work: { eyebrow: "Recent work", title: ["Vancouver and", "the Sea-to-Sky."], lead: "Couples I’ve photographed across British Columbia, from the city’s gardens and beaches to the mountains an hour north.", place: "BC", photos: BC_WORK },
+    work: { eyebrow: "Recent work", title: ["Vancouver and", "the Sea-to-Sky."], lead: "Couples I’ve photographed across British Columbia, from the city’s gardens and beaches to the mountains an hour north. Turn the pages.", album: "Vancouver & the Sea-to-Sky", photos: BC_WORK },
     coverage: ["Vancouver & the Lower Mainland", "North Shore & Sea-to-Sky"],
     about: "From a celebration downtown to a day on the North Shore or up the Sea-to-Sky, we’ll make a photography plan that fits your wedding.",
     coverageQuestion: "Do you cover the Lower Mainland and the Sea-to-Sky?",
@@ -120,7 +121,7 @@ export const WEDDING_CITIES: WeddingCity[] = [
       cityFrame("banff/banff-55", "A couple laughing together in a wooden canoe on Lake Louise"),
       cityFrame("banff/banff-56", "Northern lights over a mountain lake behind a couple"),
     ],
-    work: { eyebrow: "Recent work", title: ["Banff and", "the Rockies."], lead: "Couples I’ve photographed in the mountains west of Calgary.", place: "the Rockies", photos: BANFF_WORK },
+    work: { eyebrow: "Recent work", title: ["Banff and", "the Rockies."], lead: "Couples I’ve photographed in the mountains west of Calgary. Turn the pages.", album: "Banff & the Rockies", photos: BANFF_WORK },
     coverage: ["Calgary & area", "Banff, Canmore & the Rockies"],
     about: "From a celebration in Calgary to a ceremony in the Rockies, we’ll build the photography around your day, with room for mountain portraits and a plan for changing weather. Your people and your plans come first.",
     coverageQuestion: "Do you photograph weddings in Banff, Lake Louise and Canmore too?",
@@ -148,7 +149,7 @@ export const WEDDING_CITIES: WeddingCity[] = [
       bcFrame(4, "A couple embracing in a Japanese garden beside a wooden gate"),
       bcFrame(13, "A couple sitting on the rocks below a waterfall"),
     ],
-    work: { eyebrow: "Recent work", title: ["Weddings and couples", "across BC."], lead: "Couples I’ve photographed across British Columbia, from formal gardens and quiet beaches to the mountains.", place: "BC", photos: BC_WORK },
+    work: { eyebrow: "Recent work", title: ["Weddings and couples", "across BC."], lead: "Couples I’ve photographed across British Columbia, from formal gardens and quiet beaches to the mountains. Turn the pages.", album: "British Columbia", photos: BC_WORK },
     coverage: ["Victoria & Greater Victoria", "Gardens, heritage rooms & the coast"],
     about: "From a garden ceremony to a celebration by the water, we’ll make space for photographs that feel like you. We’ll keep the portrait plan close to your day, so you can get back to the people who came to celebrate.",
     coverageQuestion: "Do you cover Greater Victoria and the rest of the island?",

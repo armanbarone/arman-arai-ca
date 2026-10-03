@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { Analytics } from "@vercel/analytics/next";
-import { ARMAN } from "@/lib/images";
+import { ARMAN, allAt } from "@/lib/images";
 import type { WeddingCity } from "@/lib/ads/city-wedding-pages";
 import { CTA_LABEL, FORM_ID, funnelCollections, pricingTiers, tierItems, type PricingMarket } from "@/lib/ads/pricing-request";
 import { SITE } from "@/lib/site";
@@ -9,7 +9,8 @@ import { proofByN, proofSrc } from "@/lib/reviews";
 import { BookingNavigation } from "./wedding-calendar";
 import AlbumBrowser from "./AlbumBrowser";
 import HeroConveyor from "./HeroConveyor";
-import WorkGrid from "./WorkGrid";
+import PhotoFlipAlbum from "@/components/PhotoFlipAlbum";
+import MobileAlbum from "@/components/MobileAlbum";
 import { money, stylesOfWork, TIER_STRAP, weddingAlbumsFor } from "./landing-content";
 import InquiryFunnel, { InquiryForm, MessageLinks, type FunnelCollection } from "./InquiryFunnel";
 import styles from "./vancouver.module.css";
@@ -121,7 +122,12 @@ export default function InquiryLanding({ city, market }: { city: WeddingCity; ma
 
         {city.work ? <section className={funnel.work} aria-labelledby="samples-title">
           <div className={styles.sectionHeading}><div><p className={styles.eyebrow}>{city.work.eyebrow}</p><h2 id="samples-title">{city.work.title[0]}<br /><em>{city.work.title[1]}</em></h2></div><p>{city.work.lead}</p></div>
-          <WorkGrid photos={city.work.photos} place={city.work.place} />
+          {/* The same album the armanarai.com hubs and /portfolio use: a book
+              that turns on desktop, one photo at a time with swipe on phones.
+              Each paints only the page or pages open, so the album costs a
+              couple of images at a time, not all of them. */}
+          <div className={funnel.albumDesk}><PhotoFlipAlbum albumTitle={city.work.album} albumSubtitle="A Wedding Collection" albumDate={`Arman Arai · ${city.name}`} images={allAt(city.work.photos, 1200)} /></div>
+          <div className={funnel.albumPhone}><MobileAlbum albumTitle={city.work.album} albumSubtitle="A Wedding Collection" albumDate={`Arman Arai · ${city.name}`} images={allAt(city.work.photos, 1000)} /></div>
         </section> : null}
 
         <section id="albums" className={styles.workSection} aria-labelledby="work-title">

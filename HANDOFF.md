@@ -480,8 +480,10 @@ Everything in this list is live and was verified with a real HTTP check.
   plainly; checkedBody rejects contradictions and any "hold your date".
   **Hub photos on the pricing pages (owner, 2026-10-02: "I told you to put it
   in the landing pages. You do what I tell you to do."):** lib/ads/hub-work.ts,
-  shown by WorkGrid in a "Recent work" section after "Who I am" (12, then
-  "See all"), in place of the three-photo strip. BC_WORK (the .com Vancouver
+  shown in a "Recent work" section after "Who I am" as a swipeable album, the
+  same PhotoFlipAlbum (desktop) / MobileAlbum (below 980px) the .com hubs and
+  /portfolio use, in place of the three-photo strip. NOT a gallery grid (owner:
+  "recent work should be an album that you can swipe not a full gallery"). BC_WORK (the .com Vancouver
   hub's "What I've Shot" album, 36 photos) on Vancouver and Victoria,
   BANFF_WORK (the .com Banff hub's "A few of mine", 6) on Calgary & Banff.
   Copied as WebP to the .ca bucket under cities/<city>/hub/. The one rule

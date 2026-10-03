@@ -6,6 +6,7 @@ import { CTA_LABEL, FORM_ID, funnelCollections, pricingTiers, tierItems, type Pr
 import { SITE } from "@/lib/site";
 import { autoReplyEnabled } from "@/lib/auto-reply";
 import { proofByN, proofSrc } from "@/lib/reviews";
+import { hubBySlug } from "@/lib/hubs";
 import { BookingNavigation } from "./wedding-calendar";
 import AlbumBrowser from "./AlbumBrowser";
 import HeroConveyor from "./HeroConveyor";
@@ -13,6 +14,26 @@ import { money, POSING_QUESTION, stylesOfWork, TIER_STRAP, weddingAlbumsFor } fr
 import InquiryFunnel, { InquiryForm, MessageLinks, type FunnelCollection } from "./InquiryFunnel";
 import styles from "./vancouver.module.css";
 import funnel from "./inquiry.module.css";
+
+/* The page tells one story, in the order a couple decides (owner, 2026-10-02:
+ * "who this is for, who am I and how I can fulfill it ... why am I qualified
+ * for this job, samples of similar jobs"): who it is for, who Arman is and why
+ * he can be trusted with the day, what he knows about their city, complete
+ * weddings, the collections, what couples say, and exactly how it works.
+ * Every claim is one the site already makes: the about page, lib/site.ts and
+ * the city notes in lib/hubs.ts. */
+const FOR_WHO: [string, string][] = [
+  ["You want it to look like it felt.", "Real moments, true colour, and portraits that still look like the two of you in twenty years."],
+  ["You’d rather be with your people.", "Simple direction for the portraits, then I step back and photograph what happens."],
+  ["Your family is part of the story.", "The family photographs are planned with you, name by name, so they take minutes and everyone gets back to the party."],
+  ["You want it handled.", "A plan, a timeline, and a photographer who already knows where to stand."],
+];
+const QUALS: [string, string][] = [
+  ["One lead photographer.", "Me, at every wedding, from the first call to the last photograph."],
+  ["Planned before the day.", "A planning call, a family-photo plan and a timeline built around your venue."],
+  ["Ready for the weather.", "A backup plan that was scouted rather than improvised."],
+  ["Back fast.", "A preview the next day, reels in your first week and the full gallery in three weeks."],
+];
 
 /* The pricing-request ads page, one per market: /wedding-photography/<city>-pricing.
  *
@@ -35,7 +56,7 @@ export default function InquiryLanding({ city, market }: { city: WeddingCity; ma
     // Read at build time, like every env var on a static page: adding the key
     // in Vercel needs a redeploy, which also switches this answer over.
     ["What happens after we send the form?", autoReplyEnabled()
-      ? `Your pricing guide is ready the moment you send it: your collection, how your day could run and how I’ll photograph what matters most to you, on one page made for you. A note from me follows by email about 30 seconds later. From there, pick a time for a free 30-minute video call, reply to that email, or message me on WhatsApp or by text at ${phone}.`
+      ? `Your pricing guide is ready the moment you send it: your collection, how your day could run and how I’ll photograph what matters most to you, on one page made for you. A note from me follows by email about 30 seconds later, including whether I’m available on your date. From there, pick a time for a free 30-minute video call, reply to that email, or message me on WhatsApp or by text at ${phone}.`
       : `Your pricing guide is ready the moment you send it, on one page made for your day, and I reply personally the same day. From there, pick a time for a free 30-minute video call, or message me on WhatsApp or by text at ${phone}.`],
     [city.coverageQuestion, market.coverageAnswer],
     [city.planningQuestion, city.planningAnswer], POSING_QUESTION,
@@ -46,6 +67,18 @@ export default function InquiryLanding({ city, market }: { city: WeddingCity; ma
     ["How do we secure our wedding date?", "Once you’ve chosen your collection and we’ve agreed the details, a signed contract and a non-refundable 30% deposit secure the date. Then 35% is due 60 days before the wedding, and the final 35% 30 days before. There’s no obligation to book after our call."],
   ];
   const weddingAlbums = weddingAlbumsFor(city.albums);
+  const hub = hubBySlug(city.hub);
+  const spots = city.spots.map((name) => hub?.venues.find((venue) => venue.name === name)).filter((venue): venue is NonNullable<typeof venue> => Boolean(venue));
+  const how: [string, string][] = [
+    ["Tell me about your day", autoReplyEnabled()
+      ? "Two quick steps on this page. Your pricing guide is ready the moment you send it, and a note from me follows about 30 seconds later, including whether I’m available on your date."
+      : "Two quick steps on this page. Your pricing guide is ready the moment you send it, and I reply personally the same day."],
+    ["A free 30-minute call", "We talk through your day, the photographs you love and the collection that fits. No obligation."],
+    ["Secure your date", "A signed contract and a non-refundable 30% deposit. Then 35% is due 60 days before the wedding, and the final 35% 30 days before."],
+    ["Plan it together", "Your engagement session, a planning call, the family-photo plan and a timeline built around your venue."],
+    ["Your wedding day", "I arrive early, guide you when it helps, and photograph what happens."],
+    ["Your photographs", "A preview the next day, reels in your first week and the full gallery in three weeks."],
+  ];
   const cta = <>{CTA_LABEL} <span aria-hidden="true">↗</span></>;
 
   return <div className={`${styles.page} ${styles.dark}`} data-landing-theme="dark" data-landing-city={city.slug}>
@@ -78,20 +111,38 @@ export default function InquiryLanding({ city, market }: { city: WeddingCity; ma
         </section>
         <div className={styles.factBar}><span>{city.coverage[0]}</span><span>{city.coverage[1]}</span><span>Photographed by Arman</span></div>
 
-        <section className={styles.firstQuote} aria-label="A client’s words"><span className={styles.quoteMark} aria-hidden="true">“</span><blockquote>Only one person understood our vision<br className={styles.desktopBreak} /> the way we were imagining it.</blockquote><a href={proofSrc(8)} target="_blank" rel="noopener noreferrer">Samantha · Google review <span aria-hidden="true">↗</span></a></section>
-
-        <section id="albums" className={styles.workSection} aria-labelledby="work-title">
-          <div className={styles.sectionHeading}><div><p className={styles.eyebrow}>The portfolio / 01</p><h2 id="work-title">See exactly<br /><em>what you’ll get.</em></h2></div><p>Five complete collections, from the quiet moments to the dance floor. Open any of them and look closely. Every gallery I deliver is held to this.</p></div>
-          <AlbumBrowser albums={stylesOfWork} label="Five complete portfolio collections" compact />
-          <p className={styles.albumHint}>Open an album to see every photograph. <span>Swipe to explore the collections →</span></p>
-          <div className={styles.weddingHeading}><div><p className={styles.eyebrow}>Wedding stories / 02</p><h2>The whole day.<br /><em>All the way through.</em></h2></div><p>Three complete weddings, every photograph, from the first look to the last dance. The way you’ll receive yours.</p></div>
-          <AlbumBrowser albums={weddingAlbums} label="Complete wedding stories" />
+        <section className={funnel.forWho} aria-labelledby="for-title">
+          <div className={styles.sectionHeading}><div><p className={styles.eyebrow}>Who this is for</p><h2 id="for-title">Couples who want<br /><em>to be in their wedding.</em></h2></div><p>You’re planning a {city.name} wedding, and you want the day to feel like yours from the first look to the last dance.</p></div>
+          <div className={funnel.forGrid}>{FOR_WHO.map(([title, body]) => <article key={title}><h3>{title}</h3><p>{body}</p></article>)}</div>
+          <p className={funnel.forClose}>If that sounds like the two of you, you’re in the right place.</p>
         </section>
 
         <section className={styles.about} aria-labelledby="about-title">
           <div className={styles.portraitWrap}><figure className={styles.portrait}><Image src={ARMAN.src} alt={ARMAN.alt} fill quality={78} sizes="(max-width: 760px) 85vw, 38vw" /></figure><span className={styles.signature}>See you on the other side of the camera.</span></div>
-          <div className={styles.aboutCopy}><p className={styles.eyebrow}>Your photographer</p><h2 id="about-title">Hi, I’m Arman.<br /><em>You’re in good hands.</em></h2><p>You don’t need to arrive knowing how to pose. I’ll guide you, simply and clearly, and you’ll still look like yourselves.</p><p>I know where the good moments happen, and I’m already standing there when they do: the glance before the vows, your dad’s face at the first dance, the friend who cries first. I make time for the family photographs, then give you back to your people.</p><p>{city.about}</p></div>
+          <div className={styles.aboutCopy}>
+            <p className={styles.eyebrow}>Who I am</p>
+            <h2 id="about-title">Hi, I’m Arman.<br /><em>You’re in good hands.</em></h2>
+            <p>A wedding is the last ceremony most people will ever take part in, and I photograph it as one. I arrive early, I stay quiet, and I stand where the light and the meaning meet.</p>
+            <p>You don’t need to know how to pose. I’ll give you clear, simple direction for the twenty minutes where it helps, then give you back to your people. {city.about}</p>
+            <ul className={funnel.quals}>{QUALS.map(([title, body]) => <li key={title}><strong>{title}</strong> {body}</li>)}</ul>
+            <blockquote className={funnel.aboutQuote}>“Only one person understood our vision the way we were imagining it.”<a href={proofSrc(8)} target="_blank" rel="noopener noreferrer">Samantha · Google review <span aria-hidden="true">↗</span></a></blockquote>
+          </div>
         </section>
+
+        {spots.length ? <section className={funnel.local} aria-labelledby="local-title">
+          <div className={styles.sectionHeading}><div><p className={styles.eyebrow}>Local knowledge</p><h2 id="local-title">Where {city.name}<br /><em>looks its best.</em></h2></div><p>A few of the places I’ll suggest, and what each one gives a photograph.</p></div>
+          <div className={funnel.localGrid}>{spots.map((spot) => <article key={spot.name}><p className={styles.eyebrow}>{spot.where}</p><h3>{spot.name}</h3><p>{spot.note}</p></article>)}</div>
+        </section> : null}
+
+        <section id="albums" className={styles.workSection} aria-labelledby="work-title">
+          <div className={styles.sectionHeading}><div><p className={styles.eyebrow}>Weddings like yours</p><h2 id="work-title">Complete weddings.<br /><em>Every photograph.</em></h2></div><p>Three whole wedding days, from the first look to the last dance, the way the couples received them. Yours arrives the same way.</p></div>
+          <AlbumBrowser albums={weddingAlbums} label="Complete wedding stories" />
+          <div className={styles.weddingHeading}><div><p className={styles.eyebrow}>Find your style</p><h2>Five ways<br /><em>to tell it.</em></h2></div><p>From the quiet moments to the dance floor. Open any collection and look closely. Every gallery I deliver is held to this.</p></div>
+          <AlbumBrowser albums={stylesOfWork} label="Five complete portfolio collections" compact />
+          <p className={styles.albumHint}>Open an album to see every photograph. <span>Swipe to explore the collections →</span></p>
+        </section>
+
+        <section className={styles.interlude} aria-label={`Wedding photographs from ${city.name}`}>{city.interlude.map((photo) => <figure key={photo.src}><Image src={photo.src} alt={photo.alt} fill quality={72} sizes="(max-width: 760px) 50vw, 33vw" /></figure>)}</section>
 
         <section id="collections" className={styles.collections} aria-labelledby="collections-title">
           <div className={styles.sectionHeading}><div><p className={styles.eyebrow}>The collections / 03</p><h2 id="collections-title">Three collections.<br /><em>No surprises.</em></h2></div><p>One price each, with everything listed. Tell me about your day and I’ll tell you which one fits.</p></div>
@@ -110,7 +161,11 @@ export default function InquiryLanding({ city, market }: { city: WeddingCity; ma
           {[{ n: 2, who: "Jennifer", quote: "We just went through the preview gallery and we are OBSESSED!" }, { n: 3, who: "Megan", quote: "I did not expect to get emotional over the album but here we are." }, { n: 5, who: "Brianna", quote: "It’s everything I ever wanted and more." }].map(({ n, who, quote }) => { const proof = proofByN(n); return <figure key={n}><blockquote>“{quote}”</blockquote><figcaption>{who}</figcaption><a href={proofSrc(n)} target="_blank" rel="noopener noreferrer" aria-label={`Read ${who}’s original message`}><Image src={proofSrc(n)} alt={proof.alt} width={proof.w} height={proof.h} quality={80} sizes="(max-width: 760px) 78vw, 25vw" /><span>Read the original message ↗</span></a></figure>; })}
         </div></section>
 
-        <section className={styles.interlude} aria-label="Wedding photographs">{city.interlude.map((photo) => <figure key={photo.src}><Image src={photo.src} alt={photo.alt} fill quality={72} sizes="(max-width: 760px) 50vw, 33vw" /></figure>)}</section>
+
+        <section className={funnel.how} aria-labelledby="how-title">
+          <div className={styles.sectionHeading}><div><p className={styles.eyebrow}>How it works</p><h2 id="how-title">From hello<br /><em>to your gallery.</em></h2></div><p>No guesswork at any step. Here’s exactly what happens.</p></div>
+          <ol className={funnel.howSteps}>{how.map(([title, body], i) => <li key={title}><span>{String(i + 1).padStart(2, "0")}</span><strong>{title}</strong><p>{body}</p></li>)}</ol>
+        </section>
 
         <section className={styles.faq} aria-labelledby="faq-title"><div><p className={styles.eyebrow}>A few things before we meet</p><h2 id="faq-title">You might<br /><em>be wondering.</em></h2></div><div className={styles.questions}>{questions.map(([q, a]) => <details key={q}><summary>{q}<span aria-hidden="true">+</span></summary><p>{a}</p></details>)}</div></section>
 

@@ -459,6 +459,35 @@ Everything in this list is live and was verified with a real HTTP check.
   call. No recap of their answers (the "What you told me" box does that), no
   question at the end. This replaces the 2026-10-01 "repeat their details"
   rule; the opening still names venue and date exactly, so it is never vague.
+  **Landing page story (owner, 2026-10-02: "who this is for, who am I and how
+  I can fulfill it ... why am I qualified ... samples of similar jobs"):**
+  hero and form, then Who this is for (FOR_WHO), Who I am (QUALS, from the
+  about page's own words, plus Samantha's review), Where <city> looks its best
+  (the city's lib/hubs.ts place notes, chosen per city in `spots`; Vancouver
+  leaves out "Sea-to-Sky and Whistler" because its note says "same price",
+  which contradicts the Vancouver travel line), Complete weddings, style
+  collections, the city strip, collections, reviews, How it works (six
+  steps), FAQ, final CTA. Calgary uses the banff hub notes, Victoria the
+  tofino hub's island notes.
+  **Lead source:** lib/lead-source.ts puts a coloured box at the top of every
+  lead email and a [Google Ads] / [Meta Ads] / [Facebook/Instagram] tag on the
+  subject. gclid (or wbraid/gbraid) proves a Google ad click; fbclid does not
+  prove a Meta ad (Meta adds it to every click), so Meta ads need paid UTM
+  tags on their URLs to be labelled as ads.
+  **Date checking is back, in the reply email only (owner, 2026-10-02):**
+  BOOKED_WEDDING_DATES in lib/wedding-availability.ts (2027-08-28). Open dates
+  get "available as of now, first come, first served"; booked dates are told
+  plainly; checkedBody rejects contradictions and any "hold your date".
+  **OPEN QUESTION, photo provenance (2026-10-02):** the owner asked to use the
+  armanarai.com city hubs' photos as "samples of similar jobs". The .com
+  Vancouver hub's "What I've Shot" album (lib/vancouver-shot-album.ts in the
+  .com repo) is mostly `hf_<date>_<uuid>.png` files, Higgsfield's naming; 7 of
+  them carry an hf-job-id and one also Google's C2PA "trainedAlgorithmicMedia"
+  label (the Lions Gate couple). The .ca cities/vancouver/work set looks like
+  the same series (one file is named "24-pergola-walkway-second-reimagining"),
+  but its webp copies carry no metadata either way, and no frame used on the
+  pricing pages matched a job-id file by fingerprint. Not added to the pages
+  until he says which are photographs he took.
   **Google Ads "Submit lead form":** `LEAD_FORM_CONVERSION` in lib/analytics.ts
   (AW-18464850778/ySE3CPyOtYsdENqG3eRE, from the owner's pasted snippet) fires
   in `trackWeddingInquiry`, beside GA4 `wedding_inquiry`, once per sent form,

@@ -106,3 +106,32 @@
   .collectionName, .collectionPrice { font-size: 27px; }
   .best { margin: 0 -12px; padding: 18px 12px; }
 }
+
+/* Who this is for, local knowledge and how it works (the landing page story,
+   2026-10-02). Two classes deep where they must beat `.page h3`. */
+.forWho, .local, .how { padding: 85px max(5.5%, calc((100% - 1424px) / 2)); border-top: .5px solid var(--line); }
+.forGrid, .localGrid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0 4%; }
+.forGrid article, .localGrid article { border-top: .5px solid var(--gold); padding-top: 22px; }
+.forWho .forGrid h3, .local .localGrid h3 { font-size: 27px; font-weight: 300; line-height: 1.12; margin: 6px 0 12px; color: var(--ink); }
+.forWho .forGrid p, .local .localGrid p:not(:first-child) { font-size: 14px; line-height: 1.75; color: var(--dark-body); }
+.local .localGrid p:first-child { color: var(--gold); }
+.forWho .forClose { margin-top: 34px; font-family: var(--font-cormorant), Georgia, serif; font-size: 26px; font-style: italic; color: var(--gold); }
+.aboutCopy .quals { list-style: none; padding: 0; margin: 22px 0 0; display: grid; gap: 0; }
+.quals li { border-top: .5px solid var(--line); padding: 12px 0; font-size: 14px; line-height: 1.7; color: var(--dark-body); }
+.quals strong { color: var(--ink); font-weight: 400; }
+.aboutCopy .aboutQuote { margin: 26px 0 0; font-family: var(--font-cormorant), Georgia, serif; font-size: 26px; line-height: 1.25; color: var(--ink); }
+.aboutQuote a { display: block; margin-top: 10px; font-family: var(--font-jost), sans-serif; font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--gold) !important; }
+.howSteps { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0 5%; }
+.howSteps li { border-top: .5px solid var(--line); padding: 22px 0 28px; }
+.howSteps span { color: var(--gold); font-size: 11px; letter-spacing: .14em; }
+.how .howSteps strong { display: block; font-family: var(--font-cormorant), Georgia, serif; font-size: 28px; font-weight: 300; line-height: 1.1; margin: 8px 0; color: var(--ink); }
+.how .howSteps p { font-size: 14px; line-height: 1.75; color: var(--dark-body); }
+@media (max-width: 1100px) {
+  .forGrid, .localGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 30px; }
+  .howSteps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 760px) {
+  .forWho, .local, .how { padding: 55px 6%; }
+  .forGrid, .localGrid, .howSteps { grid-template-columns: 1fr; row-gap: 22px; }
+}
+

@@ -66,7 +66,16 @@ export interface Installment {
   taxCents: Record<string, number>; // per tax code
   totalCents: number;
   paidCents: number;
-  status: "scheduled" | "due" | "processing" | "partially_paid" | "paid" | "overdue" | "failed" | "refunded" | "void";
+  status:
+    | "scheduled"
+    | "due"
+    | "processing"
+    | "partially_paid"
+    | "paid"
+    | "overdue"
+    | "failed"
+    | "refunded"
+    | "void";
   paidAt?: string;
   reference: string; // e.g. AA-CA-2027-014-01
   clientReportedSentAt?: string;
@@ -119,7 +128,7 @@ export interface Booking {
   createdAt: string;
   updatedAt: string;
   status: BookingStatus;
-  eventType: "elopement";
+  eventType: "elopement" | "wedding";
   clients: [Client, Client];
   packageKey: string;
   packageName: string;
@@ -149,4 +158,5 @@ export interface Booking {
   events: AuditEvent[];
   internalNotes: string;
   remindersPaused: boolean;
+  wedding?: import("./wedding").WeddingData;
 }

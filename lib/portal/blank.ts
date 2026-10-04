@@ -1,9 +1,13 @@
+import type { Booking } from "./types";
 import type { BookingInput } from "@/app/admin/actions";
 import { PACKAGES, defaultTaxesFor } from "./presets";
 import { defaultFields } from "./workOrderFields";
 
 const emptyClient = () => ({
-  legalName: "", preferredName: "", email: "", phone: "",
+  legalName: "",
+  preferredName: "",
+  email: "",
+  phone: "",
   address: { line1: "", line2: "", city: "", province: "BC", postalCode: "" },
 });
 
@@ -13,7 +17,14 @@ export function blankBookingInput(): BookingInput {
     clients: [emptyClient(), emptyClient()],
     packageKey: pkg.key,
     packageName: pkg.name,
-    event: { date: "", backupDate: "", serviceDates: "", location: "", province: "BC", ceremonyType: "legal" },
+    event: {
+      date: "",
+      backupDate: "",
+      serviceDates: "",
+      location: "",
+      province: "BC",
+      ceremonyType: "legal",
+    },
     lines: [{ id: "l1", kind: "package", label: pkg.name, cents: 0 }],
     allocation: pkg.allocation,
     taxes: defaultTaxesFor("BC"),
@@ -23,3 +34,24 @@ export function blankBookingInput(): BookingInput {
   };
 }
 
+export function existingBookingInput(b: Booking): BookingInput {
+  return {
+    clients: b.clients.map(({ id, ...c }) => c) as BookingInput["clients"],
+    packageKey: b.packageKey,
+    packageName: b.packageName,
+    event: {
+      date: b.event.date,
+      backupDate: b.event.backupDate,
+      serviceDates: b.event.serviceDates,
+      location: b.event.location,
+      province: b.event.province,
+      ceremonyType: b.event.ceremonyType,
+    },
+    lines: b.lines,
+    allocation: b.allocation,
+    taxes: b.taxes,
+    fields: b.fields,
+    internalNotes: b.internalNotes,
+    remindersPaused: b.remindersPaused,
+  };
+}

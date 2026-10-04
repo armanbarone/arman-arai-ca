@@ -29,6 +29,15 @@ const RETIRED_POSTS: Record<string, string> = {
 
 const nextConfig: NextConfig = {
   outputFileTracingRoot: __dirname,
+  serverExternalPackages: ["pdfkit"],
+  outputFileTracingIncludes: {
+    // PDF completion and retry server actions need the same resources as downloads.
+    "/*": [
+      "./public/fonts/portal/*.ttf",
+      "./node_modules/pdfkit/js/standard-fonts/**",
+      "./node_modules/pdfkit/js/data/**",
+    ],
+  },
   // inlineCss was on here, to take the render-blocking CSS request off the
   // critical path. Measured against the live site on Slow 4G it was a net loss:
   // Next ships the stylesheet twice under that flag, once as a <style> tag and

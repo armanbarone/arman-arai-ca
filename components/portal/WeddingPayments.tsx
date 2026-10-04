@@ -157,7 +157,7 @@ export default function WeddingPayments({
               <p
                 style={{
                   fontWeight: 700,
-                  color: "#234b3b",
+                  color: "var(--accent)",
                   overflowWrap: "anywhere",
                 }}
               >

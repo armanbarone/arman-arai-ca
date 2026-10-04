@@ -93,7 +93,7 @@ export default async function AdminDocuments({
                   {docs.map((d) => (
                     <div
                       key={d.id}
-                      style={{ borderTop: "1px solid #d7dfd8", paddingTop: 15 }}
+                      style={{ borderTop: "1px solid var(--line)", paddingTop: 15 }}
                     >
                       <p>
                         Version {d.version} · <StatusPill status={d.status} />

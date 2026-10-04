@@ -459,6 +459,20 @@ Everything in this list is live and was verified with a real HTTP check.
   call. No recap of their answers (the "What you told me" box does that), no
   question at the end. This replaces the 2026-10-01 "repeat their details"
   rule; the opening still names venue and date exactly, so it is never vague.
+  **SUPERSEDED 2026-10-03: the five pricing pages are now a copy of
+  /wedding-photography/vancouver-weddings** (owner: "copy paste the
+  style/design and wording of this new landing page into your own landing
+  pages ... I am not interested in your own work"). WeddingsLanding.tsx is that
+  page's markup and words with only the city swapped in (name, hero caption =
+  city.coverage[0], city.workLine, the album photos, footer), styled by the
+  vancouver-weddings/landing.module.css file itself so they cannot drift.
+  InquiryLanding.tsx is deleted; the story sections below no longer render.
+  The album is CityWorkAlbum (WorkAlbum with the city in its labels); its
+  `sizes` is capped at "(max-width: 760px) 88vw, 600px", quality 72, so phones
+  and retina desktops both load the 1200px variant, never the 2000px source.
+  The same cap was applied to vancouver-weddings/WorkAlbum.tsx. Cities without
+  a hub album (Toronto, Montreal) use their heroes plus non-"places" strip
+  photos. The form is the shared InquiryForm: auto-reply, guide, thank-you URL.
   **Landing page story (owner, 2026-10-02: "who this is for, who am I and how
   I can fulfill it ... why am I qualified ... samples of similar jobs"):**
   hero and form; Who this is for (FOR_WHO cards, then the five style

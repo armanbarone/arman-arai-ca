@@ -2,18 +2,21 @@
 
 import Image from "next/image";
 import { useRef, useState } from "react";
-import type { WorkPhoto } from "@/lib/ads/hub-work";
-import styles from "./landing.module.css";
+import type { Photo } from "@/lib/images";
+import styles from "./vancouver-weddings/landing.module.css";
 
-/** The existing Vancouver album, one photograph at a time. No autoplay,
- *  blank cover or off-screen image downloads. Swipe, keys and buttons agree. */
-export default function WorkAlbum({ photos }: { photos: WorkPhoto[] }) {
+/** vancouver-weddings/WorkAlbum.tsx, for every city: the same album, one
+ *  photograph at a time, with the city in its labels. `sizes` is capped
+ *  (owner, 2026-10-03: "optimized version for mobile/desktop and not the full
+ *  original image"): a phone asks for about 1080px, a retina desktop for
+ *  1200px, instead of the 1920px variant the uncapped 52vw reached. */
+export default function CityWorkAlbum({ photos, place }: { photos: Photo[]; place: string }) {
   const [index, setIndex] = useState(0);
   const touch = useRef<{ x: number; y: number } | null>(null);
   const go = (delta: number) => setIndex((current) => Math.max(0, Math.min(photos.length - 1, current + delta)));
   const photo = photos[index];
 
-  return <div className={styles.workAlbum} role="region" aria-label="Vancouver and Sea-to-Sky photo album" aria-roledescription="carousel" tabIndex={0}
+  return <div className={styles.workAlbum} role="region" aria-label={`${place} photo album`} aria-roledescription="carousel" tabIndex={0}
     onKeyDown={(event) => {
       if (event.target !== event.currentTarget) return;
       if (event.key === "ArrowRight" || event.key === "ArrowLeft") { event.preventDefault(); go(event.key === "ArrowRight" ? 1 : -1); }
@@ -27,13 +30,11 @@ export default function WorkAlbum({ photos }: { photos: WorkPhoto[] }) {
       if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy)) go(dx < 0 ? 1 : -1);
     }}>
     <figure className={styles.workFrame}>
-      {/* Capped so a phone asks for about 1080px and a retina desktop for
-          1200px, not the 1920px variant (owner, 2026-10-03). */}
       <Image key={photo.src} src={photo.src} alt={photo.alt} fill sizes="(max-width: 760px) 88vw, 600px" quality={72} />
     </figure>
     <div className={styles.workControls}>
       <p aria-live="polite" aria-atomic="true">{String(index + 1).padStart(2, "0")} <span>/ {photos.length} photographs</span></p>
-      <div><button type="button" aria-label="Previous Vancouver photograph" disabled={index === 0} onClick={() => go(-1)}>←</button><button type="button" aria-label="Next Vancouver photograph" disabled={index === photos.length - 1} onClick={() => go(1)}>→</button></div>
+      <div><button type="button" aria-label={`Previous ${place} photograph`} disabled={index === 0} onClick={() => go(-1)}>←</button><button type="button" aria-label={`Next ${place} photograph`} disabled={index === photos.length - 1} onClick={() => go(1)}>→</button></div>
     </div>
     <p className={styles.swipeHint}>Swipe or use the arrows to turn the page.</p>
   </div>;

@@ -11,6 +11,10 @@ export type WeddingCity = {
    *  frame the next, and both move up one on each beat. Only the first two
    *  load with the page. Every photo here must work in both crops. */
   heroes: HeroPhoto[];
+  /** The line under "See how your day could feel", before "Explore the
+   *  photographs at your own pace." Vancouver's is the vancouver-weddings
+   *  page's own; the rest follow its shape. */
+  workLine: string;
   interlude: Photo[];
   /** Samples of similar work from the armanarai.com city hub
    *  (lib/ads/hub-work.ts), shown as a swipeable album like the hub's own
@@ -45,7 +49,7 @@ const defaultAlbums = ["luca-lauren", "elisha-michael", "nicole-js"];
 
 export const WEDDING_CITIES: WeddingCity[] = [
   {
-    slug: "vancouver", name: "Vancouver",
+    slug: "vancouver", name: "Vancouver", workLine: "From Vancouver gardens to the Sea-to-Sky.",
     heroes: [
       // The owner's main Vancouver hero (2026-10-02: "put the lions gate bridge
       // in the hero segment"). First, so it is the photo that loads with the
@@ -68,7 +72,7 @@ export const WEDDING_CITIES: WeddingCity[] = [
     albums: defaultAlbums,
   },
   {
-    slug: "toronto", name: "Toronto",
+    slug: "toronto", name: "Toronto", workLine: "From Toronto to Niagara and Prince Edward County.",
     heroes: [
       albumFrame("elisha-michael", "035", "Guests throwing petals as a couple leaves a stone chapel in the Niagara hills"),
       albumFrame("eathon-jessica", "020", "A couple kissing under a floral arch at a glass pavilion in Prince Edward County"),
@@ -86,7 +90,7 @@ export const WEDDING_CITIES: WeddingCity[] = [
     albums: ["eathon-jessica", "elisha-michael", "luca-lauren"],
   },
   {
-    slug: "montreal", name: "Montréal",
+    slug: "montreal", name: "Montréal", workLine: "From Old Montréal to the Eastern Townships.",
     heroes: [
       albumFrame("luca-lauren", "039", "The Notre-Dame Basilica interior in blue and gold as the bride's train follows her up the aisle"),
       albumFrame("luca-lauren", "038", "A couple seated before the priest under stained glass during their church ceremony"),
@@ -108,7 +112,7 @@ export const WEDDING_CITIES: WeddingCity[] = [
        (banff)"). The photographs are the Banff work in the cities/banff
        folder; the hub's own alt text is wrong for some of them, so each one
        here is described from the photograph itself. */
-    slug: "calgary", name: "Calgary & Banff",
+    slug: "calgary", name: "Calgary & Banff", workLine: "From Calgary to Banff and the Rockies.",
     heroes: [
       cityFrame("banff/banff-53", "A couple on a rock above the turquoise water of Moraine Lake, the peaks behind them"),
       cityFrame("banff/banff-14", "A couple at a flower-dressed ceremony arch on a lawn beneath the Rockies"),
@@ -136,7 +140,7 @@ export const WEDDING_CITIES: WeddingCity[] = [
        Island frames that were here are copies of originals carrying Google's
        C2PA "AI-generated" label (Vancouver Island/*.png on the .com bucket,
        fingerprint-matched 2026-10-02), so they are not shown as his work. */
-    slug: "victoria", name: "Victoria",
+    slug: "victoria", name: "Victoria", workLine: "From BC gardens to the coast and the mountains.",
     heroes: [
       cityFrame("vancouver/work/40-hatley-castle-grand-front", "A couple seated on the lawn in front of Hatley Castle in late sun"),
       bcFrame(14, "A couple walking hand in hand through a formal garden with a fountain"),

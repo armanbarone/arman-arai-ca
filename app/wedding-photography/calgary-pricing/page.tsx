@@ -1,17 +1,16 @@
-import InquiryLanding from "../InquiryLanding";
+import WeddingsLanding, { weddingsMetadata } from "../WeddingsLanding";
 import { weddingCityRoute } from "@/lib/ads/city-wedding-pages";
-import { cityWeddingMetadata } from "@/lib/ads/city-wedding-metadata";
-import { pricingMarket, pricingTiers } from "@/lib/ads/pricing-request";
+import { pricingMarket } from "@/lib/ads/pricing-request";
 
-/* The Calgary & Banff pricing-request ads page. noindex like every ads page, and out of
-   the sitemap. The layout and the one-action rule live in InquiryLanding. */
+/* The calgary pricing-request ads page: the vancouver-weddings design and
+   wording (WeddingsLanding), noindex like every ads page and out of the
+   sitemap. */
 const route = weddingCityRoute("calgary")!;
 const market = pricingMarket("calgary")!;
+const path = "/wedding-photography/calgary-pricing";
 
-export const metadata = cityWeddingMetadata(route.city, "/wedding-photography/calgary-pricing", {
-  entryPrice: Math.min(...pricingTiers().map((tier) => tier.price)),
-});
+export const metadata = weddingsMetadata(route.city, path);
 
 export default function PricingPage() {
-  return <InquiryLanding city={route.city} market={market} />;
+  return <WeddingsLanding city={route.city} market={market} path={path} />;
 }

@@ -3,6 +3,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { formatCad, formatDate } from "@/lib/portal/money";
 import { Card, Eyebrow, StatusPill, buttonCls } from "./Shell";
+import { useWeddingPreview } from "./WeddingPreviewProvider";
 export interface StudioRow {
   ref: string;
   names: string;
@@ -15,6 +16,8 @@ export interface StudioRow {
   action: string;
   attention: boolean;
   waiting: string;
+  archived?: boolean;
+  portalEnabled?: boolean;
 }
 export default function WeddingStudioOverview({
   rows,
@@ -23,17 +26,21 @@ export default function WeddingStudioOverview({
   rows: StudioRow[];
   preview?: boolean;
 }) {
+  const context = useWeddingPreview();
   const [q, setQ] = useState(""),
     [tab, setTab] = useState("all"),
-    active = rows.filter((r) => r.status !== "cancelled"),
+    active = rows.filter((r) => r.status !== "cancelled" && !r.archived),
     attention = active.filter((r) => r.attention),
     paid = active.reduce((s, r) => s + r.paid, 0),
     total = active.reduce((s, r) => s + r.total, 0);
   const shown = rows.filter(
     (r) =>
-      (tab === "all" ||
-        (tab === "attention" && r.attention) ||
-        (tab === "signing" && /signature|signed/.test(r.waiting))) &&
+      ((tab === "all" && !r.archived) ||
+        (tab === "archived" && r.archived) ||
+        (tab === "attention" && !r.archived && r.attention) ||
+        (tab === "signing" &&
+          !r.archived &&
+          /signature|signed/.test(r.waiting))) &&
       `${r.names} ${r.ref} ${r.location}`
         .toLowerCase()
         .includes(q.toLowerCase()),
@@ -53,6 +60,24 @@ export default function WeddingStudioOverview({
           href={preview ? "/portal/preview/admin/new" : "/admin/bookings/new"}
         >
           + New wedding
+        </Link>
+      </div>
+      <div className="wp-toolbar">
+        <Link
+          className="wp-button wp-button-secondary"
+          href={preview ? "/portal/preview/admin/invoices" : "/admin/invoices"}
+        >
+          Manage all invoices →
+        </Link>
+        <Link
+          className="wp-button wp-button-secondary"
+          href={
+            preview
+              ? "/portal/preview/admin/payment-settings"
+              : "/admin/payment-settings"
+          }
+        >
+          Stripe & email settings →
         </Link>
       </div>
       <div className="wp-stats">
@@ -87,6 +112,7 @@ export default function WeddingStudioOverview({
             </p>
           </div>
           <Link
+            onClick={() => preview && context?.selectBooking(attention[0].ref)}
             className={buttonCls}
             href={
               preview
@@ -101,9 +127,10 @@ export default function WeddingStudioOverview({
       <div className="wp-filterbar">
         <div className="wp-tabs">
           {[
-            ["all", `All weddings (${rows.length})`],
+            ["all", `Weddings (${rows.filter((r) => !r.archived).length})`],
             ["attention", `Needs you (${attention.length})`],
             ["signing", "Awaiting signatures"],
+            ["archived", `Archived (${rows.filter((r) => r.archived).length})`],
           ].map(([v, l]) => (
             <button
               key={v}
@@ -148,7 +175,10 @@ export default function WeddingStudioOverview({
                       </small>
                     </td>
                     <td>
-                      <StatusPill status={r.status} />
+                      <StatusPill status={r.archived ? "archived" : r.status} />
+                      {r.portalEnabled === false && (
+                        <small>Client access closed</small>
+                      )}
                       <small style={{ marginTop: 8 }}>{r.waiting}</small>
                     </td>
                     <td>
@@ -158,6 +188,7 @@ export default function WeddingStudioOverview({
                     <td style={{ maxWidth: 250 }}>{r.action}</td>
                     <td>
                       <Link
+                        onClick={() => preview && context?.selectBooking(r.ref)}
                         className="wp-button wp-button-secondary"
                         href={
                           preview

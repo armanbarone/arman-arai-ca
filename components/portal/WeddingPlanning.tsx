@@ -2,6 +2,8 @@
 import { useWeddingBooking } from "./WeddingPreviewProvider";
 import Link from "next/link";
 import type { Booking } from "@/lib/portal/types";
+import { workflowIsVisible } from "@/lib/portal/portal-controls";
+import ClientPlanningChecklist from "./ClientPlanningChecklist";
 import {
   WEDDING_TEMPLATES,
   weddingData,
@@ -38,9 +40,12 @@ export default function WeddingPlanning({
         </Link>
       </Card>
       <div className="wp-doc-section" style={{ marginTop: 30 }}>
+        <ClientPlanningChecklist booking={b} preview={preview} />
         <div className="wp-doc-grid">
-          {WEDDING_TEMPLATES.filter((t) =>
-            ["form", "request"].includes(t.action),
+          {WEDDING_TEMPLATES.filter(
+            (t) =>
+              ["form", "request"].includes(t.action) &&
+              workflowIsVisible(b, t.key),
           ).map((t) => (
             <Card key={t.key} className="wp-doc-card">
               <div className="wp-doc-head">

@@ -1,9 +1,17 @@
 "use client";
 import { createContext, useContext, useEffect, useState } from "react";
 import type { Booking } from "@/lib/portal/types";
-const KEY = "aa-wedding-preview-v4";
+const KEY = "aa-wedding-preview-v5";
+function persist(bookings: Booking[], selectedRef: string) {
+  try {
+    localStorage.setItem(KEY, JSON.stringify({ bookings, selectedRef }));
+  } catch {}
+}
 type Preview = {
   booking: Booking;
+  bookings: Booking[];
+  selectBooking: (ref: string) => void;
+  addBooking: (booking: Booking) => void;
   email: string;
   setEmail: (email: string) => void;
   reset: () => void;
@@ -17,7 +25,8 @@ export function WeddingPreviewProvider({
   initial: Booking;
   children: React.ReactNode;
 }) {
-  const [booking, setBooking] = useState(initial),
+  const [bookings, setBookings] = useState([initial]),
+    [selectedRef, setSelectedRef] = useState(initial.ref),
     [email, setEmail] = useState(initial.clients[0].email),
     [loaded, setLoaded] = useState(false);
   useEffect(() => {
@@ -25,14 +34,26 @@ export function WeddingPreviewProvider({
       try {
         const saved = localStorage.getItem(KEY);
         if (saved) {
-          const b = JSON.parse(saved) as Booking;
+          const value = JSON.parse(saved) as {
+            bookings: Booking[];
+            selectedRef: string;
+          };
           if (
-            b.ref === initial.ref &&
-            b.schema === 1 &&
-            b.clients?.length === 2 &&
-            b.wedding?.documents
-          )
-            setBooking(b);
+            value.bookings?.length &&
+            value.bookings.every(
+              (b) =>
+                b.schema === 1 &&
+                b.clients?.length === 2 &&
+                b.wedding?.documents,
+            )
+          ) {
+            setBookings(value.bookings);
+            setSelectedRef(
+              value.bookings.some((b) => b.ref === value.selectedRef)
+                ? value.selectedRef
+                : value.bookings[0].ref,
+            );
+          }
         }
       } catch {
         /* A clean sample is always available. */
@@ -49,30 +70,53 @@ export function WeddingPreviewProvider({
   useEffect(() => {
     if (loaded) {
       try {
-        const value = JSON.stringify(booking);
+        const value = JSON.stringify({ bookings, selectedRef });
         if (localStorage.getItem(KEY) !== value)
           localStorage.setItem(KEY, value);
       } catch {
         /* Keep this browser's preview usable if storage is full. */
       }
     }
-  }, [booking, loaded]);
+  }, [bookings, selectedRef, loaded]);
+  const booking = bookings.find((b) => b.ref === selectedRef) || bookings[0];
   const update = (fn: (b: Booking) => void) =>
-    setBooking((old) => {
-      const next = structuredClone(old);
-      fn(next);
-      next.updatedAt = new Date().toISOString();
-      return next;
+    setBookings((old) => {
+      const nextBookings = old.map((b) => {
+        if (b.ref !== selectedRef) return b;
+        const next = structuredClone(b);
+        fn(next);
+        next.updatedAt = new Date().toISOString();
+        return next;
+      });
+      persist(nextBookings, selectedRef);
+      return nextBookings;
     });
   return (
     <Context.Provider
       value={{
         booking,
-        email,
+        bookings,
+        selectBooking: (ref) => {
+          persist(bookings, ref);
+          setSelectedRef(ref);
+          const b = bookings.find((x) => x.ref === ref);
+          if (b) setEmail(b.clients[0].email);
+        },
+        addBooking: (b) => {
+          persist([...bookings, b], b.ref);
+          setBookings((old) => [...old, b]);
+          setSelectedRef(b.ref);
+          setEmail(b.clients[0].email);
+        },
+        email: booking.clients.some((c) => c.email === email)
+          ? email
+          : booking.clients[0].email,
         setEmail,
         update,
         reset: () => {
-          setBooking(structuredClone(initial));
+          persist([structuredClone(initial)], initial.ref);
+          setBookings([structuredClone(initial)]);
+          setSelectedRef(initial.ref);
           setEmail(initial.clients[0].email);
         },
       }}

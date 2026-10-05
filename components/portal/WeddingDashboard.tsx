@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import WeddingMoodboard from "./WeddingMoodboard";
+import ClientPlanningChecklist from "./ClientPlanningChecklist";
 import { useWeddingBooking } from "./WeddingPreviewProvider";
 import { Card, Eyebrow, buttonCls, ghostButtonCls, StatusPill } from "./Shell";
 import {
@@ -99,6 +100,12 @@ export default function WeddingDashboard({
           <span>days until your wedding</span>
         </div>
       </section>
+      {b.portal?.welcomeMessage && (
+        <Card>
+          <Eyebrow>A note from Arman</Eyebrow>
+          <p style={{ whiteSpace: "pre-wrap" }}>{b.portal.welcomeMessage}</p>
+        </Card>
+      )}
       <Card className="wp-action-hero">
         <div>
           <span className="wp-action-number">
@@ -223,6 +230,7 @@ export default function WeddingDashboard({
           ))}
         </Card>
       </div>
+      <ClientPlanningChecklist booking={b} preview={preview} />
       <WeddingMoodboard booking={b} preview={preview} compact />
       <div className="wp-toolbar">
         <Link className={ghostButtonCls} href={`${base}/moodboard`}>

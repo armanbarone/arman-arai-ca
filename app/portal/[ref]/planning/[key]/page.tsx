@@ -7,6 +7,7 @@ import {
   weddingData,
 } from "@/lib/portal/wedding";
 import NativeWeddingForm from "@/components/portal/NativeWeddingForm";
+import { workflowIsVisible } from "@/lib/portal/portal-controls";
 export default async function PlanningForm({
   params,
 }: {
@@ -17,7 +18,7 @@ export default async function PlanningForm({
   const t = WEDDING_TEMPLATES.find(
     (t) => t.key === key && ["form", "request"].includes(t.action),
   );
-  if (!t) notFound();
+  if (!t || !workflowIsVisible(booking, key)) notFound();
   return (
     <>
       <Link className="wp-back" href={`/portal/${ref}/planning`}>

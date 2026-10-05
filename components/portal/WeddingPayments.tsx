@@ -55,7 +55,7 @@ export default function WeddingPayments({
   return (
     <>
       <Eyebrow>Clear amounts. Exact dates.</Eyebrow>
-      <h1>{admin ? "Payment records" : "Your payments"}</h1>
+      <h2>{admin ? "Payment records" : "Your payment schedule"}</h2>
       <p className="wp-lead">
         All amounts are in Canadian dollars, including the taxes shown in your
         agreement.

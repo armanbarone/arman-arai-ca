@@ -25,6 +25,11 @@ import WeddingStudioOverview from "./WeddingStudioOverview";
 import WeddingContractDetails from "./WeddingContractDetails";
 import WeddingMoodboard from "./WeddingMoodboard";
 import WeddingLibrary from "./WeddingLibrary";
+import WeddingQuickCreate from "./WeddingQuickCreate";
+import WeddingPortalControls from "./WeddingPortalControls";
+import WeddingBilling from "./WeddingBilling";
+import WeddingInvoiceOverview from "./WeddingInvoiceOverview";
+import WeddingPaymentSetup from "./WeddingPaymentSetup";
 export default function WeddingPreviewRoutes({ path }: { path: string[] }) {
   const c = useWeddingPreview()!,
     b = c.booking,
@@ -33,22 +38,55 @@ export default function WeddingPreviewRoutes({ path }: { path: string[] }) {
     tkey = p[0] === "documents" ? (p[1] === "template" ? p[2] : p[1]) : p[1];
   let view: React.ReactNode;
   if (admin) {
-    if (p[0] === "new" || p[0] === "settings")
+    if (p[0] === "new") view = <WeddingQuickCreate preview />;
+    else if (p[0] === "portal")
+      view = <WeddingPortalControls key={b.ref} booking={b} preview />;
+    else if (p[0] === "invoices")
+      view = <WeddingInvoiceOverview bookings={c.bookings} preview />;
+    else if (p[0] === "payment-settings")
+      view = (
+        <WeddingPaymentSetup
+          preview
+          status={{
+            configured: true,
+            connected: false,
+            mode: "test",
+            accountName: "Practice account",
+            message:
+              "Practice preview. No live payment account is connected here.",
+            emailConfigured: false,
+          }}
+        />
+      );
+    else if (p[0] === "planning" && tkey) {
+      const t = templateFor(tkey, b),
+        f = b.wedding!.forms[tkey];
       view = (
         <>
-          <h1>
-            {p[0] === "new" ? "New wedding" : "Customize collection & quote"}
-          </h1>
+          <h1>{t.title}</h1>
+          <NativeWeddingForm
+            key={b.ref + tkey}
+            template={t}
+            initial={f?.fields || defaultDocumentFields(t, b)}
+            initialUpdatedAt={f?.updatedAt || null}
+            bookingRef={b.ref}
+            studioForm
+            preview
+          />
+        </>
+      );
+    } else if (p[0] === "settings")
+      view = (
+        <>
+          <h1>Customize collection & quote</h1>
           <p className="wp-lead">
             Start with the website collection, then adjust its coverage,
             deliverables, prices and taxes before publishing.
           </p>
           <BookingForm
             key={b.wedding?.intake?.approvedAt}
-            initial={
-              p[0] === "new" ? blankBookingInput() : existingBookingInput(b)
-            }
-            bookingRef={p[0] === "new" ? null : b.ref}
+            initial={existingBookingInput(b)}
+            bookingRef={b.ref}
             preview
             locked={b.wedding?.documents.some(
               (d) =>
@@ -76,7 +114,12 @@ export default function WeddingPreviewRoutes({ path }: { path: string[] }) {
         </>
       );
     else if (p[0] === "payments")
-      view = <WeddingPayments booking={b} admin preview />;
+      view = (
+        <>
+          <WeddingBilling booking={b} admin preview stripeReady />
+          <WeddingPayments booking={b} admin preview />
+        </>
+      );
     else if (p[0] === "documents" && tkey) {
       const t = templateFor(tkey, b),
         d = b
@@ -100,7 +143,8 @@ export default function WeddingPreviewRoutes({ path }: { path: string[] }) {
       );
     } else if (p[0] === "documents" || p[0] === "library")
       view = <WeddingLibrary bookingRef={b.ref} preview />;
-    else view = <WeddingStudioOverview rows={[studioRow(b)]} preview />;
+    else
+      view = <WeddingStudioOverview rows={c.bookings.map(studioRow)} preview />;
   } else if (p[0] === "agreement")
     view = <WeddingContractDetails booking={b} preview />;
   else if (p[0] === "moodboard")
@@ -136,7 +180,13 @@ export default function WeddingPreviewRoutes({ path }: { path: string[] }) {
     );
   } else if (p[0] === "documents")
     view = <WeddingDocuments booking={b} email={c.email} preview />;
-  else if (p[0] === "payments") view = <WeddingPayments booking={b} preview />;
+  else if (p[0] === "payments")
+    view = (
+      <>
+        <WeddingBilling booking={b} preview />
+        <WeddingPayments booking={b} preview />
+      </>
+    );
   else if (p[0] === "planning" && tkey) {
     const t = templateFor(tkey, b),
       f = b.wedding!.forms[tkey];
@@ -187,7 +237,14 @@ export default function WeddingPreviewRoutes({ path }: { path: string[] }) {
           </button>
         </div>
       )}
-      {view}
+      {!admin && (b.archivedAt || b.portal?.enabled === false) ? (
+        <div className="wp-empty">
+          <h1>Client access is closed</h1>
+          <p>The studio can restore access from Client dashboard & access.</p>
+        </div>
+      ) : (
+        view
+      )}
     </PortalShell>
   );
 }

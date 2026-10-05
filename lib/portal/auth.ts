@@ -72,7 +72,9 @@ export async function requireBookingAccess(
   if (!booking) notFound();
   if (
     session.role !== "admin" &&
-    !booking.clients.some((c) => c.email === session.email)
+    (!booking.clients.some((c) => c.email === session.email) ||
+      booking.archivedAt ||
+      booking.portal?.enabled === false)
   )
     notFound();
   return { session, booking };
@@ -81,7 +83,11 @@ export async function requireBookingAccess(
 export async function bookingsForEmail(email: string): Promise<Booking[]> {
   const all = await listBookings();
   return all.filter(
-    (b) => b.status !== "cancelled" && b.clients.some((c) => c.email === email),
+    (b) =>
+      b.status !== "cancelled" &&
+      !b.archivedAt &&
+      b.portal?.enabled !== false &&
+      b.clients.some((c) => c.email === email),
   );
 }
 

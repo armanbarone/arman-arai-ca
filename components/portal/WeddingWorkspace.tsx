@@ -38,9 +38,11 @@ export default function WeddingWorkspace({
         <StatusPill status={b.status} />
       </div>
       <div className="wp-card wp-action-hero">
-        <Eyebrow>Studio action</Eyebrow>
-        <h2>{summary.action}</h2>
-        <p>{summary.waiting}</p>
+        <div>
+          <Eyebrow>Studio action</Eyebrow>
+          <h2>{summary.action}</h2>
+          <p>{summary.waiting}</p>
+        </div>
         <Link
           className={buttonCls}
           href={
@@ -57,10 +59,11 @@ export default function WeddingWorkspace({
         </Link>
       </div>
       <div className="wp-tabs">
+        <Link href={`${base}/portal`}>Client dashboard & access</Link>
         <Link href={`${base}/agreement`}>Couple’s contract details</Link>
         <Link href={`${base}/moodboard`}>People & moodboard</Link>
         <Link href={`${base}/documents`}>Documents & signatures</Link>
-        <Link href={`${base}/payments`}>Payments</Link>
+        <Link href={`${base}/payments`}>Invoices & payments</Link>
         <Link href="#client-answers">Client answers</Link>
         {!preview &&
           w.documents.some(
@@ -72,6 +75,39 @@ export default function WeddingWorkspace({
           Client view ↗
         </Link>
       </div>
+      <div className="wp-doc-grid wp-admin-tools">
+        {[
+          [
+            "Prepare a contract",
+            "Review the couple’s details, customize their collection, then publish for initials and signatures.",
+            "agreement",
+          ],
+          [
+            "Edit the client dashboard",
+            "Invitations, access, welcome message, planning tasks, deadlines and archive controls.",
+            "portal",
+          ],
+          [
+            "Issue an invoice",
+            "Email a PDF and payment request. Track Stripe cards and confirm Interac receipts.",
+            "payments",
+          ],
+        ].map(([title, detail, path]) => (
+          <Card key={path}>
+            <h3>{title}</h3>
+            <p>{detail}</p>
+            <Link className={ghostButtonCls} href={`${base}/${path}`}>
+              Open →
+            </Link>
+          </Card>
+        ))}
+      </div>
+      {b.archivedAt && (
+        <p className="wp-message wp-message-error">
+          Archived wedding · client access is closed. Restore it in Client
+          dashboard & access.
+        </p>
+      )}
       <div className="wp-stats">
         <Card className="wp-stat">
           <Eyebrow>Contract total</Eyebrow>
@@ -112,7 +148,6 @@ export default function WeddingWorkspace({
           </Card>
         ) : (
           Object.entries(w.forms).map(([key, f]) => {
-            const b = useWeddingBooking(initial, preview);
             const t = templateFor(key);
             return (
               <Card key={key}>
@@ -155,6 +190,12 @@ export default function WeddingWorkspace({
                     )}
                   </div>
                 </details>
+                <Link
+                  className={ghostButtonCls}
+                  href={`${base}/planning/${key}`}
+                >
+                  Edit answers →
+                </Link>
                 {!preview && f.status === "submitted" && (
                   <WeddingFormReview bookingRef={b.ref} formKey={key} />
                 )}

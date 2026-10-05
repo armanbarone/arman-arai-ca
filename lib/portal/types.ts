@@ -93,6 +93,7 @@ export interface Payment {
   receivedAt: string;
   recordedBy: "system" | "admin";
   receiptNumber?: string;
+  refundedCents?: number;
 }
 
 export type PlanningStatus = "todo" | "in_progress" | "done" | "not_applicable";
@@ -111,6 +112,7 @@ export interface PlanningItem {
   statusChangedAt?: string;
   notifiedAt?: string;
   sortOrder: number;
+  clientCanComplete?: boolean;
 }
 
 export interface AuditEvent {
@@ -159,4 +161,15 @@ export interface Booking {
   internalNotes: string;
   remindersPaused: boolean;
   wedding?: import("./wedding").WeddingData;
+  archivedAt?: string;
+  archiveReason?: string;
+  portal?: {
+    enabled: boolean;
+    welcomeMessage: string;
+    hiddenWorkflows: string[];
+    updatedAt: string;
+    actor: string;
+  };
+  invoices?: import("./billing").WeddingInvoice[];
+  checkouts?: import("./billing").WeddingCheckout[];
 }

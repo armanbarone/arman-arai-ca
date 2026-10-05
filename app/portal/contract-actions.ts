@@ -1,4 +1,5 @@
 "use server";
+import { assertClientPortalAccess } from "@/lib/portal/portal-controls";
 import { revalidatePath } from "next/cache";
 import { requireBookingAccess, requireAdmin } from "@/lib/portal/auth";
 import { updateBooking } from "@/lib/portal/store";
@@ -52,6 +53,7 @@ export async function saveWeddingContractDetails(
       );
     let updatedAt = "";
     await updateBooking(ref, (b) => {
+      assertClientPortalAccess(b, session);
       if (
         session.role !== "admin" &&
         !b.clients.some((c) => c.email === session.email)
@@ -240,6 +242,7 @@ export async function saveWeddingCreativeDirection(
       throw new Error("Enter valid creative notes.");
     let updatedAt = "";
     await updateBooking(ref, (b) => {
+      assertClientPortalAccess(b, session);
       const w = ensureWedding(b);
       if (
         session.role !== "admin" &&
@@ -288,6 +291,7 @@ export async function removeWeddingImage(
   const { session } = await requireBookingAccess(ref);
   try {
     await updateBooking(ref, (b) => {
+      assertClientPortalAccess(b, session);
       if (
         session.role !== "admin" &&
         !b.clients.some((c) => c.email === session.email)

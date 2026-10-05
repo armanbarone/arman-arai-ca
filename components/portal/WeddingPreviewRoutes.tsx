@@ -30,6 +30,10 @@ import WeddingPortalControls from "./WeddingPortalControls";
 import WeddingBilling from "./WeddingBilling";
 import WeddingInvoiceOverview from "./WeddingInvoiceOverview";
 import WeddingPaymentSetup from "./WeddingPaymentSetup";
+import WeddingAdminDocuments from "./WeddingAdminDocuments";
+import WeddingStudioGuide from "./WeddingStudioGuide";
+import WeddingDocumentAdminActions from "./WeddingDocumentAdminActions";
+import WeddingDeletedDrafts from "./WeddingDeletedDrafts";
 export default function WeddingPreviewRoutes({ path }: { path: string[] }) {
   const c = useWeddingPreview()!,
     b = c.booking,
@@ -39,6 +43,8 @@ export default function WeddingPreviewRoutes({ path }: { path: string[] }) {
   let view: React.ReactNode;
   if (admin) {
     if (p[0] === "new") view = <WeddingQuickCreate preview />;
+    else if (p[0] === "guide")
+      view = <WeddingStudioGuide bookingRef={b.ref} preview />;
     else if (p[0] === "portal")
       view = <WeddingPortalControls key={b.ref} booking={b} preview />;
     else if (p[0] === "invoices")
@@ -120,7 +126,29 @@ export default function WeddingPreviewRoutes({ path }: { path: string[] }) {
           <WeddingPayments booking={b} admin preview />
         </>
       );
-    else if (p[0] === "documents" && tkey) {
+    else if (p[0] === "documents" && tkey === "invoice")
+      view = (
+        <>
+          <WeddingBilling booking={b} admin preview stripeReady />
+          <WeddingPayments booking={b} admin preview />
+        </>
+      );
+    else if (p[0] === "documents" && p[1] === "version") {
+      const d = b.wedding!.documents.find((d) => d.id === p[2]);
+      view = d ? (
+        <WeddingDocumentReader
+          key={d.id}
+          document={d}
+          booking={b}
+          bookingRef={b.ref}
+          email="studio@example.com"
+          admin
+          preview
+        />
+      ) : (
+        <p>This version is no longer available.</p>
+      );
+    } else if (p[0] === "documents" && tkey) {
       const t = templateFor(tkey, b),
         d = b
           .wedding!.documents.filter(
@@ -130,8 +158,26 @@ export default function WeddingPreviewRoutes({ path }: { path: string[] }) {
       view = (
         <>
           <h1>{t.title}</h1>
+          {d && (
+            <div className="wp-toolbar">
+              <WeddingDocumentAdminActions
+                bookingRef={b.ref}
+                documentId={d.id}
+                status={d.status}
+                clientSigned={false}
+                expectedUpdatedAt={b.updatedAt}
+                preview
+              />
+            </div>
+          )}
+          <WeddingDeletedDrafts booking={b} templateKey={tkey} preview />
           <NativeWeddingForm
-            key={tkey + (b.wedding?.intake?.approvedAt || "")}
+            key={
+              b.ref +
+              tkey +
+              (d?.id || "new") +
+              (b.wedding?.intake?.approvedAt || "")
+            }
             template={t}
             initial={{ ...defaultDocumentFields(t, b), ...d?.fields }}
             bookingRef={b.ref}
@@ -141,7 +187,9 @@ export default function WeddingPreviewRoutes({ path }: { path: string[] }) {
           />
         </>
       );
-    } else if (p[0] === "documents" || p[0] === "library")
+    } else if (p[0] === "documents")
+      view = <WeddingAdminDocuments booking={b} preview />;
+    else if (p[0] === "library")
       view = <WeddingLibrary bookingRef={b.ref} preview />;
     else
       view = <WeddingStudioOverview rows={c.bookings.map(studioRow)} preview />;

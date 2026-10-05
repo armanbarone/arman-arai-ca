@@ -94,6 +94,8 @@
   height: 100vh;
   display: flex;
   flex-direction: column;
+  overflow-y: auto;
+  scrollbar-color: var(--edge) var(--surface-soft);
 }
 .wp-brand {
   display: block;
@@ -275,6 +277,28 @@
 }
 .wp-button-secondary:hover {
   background: var(--surface-raised);
+}
+.wp .wp-button-danger {
+  color: var(--ink) !important;
+  background: transparent;
+  border-color: var(--accent);
+}
+.wp .wp-button-danger:hover {
+  background: var(--surface-raised);
+}
+.wp .wp-contract-management {
+  margin-top: 24px;
+}
+.wp .wp-guide-grid {
+  display: grid;
+  gap: 20px;
+  margin-top: 24px;
+}
+.wp .wp-guide-grid .wp-card {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  align-items: flex-start;
 }
 .wp-label {
   display: block;
@@ -956,6 +980,7 @@ textarea.wp-input {
   }
   .wp-sidebar {
     height: auto;
+    overflow: visible;
     min-height: 0;
     position: relative;
     padding: 22px 20px;

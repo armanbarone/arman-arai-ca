@@ -89,13 +89,15 @@ export default function WeddingLibrary({
                   <Link
                     className={buttonCls}
                     href={
-                      ["form", "request"].includes(t.action)
-                        ? preview
-                          ? `/portal/preview/planning/${t.key}`
-                          : `${base}#client-answers`
-                        : preview
-                          ? `${base}/documents/${t.key}`
-                          : `${base}/documents/edit/${t.key}`
+                      t.key === "invoice"
+                        ? `${base}/payments`
+                        : ["form", "request"].includes(t.action)
+                          ? preview
+                            ? `${base}/planning/${t.key}`
+                            : `${base}/planning/${t.key}`
+                          : preview
+                            ? `${base}/documents/${t.key}`
+                            : `${base}/documents/edit/${t.key}`
                     }
                   >
                     Open workflow →

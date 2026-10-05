@@ -7,7 +7,8 @@ import { SESSION_COOKIE, verifyToken } from "@/lib/portal/token";
 // per-booking access on the server; this is the outer wall, not the only one.
 
 const PRIVATE_HEADERS: Record<string, string> = {
-  "X-Robots-Tag": "noindex, nofollow, noarchive, nosnippet, noimageindex, noai, noimageai",
+  "X-Robots-Tag":
+    "noindex, nofollow, noarchive, nosnippet, noimageindex, noai, noimageai",
   "Cache-Control": "private, no-store, max-age=0",
   "Referrer-Policy": "no-referrer",
   "X-Frame-Options": "DENY",
@@ -24,8 +25,21 @@ function withHeaders(res: NextResponse) {
 export async function middleware(req: NextRequest) {
   const { pathname, search } = req.nextUrl;
 
+  // This route renders synthetic fixtures only and never grants access to a booking.
+  if (
+    (pathname === "/portal/preview" ||
+      pathname.startsWith("/portal/preview/")) &&
+    process.env.PORTAL_DEMO === "1" &&
+    process.env.VERCEL_ENV !== "production"
+  ) {
+    return withHeaders(NextResponse.next());
+  }
+
   // Stripe and the daily job authenticate themselves (signature / secret).
-  if (pathname.startsWith("/api/stripe/") || pathname.startsWith("/api/cron/")) {
+  if (
+    pathname.startsWith("/api/stripe/") ||
+    pathname.startsWith("/api/cron/")
+  ) {
     return withHeaders(NextResponse.next());
   }
 
@@ -33,12 +47,18 @@ export async function middleware(req: NextRequest) {
     return withHeaders(NextResponse.next());
   }
 
-  const session = await verifyToken(req.cookies.get(SESSION_COOKIE)?.value, "session");
-  const needsAdmin = pathname.startsWith("/admin") || pathname.startsWith("/api/admin");
+  const session = await verifyToken(
+    req.cookies.get(SESSION_COOKIE)?.value,
+    "session",
+  );
+  const needsAdmin =
+    pathname.startsWith("/admin") || pathname.startsWith("/api/admin");
 
   if (!session || (needsAdmin && session.r !== "admin")) {
     if (pathname.startsWith("/api/")) {
-      return withHeaders(NextResponse.json({ error: "Not found" }, { status: 404 }));
+      return withHeaders(
+        NextResponse.json({ error: "Not found" }, { status: 404 }),
+      );
     }
     const url = req.nextUrl.clone();
     url.pathname = "/portal/login";
@@ -50,5 +70,14 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/portal/:path*", "/portal", "/admin/:path*", "/admin", "/api/portal/:path*", "/api/admin/:path*", "/api/stripe/:path*", "/api/cron/:path*"],
+  matcher: [
+    "/portal/:path*",
+    "/portal",
+    "/admin/:path*",
+    "/admin",
+    "/api/portal/:path*",
+    "/api/admin/:path*",
+    "/api/stripe/:path*",
+    "/api/cron/:path*",
+  ],
 };

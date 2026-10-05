@@ -1,8 +1,8 @@
+import localFont from "next/font/local";
 import type { Metadata } from "next";
 import {
   Cormorant_Garamond,
   Cormorant,
-  Jost,
   Great_Vibes,
   UnifrakturMaguntia,
 } from "next/font/google";
@@ -17,8 +17,8 @@ const cormorant = Cormorant_Garamond({
   subsets: ["latin"], weight: ["300", "400", "500", "600", "700"], style: ["normal", "italic"],
   variable: "--font-cormorant", display: "swap",
 });
-const jost = Jost({
-  subsets: ["latin"], weight: ["200", "300", "400"],
+const jost = localFont({
+  src: [{ path: "../public/fonts/Jost.ttf", weight: "200 400", style: "normal" }],
   variable: "--font-jost", display: "swap",
 });
 const greatVibes = Great_Vibes({

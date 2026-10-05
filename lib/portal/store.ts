@@ -9,33 +9,47 @@ import type { Booking } from "./types";
 // Local development writes under `dev/` in the same store so test bookings
 // never mix with real ones.
 
-const PREFIX = process.env.PORTAL_BLOB_PREFIX ?? (process.env.VERCEL_ENV === "production" ? "" : "dev/");
+const PREFIX =
+  process.env.PORTAL_BLOB_PREFIX ??
+  (process.env.VERCEL_ENV === "production" ? "" : "dev/");
 
 const path = (p: string) => `${PREFIX}${p}`;
 
 export class ConflictError extends Error {}
 
-async function readText(pathname: string): Promise<{ text: string; etag: string } | null> {
+async function readText(
+  pathname: string,
+): Promise<{ text: string; etag: string } | null> {
   try {
-    const res = await get(path(pathname), { access: "private", useCache: false });
+    const res = await get(path(pathname), {
+      access: "private",
+      useCache: false,
+    });
     if (!res || res.statusCode !== 200) return null;
     const text = await new Response(res.stream).text();
     // Larger JSON is served compressed with a weak ETag (W/"…"); conditional
     // writes only accept the strong form, so every update would read as a conflict.
     return { text, etag: res.blob.etag.replace(/^W\//, "") };
   } catch (err) {
-    if (err instanceof Error && /not.?found/i.test(err.name + err.message)) return null;
+    if (err instanceof Error && /not.?found/i.test(err.name + err.message))
+      return null;
     throw err;
   }
 }
 
-export async function readJson<T>(pathname: string): Promise<{ data: T; etag: string } | null> {
+export async function readJson<T>(
+  pathname: string,
+): Promise<{ data: T; etag: string } | null> {
   const r = await readText(pathname);
   return r ? { data: JSON.parse(r.text) as T, etag: r.etag } : null;
 }
 
 /** Write JSON. Pass `etag` to only overwrite that exact version, or `createOnly` to refuse overwriting. */
-export async function writeJson(pathname: string, data: unknown, opts: { etag?: string; createOnly?: boolean } = {}) {
+export async function writeJson(
+  pathname: string,
+  data: unknown,
+  opts: { etag?: string; createOnly?: boolean } = {},
+) {
   try {
     return await put(path(pathname), JSON.stringify(data, null, 2), {
       access: "private",
@@ -45,14 +59,21 @@ export async function writeJson(pathname: string, data: unknown, opts: { etag?: 
       ifMatch: opts.etag,
     });
   } catch (err) {
-    if (err instanceof BlobPreconditionFailedError || (err instanceof Error && /already exists|precondition/i.test(err.message))) {
+    if (
+      err instanceof BlobPreconditionFailedError ||
+      (err instanceof Error && /already exists|precondition/i.test(err.message))
+    ) {
       throw new ConflictError(err.message);
     }
     throw err;
   }
 }
 
-export async function writeFile(pathname: string, body: Buffer | Uint8Array | string, contentType: string) {
+export async function writeFile(
+  pathname: string,
+  body: Buffer | Uint8Array | string,
+  contentType: string,
+) {
   return put(path(pathname), Buffer.from(body as Uint8Array), {
     access: "private",
     contentType,
@@ -98,12 +119,16 @@ export async function getBooking(ref: string): Promise<Booking | null> {
 }
 
 export async function listBookings(): Promise<Booking[]> {
-  const paths = (await listPathnames("bookings/")).filter((p) => p.endsWith(".json"));
+  const paths = (await listPathnames("bookings/")).filter((p) =>
+    p.endsWith(".json"),
+  );
   const all = await Promise.all(paths.map((p) => readJson<Booking>(p)));
   return all
     .filter((b): b is { data: Booking; etag: string } => !!b)
     .map((b) => b.data)
-    .sort((a, b) => (a.event.date || "9999").localeCompare(b.event.date || "9999"));
+    .sort((a, b) =>
+      (a.event.date || "9999").localeCompare(b.event.date || "9999"),
+    );
 }
 
 export async function nextReference(year: string): Promise<string> {
@@ -123,7 +148,11 @@ export async function createBooking(booking: Booking): Promise<void> {
  * Read, change, write back only if nobody else wrote in between. A webhook and
  * an admin edit landing at the same moment retry instead of overwriting each other.
  */
-export async function updateBooking(ref: string, mutate: (b: Booking) => void | Promise<void>): Promise<Booking> {
+export async function updateBooking(
+  ref: string,
+  mutate: (b: Booking) => void | Promise<void>,
+): Promise<Booking> {
+  if (!REF_PATTERN.test(ref)) throw new Error("Invalid wedding reference");
   for (let attempt = 0; attempt < 5; attempt++) {
     const current = await readJson<Booking>(bookingPath(ref));
     if (!current) throw new Error(`Booking ${ref} not found`);
@@ -137,5 +166,7 @@ export async function updateBooking(ref: string, mutate: (b: Booking) => void | 
       if (!(err instanceof ConflictError)) throw err;
     }
   }
-  throw new Error(`Booking ${ref} kept changing underneath the update; try again.`);
+  throw new Error(
+    `Booking ${ref} kept changing underneath the update; try again.`,
+  );
 }

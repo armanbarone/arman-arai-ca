@@ -1,0 +1,196 @@
+[
+  {
+    "key": "budget-payments",
+    "title": "Budget Payments",
+    "columns": [
+      "Category",
+      "Item",
+      "Payee",
+      "Contracting party",
+      "Client price before tax",
+      "Tax",
+      "Total client charge",
+      "Client paid",
+      "Client balance",
+      "Vendor cost",
+      "Vendor paid",
+      "Vendor balance",
+      "Due date",
+      "Status"
+    ],
+    "source": "21_Canadian_Wedding_Operations_Workbook.xlsx",
+    "sha256": "46c11b49028d7da0ae05194ba8a9b1b79c2da2355b94b8097a84a11bb7a55c77"
+  },
+  {
+    "key": "venues-vendors",
+    "title": "Venues Vendors",
+    "columns": [
+      "Category",
+      "Service or location",
+      "Legal supplier",
+      "Contact person",
+      "Telephone",
+      "Email",
+      "Contracting party",
+      "Price or allowance",
+      "Decision due",
+      "Arrival/access time",
+      "Status",
+      "Cancellation, access and substitution terms"
+    ],
+    "source": "21_Canadian_Wedding_Operations_Workbook.xlsx",
+    "sha256": "46c11b49028d7da0ae05194ba8a9b1b79c2da2355b94b8097a84a11bb7a55c77"
+  },
+  {
+    "key": "permits-insurance",
+    "title": "Permits Insurance",
+    "columns": [
+      "Category",
+      "Requirement",
+      "Authority or provider",
+      "Responsible party",
+      "Deadline",
+      "Application/policy number",
+      "Coverage or scope",
+      "Cost",
+      "Evidence location",
+      "Status",
+      "Notes"
+    ],
+    "source": "21_Canadian_Wedding_Operations_Workbook.xlsx",
+    "sha256": "46c11b49028d7da0ae05194ba8a9b1b79c2da2355b94b8097a84a11bb7a55c77"
+  },
+  {
+    "key": "timeline",
+    "title": "Timeline",
+    "columns": [
+      "Date",
+      "Start",
+      "End",
+      "Activity",
+      "Exact location or pin",
+      "People",
+      "Owner",
+      "Travel/setup minutes",
+      "Photo/film priority",
+      "Plan B",
+      "Notes"
+    ],
+    "source": "21_Canadian_Wedding_Operations_Workbook.xlsx",
+    "sha256": "46c11b49028d7da0ae05194ba8a9b1b79c2da2355b94b8097a84a11bb7a55c77"
+  },
+  {
+    "key": "shot-list",
+    "title": "Shot List",
+    "columns": [
+      "Type",
+      "Moment/group",
+      "People and relationship",
+      "Priority",
+      "Lead caller",
+      "Planned time",
+      "Location",
+      "Photo",
+      "Film",
+      "Restriction/sensitivity",
+      "Status"
+    ],
+    "source": "21_Canadian_Wedding_Operations_Workbook.xlsx",
+    "sha256": "46c11b49028d7da0ae05194ba8a9b1b79c2da2355b94b8097a84a11bb7a55c77"
+  },
+  {
+    "key": "deliverables",
+    "title": "Deliverables",
+    "columns": [
+      "Category",
+      "Deliverable",
+      "Contract specification",
+      "Quantity/length",
+      "Format",
+      "Resolution/size",
+      "Contract due",
+      "Actual date",
+      "Review round",
+      "Delivery link/tracking",
+      "Status",
+      "Client issue or correction"
+    ],
+    "source": "21_Canadian_Wedding_Operations_Workbook.xlsx",
+    "sha256": "46c11b49028d7da0ae05194ba8a9b1b79c2da2355b94b8097a84a11bb7a55c77"
+  },
+  {
+    "key": "decisions-changes",
+    "title": "Decisions Changes",
+    "columns": [
+      "Date",
+      "Decision/change",
+      "Requested by",
+      "Reason",
+      "Scope effect",
+      "Price effect",
+      "Tax effect",
+      "Schedule effect",
+      "Change order",
+      "Status",
+      "Evidence/notes"
+    ],
+    "source": "21_Canadian_Wedding_Operations_Workbook.xlsx",
+    "sha256": "46c11b49028d7da0ae05194ba8a9b1b79c2da2355b94b8097a84a11bb7a55c77"
+  },
+  {
+    "key": "contacts-vips",
+    "title": "Contacts VIPs",
+    "columns": [
+      "Category",
+      "Name",
+      "Organization",
+      "Role/relationship",
+      "Telephone",
+      "Email",
+      "Arrival",
+      "VIP",
+      "Emergency authority",
+      "Photo/film restriction",
+      "Pronunciation",
+      "Notes"
+    ],
+    "source": "21_Canadian_Wedding_Operations_Workbook.xlsx",
+    "sha256": "46c11b49028d7da0ae05194ba8a9b1b79c2da2355b94b8097a84a11bb7a55c77"
+  },
+  {
+    "key": "privacy-consent",
+    "title": "Privacy Consent",
+    "columns": [
+      "Category",
+      "Person/data/matter",
+      "Purpose",
+      "Consent basis/document",
+      "Restriction",
+      "Date recorded",
+      "Withdrawal date",
+      "Status",
+      "Evidence location",
+      "Action/notes"
+    ],
+    "source": "21_Canadian_Wedding_Operations_Workbook.xlsx",
+    "sha256": "46c11b49028d7da0ae05194ba8a9b1b79c2da2355b94b8097a84a11bb7a55c77"
+  },
+  {
+    "key": "compliance",
+    "title": "Compliance",
+    "columns": [
+      "Jurisdiction",
+      "Requirement/action",
+      "Applies?",
+      "Owner",
+      "Due date",
+      "Evidence/document",
+      "Official source",
+      "Last verified",
+      "Status",
+      "Notes"
+    ],
+    "source": "21_Canadian_Wedding_Operations_Workbook.xlsx",
+    "sha256": "46c11b49028d7da0ae05194ba8a9b1b79c2da2355b94b8097a84a11bb7a55c77"
+  }
+]

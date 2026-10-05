@@ -13,19 +13,22 @@ export function studioRow(b: Booking): StudioRow {
       (d) =>
         ["issued", "partial"].includes(d.status) && d.requiredEmails.length,
     ).length;
-  const action = delivery
-    ? "Retry signed PDF email delivery"
-    : report
-      ? "Confirm a reported payment"
-      : submitted
-        ? "Review submitted planning answers"
-        : draft
-          ? "Finish and review the draft documents"
-          : b.status === "draft"
-            ? "Prepare the proposal and scope"
-            : left
-              ? "Waiting for the couple’s signatures"
-              : "Keep the wedding plan up to date";
+  const action =
+    w.intake?.status === "submitted"
+      ? "Review the couple’s contract details"
+      : delivery
+        ? "Retry signed PDF email delivery"
+        : report
+          ? "Confirm a reported payment"
+          : submitted
+            ? "Review submitted planning answers"
+            : draft
+              ? "Finish and review the draft documents"
+              : b.status === "draft"
+                ? "Prepare the proposal and scope"
+                : left
+                  ? "Waiting for the couple’s signatures"
+                  : "Keep the wedding plan up to date";
   return {
     ref: b.ref,
     names: b.clients
@@ -38,7 +41,13 @@ export function studioRow(b: Booking): StudioRow {
     paid: b.schedule.reduce((s, i) => s + i.paidCents, 0),
     total: b.totals.totalCents,
     action,
-    attention: delivery || report || submitted || draft || b.status === "draft",
+    attention:
+      w.intake?.status === "submitted" ||
+      delivery ||
+      report ||
+      submitted ||
+      draft ||
+      b.status === "draft",
     waiting: left
       ? `${left} document${left === 1 ? "" : "s"} awaiting signatures`
       : report

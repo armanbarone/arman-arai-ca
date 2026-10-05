@@ -23,11 +23,13 @@ import {
   ensureWedding,
   templateFor,
   seedFields,
+  defaultDocumentFields,
   resolveBlocks,
   type WeddingAmendment,
 } from "@/lib/portal/wedding";
 import { amendmentBase, revisedSchedule } from "@/lib/portal/amendments";
 import { randomId, sha256Hex } from "@/lib/portal/token";
+import { initialContractDetails } from "@/lib/portal/contract-details";
 
 const provinceCodes = PROVINCES.map((p) => p.code) as [string, ...string[]];
 const validDate = (value: string) =>
@@ -209,6 +211,12 @@ export async function saveBookingAction(
         remindersPaused: input.remindersPaused,
       };
       booking.schedule = buildSchedule(booking, todayInBusinessTz());
+      ensureWedding(booking).intake = {
+        values: initialContractDetails(booking),
+        status: "draft",
+        updatedAt: now,
+        actor: admin.email,
+      };
       try {
         await createBooking(booking);
         revalidatePath("/admin");
@@ -247,7 +255,8 @@ export async function saveBookingAction(
   }
 
   try {
-    await updateBooking(ref, (b) => {
+    await updateBooking(ref, async (b) => {
+      const before = structuredClone(b);
       const materialChanged =
         JSON.stringify({
           clients: b.clients.map(clientIdentity),
@@ -298,6 +307,25 @@ export async function saveBookingAction(
       b.remindersPaused = input.remindersPaused;
       if (b.status === "draft")
         b.schedule = buildSchedule(b, todayInBusinessTz(), b.schedule);
+      if (materialChanged)
+        for (const d of b.wedding?.documents || [])
+          if (
+            d.status === "draft" &&
+            ["proposal", "agreement"].includes(d.templateKey)
+          ) {
+            const t = templateFor(d.templateKey, b),
+              oldDefaults = defaultDocumentFields(
+                templateFor(d.templateKey, before),
+                before,
+              ),
+              newDefaults = defaultDocumentFields(t, b);
+            for (const [id, value] of Object.entries(newDefaults))
+              if (oldDefaults[id] !== value) d.fields[id] = value;
+            d.blocks = resolveBlocks(t, d.fields);
+            d.draftRevision = await sha256Hex(
+              JSON.stringify({ blocks: d.blocks, dueDate: d.dueDate || "" }),
+            );
+          }
       b.events.push({
         at: now,
         type: "booking_updated",

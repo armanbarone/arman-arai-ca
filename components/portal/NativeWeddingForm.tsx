@@ -7,11 +7,20 @@ import {
   saveWeddingForm,
 } from "@/app/portal/wedding-actions";
 import {
+  documentFingerprint,
+  resolveBlocks,
+  defaultDocumentFields,
   templateFields,
   missingDocumentFields,
   type WeddingTemplate,
   type WeddingBlock,
 } from "@/lib/portal/wedding";
+import { useWeddingPreview } from "./WeddingPreviewProvider";
+import {
+  documentSections,
+  initialsForName,
+  normalizeInitials,
+} from "@/lib/portal/document-sections";
 import { buttonCls, ghostButtonCls } from "./Shell";
 
 export default function NativeWeddingForm({
@@ -35,6 +44,8 @@ export default function NativeWeddingForm({
   initialUpdatedAt?: string | null;
   canPublishChange?: boolean;
 }) {
+  const context = useWeddingPreview();
+  const [companyInitials, setCompanyInitials] = useState("");
   const [updatedAt, setUpdatedAt] = useState(initialUpdatedAt);
   const router = useRouter(),
     [fields, setFields] = useState(initial),
@@ -61,9 +72,95 @@ export default function NativeWeddingForm({
   async function run(mode: "save" | "submit" | "issue") {
     setError("");
     setMessage("");
-    if (preview) {
+    if (preview && context) {
+      if (
+        mode === "issue" &&
+        ["proposal", "agreement"].includes(t.key) &&
+        context.booking.wedding?.intake?.status !== "approved"
+      ) {
+        setError("Review and approve the couple’s contract details first.");
+        return;
+      }
+      if (mode === "issue" && remaining.length) {
+        setError("Complete every required field before publishing.");
+        return;
+      }
+      if (
+        mode === "issue" &&
+        t.companySigns &&
+        (!consent ||
+          name.trim().toLowerCase() !== "arman arai" ||
+          normalizeInitials(companyInitials) !== "AA")
+      ) {
+        setError("Add the Company’s AA initials, legal signature and consent.");
+        return;
+      }
+      context.update((next) => {
+        const at = new Date().toISOString();
+        if (admin) {
+          let d = next.wedding!.documents.find(
+            (x) => x.templateKey === t.key && x.status === "draft",
+          );
+          if (!d) {
+            d = {
+              id: `${t.key}-${Date.now()}`,
+              templateKey: t.key,
+              title: t.title,
+              version:
+                next.wedding!.documents.filter((x) => x.templateKey === t.key)
+                  .length + 1,
+              status: "draft",
+              createdAt: at,
+              fields,
+              blocks: [],
+              signatures: [],
+              requiredEmails: [],
+            };
+            next.wedding!.documents.push(d);
+          }
+          d.fields = { ...fields };
+          d.blocks = resolveBlocks(t, fields);
+          d.dueDate = due;
+          if (mode === "issue") {
+            d.status = "issued";
+            d.issuedAt = at;
+            d.initialSections = documentSections(d.blocks).map(
+              ({ id, title }) => ({ id, title }),
+            );
+            d.hash = "sample-preview-" + Date.now();
+            d.requiredEmails = ["sign", "individual"].includes(t.action)
+              ? next.clients.map((c) => c.email)
+              : [];
+            if (t.companySigns)
+              d.signatures = [
+                {
+                  party: "company",
+                  email: "studio@example.com",
+                  legalName: "Arman Arai",
+                  signedAt: at,
+                  consent: "SAMPLE ONLY. Company consent",
+                  hash: d.hash,
+                  ip: "",
+                  userAgent: "",
+                  answers: {},
+                  initials: Object.fromEntries(
+                    d.initialSections.map((s) => [s.id, "AA"]),
+                  ),
+                },
+              ];
+          }
+        } else
+          next.wedding!.forms[t.key] = {
+            fields: { ...fields },
+            status: mode === "submit" ? "submitted" : "draft",
+            updatedAt: at,
+            actor: context.email,
+          };
+      });
       setMessage(
-        "Sample saved in this preview only. No record or email was created.",
+        mode === "issue"
+          ? "Practice document published. Open the client preview to initial and sign."
+          : "Saved in this browser preview. No real booking or email was created.",
       );
       setDirty(false);
       return;
@@ -83,6 +180,7 @@ export default function NativeWeddingForm({
               name,
               consent,
               r.revision!,
+              companyInitials,
             );
             if (!x.ok) {
               setError(x.error);
@@ -254,6 +352,16 @@ export default function NativeWeddingForm({
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Arman Arai"
               />
+              <label className="wp-label">
+                Company initials for every section
+                <input
+                  className="wp-input wp-initial-input"
+                  placeholder="AA"
+                  value={companyInitials}
+                  onChange={(e) => setCompanyInitials(e.target.value)}
+                  maxLength={30}
+                />
+              </label>
               <label className="wp-checkbox">
                 <input
                   type="checkbox"
@@ -303,7 +411,9 @@ export default function NativeWeddingForm({
                   !canPublishChange ||
                   remaining.length > 0 ||
                   (t.companySigns &&
-                    (!consent || name.trim().toLowerCase() !== "arman arai"))
+                    (!consent ||
+                      normalizeInitials(companyInitials) !== "AA" ||
+                      name.trim().toLowerCase() !== "arman arai"))
                 }
                 onClick={() => run("issue")}
               >
@@ -319,7 +429,7 @@ export default function NativeWeddingForm({
               Send to Arman →
             </button>
           )}
-          {admin && draftId && (
+          {admin && draftId && !preview && (
             <a
               className={ghostButtonCls}
               href={`/api/portal/wedding-pdf?ref=${bookingRef}&id=${draftId}`}

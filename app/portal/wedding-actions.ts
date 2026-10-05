@@ -30,6 +30,12 @@ import {
   calculateBudgetRow,
 } from "@/lib/portal/operations";
 import { roundDiv } from "@/lib/portal/money";
+import {
+  documentSections,
+  initialsForName,
+  normalizeInitials,
+  validateInitials,
+} from "@/lib/portal/document-sections";
 
 type Result =
   | {
@@ -120,6 +126,7 @@ export async function issueWeddingDocument(
   typedName: string,
   consent: boolean,
   revision: string,
+  typedInitials = "",
 ): Promise<Result> {
   const admin = await requireAdmin();
   const meta = await requestMeta();
@@ -134,6 +141,14 @@ export async function issueWeddingDocument(
           "Another studio edit changed this draft. Reload and review before publishing.",
         );
       const t = templateFor(d.templateKey, b, d.amendment);
+      if (
+        ["proposal", "agreement"].includes(d.templateKey) &&
+        w.intake &&
+        w.intake.status !== "approved"
+      )
+        throw new Error(
+          "Review and approve the couple's current contract details first.",
+        );
       if (t.audience !== "client")
         throw new Error(
           "This is a studio record. It is never published to the couple.",
@@ -221,6 +236,10 @@ export async function issueWeddingDocument(
         ? []
         : b.clients.map((c) => c.email);
       d.bookingHash = await sha256Hex(commercialFingerprint(b));
+      d.commercialSnapshot = commercialFingerprint(b);
+      d.initialSections = d.requiredEmails.length
+        ? documentSections(d.blocks).map(({ id, title }) => ({ id, title }))
+        : undefined;
       d.hash = await sha256Hex(documentFingerprint(d));
       if (d.templateKey === "change")
         for (const previous of w.documents)
@@ -242,6 +261,10 @@ export async function issueWeddingDocument(
           throw new Error(
             "Type Arman Arai and confirm electronic consent to countersign for Arasaka Inc.",
           );
+        if (normalizeInitials(typedInitials) !== initialsForName(BUSINESS.lead))
+          throw new Error(
+            "Enter AA as your initials to countersign the reviewed sections.",
+          );
         d.signatures.push({
           party: "company",
           email: admin.email,
@@ -250,6 +273,12 @@ export async function issueWeddingDocument(
           consent: ELECTRONIC_CONSENT,
           hash: d.hash,
           answers: {},
+          initials: Object.fromEntries(
+            (d.initialSections || []).map((s) => [
+              s.id,
+              initialsForName(BUSINESS.lead),
+            ]),
+          ),
           ...meta,
         });
       }
@@ -317,6 +346,7 @@ export async function signWeddingDocument(
   typedName: string,
   consent: boolean,
   answers: Record<string, string>,
+  rawInitials: Record<string, string> = {},
 ): Promise<Result> {
   const { session } = await requireBookingAccess(ref);
   if (session.role !== "client")
@@ -360,6 +390,14 @@ export async function signWeddingDocument(
       if (!d.requiredEmails.includes(session.email))
         throw new Error("You are not a required signer");
       if (
+        ["proposal", "agreement"].includes(d.templateKey) &&
+        b.wedding?.intake &&
+        b.wedding.intake.status !== "approved"
+      )
+        throw new Error(
+          "Your updated details need Arman's review before this version can be signed.",
+        );
+      if (
         d.signatures.some(
           (s) => s.email === session.email && s.party === "client",
         )
@@ -370,6 +408,7 @@ export async function signWeddingDocument(
         v.normalize("NFKC").replace(/\s+/g, " ").trim().toLowerCase();
       if (norm(typedName) !== norm(c.legalName))
         throw new Error(`Type your full legal name: ${c.legalName}`);
+      const initials = validateInitials(d, c.legalName, rawInitials);
       const check = await sha256Hex(documentFingerprint(d));
       if (check !== d.hash || hash !== d.hash)
         throw new Error(
@@ -424,6 +463,7 @@ export async function signWeddingDocument(
         consent: ELECTRONIC_CONSENT,
         hash: d.hash!,
         answers,
+        initials,
         ...meta,
       });
       executed = d.requiredEmails.every((e) =>

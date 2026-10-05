@@ -1,5 +1,5 @@
 "use client";
-import { useMemo, useState, useTransition } from "react";
+import { useEffect, useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { signWeddingDocument } from "@/app/portal/wedding-actions";
 import {
@@ -7,6 +7,16 @@ import {
   type WeddingDocument,
   type WeddingBlock,
 } from "@/lib/portal/wedding";
+import type { Booking } from "@/lib/portal/types";
+import {
+  documentSections,
+  initialSectionsFor,
+  initialsForName,
+  normalizeInitials,
+  validateInitials,
+} from "@/lib/portal/document-sections";
+import { useWeddingPreview } from "./WeddingPreviewProvider";
+import Link from "next/link";
 import { buttonCls, ghostButtonCls, StatusPill } from "./Shell";
 
 export function WeddingBlockView({ blocks }: { blocks: WeddingBlock[] }) {
@@ -42,7 +52,8 @@ export function WeddingBlockView({ blocks }: { blocks: WeddingBlock[] }) {
   );
 }
 export default function WeddingDocumentReader({
-  document: d,
+  document: initial,
+  booking,
   bookingRef,
   email,
   legalName,
@@ -50,12 +61,38 @@ export default function WeddingDocumentReader({
   admin = false,
 }: {
   document: WeddingDocument;
+  booking?: Booking;
   bookingRef: string;
   email: string;
   legalName?: string;
   preview?: boolean;
   admin?: boolean;
 }) {
+  const context = useWeddingPreview(),
+    b = preview && context ? context.booking : booking;
+  const d =
+    preview && context
+      ? context.booking.wedding?.documents.find((x) => x.id === initial.id) ||
+        initial
+      : initial;
+  const activeEmail = preview && context ? context.email : email,
+    activeName =
+      b?.clients.find((c) => c.email === activeEmail)?.legalName || legalName;
+  const [downloadUrl, setDownloadUrl] = useState("");
+  useEffect(
+    () => () => {
+      if (downloadUrl) URL.revokeObjectURL(downloadUrl);
+    },
+    [downloadUrl],
+  );
+  const [initials, setInitials] = useState<Record<string, string>>({});
+  useEffect(() => {
+    setInitials({});
+    setName("");
+    setConsent(false);
+    setMessage("");
+    setError("");
+  }, [activeEmail, d.id, d.hash]);
   const router = useRouter(),
     [step, setStep] = useState(0),
     [name, setName] = useState(""),
@@ -69,34 +106,67 @@ export default function WeddingDocumentReader({
     [message, setMessage] = useState(""),
     [error, setError] = useState(""),
     [pending, start] = useTransition();
-  const parts = useMemo(() => {
-    const a: { title: string; blocks: WeddingBlock[] }[] = [
-      { title: "Your details", blocks: [] },
-    ];
-    for (const b of d.blocks) {
-      if (b.kind === "h" && /^Part [A-D]|^Appendix/.test(b.text))
-        a.push({ title: b.text, blocks: [] });
-      else a.at(-1)!.blocks.push(b);
-    }
-    return a.filter((p) => p.blocks.length);
-  }, [d.blocks]);
+  const parts = useMemo(() => documentSections(d.blocks), [d.blocks]);
+  const initialSections = initialSectionsFor(d),
+    expectedInitials = initialsForName(activeName || ""),
+    allInitialed = initialSections.every(
+      (s) => normalizeInitials(initials[s.id] || "") === expectedInitials,
+    );
+  const detailsPending =
+    ["agreement", "proposal"].includes(d.templateKey) &&
+    b?.wedding?.intake &&
+    b.wedding.intake.status !== "approved";
   const mine = d.signatures.find(
-      (s) => s.party === "client" && s.email === email,
+      (s) => s.party === "client" && s.email === activeEmail,
     ),
     canSign =
       !admin &&
-      !!legalName &&
-      d.requiredEmails.includes(email) &&
+      !!activeName &&
+      d.requiredEmails.includes(activeEmail) &&
       !mine &&
+      !detailsPending &&
       ["issued", "partial"].includes(d.status);
   const set = (key: string, value: string) =>
     setAnswers((a) => ({ ...a, [key]: value }));
   const sign = () => {
     setError("");
-    if (preview) {
-      setMessage(
-        "Preview only. This sample signature is not submitted and no email is sent.",
-      );
+    if (preview && context) {
+      try {
+        const values = validateInitials(d, activeName || "", initials);
+        if (
+          !consent ||
+          name.trim().toLowerCase() !== activeName?.trim().toLowerCase()
+        )
+          throw new Error(
+            "Use your full legal name and consent before signing.",
+          );
+        context.update((next) => {
+          const doc = next.wedding!.documents.find((x) => x.id === d.id)!;
+          if (doc.signatures.some((x) => x.email === activeEmail)) return;
+          doc.signatures.push({
+            party: "client",
+            email: activeEmail,
+            legalName: activeName!,
+            signedAt: new Date().toISOString(),
+            consent: `SAMPLE ONLY. ${ELECTRONIC_CONSENT}`,
+            hash: doc.hash || "sample-preview-hash",
+            ip: "",
+            userAgent: "",
+            answers: { ...answers },
+            initials: values,
+          });
+          doc.status = doc.requiredEmails.every((e) =>
+            doc.signatures.some((s) => s.email === e),
+          )
+            ? "executed"
+            : "partial";
+        });
+        setMessage(
+          "Sample initials and signature recorded in this preview. No real contract or email was created.",
+        );
+      } catch (e) {
+        setError(e instanceof Error ? e.message : "Check your initials.");
+      }
       return;
     }
     start(async () => {
@@ -108,6 +178,7 @@ export default function WeddingDocumentReader({
           name,
           consent,
           answers,
+          initials,
         );
         if (!r.ok) {
           setError(r.error);
@@ -137,14 +208,36 @@ export default function WeddingDocumentReader({
       </div>
       <div className="wp-toolbar">
         {preview && d.templateKey === "agreement" && (
-          <a
+          <button
             className={ghostButtonCls}
-            href="/portal/preview/pdf"
-            target="_blank"
-            rel="noopener noreferrer"
+            onClick={async () => {
+              setError("");
+              try {
+                const r = await fetch("/portal/preview/pdf", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ document: d }),
+                });
+                if (!r.ok)
+                  throw new Error("The practice PDF could not be created.");
+                const url = URL.createObjectURL(await r.blob()),
+                  link = window.document.createElement("a");
+                link.href = url;
+                setDownloadUrl(url);
+                link.download = "sample-wedding-agreement.pdf";
+                link.click();
+                setMessage(
+                  "Your practice PDF is ready. If your browser did not save it, open the generated PDF below.",
+                );
+              } catch (e) {
+                setError(e instanceof Error ? e.message : "Try again.");
+              }
+            }}
           >
-            Download sample signed PDF ↓
-          </a>
+            Download{" "}
+            {d.status === "executed" ? "completed practice" : "sample review"}{" "}
+            PDF ↓
+          </button>
         )}
         {!preview && (
           <a
@@ -170,6 +263,44 @@ export default function WeddingDocumentReader({
           .
         </span>
       </div>
+      {detailsPending && (
+        <div className="wp-message">
+          <h3>Complete your wedding details first</h3>
+          <p>
+            Your venues, personal details and collection need studio review
+            before this version can be signed.
+          </p>
+          <Link
+            className={buttonCls}
+            href={
+              preview
+                ? "/portal/preview/agreement"
+                : `/portal/${bookingRef}/agreement`
+            }
+          >
+            Enter your contract details →
+          </Link>
+        </div>
+      )}
+      {d.templateKey === "agreement" && !detailsPending && (
+        <div className="wp-toolbar">
+          <Link
+            href={
+              preview
+                ? "/portal/preview/agreement"
+                : `/portal/${bookingRef}/agreement`
+            }
+          >
+            Review your submitted wedding details →
+          </Link>
+        </div>
+      )}
+      {d.status === "draft" && (
+        <div className="wp-message">
+          Sample workflow preview. Arman completes and issues this record before
+          signatures are available.
+        </div>
+      )}
       {parts.length > 1 && (
         <nav className="wp-reader-steps" aria-label="Document sections">
           {parts.map((p, i) => (
@@ -195,6 +326,38 @@ export default function WeddingDocumentReader({
       {!last && (
         <article className="wp-document-section">
           <WeddingBlockView blocks={parts[step]?.blocks || d.blocks} />
+          {canSign && (
+            <div className="wp-section-initial">
+              <label
+                className="wp-label"
+                htmlFor={`initial-${parts[step]?.id}`}
+              >
+                Your initials for this section · {expectedInitials}
+                <input
+                  id={`initial-${parts[step]?.id}`}
+                  className="wp-input wp-initial-input"
+                  maxLength={30}
+                  autoComplete="off"
+                  value={initials[parts[step]?.id] || ""}
+                  onChange={(e) =>
+                    setInitials((old) => ({
+                      ...old,
+                      [parts[step].id]: e.target.value,
+                    }))
+                  }
+                />
+              </label>
+              <p>
+                {
+                  Object.keys(initials).filter(
+                    (id) =>
+                      normalizeInitials(initials[id]) === expectedInitials,
+                  ).length
+                }{" "}
+                of {initialSections.length} sections initialed
+              </p>
+            </div>
+          )}
           <div className="wp-toolbar">
             {step > 0 && (
               <button
@@ -231,7 +394,9 @@ export default function WeddingDocumentReader({
           .{" "}
           {d.status === "executed"
             ? "Everyone has signed. Keep your completed PDF."
-            : "Your partner still needs to sign. You’ll both receive the completed PDF afterward."}
+            : preview
+              ? "Your partner still needs to add their practice signature. No real email is sent."
+              : "Your partner still needs to sign. You’ll both receive the completed PDF afterward."}
         </div>
       )}
       {d.signatures.length > 0 && (
@@ -250,11 +415,33 @@ export default function WeddingDocumentReader({
       )}
       {canSign && last && (
         <div className="wp-signature">
-          <h2>Sign as {legalName}</h2>
+          <h2>Sign as {activeName}</h2>
           <p className="wp-lead">
             You are signing for yourself. Your partner uses their own sign-in
             link.
           </p>
+          <div className="wp-initial-checklist">
+            <h3>Initial each section before signing</h3>
+            <p>Enter {expectedInitials} after reviewing each section.</p>
+            {initialSections.map((s, i) => (
+              <div className="wp-initial-row" key={s.id}>
+                <button className={ghostButtonCls} onClick={() => setStep(i)}>
+                  {s.title} ↗
+                </button>
+                <label className="wp-label">
+                  Initials · {s.title}
+                  <input
+                    className="wp-input wp-initial-input"
+                    value={initials[s.id] || ""}
+                    maxLength={30}
+                    onChange={(e) =>
+                      setInitials((old) => ({ ...old, [s.id]: e.target.value }))
+                    }
+                  />
+                </label>
+              </div>
+            ))}
+          </div>
           {needsPrivacy && (
             <>
               <fieldset className="wp-radio-set">
@@ -390,14 +577,14 @@ export default function WeddingDocumentReader({
             id="legal-signature"
             autoComplete="name"
             className="wp-input"
-            placeholder={legalName}
+            placeholder={activeName}
             value={name}
             onChange={(e) => setName(e.target.value)}
           />
           <p className="wp-muted" style={{ fontSize: 13, marginTop: 12 }}>
-            Your typed name, authenticated email, document version and signing
-            time form your signature record. The completed PDF includes each
-            signer’s record.
+            Your section initials, typed name, authenticated email, document
+            version and signing time form your signature record. The completed
+            PDF includes each signer’s record.
           </p>
           <div className="wp-toolbar">
             <button
@@ -405,9 +592,10 @@ export default function WeddingDocumentReader({
               disabled={
                 pending ||
                 !consent ||
+                !allInitialed ||
                 (d.templateKey === "privacy" &&
                   answers.crossBorderNotice !== "read") ||
-                name.trim().toLowerCase() !== legalName!.trim().toLowerCase()
+                name.trim().toLowerCase() !== activeName!.trim().toLowerCase()
               }
               onClick={sign}
             >
@@ -418,6 +606,17 @@ export default function WeddingDocumentReader({
             </button>
           </div>
         </div>
+      )}
+      {downloadUrl && (
+        <a
+          className={ghostButtonCls}
+          href={downloadUrl}
+          download="sample-wedding-agreement.pdf"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Open generated practice PDF ↓
+        </a>
       )}
       {message && (
         <div className="wp-message" role="status">

@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { requireBookingAccess } from "@/lib/portal/auth";
-import { weddingData, visibleDocuments } from "@/lib/portal/wedding";
+import { weddingData, visibleDocuments, serializeClientBooking } from "@/lib/portal/wedding";
 import WeddingDocumentReader from "@/components/portal/WeddingDocumentReader";
 export default async function DocumentPage({
   params,
@@ -22,6 +22,7 @@ export default async function DocumentPage({
         ← Agreements & approvals
       </Link>
       <WeddingDocumentReader
+        booking={serializeClientBooking(booking)}
         document={{
           ...d,
           signatures: d.signatures.map((s) => ({

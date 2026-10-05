@@ -12,6 +12,7 @@ export default function PortalNavigation({
 }) {
   const pathname = usePathname();
   const base = preview ? "/portal/preview" : `/portal/${bookingRef || ""}`;
+  const activeRef = bookingRef || pathname.match(/^\/admin\/bookings\/([^/]+)/)?.[1];
   const links = admin
     ? [
         ["01", "Overview", preview ? "/portal/preview/admin" : "/admin"],
@@ -20,14 +21,18 @@ export default function PortalNavigation({
           "New wedding",
           preview ? "/portal/preview/admin/new" : "/admin/bookings/new",
         ],
+        ["03", "Document library", preview ? "/portal/preview/admin/documents" : activeRef ? `/admin/bookings/${activeRef}/documents` : "/admin/library"],
+        ["04", "Operations workbook", preview ? "/portal/preview/admin/operations" : activeRef ? `/admin/bookings/${activeRef}/operations` : "/admin/library#workbook"],
       ]
     : bookingRef || preview
       ? [
           ["01", "Your overview", base],
-          ["02", "Agreements & approvals", `${base}/documents`],
-          ["03", "Payments", `${base}/payments`],
-          ["04", "Wedding planning", `${base}/planning`],
-          ["05", "Photos & films", `${base}/delivery`],
+          ["02", "Your contract details", `${base}/agreement`],
+          ["03", "Agreements & approvals", `${base}/documents`],
+          ["04", "Payments", `${base}/payments`],
+          ["05", "Wedding planning", `${base}/planning`],
+          ["06", "Your people & moodboard", `${base}/moodboard`],
+          ["07", "Photos & films", `${base}/delivery`],
         ]
       : [["01", "Your weddings", "/portal"]];
   return (

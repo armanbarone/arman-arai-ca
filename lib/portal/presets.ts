@@ -1,10 +1,9 @@
 import type { AllocationLine, TaxLine } from "./types";
 import { BUSINESS } from "./business";
+import { TIERS } from "@/lib/site";
 
-// Collection names are booking shortcuts. Exact inclusions and prices belong
-// to the completed proposal and agreement; a name never promises film, albums
-// or optional services. The initial allocation is photography only and the
-// studio can change it before issuing commercial terms.
+// Website collections supply editable quote defaults. Issued proposals and
+// agreements preserve the studio-approved scope and financial allocation.
 
 export interface PackagePreset {
   key: string;
@@ -12,33 +11,27 @@ export interface PackagePreset {
   includesFilm: boolean;
   includesAlbum: boolean;
   allocation: AllocationLine[];
+  priceCents?: number;
+  hours?: number;
 }
 
 const PHOTO_ONLY: AllocationLine[] = [
-  { key: "photo", label: "Wedding photography and gallery", bps: 10000 },
+  {
+    key: "collection",
+    label: "Wedding collection and all included deliverables",
+    bps: 10000,
+  },
 ];
 export const PACKAGES: PackagePreset[] = [
-  {
-    key: "core",
-    name: "Core",
-    includesFilm: false,
-    includesAlbum: false,
+  ...TIERS.map((t) => ({
+    key: t.slug,
+    name: t.name,
+    includesFilm: true,
+    includesAlbum: t.slug !== "signature",
     allocation: PHOTO_ONLY,
-  },
-  {
-    key: "signature",
-    name: "Signature",
-    includesFilm: false,
-    includesAlbum: false,
-    allocation: PHOTO_ONLY,
-  },
-  {
-    key: "heirloom",
-    name: "Heirloom",
-    includesFilm: false,
-    includesAlbum: false,
-    allocation: PHOTO_ONLY,
-  },
+    priceCents: t.price * 100,
+    hours: t.hours,
+  })),
   {
     key: "custom",
     name: "Custom wedding collection",

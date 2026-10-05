@@ -3,13 +3,25 @@ import PDFDocument from "pdfkit";
 import path from "node:path";
 import type { Booking } from "./types";
 import type { WeddingDocument, WeddingBlock } from "./wedding";
+import { initialSectionsFor, validateInitials } from "./document-sections";
 import { BUSINESS, BUSINESS_ADDRESS_ONE_LINE } from "./business";
 
 /** Renders the stored snapshot, never current booking fields. Fonts are bundled for consistent exports. */
 export async function renderWeddingPdf(
   b: Booking,
   d: WeddingDocument,
+  sample = false,
 ): Promise<Buffer> {
+  if (d.status === "executed" && d.initialSections) {
+    if (
+      !d.requiredEmails.every((email) =>
+        d.signatures.some((s) => s.party === "client" && s.email === email),
+      )
+    )
+      throw new Error("Required signatures are incomplete");
+    for (const sig of d.signatures)
+      validateInitials(d, sig.legalName, sig.initials || {});
+  }
   const doc = new PDFDocument({
     font: path.join(process.cwd(), "public/fonts/portal/NotoSans-Regular.ttf"),
     size: "LETTER",
@@ -43,7 +55,7 @@ export async function renderWeddingPdf(
     doc
       .font(bold ? "Bold" : "Body")
       .fontSize(size)
-      .fillColor("#22352e");
+      .fillColor("#2b2723");
     const opts = { width, lineGap: 2 };
     const height = doc.heightOfString(value, opts);
     if (height < limit - 42) ensure(height + 10);
@@ -81,8 +93,8 @@ export async function renderWeddingPdf(
       }
       ensure(height);
       const y = doc.y;
-      if (bold) doc.rect(42, y, width, height).fill("#edf3ee");
-      doc.fillColor("#22352e");
+      if (bold) doc.rect(42, y, width, height).fill("#eee8df");
+      doc.fillColor("#2b2723");
       row.forEach((c, ci) => {
         doc
           .font(bold ? "Bold" : "Body")
@@ -96,7 +108,7 @@ export async function renderWeddingPdf(
         .moveTo(42, y + height)
         .lineTo(570, y + height)
         .lineWidth(0.5)
-        .strokeColor("#cbd2cd")
+        .strokeColor("#d7cbbd")
         .stroke();
       doc.y = y + height;
       doc.x = 42;
@@ -107,6 +119,7 @@ export async function renderWeddingPdf(
     `${BUSINESS.legalName} operating as ${BUSINESS.tradeName} · ${b.ref} · Version ${d.version}`,
     8.5,
   );
+  if (sample) text("SAMPLE ONLY — NON-BINDING PRACTICE RECORD", 12, true);
   text(d.title, 22, true);
   text(
     d.status === "executed"
@@ -125,10 +138,36 @@ export async function renderWeddingPdf(
       );
   }
   doc.addPage();
+  heading("Section initials record");
+  text(
+    "The initials below acknowledge the sections of the same document version recorded in the signature certificate.",
+  );
+  table({
+    kind: "table",
+    id: "initials-record",
+    header: true,
+    rows: [
+      [
+        { text: "Document section" },
+        ...d.signatures.map((sig) => ({ text: sig.legalName })),
+      ],
+      ...initialSectionsFor(d).map((section) => [
+        { text: section.title },
+        ...d.signatures.map((sig) => ({
+          text: sig.initials?.[section.id] || "Not recorded",
+        })),
+      ]),
+    ],
+  });
+  doc.addPage();
   heading("Signature certificate");
   text(`Document version ${d.version} · SHA-256: ${d.hash || "Draft"}`, 9);
   text(BUSINESS_ADDRESS_ONE_LINE, 9);
-  for (const sig of d.signatures) {
+  for (const [signatureIndex, sig] of d.signatures.entries()) {
+    if (signatureIndex > 0) {
+      doc.addPage();
+      heading("Signature certificate · continued");
+    }
     ensure(200);
     heading(sig.legalName);
     text(`Typed electronic signature: ${sig.legalName}`);
@@ -137,6 +176,11 @@ export async function renderWeddingPdf(
       9,
     );
     text(`Signed: ${sig.signedAt} (UTC)`, 9);
+    for (const section of initialSectionsFor(d))
+      text(
+        `Initials · ${section.title}: ${sig.initials?.[section.id] || "Not recorded"}`,
+        9,
+      );
     text(`Consent: ${sig.consent}`, 9);
     text(`Document hash accepted: ${sig.hash}`, 8.5);
     text(`IP: ${sig.ip} · Device: ${sig.userAgent}`, 8.5);
@@ -152,9 +196,9 @@ export async function renderWeddingPdf(
     doc
       .font("Body")
       .fontSize(8)
-      .fillColor("#53625b")
+      .fillColor("#71665b")
       .text(
-        `${b.ref} · ${BUSINESS.email} · ${i + 1} / ${pages.count}`,
+        `${sample ? "SAMPLE / NON-BINDING · " : ""}${b.ref} · ${BUSINESS.email} · ${i + 1} / ${pages.count}`,
         42,
         760,
         { width, lineBreak: false },

@@ -1,0 +1,501 @@
+{
+  "source": "00_Canadian_Wedding_Client_Document_System.docx",
+  "sourceSha256": "5c7d498d9599f244d4724fe7ea5783a72fdf39f271f6e98208eed9f39cbdc7b3",
+  "blocks": [
+    {
+      "kind": "p",
+      "text": "Canadian Wedding Client Document System"
+    },
+    {
+      "kind": "p",
+      "text": "Internal operating guide for wedding photography filmmaking and optional planning services"
+    },
+    {
+      "kind": "table",
+      "id": "guide-2",
+      "header": true,
+      "rows": [
+        [
+          {
+            "text": "ARASAKA INC.operating as ARMAN ARAI"
+          },
+          {
+            "text": "Internal use onlyTemplate version 2026 10"
+          }
+        ]
+      ]
+    },
+    {
+      "kind": "p",
+      "text": "This guide controls when each wedding document is prepared, approved and retained. The signed agreement, accepted proposal and approved change orders govern the project. Operational forms must match those documents and must not quietly expand the scope."
+    },
+    {
+      "kind": "h",
+      "text": "Operating rules"
+    },
+    {
+      "kind": "p",
+      "text": "Use one project identifier in every proposal, agreement, invoice, questionnaire, approval, gallery and production record."
+    },
+    {
+      "kind": "p",
+      "text": "Write exact calendar dates, local time zones, coverage windows, quantities, formats and delivery dates."
+    },
+    {
+      "kind": "p",
+      "text": "Separate mandatory service information from optional portfolio, testimonial and marketing consent."
+    },
+    {
+      "kind": "p",
+      "text": "Do not promise uninterrupted coverage, drone use, a specific weather result or any image that depends on venue rules, safety, timing or third parties."
+    },
+    {
+      "kind": "p",
+      "text": "Record every scope, date, price, tax, personnel or deliverable change in a signed change order."
+    },
+    {
+      "kind": "p",
+      "text": "Keep guest and minor publicity releases separate from the couple's own publicity choice."
+    },
+    {
+      "kind": "p",
+      "text": "Do not use the English agreement for a Quebec consumer contract until the required French version and language process have been reviewed."
+    },
+    {
+      "kind": "p",
+      "text": "Retain the final signed agreement, attachments, invoices, receipts, approvals and delivery record together."
+    },
+    {
+      "kind": "h",
+      "text": "Document sequence"
+    },
+    {
+      "kind": "table",
+      "id": "guide-14",
+      "header": true,
+      "rows": [
+        [
+          {
+            "text": "Document"
+          },
+          {
+            "text": "Reader"
+          },
+          {
+            "text": "When used"
+          },
+          {
+            "text": "Control record"
+          }
+        ],
+        [
+          {
+            "text": "Proposal and Scope"
+          },
+          {
+            "text": "Prospective clients"
+          },
+          {
+            "text": "After consultation"
+          },
+          {
+            "text": "Accepted scope and price"
+          }
+        ],
+        [
+          {
+            "text": "Master Service Agreement"
+          },
+          {
+            "text": "Clients and Company"
+          },
+          {
+            "text": "Before reservation"
+          },
+          {
+            "text": "Governing contract"
+          }
+        ],
+        [
+          {
+            "text": "Invoice and Payment Schedule"
+          },
+          {
+            "text": "Clients and accounting"
+          },
+          {
+            "text": "At booking and each payment"
+          },
+          {
+            "text": "Balance and tax record"
+          }
+        ],
+        [
+          {
+            "text": "Privacy and Publicity Preferences"
+          },
+          {
+            "text": "Each client"
+          },
+          {
+            "text": "At booking"
+          },
+          {
+            "text": "Separate individual consent"
+          }
+        ],
+        [
+          {
+            "text": "Wedding Discovery Questionnaire"
+          },
+          {
+            "text": "Clients and creative lead"
+          },
+          {
+            "text": "After booking"
+          },
+          {
+            "text": "Planning information"
+          }
+        ],
+        [
+          {
+            "text": "Wedding Planning and Creative Brief"
+          },
+          {
+            "text": "Clients and production team"
+          },
+          {
+            "text": "After discovery"
+          },
+          {
+            "text": "Approved creative direction"
+          }
+        ],
+        [
+          {
+            "text": "Engagement Session Planner"
+          },
+          {
+            "text": "Clients and photographer"
+          },
+          {
+            "text": "Before engagement session"
+          },
+          {
+            "text": "Session plan"
+          }
+        ],
+        [
+          {
+            "text": "Family Group Photo and VIP Worksheet"
+          },
+          {
+            "text": "Clients and coordinator"
+          },
+          {
+            "text": "Four to six weeks before"
+          },
+          {
+            "text": "People and group list"
+          }
+        ],
+        [
+          {
+            "text": "Venue Vendor Permit and Insurance Pack"
+          },
+          {
+            "text": "Clients and Company"
+          },
+          {
+            "text": "During planning"
+          },
+          {
+            "text": "Third party confirmations"
+          }
+        ],
+        [
+          {
+            "text": "Cancellation and Reschedule Request"
+          },
+          {
+            "text": "Clients and Company"
+          },
+          {
+            "text": "When requested"
+          },
+          {
+            "text": "Dated request record"
+          }
+        ],
+        [
+          {
+            "text": "Change Order"
+          },
+          {
+            "text": "Clients and Company"
+          },
+          {
+            "text": "Whenever scope changes"
+          },
+          {
+            "text": "Signed amendment"
+          }
+        ],
+        [
+          {
+            "text": "Final Wedding Dossier"
+          },
+          {
+            "text": "Clients"
+          },
+          {
+            "text": "Ten to fourteen days before"
+          },
+          {
+            "text": "Approved operating plan"
+          }
+        ],
+        [
+          {
+            "text": "Wedding Day Summary"
+          },
+          {
+            "text": "Clients"
+          },
+          {
+            "text": "One to two days before"
+          },
+          {
+            "text": "Mobile reference"
+          }
+        ],
+        [
+          {
+            "text": "Wedding Vendor Call Sheet"
+          },
+          {
+            "text": "Vendors"
+          },
+          {
+            "text": "Three to seven days before"
+          },
+          {
+            "text": "Receipt confirmed"
+          }
+        ],
+        [
+          {
+            "text": "Internal Wedding Production Plan"
+          },
+          {
+            "text": "Creative team"
+          },
+          {
+            "text": "Before coverage"
+          },
+          {
+            "text": "Crew instructions"
+          }
+        ],
+        [
+          {
+            "text": "Guest and Minor Media Consent"
+          },
+          {
+            "text": "Featured guest or guardian"
+          },
+          {
+            "text": "Before publicity use"
+          },
+          {
+            "text": "Individual release"
+          }
+        ],
+        [
+          {
+            "text": "Second Photographer Contractor Agreement"
+          },
+          {
+            "text": "Contracted crew"
+          },
+          {
+            "text": "Before assignment"
+          },
+          {
+            "text": "Crew contract"
+          }
+        ],
+        [
+          {
+            "text": "Final Story Delivery Guide"
+          },
+          {
+            "text": "Clients"
+          },
+          {
+            "text": "At delivery"
+          },
+          {
+            "text": "Delivery record"
+          }
+        ],
+        [
+          {
+            "text": "Album Proof and Approval"
+          },
+          {
+            "text": "Clients and lab"
+          },
+          {
+            "text": "Before production"
+          },
+          {
+            "text": "Manufacturing approval"
+          }
+        ],
+        [
+          {
+            "text": "Canadian Compliance Checklist"
+          },
+          {
+            "text": "Company"
+          },
+          {
+            "text": "Before template deployment"
+          },
+          {
+            "text": "Internal legal review"
+          }
+        ]
+      ]
+    },
+    {
+      "kind": "h",
+      "text": "Master project fields"
+    },
+    {
+      "kind": "table",
+      "id": "guide-16",
+      "header": true,
+      "rows": [
+        [
+          {
+            "text": "Project identifier"
+          },
+          {
+            "text": "[Enter once and repeat everywhere]"
+          }
+        ],
+        [
+          {
+            "text": "Client legal names"
+          },
+          {
+            "text": "[Enter]"
+          }
+        ],
+        [
+          {
+            "text": "Event date and province"
+          },
+          {
+            "text": "[Exact date and province or territory]"
+          }
+        ],
+        [
+          {
+            "text": "Venues and municipalities"
+          },
+          {
+            "text": "[Enter]"
+          }
+        ],
+        [
+          {
+            "text": "Package and scope"
+          },
+          {
+            "text": "[Exact selected scope]"
+          }
+        ],
+        [
+          {
+            "text": "Coverage window and time zone"
+          },
+          {
+            "text": "[Start end and zone]"
+          }
+        ],
+        [
+          {
+            "text": "Currency"
+          },
+          {
+            "text": "[CAD unless expressly stated otherwise]"
+          }
+        ],
+        [
+          {
+            "text": "Tax treatment"
+          },
+          {
+            "text": "[GST HST PST QST and registration numbers]"
+          }
+        ],
+        [
+          {
+            "text": "Privacy selection"
+          },
+          {
+            "text": "[Private portfolio no name portfolio with name]"
+          }
+        ],
+        [
+          {
+            "text": "Final delivery dates"
+          },
+          {
+            "text": "[Preview gallery film album]"
+          }
+        ]
+      ]
+    },
+    {
+      "kind": "h",
+      "text": "Pre send review"
+    },
+    {
+      "kind": "p",
+      "text": "☐  Names, addresses, event dates, province, venues and guest count match every document."
+    },
+    {
+      "kind": "p",
+      "text": "☐  The accepted proposal is attached and the website package description has been reconciled."
+    },
+    {
+      "kind": "p",
+      "text": "☐  Coverage, personnel, photo, film, audio, album and social deliverables are stated exactly."
+    },
+    {
+      "kind": "p",
+      "text": "☐  Prices, currency, taxes, booking payment, balance dates and refund terms are complete."
+    },
+    {
+      "kind": "p",
+      "text": "☐  Required provincial consumer contract information and cancellation wording have been reviewed."
+    },
+    {
+      "kind": "p",
+      "text": "☐  Quebec language requirements have been addressed before any Quebec client signs."
+    },
+    {
+      "kind": "p",
+      "text": "☐  Optional publicity and marketing choices remain genuinely optional."
+    },
+    {
+      "kind": "p",
+      "text": "☐  No internal camera, audio, crew, security or family-conflict notes appear in a client document."
+    }
+  ]
+}

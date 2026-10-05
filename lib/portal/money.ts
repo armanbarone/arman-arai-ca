@@ -89,37 +89,26 @@ const PARTS = [
   {
     label: "Booking payment",
     kind: "deposit" as const,
-    months: 0,
-    rule: "Due at booking. Date reservation requires the signed agreement and received booking payment.",
+    days: 0,
+    bps: 3000,
+    rule: "30% at booking. Date reservation requires the signed agreement and received booking payment.",
   },
   {
     label: "Second instalment",
     kind: "instalment" as const,
-    months: 6,
-    rule: "6 calendar months before the wedding",
-  },
-  {
-    label: "Third instalment",
-    kind: "instalment" as const,
-    months: 3,
-    rule: "3 calendar months before the wedding",
+    days: 60,
+    bps: 3500,
+    rule: "35% due 60 days before the wedding",
   },
   {
     label: "Final instalment",
     kind: "instalment" as const,
-    months: 1,
-    rule: "1 calendar month before the wedding",
+    days: 30,
+    bps: 3500,
+    rule: "35% due 30 days before the wedding",
   },
 ];
-
-/**
- * Editable starting schedule: four payments of 25% of the total including tax.
- * The issued wedding agreement uses the exact schedule approved in the studio.
- * Each part carries its own share of the subtotal and of every tax line; the
- * final part takes whatever rounding left over, so the four always sum to the
- * booking figures to the cent. A due date that has already passed on the
- * booking date is due at booking.
- */
+/** Public website starting schedule. The final part absorbs cent rounding; overdue dates fall due at booking. Issued schedules remain stored snapshots. */
 export function buildSchedule(
   booking: Pick<Booking, "ref" | "event" | "totals" | "taxes">,
   bookingDate: string,
@@ -131,18 +120,25 @@ export function buildSchedule(
 
   return PARTS.map((part, i) => {
     const last = i === PARTS.length - 1;
-    const sub = last ? subLeft : roundDiv(subtotalCents, 4);
+    const sub = last ? subLeft : roundDiv(subtotalCents * part.bps, 10000);
     subLeft -= sub;
     const taxes: Record<string, number> = {};
     for (const code of Object.keys(taxCents)) {
-      taxes[code] = last ? taxLeft[code] : roundDiv(taxCents[code], 4);
+      taxes[code] = last
+        ? taxLeft[code]
+        : roundDiv(taxCents[code] * part.bps, 10000);
       taxLeft[code] -= taxes[code];
     }
     const total = sub + Object.values(taxes).reduce((a, b) => a + b, 0);
     let due =
-      part.months === 0 || !booking.event.date
+      part.days === 0 || !booking.event.date
         ? bookingDate
-        : monthsBefore(booking.event.date, part.months);
+        : new Date(
+            Date.parse(booking.event.date + "T12:00:00Z") -
+              part.days * 86400000,
+          )
+            .toISOString()
+            .slice(0, 10);
     if (due < bookingDate) due = bookingDate;
     const prior = existing?.[i];
     const id = `i${i + 1}`;

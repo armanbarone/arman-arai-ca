@@ -1,4 +1,7 @@
+"use client";
 import Link from "next/link";
+import WeddingMoodboard from "./WeddingMoodboard";
+import { useWeddingBooking } from "./WeddingPreviewProvider";
 import { Card, Eyebrow, buttonCls, ghostButtonCls, StatusPill } from "./Shell";
 import {
   nextActions,
@@ -9,7 +12,7 @@ import { formatCad, formatDate, todayInBusinessTz } from "@/lib/portal/money";
 import type { Booking } from "@/lib/portal/types";
 
 export default function WeddingDashboard({
-  booking: b,
+  booking: initial,
   email,
   preview = false,
 }: {
@@ -17,6 +20,7 @@ export default function WeddingDashboard({
   email: string;
   preview?: boolean;
 }) {
+  const b = useWeddingBooking(initial, preview);
   const base = preview ? "/portal/preview" : `/portal/${b.ref}`,
     tasks = nextActions(b, email, base),
     docs = visibleDocuments(b),
@@ -218,6 +222,12 @@ export default function WeddingDashboard({
             </div>
           ))}
         </Card>
+      </div>
+      <WeddingMoodboard booking={b} preview={preview} compact />
+      <div className="wp-toolbar">
+        <Link className={ghostButtonCls} href={`${base}/moodboard`}>
+          Open your shared moodboard →
+        </Link>
       </div>
       <div className="wp-contact">
         <div>

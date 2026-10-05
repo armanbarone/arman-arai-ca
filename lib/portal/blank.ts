@@ -2,6 +2,7 @@ import type { Booking } from "./types";
 import type { BookingInput } from "@/app/admin/actions";
 import { PACKAGES, defaultTaxesFor } from "./presets";
 import { defaultFields } from "./workOrderFields";
+import { collectionFor, collectionBookingFields } from "./contract-details";
 
 const emptyClient = () => ({
   legalName: "",
@@ -25,10 +26,20 @@ export function blankBookingInput(): BookingInput {
       province: "BC",
       ceremonyType: "legal",
     },
-    lines: [{ id: "l1", kind: "package", label: pkg.name, cents: 0 }],
+    lines: [
+      {
+        id: "l1",
+        kind: "package",
+        label: pkg.name,
+        cents: pkg.priceCents || 0,
+      },
+    ],
     allocation: pkg.allocation,
     taxes: defaultTaxesFor("BC"),
-    fields: defaultFields(),
+    fields: {
+      ...defaultFields(),
+      ...collectionBookingFields(collectionFor(pkg.key)!, ""),
+    },
     internalNotes: "",
     remindersPaused: false,
   };

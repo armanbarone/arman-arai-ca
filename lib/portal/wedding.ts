@@ -3,6 +3,9 @@ import templates from "./wedding-templates.json";
 import type { Booking } from "./types";
 import { BUSINESS, BUSINESS_ADDRESS_ONE_LINE } from "./business";
 import { formatCad, formatDate } from "./money";
+import type { ContractIntake } from "./contract-details";
+import type { InitialSection } from "./document-sections";
+import { collectionFor } from "./contract-details";
 
 export type Cell = {
   text: string;
@@ -88,6 +91,7 @@ export type WeddingSignature = {
   userAgent: string;
   hash: string;
   answers: Record<string, string>;
+  initials?: Record<string, string>;
 };
 export type WeddingAmendment = {
   baseHash: string;
@@ -131,8 +135,10 @@ export type WeddingDocument = {
   deliveryError?: string;
   supersedes?: string;
   bookingHash?: string;
+  commercialSnapshot?: string;
   draftRevision?: string;
   amendment?: WeddingAmendment;
+  initialSections?: InitialSection[];
 };
 export type WeddingForm = {
   fields: Record<string, string>;
@@ -148,6 +154,27 @@ export type WeddingData = {
   galleryExpires?: string;
   deliveryDate?: string;
   operations?: Record<string, string[][]>;
+  intake?: ContractIntake;
+  creative?: {
+    direction: string;
+    palette: string;
+    priorities: string;
+    avoid: string;
+    updatedAt: string;
+    actor: string;
+  };
+  media?: WeddingMedia[];
+};
+export type WeddingMedia = {
+  id: string;
+  kind: "portrait-1" | "portrait-2" | "moodboard";
+  key: string;
+  contentType: string;
+  caption: string;
+  createdAt: string;
+  uploadedBy: string;
+  removedAt?: string;
+  previewUrl?: string;
 };
 export const weddingData = (b: Booking): WeddingData =>
   b.wedding ?? { documents: [], forms: {} };
@@ -219,6 +246,7 @@ export function seedFields(
     )
       fields[f.id] = b.event.province;
     else if (/^municipality$/.test(s)) fields[f.id] = b.event.location;
+    else if (/^event type$/.test(s)) fields[f.id] = "Wedding";
     else if (/^currency$/.test(s)) fields[f.id] = "CAD";
     else if (/total contract price.*price|^total contract price$/.test(s))
       fields[f.id] = formatCad(b.totals.totalCents);
@@ -251,6 +279,76 @@ export function seedFields(
                   ? c.address.province
                   : c.preferredName || c.legalName;
     }
+  }
+  if (
+    ["agreement", "proposal"].includes(t.key) &&
+    b.wedding?.intake?.status === "approved"
+  ) {
+    const v = b.wedding.intake.values;
+    for (const f of templateFields(t)) {
+      const label = f.label.toLowerCase();
+      const entry = /preparation location/.test(label)
+        ? v.preparationLocation
+        : /ceremony location/.test(label)
+          ? v.ceremonyLocation
+          : /reception location/.test(label)
+            ? v.receptionLocation
+            : /guest count/.test(label)
+              ? v.guestCount
+              : undefined;
+      if (entry !== undefined) fields[f.id] = entry || "Not applicable";
+    }
+  }
+  return fields;
+}
+/** Editable starting specifications from the same catalogue used by the public site. */
+export function defaultDocumentFields(t: WeddingTemplate, b: Booking) {
+  const fields = seedFields(t, b),
+    tier = collectionFor(b.packageKey);
+  if (!["agreement", "proposal"].includes(t.key)) return fields;
+  const specs: [RegExp, string, string, string][] = [
+    [/planning and creative meetings/, "planningSpec", "Included", ""],
+    [/engagement session/, "engagementSpec", "Included", ""],
+    [/wedding photography/, "photoSpec", "Included", "eventDate"],
+    [/wedding film coverage/, "filmSpec", "Included", "eventDate"],
+    [/preview photographs/, "previewSpec", "Included", "previewDate"],
+    [/edited photo gallery/, "gallerySpec", "Included", "finalDeliveryDate"],
+    [/teaser or social films/, "socialSpec", "Included", "socialDate"],
+    [/highlight film/, "filmSpec", "Included", "featureFilmDeliveryDate"],
+    [/album or printed goods/, "albumSpec", "Included", "albumDeliveryDate"],
+    [/ceremony or speech edits|drone capture/, "", "Not included", ""],
+    [/^other/, "otherSpec", "Included", ""],
+  ];
+  for (const f of templateFields(t)) {
+    const label = f.label.toLowerCase(),
+      spec = specs.find(([re]) => re.test(label));
+    if (
+      spec &&
+      /included|exact specification|supply or completion date/.test(label)
+    ) {
+      const [, key, included, due] = spec;
+      fields[f.id] = /included/.test(label)
+        ? included
+        : /exact specification/.test(label)
+          ? b.fields[key] || (included === "Not included" ? "Not included" : "")
+          : due === "eventDate"
+            ? formatDate(b.event.date)
+            : due
+              ? b.fields[due] || ""
+              : included === "Not included"
+                ? "Not applicable"
+                : "";
+    }
+    if (/coverage start end and zone/.test(label))
+      fields[f.id] = b.fields.coverage || "";
+    if (/total scheduled coverage/.test(label))
+      fields[f.id] = b.fields.coverageHours
+        ? `${b.fields.coverageHours} hours`
+        : tier
+          ? `${tier.hours} hours`
+          : b.fields.coverage || "";
+    if (/additional personnel/.test(label))
+      fields[f.id] = b.fields.teamOnSite || tier?.crew || "";
   }
   return fields;
 }
@@ -311,9 +409,25 @@ export function nextActions(
     kind: string;
     due?: string;
   }[] = [];
+  if (data.intake && data.intake.status !== "approved")
+    tasks.push({
+      title:
+        data.intake.status === "submitted"
+          ? "Your contract details are with Arman"
+          : "Complete your contract details",
+      detail:
+        data.intake.status === "submitted"
+          ? "Arman reviews your venues and collection before you initial and sign."
+          : "Enter your names, event venue, ceremony, reception and chosen collection.",
+      href: `${base}/agreement`,
+      kind: "Details",
+    });
   for (const d of docs.filter(
     (d) =>
       ["issued", "partial"].includes(d.status) &&
+      (!data.intake ||
+        data.intake.status === "approved" ||
+        !["agreement", "proposal"].includes(d.templateKey)) &&
       d.requiredEmails.includes(email) &&
       !d.signatures.some((s) => s.email === email),
   ))
@@ -385,6 +499,7 @@ export function serializeClientBooking(b: Booking): Booking {
       operations: undefined,
       documents: visibleDocuments(b).map((d) => ({
         ...d,
+        commercialSnapshot: undefined,
         signatures: d.signatures.map((s) => ({ ...s, ip: "", userAgent: "" })),
       })),
       forms: Object.fromEntries(
@@ -392,6 +507,9 @@ export function serializeClientBooking(b: Booking): Booking {
           ([k]) => templateFor(k).audience === "client",
         ),
       ),
+      media: weddingData(b)
+        .media?.filter((m) => !m.removedAt)
+        .map((m) => ({ ...m, key: "" })),
     },
   };
 }
@@ -417,7 +535,10 @@ export function commercialFingerprint(b: Booking) {
   });
 }
 function commercialBlocks(t: WeddingTemplate, b: Booking): WeddingBlock[] {
-  const table = (id: string, rows: string[][]): WeddingBlock => ({
+  const table = (
+    id: string,
+    rows: string[][],
+  ): Extract<WeddingBlock, { kind: "table" }> => ({
     kind: "table",
     id,
     header: true,
@@ -464,13 +585,32 @@ function commercialBlocks(t: WeddingTemplate, b: Booking): WeddingBlock[] {
   const selected = ids[t.key];
   if (!selected) return t.blocks;
   const accepted = b.wedding?.documents
-    .filter((d) => d.templateKey === "proposal" && d.status === "executed")
+    .filter(
+      (d) =>
+        d.templateKey === "proposal" &&
+        d.status === "executed" &&
+        d.commercialSnapshot === commercialFingerprint(b) &&
+        (!b.wedding?.intake?.approvedAt ||
+          (d.issuedAt || "") >= b.wedding.intake.approvedAt),
+    )
     .at(-1);
   const scope = accepted?.blocks.find(
     (x) => x.kind === "table" && x.id === "t3",
   );
-  return t.blocks.map((x) => {
+  const particulars = table("calculated-event-particulars", [
+    ["Agreed event detail", "Value"],
+    ...[
+      ["Main event venue and address", b.fields.eventVenue],
+      ["Ceremony time", b.fields.ceremonyTime],
+      ["Reception time", b.fields.receptionTime],
+    ]
+      .filter(([, value]) => value)
+      .map(([label, value]) => [label, value!]),
+  ]);
+  return t.blocks.flatMap((x) => {
     if (x.kind !== "table") return x;
+    if (t.key === "agreement" && x.id === "t3" && particulars.rows.length > 1)
+      return [x, particulars];
     if (x.id === selected[0]) return prices;
     if (x.id === selected[1]) return schedule;
     if (t.key === "agreement" && x.id === "t4" && scope)
@@ -507,6 +647,7 @@ export function documentFingerprint(d: WeddingDocument) {
     version: d.version,
     templateKey: d.templateKey,
     ...(d.amendment ? { amendment: d.amendment } : {}),
+    ...(d.initialSections ? { initialSections: d.initialSections } : {}),
   });
 }
 

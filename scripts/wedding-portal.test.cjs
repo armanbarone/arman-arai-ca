@@ -8,6 +8,7 @@ const pure = loader(),
 const hash = async (s) => createHash("sha256").update(s).digest("hex");
 function fixture() {
   let booking = sampleWedding();
+  booking.wedding.intake.status = "approved";
   booking.wedding.documents.sort(
     (a, b) =>
       Number(b.templateKey === "agreement") -
@@ -98,19 +99,12 @@ function fixture() {
     },
     async prepare(key = "agreement") {
       const d = booking.wedding.documents.find((d) => d.templateKey === key);
-      d.hash = await hash(
-        JSON.stringify({
-          blocks: d.blocks,
-          requiredEmails: d.requiredEmails,
-          version: d.version,
-          templateKey: d.templateKey,
-        }),
-      );
+      d.hash = await hash(w.documentFingerprint(d));
       return d;
     },
   };
 }
-test("signed commercial tables use exact booking totals and all four dates", () => {
+test("signed commercial tables use exact booking totals and all three website payment dates", () => {
   const b = sampleWedding(),
     t = w.templateFor("agreement", b);
   const fields = {
@@ -122,8 +116,8 @@ test("signed commercial tables use exact booking totals and all four dates", () 
   const blocks = w.resolveBlocks(t, fields),
     p = blocks.find((x) => x.id === "calculated-prices"),
     s = blocks.find((x) => x.id === "calculated-schedule");
-  assert.equal(p.rows.at(-1)[2].text, "$4,725.00");
-  assert.equal(s.rows.length, 5);
+  assert.equal(p.rows.at(-1)[2].text, "$3,150.00");
+  assert.equal(s.rows.length, 4);
   assert.equal(s.rows.at(-1).at(-1).text, "$0.00");
   assert.equal(w.missingDocumentFields(t, fields).length, 0);
 });
@@ -169,6 +163,7 @@ test("each partner signs separately; Private stays permitted; PDF follows the la
     "Maya Bennett",
     true,
     { portfolio: "private" },
+    initialsFor(f.booking, d.id, "Maya Bennett"),
   );
   assert(r.ok);
   assert.equal(f.booking.wedding.documents[0].status, "partial");
@@ -181,6 +176,7 @@ test("each partner signs separately; Private stays permitted; PDF follows the la
     "James Ellis",
     true,
     { portfolio: "portfolio_no_name" },
+    initialsFor(f.booking, d.id, "James Ellis"),
   );
   assert(r.ok);
   assert.equal(f.booking.wedding.documents[0].status, "executed");
@@ -203,6 +199,7 @@ test("a duplicate signature and a stale or tampered hash cannot change the recor
         "Maya Bennett",
         true,
         { portfolio: "private" },
+        initialsFor(f.booking, d.id, "Maya Bennett"),
       )
     ).ok,
   );
@@ -216,6 +213,7 @@ test("a duplicate signature and a stale or tampered hash cannot change the recor
         "Maya Bennett",
         true,
         { portfolio: "private" },
+        initialsFor(f.booking, d.id, "Maya Bennett"),
       )
     ).ok,
   );
@@ -228,6 +226,7 @@ test("a duplicate signature and a stale or tampered hash cannot change the recor
         "Maya Bennett",
         true,
         { portfolio: "private" },
+        initialsFor(f.booking, d.id, "Maya Bennett"),
       )
     ).ok,
   );
@@ -249,6 +248,7 @@ test("signature duplicate protection is rechecked after a concurrent storage ret
     "Maya Bennett",
     true,
     { portfolio: "private" },
+    initialsFor(f.booking, d.id, "Maya Bennett"),
   );
   assert(!r.ok);
   assert.match(r.error, /already recorded/);
@@ -266,6 +266,7 @@ test("signature survives failed PDF email delivery", async () => {
         "Maya Bennett",
         true,
         { portfolio: "private" },
+        initialsFor(f.booking, d.id, "Maya Bennett"),
       )
     ).ok,
   );
@@ -278,6 +279,7 @@ test("signature survives failed PDF email delivery", async () => {
     "James Ellis",
     true,
     { portfolio: "private" },
+    initialsFor(f.booking, d.id, "James Ellis"),
   );
   assert(r.ok);
   assert.match(r.message, /attention/);
@@ -309,6 +311,7 @@ test("wrong legal names, missing consent and incomplete separate opt-ins are rej
           name,
           consent,
           answers,
+          initialsFor(f.booking, d.id, name),
         )
       ).ok,
     );
@@ -331,6 +334,7 @@ test("wrong legal names, missing consent and incomplete separate opt-ins are rej
           marketing: "no",
           crossBorderNotice: "read",
         },
+        initialsFor(f.booking, d.id, "Maya Bennett"),
       )
     ).ok,
   );
@@ -348,6 +352,7 @@ test("studio cannot sign for either client or publish incomplete documents", asy
         "Maya Bennett",
         true,
         { portfolio: "private" },
+        initialsFor(f.booking, d.id, "Maya Bennett"),
       )
     ).ok,
   );
@@ -361,6 +366,7 @@ test("studio cannot sign for either client or publish incomplete documents", asy
         "",
         false,
         r.revision,
+        "AA",
       )
     ).ok,
   );
@@ -390,6 +396,7 @@ test("changing the booking invalidates accepted proposal; Quebec issuance is gat
     "Arman Arai",
     true,
     r.revision,
+    "AA",
   );
   assert(!r.ok);
   assert.match(r.error, /no longer matches/);
@@ -406,6 +413,7 @@ test("changing the booking invalidates accepted proposal; Quebec issuance is gat
     "Arman Arai",
     true,
     qcDraft.revision,
+    "AA",
   );
   assert(!r.ok);
   assert.match(r.error, /French/);
@@ -455,7 +463,7 @@ test("custom schedule reconciles each instalment and every tax to the cent", asy
   f.session = { role: "admin", email: "i@armanarai.com" };
   const r = await f.actions.saveWeddingSchedule(f.booking.ref, [
     { id: "a", label: "Booking", dueDate: "2026-10-03", totalCents: 123457 },
-    { id: "b", label: "Final", dueDate: "2027-05-01", totalCents: 349043 },
+    { id: "b", label: "Final", dueDate: "2027-05-01", totalCents: 191543 },
   ]);
   assert(r.ok);
   for (const i of f.booking.schedule)
@@ -465,7 +473,7 @@ test("custom schedule reconciles each instalment and every tax to the cent", asy
     );
   assert.equal(
     f.booking.schedule.reduce((s, i) => s + i.taxCents.GST, 0),
-    22500,
+    15000,
   );
 });
 test("shared planning forms preserve newer partner answers instead of silently overwriting", async () => {
@@ -522,6 +530,7 @@ test("complete agreement issues only against the reviewed draft and accepted mat
         "Arman Arai",
         true,
         "wrong",
+        "AA",
       )
     ).ok,
   );
@@ -531,6 +540,7 @@ test("complete agreement issues only against the reviewed draft and accepted mat
     "Arman Arai",
     true,
     saved.revision,
+    "AA",
   );
   assert(r.ok);
   const d = f.booking.wedding.documents.find((d) => d.id === saved.id);
@@ -565,7 +575,7 @@ test("a booking revision applies only after company and both client signatures, 
       await f.actions.recordWeddingPayment(
         f.booking.ref,
         "i1",
-        118125,
+        94500,
         "received-before-change",
       )
     ).ok,
@@ -582,7 +592,7 @@ test("a booking revision applies only after company and both client signatures, 
     "2027-05-20",
   );
   assert(staged.ok, staged.error);
-  assert.equal(f.booking.totals.totalCents, 472500);
+  assert.equal(f.booking.totals.totalCents, 315000);
   assert.equal(f.booking.event.date, "2027-06-19");
   let d = f.booking.wedding.documents.find((d) => d.templateKey === "change");
   const t = w.templateFor("change", f.booking, d.amendment),
@@ -607,6 +617,7 @@ test("a booking revision applies only after company and both client signatures, 
         "Arman Arai",
         true,
         saved.revision,
+        "AA",
       )
     ).ok,
   );
@@ -621,10 +632,11 @@ test("a booking revision applies only after company and both client signatures, 
         "Maya Bennett",
         true,
         {},
+        initialsFor(f.booking, d.id, "Maya Bennett"),
       )
     ).ok,
   );
-  assert.equal(f.booking.totals.totalCents, 472500);
+  assert.equal(f.booking.totals.totalCents, 315000);
   f.session = { role: "client", email: "james@example.com" };
   const result = await f.actions.signWeddingDocument(
     f.booking.ref,
@@ -633,13 +645,14 @@ test("a booking revision applies only after company and both client signatures, 
     "James Ellis",
     true,
     {},
+    initialsFor(f.booking, d.id, "James Ellis"),
   );
   assert(result.ok, result.error);
   assert.equal(f.booking.totals.totalCents, 525000);
   assert.equal(f.booking.event.date, "2027-06-20");
   assert.equal(
     f.booking.schedule.reduce((s, i) => s + i.paidCents, 0),
-    118125,
+    94500,
   );
   assert.equal(
     f.booking.schedule.reduce((s, i) => s + i.totalCents, 0),
@@ -696,6 +709,7 @@ test("a concurrent payment invalidates an outstanding change order instead of ov
         "Arman Arai",
         true,
         saved.revision,
+        "AA",
       )
     ).ok,
   );
@@ -718,11 +732,12 @@ test("a concurrent payment invalidates an outstanding change order instead of ov
     "Maya Bennett",
     true,
     {},
+    initialsFor(f.booking, d.id, "Maya Bennett"),
   );
   assert(!r.ok);
   assert.match(r.error, /record changed/);
   assert.equal(f.booking.schedule[0].paidCents, 1000);
-  assert.equal(f.booking.totals.totalCents, 472500);
+  assert.equal(f.booking.totals.totalCents, 315000);
 });
 test("Quebec revisions and invalid calendar dates are blocked before staging", async () => {
   const f = fixture();
@@ -775,6 +790,7 @@ test("cancelled bookings and superseded document versions cannot create signing 
         "Maya Bennett",
         true,
         { portfolio: "private" },
+        initialsFor(f.booking, d.id, "Maya Bennett"),
       )
     ).ok,
   );
@@ -832,4 +848,283 @@ test("PDF delivery uses both client addresses, stores the file, and retries only
   assert(
     sent.every((x) => x.attachments[0].content.toString() === "%PDF test"),
   );
+});
+
+function initialsFor(b, id, name) {
+  const d = b.wedding.documents.find((x) => x.id === id);
+  const m = pure("@/lib/portal/document-sections");
+  return Object.fromEntries(
+    m.initialSectionsFor(d).map((s) => [s.id, m.initialsForName(name)]),
+  );
+}
+
+test("current catalogue and website payment percentages use one shared source", () => {
+  const b = sampleWedding(),
+    { TIERS } = pure("@/lib/site"),
+    { PACKAGES } = pure("@/lib/portal/presets");
+  assert.deepEqual(
+    PACKAGES.slice(0, 3).map((p) => [p.key, p.name, p.priceCents]),
+    TIERS.map((t) => [t.slug, t.name, t.price * 100]),
+  );
+  assert.deepEqual(
+    b.schedule.map((i) => i.totalCents),
+    [94500, 110250, 110250],
+  );
+  assert.deepEqual(
+    b.schedule.map((i) => i.dueDate),
+    ["2026-10-03", "2027-04-20", "2027-05-20"],
+  );
+  const money = pure("@/lib/portal/money");
+  b.totals = money.computeTotals([{ cents: 300001 }], b.taxes);
+  const rows = money.buildSchedule(b, "2026-10-03");
+  assert.equal(
+    rows.reduce((n, i) => n + i.totalCents, 0),
+    b.totals.totalCents,
+  );
+});
+test("every reviewed section needs the authenticated person's initials before signing", async () => {
+  const f = fixture(),
+    d = await f.prepare();
+  const correct = initialsFor(f.booking, d.id, "Maya Bennett");
+  for (const initials of [
+    {},
+    { ...correct, [Object.keys(correct)[0]]: "JE" },
+    { ...correct, unknown: "MB" },
+  ]) {
+    const r = await f.actions.signWeddingDocument(
+      f.booking.ref,
+      d.id,
+      d.hash,
+      "Maya Bennett",
+      true,
+      { portfolio: "private" },
+      initials,
+    );
+    assert(!r.ok);
+    assert.equal(f.booking.wedding.documents[0].signatures.length, 0);
+  }
+  const r = await f.actions.signWeddingDocument(
+    f.booking.ref,
+    d.id,
+    d.hash,
+    "Maya Bennett",
+    true,
+    { portfolio: "private" },
+    correct,
+  );
+  assert(r.ok, r.error);
+  assert.deepEqual(
+    f.booking.wedding.documents[0].signatures[0].initials,
+    correct,
+  );
+});
+test("couple enters venues and names; studio approves package details; signed records stay fixed", async () => {
+  const f = fixture(),
+    a = f.load("@/app/portal/contract-actions"),
+    details = pure("@/lib/portal/contract-details");
+  f.booking.wedding.intake.status = "draft";
+  const oldProposal = JSON.stringify(
+    f.booking.wedding.documents.find((d) => d.templateKey === "proposal"),
+  );
+  const v = details.initialContractDetails(f.booking);
+  v.people[0].legalName = "Maya Marie Bennett";
+  v.eventVenue = "Lakeside House, 10 Lake Road";
+  v.ceremonyLocation = "Lake Gardens, 20 Lake Road";
+  v.receptionLocation = "Lakeside Ballroom, 10 Lake Road";
+  v.ceremonyTime = "14:30";
+  v.collectionKey = "complete";
+  let r = await a.saveWeddingContractDetails(
+    f.booking.ref,
+    { ...v, priceCents: 1 },
+    true,
+    f.booking.wedding.intake.updatedAt,
+  );
+  assert(!r.ok);
+  r = await a.saveWeddingContractDetails(
+    f.booking.ref,
+    v,
+    true,
+    f.booking.wedding.intake.updatedAt,
+  );
+  assert(r.ok, r.error);
+  assert.equal(f.booking.clients[0].legalName, "Maya Bennett");
+  const revision = r.updatedAt;
+  r = await a.saveWeddingContractDetails(f.booking.ref, v, true, "stale");
+  assert(!r.ok);
+  assert.match(r.error, /newer/);
+  await assert.rejects(
+    a.approveWeddingContractDetails(f.booking.ref, revision),
+    /Admin required/,
+  );
+  f.session = { role: "admin", email: "i@armanarai.com" };
+  r = await a.approveWeddingContractDetails(f.booking.ref, revision);
+  assert(r.ok, r.error);
+  assert.equal(f.booking.clients[0].legalName, "Maya Marie Bennett");
+  assert.equal(f.booking.clients[0].email, "maya@example.com");
+  assert.equal(f.booking.packageName, "Legacy");
+  assert.equal(f.booking.lines[0].cents, 420000);
+  assert.equal(
+    JSON.stringify(
+      f.booking.wedding.documents.find(
+        (d) => d.templateKey === "proposal" && d.status === "executed",
+      ),
+    ),
+    oldProposal,
+  );
+  const d = f.booking.wedding.documents.find(
+    (d) => d.templateKey === "agreement" && d.status === "draft",
+  );
+  const text = JSON.stringify(d.blocks);
+  for (const value of [
+    "Maya Marie Bennett",
+    v.eventVenue,
+    v.ceremonyLocation,
+    v.receptionLocation,
+    "14:30",
+    "800+",
+  ])
+    assert(text.includes(value), value);
+  f.session = { role: "client", email: "maya@example.com" };
+  d.status = "partial";
+  d.signatures.push({ party: "client", email: f.session.email });
+  r = await a.saveWeddingContractDetails(
+    f.booking.ref,
+    v,
+    false,
+    f.booking.wedding.intake.updatedAt,
+  );
+  assert(!r.ok);
+  assert.match(r.error, /fixed/);
+});
+test("draft details block issuing and signing an out-of-date agreement", async () => {
+  const f = fixture(),
+    d = await f.prepare();
+  f.booking.wedding.intake.status = "submitted";
+  const r = await f.actions.signWeddingDocument(
+    f.booking.ref,
+    d.id,
+    d.hash,
+    "Maya Bennett",
+    true,
+    { portfolio: "private" },
+    initialsFor(f.booking, d.id, "Maya Bennett"),
+  );
+  assert(!r.ok);
+  assert.match(r.error, /review/);
+  assert.equal(
+    w.nextActions(f.booking, f.session.email)[0].href,
+    `/portal/${f.booking.ref}/agreement`,
+  );
+});
+test("studio collection edits reach draft scope without changing previously issued versions", async () => {
+  const f = fixture();
+  f.session = { role: "admin", email: "i@armanarai.com" };
+  f.booking.status = "draft";
+  const issued = f.booking.wedding.documents.find(
+      (d) => d.templateKey === "proposal",
+    ),
+    snapshot = JSON.stringify(issued);
+  const agreement = f.booking.wedding.documents.find(
+    (d) => d.templateKey === "agreement",
+  );
+  agreement.status = "draft";
+  const input = structuredClone(
+    f.load("@/lib/portal/blank").existingBookingInput(f.booking),
+  );
+  input.fields.photoSpec = "9 hours, one lead photographer, 700+ images";
+  input.fields.coverageHours = "9";
+  input.lines[0].cents = 330000;
+  const r = await f
+    .load("@/app/admin/actions")
+    .saveBookingAction(f.booking.ref, input);
+  assert(r.ok, r.error);
+  const d = f.booking.wedding.documents.find((d) => d.id === agreement.id);
+  assert(JSON.stringify(d.blocks).includes("700+"));
+  assert(JSON.stringify(d.blocks).includes("9 hours"));
+  assert.equal(
+    JSON.stringify(f.booking.wedding.documents.find((d) => d.id === issued.id)),
+    snapshot,
+  );
+});
+test("image uploads validate content, enforce booking privacy and strip photo metadata", async () => {
+  const { validateWeddingImage, MAX_WEDDING_IMAGE_BYTES } = pure(
+    "@/lib/portal/wedding-media",
+  );
+  assert.throws(() =>
+    validateWeddingImage(
+      Buffer.from("<svg><script>alert(1)</script></svg>"),
+      "image/png",
+    ),
+  );
+  assert.throws(() =>
+    validateWeddingImage(
+      Buffer.alloc(MAX_WEDDING_IMAGE_BYTES + 1),
+      "image/png",
+    ),
+  );
+  const f = fixture(),
+    writes = [];
+  f.store.writeFile = async (...args) => writes.push(args);
+  f.store.remove = async () => {};
+  f.store.readFile = async () => null;
+  const route = f.load("@/app/api/portal/wedding-media/route");
+  assert.equal(
+    (
+      await route.POST(
+        new Request(
+          `https://example.com/api/portal/wedding-media?ref=${f.booking.ref}`,
+          { method: "POST", headers: { origin: "https://evil.test" } },
+        ),
+      )
+    ).status,
+    403,
+  );
+  const sharp = require("sharp"),
+    png = await sharp({
+      create: { width: 3, height: 3, channels: 3, background: "#b8956a" },
+    })
+      .png()
+      .toBuffer(),
+    form = new FormData();
+  form.append("file", new File([png], "portrait.png", { type: "image/png" }));
+  form.append("kind", "portrait-1");
+  const res = await route.POST(
+    new Request(
+      `https://example.com/api/portal/wedding-media?ref=${f.booking.ref}`,
+      {
+        method: "POST",
+        headers: { origin: "https://example.com" },
+        body: form,
+      },
+    ),
+  );
+  assert.equal(res.status, 200, await res.clone().text());
+  assert.equal(writes.length, 1);
+  assert.equal((await sharp(writes[0][1]).metadata()).format, "webp");
+  const asset = f.booking.wedding.media[0];
+  assert.equal(asset.kind, "portrait-1");
+  f.session = { role: "client", email: "someone-else@example.com" };
+  await assert.rejects(
+    route.GET(
+      new Request(
+        `https://example.com/api/portal/wedding-media?ref=${f.booking.ref}&id=${asset.id}`,
+      ),
+    ),
+    /Not found/,
+  );
+});
+test("full pack exposes fifteen client workflows, five private records and the native system guide", () => {
+  assert.equal(
+    w.WEDDING_TEMPLATES.filter((t) => t.audience === "client").length,
+    15,
+  );
+  assert.equal(
+    w.WEDDING_TEMPLATES.filter((t) => t.audience !== "client").length,
+    5,
+  );
+  const g = pure("@/lib/portal/wedding-source-guide.json");
+  assert.match(g.source, /^00_/);
+  assert(g.blocks.length > 20);
+  assert.match(g.sourceSha256, /^[a-f0-9]{64}$/);
+  assert.equal(pure("@/lib/portal/operations").OPERATION_REGISTERS.length, 10);
 });

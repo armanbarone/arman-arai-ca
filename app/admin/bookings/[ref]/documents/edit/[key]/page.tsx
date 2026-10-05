@@ -5,7 +5,7 @@ import {
   WEDDING_TEMPLATES,
   templateFor,
   weddingData,
-  seedFields,
+  defaultDocumentFields,
 } from "@/lib/portal/wedding";
 import NativeWeddingForm from "@/components/portal/NativeWeddingForm";
 export default async function Editor({
@@ -42,7 +42,7 @@ export default async function Editor({
       )}
       <NativeWeddingForm
         template={t}
-        initial={{ ...seedFields(t, b), ...draft?.fields }}
+        initial={{ ...defaultDocumentFields(t, b), ...draft?.fields }}
         bookingRef={ref}
         admin
         draftId={draft?.id}

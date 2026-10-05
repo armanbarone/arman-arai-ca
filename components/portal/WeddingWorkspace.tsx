@@ -1,4 +1,6 @@
+"use client";
 import Link from "next/link";
+import { useWeddingBooking } from "./WeddingPreviewProvider";
 import { Card, Eyebrow, StatusPill, buttonCls, ghostButtonCls } from "./Shell";
 import { formatCad, formatDate } from "@/lib/portal/money";
 import { weddingData, templateFor, resolveBlocks } from "@/lib/portal/wedding";
@@ -7,12 +9,13 @@ import { studioRow } from "@/lib/portal/studio";
 import WeddingFormReview from "./WeddingFormReview";
 import WeddingDeliveryEditor from "./WeddingDeliveryEditor";
 export default function WeddingWorkspace({
-  booking: b,
+  booking: initial,
   preview = false,
 }: {
   booking: Booking;
   preview?: boolean;
 }) {
+  const b = useWeddingBooking(initial, preview);
   const w = weddingData(b),
     summary = studioRow(b),
     base = preview ? "/portal/preview/admin" : `/admin/bookings/${b.ref}`;
@@ -41,17 +44,21 @@ export default function WeddingWorkspace({
         <Link
           className={buttonCls}
           href={
-            summary.action.includes("payment")
-              ? `${base}/payments`
-              : summary.action.includes("answers")
-                ? "#client-answers"
-                : `${base}/documents`
+            summary.action.includes("contract details")
+              ? `${base}/agreement`
+              : summary.action.includes("payment")
+                ? `${base}/payments`
+                : summary.action.includes("answers")
+                  ? "#client-answers"
+                  : `${base}/documents`
           }
         >
           Open the next step →
         </Link>
       </div>
       <div className="wp-tabs">
+        <Link href={`${base}/agreement`}>Couple’s contract details</Link>
+        <Link href={`${base}/moodboard`}>People & moodboard</Link>
         <Link href={`${base}/documents`}>Documents & signatures</Link>
         <Link href={`${base}/payments`}>Payments</Link>
         <Link href="#client-answers">Client answers</Link>
@@ -60,9 +67,7 @@ export default function WeddingWorkspace({
             (d) => d.templateKey === "agreement" && d.status === "executed",
           ) && <Link href={`${base}/amend`}>Prepare change order</Link>}
         <Link href={`${base}/operations`}>Operations</Link>
-        {!preview && (
-          <Link href={`${base}/settings`}>Booking details & access</Link>
-        )}
+        <Link href={`${base}/settings`}>Collection, pricing & details</Link>
         <Link href={preview ? "/portal/preview" : `/portal/${b.ref}`}>
           Client view ↗
         </Link>
@@ -107,6 +112,7 @@ export default function WeddingWorkspace({
           </Card>
         ) : (
           Object.entries(w.forms).map(([key, f]) => {
+            const b = useWeddingBooking(initial, preview);
             const t = templateFor(key);
             return (
               <Card key={key}>

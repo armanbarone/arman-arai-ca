@@ -1,5 +1,6 @@
 "use client";
 import { useState, useTransition } from "react";
+import { useWeddingPreview } from "./WeddingPreviewProvider";
 import { useRouter } from "next/navigation";
 import {
   OPERATION_REGISTERS,
@@ -16,6 +17,7 @@ export default function WeddingOperations({
   initial: Record<string, string[][]>;
   preview?: boolean;
 }) {
+  const context = useWeddingPreview();
   const router = useRouter(),
     [key, setKey] = useState("venues-vendors"),
     [data, setData] = useState(initial),
@@ -134,6 +136,9 @@ export default function WeddingOperations({
             onClick={() => {
               setMessage("");
               if (preview) {
+                context?.update((b) => {
+                  b.wedding!.operations = structuredClone(data);
+                });
                 setMessage("Saved only in this sample preview.");
                 return;
               }

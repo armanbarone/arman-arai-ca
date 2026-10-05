@@ -1,5 +1,15 @@
 "use client";
 
+import {
+  defaultDocumentFields,
+  templateFor,
+  resolveBlocks,
+} from "@/lib/portal/wedding";
+import { useWeddingPreview } from "./WeddingPreviewProvider";
+import {
+  collectionFor,
+  collectionBookingFields,
+} from "@/lib/portal/contract-details";
 import { useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import {
@@ -52,7 +62,8 @@ export default function BookingForm({
   preview?: boolean;
   amendment?: boolean;
 }) {
-  const router = useRouter();
+  const router = useRouter(),
+    context = useWeddingPreview();
   const [changeReason, setChangeReason] = useState(""),
     [changeDue, setChangeDue] = useState("");
   const [b, setB] = useState<BookingInput>(initial);
@@ -100,6 +111,37 @@ export default function BookingForm({
   function save() {
     setError(null);
     if (preview) {
+      if (context)
+        context.update((next) => {
+          const before = structuredClone(next);
+          Object.assign(next, structuredClone(b), { totals });
+          next.clients = b.clients.map((c, i) => ({
+            ...c,
+            id: context.booking.clients[i].id,
+          })) as typeof next.clients;
+          next.event.timezone = context.booking.event.timezone;
+          next.schedule = buildSchedule(next, todayInBusinessTz());
+          for (const d of next.wedding?.documents || [])
+            if (
+              d.status === "draft" &&
+              ["proposal", "agreement"].includes(d.templateKey)
+            ) {
+              const old = defaultDocumentFields(
+                  templateFor(d.templateKey, before),
+                  before,
+                ),
+                defaults = defaultDocumentFields(
+                  templateFor(d.templateKey, next),
+                  next,
+                );
+              for (const [id, value] of Object.entries(defaults))
+                if (old[id] !== value) d.fields[id] = value;
+              d.blocks = resolveBlocks(
+                templateFor(d.templateKey, next),
+                d.fields,
+              );
+            }
+        });
       setSaved(true);
       return;
     }
@@ -172,6 +214,7 @@ export default function BookingForm({
               <label className={labelCls}>Package</label>
               <select
                 className={inputCls}
+                aria-label="Package"
                 value={b.packageKey}
                 disabled={priceLocked}
                 onChange={(e) =>
@@ -181,7 +224,22 @@ export default function BookingForm({
                     d.packageName = p.name;
                     d.allocation = p.allocation;
                     const pkgLine = d.lines!.find((l) => l.kind === "package");
-                    if (pkgLine) pkgLine.label = p.name;
+                    if (pkgLine) {
+                      pkgLine.label = p.name;
+                      if (p.priceCents !== undefined) {
+                        pkgLine.cents = p.priceCents;
+                        setPriceText((old) => ({
+                          ...old,
+                          [pkgLine.id]: (p.priceCents! / 100).toFixed(2),
+                        }));
+                      }
+                    }
+                    const tier = collectionFor(p.key);
+                    if (tier)
+                      Object.assign(
+                        d.fields,
+                        collectionBookingFields(tier, d.event.date),
+                      );
                   })
                 }
               >
@@ -196,6 +254,7 @@ export default function BookingForm({
               <label className={labelCls}>Package name as printed</label>
               <input
                 className={inputCls}
+                aria-label="Package name as printed"
                 value={b.packageName}
                 disabled={priceLocked}
                 onChange={(e) =>
@@ -493,6 +552,7 @@ export default function BookingForm({
                     className={`${inputCls} text-right tabular-nums`}
                     inputMode="decimal"
                     disabled={priceLocked}
+                    aria-label={`${l.label} amount (CAD)`}
                     value={priceText[l.id] ?? ""}
                     onChange={(e) => {
                       const text = e.target.value;
@@ -659,9 +719,10 @@ export default function BookingForm({
               ))}
             </ul>
             <p className="mt-3 text-xs text-slate">
-              Default: four payments of 25%, including tax. Adjust amounts and
-              dates in Payments before issuing the agreement. Cancellation and
-              refund treatment comes from the completed wedding agreement.
+              Website default: 30% at booking, 35% at 60 days and 35% at 30 days
+              before the wedding, including tax. Adjust amounts and dates in
+              Payments before issuing the agreement. Cancellation and refund
+              treatment comes from the completed wedding agreement.
             </p>
           </Card>
         </div>
@@ -695,6 +756,7 @@ export default function BookingForm({
                       <textarea
                         rows={3}
                         className={inputCls}
+                        aria-label={f.label}
                         value={value}
                         onChange={(e) => setField(f.id, e.target.value)}
                       />
@@ -703,6 +765,7 @@ export default function BookingForm({
                         type={f.type === "date" ? "date" : "text"}
                         inputMode={f.type === "number" ? "numeric" : undefined}
                         className={inputCls}
+                        aria-label={f.label}
                         value={value}
                         onChange={(e) => setField(f.id, e.target.value)}
                       />

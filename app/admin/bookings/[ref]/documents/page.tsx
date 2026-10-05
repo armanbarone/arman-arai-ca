@@ -30,6 +30,7 @@ export default async function AdminDocuments({
         until you publish them. Client forms are completed in the couple’s
         portal.
       </p>
+      <div className="wp-toolbar"><Link href="/admin/library">Full library: 21 documents + workbook →</Link><Link href={`/admin/bookings/${ref}/agreement`}>Review couple’s contract details →</Link><Link href={`/admin/bookings/${ref}/settings`}>Customize collection and quote →</Link></div>
       <div className="wp-message">
         Proposal acceptance → completed agreement → each partner signs → signed
         PDF to both email addresses. Crew, vendor and guest records stay in the

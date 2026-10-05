@@ -1,3 +1,5 @@
+"use client";
+import { useWeddingBooking } from "./WeddingPreviewProvider";
 import Link from "next/link";
 import type { Booking } from "@/lib/portal/types";
 import {
@@ -7,12 +9,13 @@ import {
 } from "@/lib/portal/wedding";
 import { Card, Eyebrow, StatusPill, buttonCls } from "./Shell";
 export default function WeddingPlanning({
-  booking: b,
+  booking: initial,
   preview = false,
 }: {
   booking: Booking;
   preview?: boolean;
 }) {
+  const b = useWeddingBooking(initial, preview);
   const w = weddingData(b),
     base = preview ? "/portal/preview" : `/portal/${b.ref}`;
   return (
@@ -23,6 +26,17 @@ export default function WeddingPlanning({
         Start with your story. Save your answers as you go, then send them to me
         when you’re ready.
       </p>
+      <Card className="wp-action-hero">
+        <div>
+          <h2>Your people & shared moodboard</h2>
+          <p>
+            Add your profile photos, inspiration images and creative direction.
+          </p>
+        </div>
+        <Link className={buttonCls} href={`${base}/moodboard`}>
+          Build your moodboard →
+        </Link>
+      </Card>
       <div className="wp-doc-section" style={{ marginTop: 30 }}>
         <div className="wp-doc-grid">
           {WEDDING_TEMPLATES.filter((t) =>

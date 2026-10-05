@@ -39,6 +39,13 @@ const { loader } = require("./wedding-test-loader.cjs"),
       },
     })),
   ];
+  const m = load("@/lib/portal/document-sections");
+  for (const s of d.signatures)
+    s.initials = Object.fromEntries(
+      m
+        .initialSectionsFor(d)
+        .map((x) => [x.id, m.initialsForName(s.legalName)]),
+    );
   const blocks = d.blocks;
   if (process.argv.includes("--diagnose")) {
     for (let n = 1; n <= blocks.length; n++) {
@@ -54,7 +61,7 @@ const { loader } = require("./wedding-test-loader.cjs"),
       }
     }
   }
-  const bytes = await renderWeddingPdf(b, d),
+  const bytes = await renderWeddingPdf(b, d, true),
     out = path.resolve(__dirname, "../../sample-signed-agreement.pdf");
   fs.writeFileSync(out, bytes);
   console.log(

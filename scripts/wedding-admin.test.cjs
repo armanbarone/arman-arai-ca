@@ -183,6 +183,166 @@ async function issue(f, card = false) {
     f.b.updatedAt,
   );
 }
+
+test("draft deletion is recoverable, private to the studio and leaves the couple, invoice schedule and signed records intact", async () => {
+  const f = fixture(),
+    actions = f.load("@/app/admin/document-actions");
+  const draft = {
+    id: "agreement-draft-test",
+    templateKey: "agreement",
+    title: "Service agreement",
+    version: 2,
+    status: "draft",
+    createdAt: f.b.createdAt,
+    fields: { q2: "Keep these exact entries" },
+    blocks: [],
+    signatures: [],
+    requiredEmails: [],
+  };
+  f.mutate((b) => b.wedding.documents.push(draft));
+  const before = structuredClone(f.b);
+  assert.equal(
+    (await actions.deleteWeddingDraft(f.b.ref, draft.id, f.b.updatedAt)).ok,
+    true,
+  );
+  const removed = f.b.wedding.documents.find((d) => d.id === draft.id);
+  assert.equal(removed.status, "withdrawn");
+  assert.ok(removed.deletedAt);
+  assert.equal(removed.deletedBy, "studio@example.com");
+  assert.deepEqual(removed.fields, draft.fields);
+  assert.deepEqual(f.b.clients, before.clients);
+  assert.deepEqual(f.b.schedule, before.schedule);
+  assert.deepEqual(f.b.wedding.documents[0], before.wedding.documents[0]);
+  assert.equal(
+    pure("@/lib/portal/wedding")
+      .serializeClientBooking(f.b)
+      .wedding.documents.some((d) => d.id === draft.id),
+    false,
+  );
+  assert.equal(f.b.events.at(-1).type, "wedding_draft_deleted");
+  assert.equal(
+    (await actions.restoreWeddingDraft(f.b.ref, draft.id, f.b.updatedAt)).ok,
+    true,
+  );
+  const restored = f.b.wedding.documents.find((d) => d.id === draft.id);
+  assert.equal(restored.status, "draft");
+  assert.equal(restored.deletedAt, undefined);
+  assert.deepEqual(restored.fields, draft.fields);
+  assert.equal(f.b.events.at(-1).type, "wedding_draft_restored");
+  assert.equal(f.sent.length, 0);
+});
+
+test("deleting or restoring drafts requires admin access and the current wedding version", async () => {
+  const f = fixture(),
+    actions = f.load("@/app/admin/document-actions");
+  const draft = f.b.wedding.documents.find((d) => d.templateKey === "proposal");
+  f.mutate(() => {
+    draft.status = "draft";
+    draft.signatures = [];
+  });
+  assert.equal(
+    (await actions.deleteWeddingDraft(f.b.ref, draft.id, "old-version")).ok,
+    false,
+  );
+  assert.equal(draft.deletedAt, undefined);
+  const beforeDelete = f.b.updatedAt;
+  assert.equal(
+    (await actions.deleteWeddingDraft(f.b.ref, draft.id, beforeDelete)).ok,
+    true,
+  );
+  assert.equal(
+    (await actions.restoreWeddingDraft(f.b.ref, draft.id, beforeDelete)).ok,
+    false,
+  );
+  f.asClient();
+  await assert.rejects(
+    () => actions.deleteWeddingDraft(f.b.ref, draft.id, f.b.updatedAt),
+    /Admin required/,
+  );
+  await assert.rejects(
+    () => actions.restoreWeddingDraft(f.b.ref, draft.id, f.b.updatedAt),
+    /Admin required/,
+  );
+});
+
+test("issued or signed documents cannot be deleted, including a signature added while deletion was pending", async () => {
+  const f = fixture(),
+    actions = f.load("@/app/admin/document-actions");
+  const d = f.b.wedding.documents.find((d) => d.templateKey === "agreement");
+  assert.equal(
+    (await actions.deleteWeddingDraft(f.b.ref, d.id, f.b.updatedAt)).ok,
+    false,
+  );
+  f.mutate(() => {
+    d.status = "issued";
+    d.signatures = [];
+  });
+  assert.equal(
+    (await actions.deleteWeddingDraft(f.b.ref, d.id, f.b.updatedAt)).ok,
+    false,
+  );
+  f.mutate(() => {
+    d.status = "draft";
+  });
+  const expected = f.b.updatedAt;
+  f.store.updateBooking = async (_ref, fn) => {
+    const copy = structuredClone(f.b);
+    copy.wedding.documents
+      .find((x) => x.id === d.id)
+      .signatures.push({ party: "client", email: copy.clients[0].email });
+    await fn(copy);
+  };
+  assert.equal(
+    (await actions.deleteWeddingDraft(f.b.ref, d.id, expected)).ok,
+    false,
+  );
+  assert.equal(
+    f.b.wedding.documents.find((x) => x.id === d.id).deletedAt,
+    undefined,
+  );
+});
+
+test("a deleted draft cannot be published and restoration never overwrites a newer active draft", async () => {
+  const f = fixture(),
+    actions = f.load("@/app/admin/document-actions");
+  const draft = f.b.wedding.documents.find((d) => d.templateKey === "proposal");
+  f.mutate(() => {
+    draft.status = "draft";
+    draft.signatures = [];
+  });
+  assert.equal(
+    (await actions.deleteWeddingDraft(f.b.ref, draft.id, f.b.updatedAt)).ok,
+    true,
+  );
+  const wedding = f.load("@/app/portal/wedding-actions");
+  assert.equal(
+    (
+      await wedding.issueWeddingDocument(
+        f.b.ref,
+        draft.id,
+        "",
+        false,
+        "old-revision",
+      )
+    ).ok,
+    false,
+  );
+  const saved = await wedding.saveWeddingDraft(f.b.ref, "proposal", {}, "");
+  assert.equal(saved.ok, true);
+  assert.equal(
+    (await actions.restoreWeddingDraft(f.b.ref, draft.id, f.b.updatedAt)).ok,
+    false,
+  );
+  assert.equal(
+    f.b.wedding.documents.find((d) => d.id === saved.id).status,
+    "draft",
+  );
+  assert.ok(
+    f.b.wedding.documents.find((d) => d.id === saved.id).version >
+      draft.version,
+  );
+  assert.ok(f.b.wedding.documents.find((d) => d.id === draft.id).deletedAt);
+});
 test("invoices freeze the exact scheduled taxes and amounts, attach a PDF and email both partners", async () => {
   const f = fixture();
   assert.equal((await issue(f)).ok, true);

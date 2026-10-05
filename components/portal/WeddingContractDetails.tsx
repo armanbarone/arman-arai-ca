@@ -32,6 +32,7 @@ import {
 } from "@/app/portal/contract-actions";
 import { useWeddingBooking, useWeddingPreview } from "./WeddingPreviewProvider";
 import { buttonCls, ghostButtonCls } from "./Shell";
+import WeddingContractManagement from "./WeddingContractManagement";
 
 export default function WeddingContractDetails({
   booking,
@@ -217,14 +218,21 @@ export default function WeddingContractDetails({
     <div className="wp-contract-builder">
       {!embedded && (
         <>
-          <p className="wp-eyebrow">Before you initial and sign</p>
-          <h1>Your wedding details</h1>
+          <p className="wp-eyebrow">
+            {admin
+              ? "Studio · Contract management"
+              : "Before you initial and sign"}
+          </p>
+          <h1>
+            {admin ? "Contract details & versions" : "Your wedding details"}
+          </h1>
           <p className="wp-lead">
             Add your names, venues and plans. Choose a collection, then Arman
             confirms the exact quote and agreement.
           </p>
         </>
       )}
+      {admin && <WeddingContractManagement booking={b} preview={preview} />}
       <div className="wp-message">
         {locked
           ? "Your signed agreement stays fixed. Use Cancellation or date change to request a revision."

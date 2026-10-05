@@ -138,6 +138,8 @@ export type WeddingDocument = {
   bookingHash?: string;
   commercialSnapshot?: string;
   draftRevision?: string;
+  deletedAt?: string;
+  deletedBy?: string;
   amendment?: WeddingAmendment;
   initialSections?: InitialSection[];
 };

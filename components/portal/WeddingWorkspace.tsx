@@ -59,6 +59,7 @@ export default function WeddingWorkspace({
         </Link>
       </div>
       <div className="wp-tabs">
+        <Link href={preview ? `${base}/guide` : `/admin/guide?ref=${b.ref}`}>How to use</Link>
         <Link href={`${base}/portal`}>Client dashboard & access</Link>
         <Link href={`${base}/agreement`}>Couple’s contract details</Link>
         <Link href={`${base}/moodboard`}>People & moodboard</Link>

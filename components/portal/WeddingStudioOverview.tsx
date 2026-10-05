@@ -63,6 +63,7 @@ export default function WeddingStudioOverview({
         </Link>
       </div>
       <div className="wp-toolbar">
+        <Link className="wp-button wp-button-secondary" href={preview ? "/portal/preview/admin/guide" : "/admin/guide"}>How to use this dashboard →</Link>
         <Link
           className="wp-button wp-button-secondary"
           href={preview ? "/portal/preview/admin/invoices" : "/admin/invoices"}

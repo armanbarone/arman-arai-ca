@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { getBooking } from "@/lib/portal/store";
 import {
   WEDDING_TEMPLATES,
@@ -8,6 +8,8 @@ import {
   defaultDocumentFields,
 } from "@/lib/portal/wedding";
 import NativeWeddingForm from "@/components/portal/NativeWeddingForm";
+import WeddingDocumentAdminActions from "@/components/portal/WeddingDocumentAdminActions";
+import WeddingDeletedDrafts from "@/components/portal/WeddingDeletedDrafts";
 export default async function Editor({
   params,
 }: {
@@ -17,6 +19,7 @@ export default async function Editor({
     b = await getBooking(ref);
   if (!b) notFound();
   if (!WEDDING_TEMPLATES.some((t) => t.key === key)) notFound();
+  if (key === "invoice") redirect(`/admin/bookings/${ref}/payments`);
   const draft = weddingData(b).documents.find(
     (d) => d.templateKey === key && d.status === "draft",
   );
@@ -31,6 +34,18 @@ export default async function Editor({
         Complete exact details. Save, open the review PDF, and publish the
         completed version.
       </p>
+      {draft && (
+        <div className="wp-toolbar">
+          <WeddingDocumentAdminActions
+            bookingRef={ref}
+            documentId={draft.id}
+            status={draft.status}
+            clientSigned={false}
+            expectedUpdatedAt={b.updatedAt}
+          />
+        </div>
+      )}
+      <WeddingDeletedDrafts booking={b} templateKey={key} />
       {key === "change" && !draft?.amendment && (
         <div className="wp-message">
           Prepare the exact booking revision before publishing this change
@@ -41,6 +56,7 @@ export default async function Editor({
         </div>
       )}
       <NativeWeddingForm
+        key={draft?.id || `new-${key}`}
         template={t}
         initial={{ ...defaultDocumentFields(t, b), ...draft?.fields }}
         bookingRef={ref}

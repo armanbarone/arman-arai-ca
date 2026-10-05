@@ -42,7 +42,7 @@ export default function PortalNavigation({
         [
           "05",
           "Document library",
-          preview ? "/portal/preview/admin/documents" : "/admin/library",
+          preview ? "/portal/preview/admin/library" : "/admin/library",
         ],
         ...(activeRef
           ? [
@@ -83,6 +83,15 @@ export default function PortalNavigation({
               ],
             ]
           : []),
+        [
+          "?",
+          "How to use",
+          preview
+            ? "/portal/preview/admin/guide"
+            : activeRef
+              ? `/admin/guide?ref=${activeRef}`
+              : "/admin/guide",
+        ],
       ]
     : bookingRef || preview
       ? [
@@ -102,12 +111,13 @@ export default function PortalNavigation({
     >
       <p>{admin ? "Studio" : "Your wedding"}</p>
       {links.map(([n, label, href]) => {
+        const targetPath = href.split("?")[0];
         const current =
-          pathname === href ||
+          pathname === targetPath ||
           (href !== base &&
             href !== "/admin" &&
             href !== "/portal/preview/admin" &&
-            pathname.startsWith(href + "/"));
+            pathname.startsWith(targetPath + "/"));
         return (
           <Link
             key={label}

@@ -1,4 +1,9 @@
 "use server";
+import {
+  assertClientPortalAccess,
+  workflowIsVisible,
+} from "@/lib/portal/portal-controls";
+import { activeCheckouts } from "@/lib/portal/billing";
 import { amendmentBase } from "@/lib/portal/amendments";
 import { revalidatePath } from "next/cache";
 import {
@@ -132,6 +137,14 @@ export async function issueWeddingDocument(
   const meta = await requestMeta();
   try {
     await updateBooking(ref, async (b) => {
+      if (
+        b.archivedAt ||
+        b.status === "cancelled" ||
+        b.portal?.enabled === false
+      )
+        throw Error(
+          "Restore this wedding and open its portal before publishing.",
+        );
       const w = ensureWedding(b),
         d = w.documents.find((x) => x.id === id);
       if (!d || d.status !== "draft")
@@ -379,6 +392,7 @@ export async function signWeddingDocument(
       throw new Error("Invalid preference");
     let executed = false;
     await updateBooking(ref, async (b) => {
+      assertClientPortalAccess(b, session);
       executed = false;
       if (b.status === "cancelled")
         throw new Error(
@@ -471,6 +485,10 @@ export async function signWeddingDocument(
       );
       d.status = executed ? "executed" : "partial";
       if (executed && d.amendment) {
+        if (activeCheckouts(b).length)
+          throw Error(
+            "Cancel the open card checkout before completing this contract change.",
+          );
         Object.assign(b, structuredClone(d.amendment.plan));
         if (!["in_planning", "completed"].includes(b.status))
           b.status =
@@ -583,6 +601,9 @@ export async function saveWeddingForm(
     const fields = cleanFields(key, raw);
     let updatedAt = "";
     await updateBooking(ref, (b) => {
+      assertClientPortalAccess(b, session);
+      if (session.role !== "admin" && !workflowIsVisible(b, key))
+        throw Error("This workflow is managed by the studio.");
       const current = ensureWedding(b).forms[key];
       if ((current?.updatedAt || null) !== expectedUpdatedAt)
         throw new Error(
@@ -621,6 +642,7 @@ export async function reportWeddingPayment(
   const { session } = await requireBookingAccess(ref);
   try {
     await updateBooking(ref, (b) => {
+      assertClientPortalAccess(b, session);
       const i = b.schedule.find((i) => i.id === installmentId);
       if (!i || i.totalCents <= i.paidCents)
         throw new Error("No payment is outstanding");
@@ -657,8 +679,14 @@ export async function recordWeddingPayment(
     )
       throw new Error("Enter the amount received and transaction reference");
     await updateBooking(ref, (b) => {
+      if (b.archivedAt || b.status === "cancelled")
+        throw Error("Restore the active wedding before recording a payment.");
+      if (activeCheckouts(b).length)
+        throw Error(
+          "Cancel the open Stripe checkout before confirming an Interac payment.",
+        );
       const i = b.schedule.find((i) => i.id === installmentId);
-      if (!i || cents > i.totalCents - i.paidCents)
+      if (!i || i.status === "void" || cents > i.totalCents - i.paidCents)
         throw new Error("Amount exceeds the outstanding instalment");
       if (b.payments.some((p) => p.etransferReference === reference.trim()))
         throw new Error("That transaction reference is already recorded");

@@ -1,4 +1,5 @@
 import sharp from "sharp";
+import { assertClientPortalAccess } from "@/lib/portal/portal-controls";
 import { requireBookingAccess } from "@/lib/portal/auth";
 import { readFile, writeFile, updateBooking, remove } from "@/lib/portal/store";
 import { ensureWedding, type WeddingMedia } from "@/lib/portal/wedding";
@@ -123,6 +124,7 @@ export async function POST(req: Request) {
       uploadedBy: session.email,
     };
     await updateBooking(ref, (b) => {
+      assertClientPortalAccess(b, session);
       if (
         b.status === "cancelled" ||
         (session.role !== "admin" &&

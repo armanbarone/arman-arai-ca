@@ -4,6 +4,7 @@ import type { Booking } from "@/lib/portal/types";
 import { visibleDocuments, WEDDING_TEMPLATES } from "@/lib/portal/wedding";
 import { Card, StatusPill, Eyebrow, buttonCls } from "./Shell";
 import { useWeddingBooking, useWeddingPreview } from "./WeddingPreviewProvider";
+import { workflowIsVisible } from "@/lib/portal/portal-controls";
 const purpose: Record<string, string> = {
   agreement:
     "Your personal details, venues, collection, terms, initials and signatures.",
@@ -58,9 +59,7 @@ export default function WeddingDocuments({
         </Link>
       </Card>
       <div className="wp-message">
-        15 client workflows are listed below. The complete pack contains 21 Word
-        documents: these 15 workflows, 5 private studio records and the system
-        guide. Its operations workbook is also integrated in the studio. After
+        Your studio has selected the planning workflows for this wedding. After
         every required signature, your completed PDF is saved here and emailed
         to both partners.
       </div>
@@ -78,7 +77,10 @@ export default function WeddingDocuments({
             <h2>{stage}</h2>
             <div className="wp-doc-grid">
               {WEDDING_TEMPLATES.filter(
-                (t) => t.audience === "client" && t.stage === stage,
+                (t) =>
+                  t.audience === "client" &&
+                  t.stage === stage &&
+                  workflowIsVisible(b, t.key),
               ).map((t) => {
                 const versions = docs.filter((d) => d.templateKey === t.key),
                   d = versions.at(-1),
@@ -90,15 +92,18 @@ export default function WeddingDocuments({
                 const details =
                   t.key === "agreement" &&
                   b.wedding?.intake?.status !== "approved";
-                const href = form
-                  ? `${base}/planning/${t.key}`
-                  : details
-                    ? `${base}/agreement`
-                    : d
-                      ? `${base}/documents/${d.id}`
-                      : preview
-                        ? `${base}/documents/template/${t.key}`
-                        : null;
+                const href =
+                  t.key === "invoice"
+                    ? `${base}/payments`
+                    : form
+                      ? `${base}/planning/${t.key}`
+                      : details
+                        ? `${base}/agreement`
+                        : d
+                          ? `${base}/documents/${d.id}`
+                          : preview
+                            ? `${base}/documents/template/${t.key}`
+                            : null;
                 return (
                   <Card key={t.key} className="wp-doc-card">
                     <div className="wp-doc-head">

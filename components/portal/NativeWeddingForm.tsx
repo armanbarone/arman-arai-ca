@@ -28,6 +28,7 @@ export default function NativeWeddingForm({
   initial,
   bookingRef,
   admin = false,
+  studioForm = false,
   preview = false,
   draftId,
   initialDue = "",
@@ -38,6 +39,7 @@ export default function NativeWeddingForm({
   initial: Record<string, string>;
   bookingRef: string;
   admin?: boolean;
+  studioForm?: boolean;
   preview?: boolean;
   draftId?: string;
   initialDue?: string;
@@ -154,7 +156,7 @@ export default function NativeWeddingForm({
             fields: { ...fields },
             status: mode === "submit" ? "submitted" : "draft",
             updatedAt: at,
-            actor: context.email,
+            actor: studioForm ? "Studio" : context.email,
           };
       });
       setMessage(
@@ -399,7 +401,11 @@ export default function NativeWeddingForm({
             disabled={pending}
             onClick={() => run("save")}
           >
-            {pending ? "Saving…" : "Save draft"}
+            {pending
+              ? "Saving…"
+              : studioForm
+                ? "Save client answers"
+                : "Save draft"}
           </button>
           {admin ? (
             t.audience === "client" &&
@@ -421,13 +427,15 @@ export default function NativeWeddingForm({
               </button>
             ) : null
           ) : (
-            <button
-              className={buttonCls}
-              disabled={pending}
-              onClick={() => run("submit")}
-            >
-              Send to Arman →
-            </button>
+            !studioForm && (
+              <button
+                className={buttonCls}
+                disabled={pending}
+                onClick={() => run("submit")}
+              >
+                Send to Arman →
+              </button>
+            )
           )}
           {admin && draftId && !preview && (
             <a

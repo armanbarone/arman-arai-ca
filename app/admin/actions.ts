@@ -1,4 +1,5 @@
 "use server";
+import { activeCheckouts } from "@/lib/portal/billing";
 
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
@@ -42,11 +43,11 @@ const clientSchema = z.object({
   legalName: z.string().trim().min(3, "Full legal name is required"),
   preferredName: z.string().trim().default(""),
   email: z.string().trim().toLowerCase().email("A valid email is required"),
-  phone: z.string().trim().min(7, "Phone is required"),
+  phone: z.string().trim().default(""),
   address: z.object({
-    line1: z.string().trim().min(3, "Street address is required"),
+    line1: z.string().trim().default(""),
     line2: z.string().trim().optional().default(""),
-    city: z.string().trim().min(2, "City is required"),
+    city: z.string().trim().default(""),
     province: z.enum(provinceCodes, {
       message: "Pick a Canadian province or territory",
     }),
@@ -55,7 +56,7 @@ const clientSchema = z.object({
       .trim()
       .toUpperCase()
       .regex(
-        /^[A-Z]\d[A-Z] ?\d[A-Z]\d$/,
+        /^(?:[A-Z]\d[A-Z] ?\d[A-Z]\d)?$/,
         "Use a Canadian postal code, e.g. V6G 3J3",
       ),
   }),
@@ -217,6 +218,22 @@ export async function saveBookingAction(
         updatedAt: now,
         actor: admin.email,
       };
+      for (const key of ["proposal", "agreement"]) {
+        const t = templateFor(key, booking),
+          fields = defaultDocumentFields(t, booking);
+        booking.wedding!.documents.push({
+          id: `${key}-${randomId(8)}`,
+          templateKey: key,
+          title: t.title,
+          version: 1,
+          status: "draft",
+          createdAt: now,
+          fields,
+          blocks: resolveBlocks(t, fields),
+          requiredEmails: [],
+          signatures: [],
+        });
+      }
       try {
         await createBooking(booking);
         revalidatePath("/admin");
@@ -353,6 +370,13 @@ export async function sendInviteAction(
   const booking = await getBooking(ref);
   if (!booking) return { ok: false, error: "Booking not found" };
   try {
+    email = email.trim().toLowerCase();
+    if (
+      booking.archivedAt ||
+      booking.portal?.enabled === false ||
+      !booking.clients.some((c) => c.email === email)
+    )
+      throw Error("Restore client access before sending an invitation.");
     await sendInvite(booking, email);
     await updateBooking(ref, (b) => {
       b.events.push({
@@ -419,6 +443,10 @@ export async function saveBookingAmendmentAction(
     if (totals.subtotalCents <= 0)
       throw new Error("Enter a positive revised price");
     await updateBooking(ref, async (b) => {
+      if (b.archivedAt || activeCheckouts(b).length)
+        throw Error(
+          "Restore the wedding and cancel open card checkouts before changing its contract.",
+        );
       const w = ensureWedding(b);
       if (
         !w.documents.some(

@@ -6,6 +6,7 @@ import { formatCad, formatDate } from "./money";
 import type { ContractIntake } from "./contract-details";
 import type { InitialSection } from "./document-sections";
 import { collectionFor } from "./contract-details";
+import { workflowIsVisible } from "./portal-controls";
 
 export type Cell = {
   text: string;
@@ -399,7 +400,8 @@ export function nextActions(
   email: string,
   base = `/portal/${b.ref}`,
 ) {
-  if (b.status === "cancelled") return [];
+  if (b.status === "cancelled" || b.archivedAt || b.portal?.enabled === false)
+    return [];
   const docs = visibleDocuments(b),
     data = weddingData(b);
   const tasks: {
@@ -475,21 +477,68 @@ export function nextActions(
         "Add names, groups and a person to help gather everyone.",
       ],
     ])
-      if (!data.forms[key] || data.forms[key].status === "draft")
+      if (
+        workflowIsVisible(b, key) &&
+        (!data.forms[key] || data.forms[key].status === "draft")
+      )
         tasks.push({
           title,
           detail,
           href: `${base}/planning/${key}`,
           kind: "Planning",
         });
+  for (const p of b.planning
+    .filter(
+      (p) =>
+        p.clientVisible &&
+        p.clientCanComplete &&
+        ["todo", "in_progress"].includes(p.status),
+    )
+    .sort((a, b) => a.sortOrder - b.sortOrder))
+    tasks.push({
+      title: p.titleEn,
+      detail: p.clientNote || "Complete this step on your wedding checklist.",
+      href: `${base}/planning#task-${p.id}`,
+      kind: "Planning",
+      due: p.dueDate,
+    });
   return tasks;
 }
 export function serializeClientBooking(b: Booking): Booking {
   return {
     ...b,
+    archiveReason: undefined,
+    invoices: b.invoices?.map((v) => ({
+      ...v,
+      pdfKey: undefined,
+      notificationRequests: undefined,
+      issuedBy: "Studio",
+    })),
     internalNotes: "",
     events: [],
-    payments: [],
+    payments: b.payments.map(
+      ({
+        id,
+        installmentId,
+        amountCents,
+        method,
+        status,
+        receivedAt,
+        receiptNumber,
+        recordedBy,
+        refundedCents,
+      }) => ({
+        id,
+        installmentId,
+        amountCents,
+        method,
+        status,
+        receivedAt,
+        receiptNumber,
+        recordedBy,
+        refundedCents,
+      }),
+    ),
     fields: {},
     planning: b.planning
       .filter((p) => p.clientVisible)

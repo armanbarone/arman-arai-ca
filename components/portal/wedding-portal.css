@@ -1487,3 +1487,76 @@ textarea.wp-input {
     height: 230px;
   }
 }
+.wp .wp-admin-tools {
+  margin: 24px 0;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.wp .wp-admin-tools .wp-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.wp .wp-admin-tools .wp-button {
+  margin-top: auto;
+  align-self: flex-start;
+}
+.wp .wp-management-tile {
+  background: var(--surface-raised);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.wp .wp-checklist-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--line);
+  scroll-margin-top: 24px;
+}
+.wp .wp-checklist-row:last-child {
+  border-bottom: 0;
+}
+.wp .wp-checklist-row strong,
+.wp .wp-checklist-row small {
+  display: block;
+}
+.wp .wp-checklist-row small {
+  margin-top: 4px;
+  color: var(--muted);
+}
+.wp .wp-checklist-row input[type="checkbox"] {
+  width: 22px;
+  height: 22px;
+  accent-color: var(--accent);
+  flex-shrink: 0;
+  margin-top: 3px;
+}
+.wp .wp-invoice-summary {
+  background: var(--surface-raised);
+  border: 1px solid var(--line);
+  padding: 20px;
+  border-radius: 14px;
+  margin: 16px 0;
+  font-size: 18px;
+}
+.wp .wp-invoice-amount {
+  display: block;
+  font-size: 32px;
+  line-height: 1.2;
+  margin: 16px 0;
+  font-weight: 650;
+}
+.wp .wp-divider {
+  border: 0;
+  border-top: 1px solid var(--line);
+  margin: 24px 0;
+}
+@media (max-width: 900px) {
+  .wp .wp-admin-tools {
+    grid-template-columns: 1fr;
+  }
+}

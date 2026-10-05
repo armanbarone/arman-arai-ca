@@ -12,17 +12,77 @@ export default function PortalNavigation({
 }) {
   const pathname = usePathname();
   const base = preview ? "/portal/preview" : `/portal/${bookingRef || ""}`;
-  const activeRef = bookingRef || pathname.match(/^\/admin\/bookings\/([^/]+)/)?.[1];
+  const foundRef =
+    bookingRef || pathname.match(/^\/admin\/bookings\/([^/]+)/)?.[1];
+  const activeRef = foundRef === "new" ? undefined : foundRef;
   const links = admin
     ? [
-        ["01", "Overview", preview ? "/portal/preview/admin" : "/admin"],
+        [
+          "01",
+          "Weddings & clients",
+          preview ? "/portal/preview/admin" : "/admin",
+        ],
         [
           "02",
           "New wedding",
           preview ? "/portal/preview/admin/new" : "/admin/bookings/new",
         ],
-        ["03", "Document library", preview ? "/portal/preview/admin/documents" : activeRef ? `/admin/bookings/${activeRef}/documents` : "/admin/library"],
-        ["04", "Operations workbook", preview ? "/portal/preview/admin/operations" : activeRef ? `/admin/bookings/${activeRef}/operations` : "/admin/library#workbook"],
+        [
+          "03",
+          "All invoices",
+          preview ? "/portal/preview/admin/invoices" : "/admin/invoices",
+        ],
+        [
+          "04",
+          "Payment settings",
+          preview
+            ? "/portal/preview/admin/payment-settings"
+            : "/admin/payment-settings",
+        ],
+        [
+          "05",
+          "Document library",
+          preview ? "/portal/preview/admin/documents" : "/admin/library",
+        ],
+        ...(activeRef
+          ? [
+              [
+                "06",
+                "Wedding workspace",
+                preview
+                  ? "/portal/preview/admin/booking"
+                  : `/admin/bookings/${activeRef}`,
+              ],
+              [
+                "07",
+                "Client dashboard & access",
+                preview
+                  ? "/portal/preview/admin/portal"
+                  : `/admin/bookings/${activeRef}/portal`,
+              ],
+              [
+                "08",
+                "Contract & collection",
+                preview
+                  ? "/portal/preview/admin/agreement"
+                  : `/admin/bookings/${activeRef}/agreement`,
+              ],
+              [
+                "09",
+                "Invoices & payments",
+                preview
+                  ? "/portal/preview/admin/payments"
+                  : `/admin/bookings/${activeRef}/payments`,
+              ],
+              [
+                "10",
+                "Operations workbook",
+                preview
+                  ? "/portal/preview/admin/operations"
+                  : `/admin/bookings/${activeRef}/operations`,
+              ],
+            ]
+          : []),
       ]
     : bookingRef || preview
       ? [

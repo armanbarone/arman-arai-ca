@@ -19,13 +19,16 @@ export const WEDDINGS_TAG_ID = "GT-W6VMNGBQ";
  *  imported from GA4; a sent pricing form is also reported straight to Ads,
  *  as LEAD_FORM_CONVERSION. */
 export const GOOGLE_ADS_ID = "AW-18464850778";
-/** "Submit lead form" in Google Ads, from the event snippet the owner pasted
- *  (2026-10-01). That snippet wraps the call in gtag_report_conversion() for a
- *  click; on a thank-you page the same event is sent when the page opens for a
- *  form this tab really sent, once per form (trackWeddingInquiry). The tag
- *  that carries it is WEDDINGS_TAG_ID, the same container, so no second
- *  script loads for it. */
-export const LEAD_FORM_CONVERSION = `${GOOGLE_ADS_ID}/ySE3CPyOtYsdENqG3eRE`;
+/** "Wedding inquiry form (Google tag)" in Google Ads: a primary "Submit lead
+ *  forms" action, CA$50, one per click (created 2026-10-05). It REPLACES label
+ *  ySE3CPyOtYsdENqG3eRE, whose conversion action was deleted; a deleted action
+ *  cannot be restored and every conversion sent to its label was discarded, so
+ *  do not put that label back. On a thank-you page the event is sent when the
+ *  page opens for a form this tab really sent, once per form
+ *  (trackWeddingInquiry) — the pasted snippet's gtag_report_conversion() is a
+ *  click wrapper this site does not need. The tag that carries it is
+ *  WEDDINGS_TAG_ID, the same container, so no second script loads for it. */
+export const LEAD_FORM_CONVERSION = `${GOOGLE_ADS_ID}/asFlCIaeypEdENqG3eRE`;
 export const META_PIXEL_ID = "1110472461323039";
 /* AW-18154542346 ("Arman Arai Elopements") used to load here, and a booked call
    on this site was reported to it with that account's own conversion label.

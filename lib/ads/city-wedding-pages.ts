@@ -1,5 +1,5 @@
 import { CITY_PHOTOS, CITY_WORK, type Photo } from "../images";
-import { BANFF_WORK, BC_WORK, type WorkPhoto } from "./hub-work";
+import { BANFF_WORK, BC_WORK, VANCOUVER_WORK, type WorkPhoto } from "./hub-work";
 
 /** A hero photograph, with an optional object-position for the phone's wide crop. */
 export type HeroPhoto = Photo & { position?: string };
@@ -62,7 +62,7 @@ export const WEDDING_CITIES: WeddingCity[] = [
       described(CITY_WORK.vancouver[9], "A couple embracing beside the fountains of a formal garden"),
     ],
     interlude: [CITY_PHOTOS.vancouver.places[0], CITY_PHOTOS.vancouver.places[1], CITY_WORK.vancouver[3]],
-    work: { eyebrow: "Recent work", title: ["Vancouver and", "the Sea-to-Sky."], lead: "Couples I’ve photographed across British Columbia, from the city’s gardens and beaches to the mountains an hour north. Turn the pages.", album: "Vancouver & the Sea-to-Sky", photos: BC_WORK },
+    work: { eyebrow: "Recent work", title: ["Vancouver and", "the Sea-to-Sky."], lead: "Couples I’ve photographed across British Columbia, from the city’s gardens and beaches to the mountains an hour north. Turn the pages.", album: "Vancouver & the Sea-to-Sky", photos: VANCOUVER_WORK },
     coverage: ["Vancouver & the Lower Mainland", "North Shore & Sea-to-Sky"],
     about: "From a celebration downtown to a day on the North Shore or up the Sea-to-Sky, we’ll make a photography plan that fits your wedding.",
     coverageQuestion: "Do you cover the Lower Mainland and the Sea-to-Sky?",

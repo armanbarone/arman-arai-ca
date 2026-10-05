@@ -63,3 +63,30 @@ export const BANFF_WORK: WorkPhoto[] = [
   { src: `${CDN}/cities/banff/hub/banff-hub-02.webp`, alt: "A man in red dress uniform kissing the bride's hand on a mountain lookout", width: 1333, height: 2000 },
   { src: `${CDN}/cities/banff/hub/banff-hub-05.webp`, alt: "A couple kissing on a snowy summit with a helicopter overhead", width: 2000, height: 1500 },
 ];
+
+/** New Vancouver photographs the owner uploaded (canadian-wedding/"New
+ *  Vancouver Images/", 2026-10-04), copied as WebP to cities/vancouver/new/.
+ *  Image 16 is the same photograph as image 1, so it is used once. */
+const VANCOUVER_NEW: WorkPhoto[] = [
+  { src: `${CDN}/cities/vancouver/new/vancouver-new-06.webp`, alt: "A couple on the deck of a sailboat, her veil blowing in the wind", width: 1333, height: 2000 },
+  { src: `${CDN}/cities/vancouver/new/vancouver-new-10.webp`, alt: "A couple among red and orange autumn leaves", width: 1500, height: 2000 },
+  { src: `${CDN}/cities/vancouver/new/vancouver-new-08.webp`, alt: "A couple on a stone bridge in a garden beside a waterfall", width: 1500, height: 2000 },
+  { src: `${CDN}/cities/vancouver/new/vancouver-new-02.webp`, alt: "A couple under a clear umbrella on a rain-soaked street at night", width: 1125, height: 2000 },
+  { src: `${CDN}/cities/vancouver/new/vancouver-new-14.webp`, alt: "A couple standing in a beam of light in a misty old-growth forest", width: 1125, height: 2000 },
+  { src: `${CDN}/cities/vancouver/new/vancouver-new-12.webp`, alt: "A couple dancing on the stage of an ornate theatre, her train spread behind her", width: 2000, height: 1333 },
+  { src: `${CDN}/cities/vancouver/new/vancouver-new-13.webp`, alt: "A couple dancing through a shower of sparks at night", width: 2000, height: 1333 },
+  { src: `${CDN}/cities/vancouver/new/vancouver-new-03.webp`, alt: "A couple in a snowy forest, her red cape over her gown", width: 1500, height: 2000 },
+  { src: `${CDN}/cities/vancouver/new/vancouver-new-05.webp`, alt: "A couple beside a vintage car under golden autumn trees in front of a Tudor house", width: 2000, height: 1500 },
+  { src: `${CDN}/cities/vancouver/new/vancouver-new-11.webp`, alt: "A couple on the steps of a stone building surrounded by autumn trees", width: 2000, height: 1500 },
+  { src: `${CDN}/cities/vancouver/new/vancouver-new-09.webp`, alt: "A bride in red and her groom under an umbrella in a garden hung with paper lanterns", width: 1500, height: 2000 },
+  { src: `${CDN}/cities/vancouver/new/vancouver-new-04.webp`, alt: "A couple sitting on the edge of a pool beside a red and white lifeguard tower", width: 2000, height: 2000 },
+  { src: `${CDN}/cities/vancouver/new/vancouver-new-07.webp`, alt: "A couple in the middle of a green hedge maze, seen from above", width: 2000, height: 1500 },
+  { src: `${CDN}/cities/vancouver/new/vancouver-new-15.webp`, alt: "A couple kissing in smoke lit by a single light at night", width: 1333, height: 2000 },
+  { src: `${CDN}/cities/vancouver/new/vancouver-new-01.webp`, alt: "A bride holding her veil across her face below a tall window, black and white", width: 1333, height: 2000 },
+];
+
+/** The Vancouver album: the first four of the BC gallery, then the new
+ *  photographs in place of the rest (owner, 2026-10-04: "pictures from 05/36
+ *  to 36/36 are not good anyways so replace them with this new images"). */
+export const VANCOUVER_WORK: WorkPhoto[] = [...BC_WORK.slice(0, 4), ...VANCOUVER_NEW];
+

@@ -470,7 +470,13 @@ Everything in this list is live and was verified with a real HTTP check.
   The album is CityWorkAlbum (WorkAlbum with the city in its labels); its
   `sizes` is capped at "(max-width: 760px) 88vw, 600px", quality 72, so phones
   and retina desktops both load the 1200px variant, never the 2000px source.
-  The same cap was applied to vancouver-weddings/WorkAlbum.tsx. Cities without
+  The same cap was applied to vancouver-weddings/WorkAlbum.tsx.
+  **Vancouver album (owner, 2026-10-04):** VANCOUVER_WORK = the first four of
+  BC_WORK plus 15 photos he uploaded to canadian-wedding/"New Vancouver
+  Images/" (copied to cities/vancouver/new/; image 16 duplicates image 1).
+  Both Vancouver pages use it (19 photos). Victoria still uses BC_WORK (36).
+  New images are pre-warmed on Cloudflare at 400 to 2400px, because a first
+  resize can take seconds and showed a blank frame. Cities without
   a hub album (Toronto, Montreal) use their heroes plus non-"places" strip
   photos. The form is the shared InquiryForm: auto-reply, guide, thank-you URL.
   **Landing page story (owner, 2026-10-02: "who this is for, who am I and how

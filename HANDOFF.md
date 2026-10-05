@@ -474,7 +474,8 @@ Everything in this list is live and was verified with a real HTTP check.
   **Vancouver album (owner, 2026-10-04):** VANCOUVER_WORK = the first four of
   BC_WORK plus 15 photos he uploaded to canadian-wedding/"New Vancouver
   Images/" (copied to cities/vancouver/new/; image 16 duplicates image 1).
-  Both Vancouver pages use it (19 photos). Victoria still uses BC_WORK (36).
+  Both Vancouver pages and Victoria use it (19 photos; owner, 2026-10-05: "do
+  this for victoria as well").
   New images are pre-warmed on Cloudflare at 400 to 2400px, because a first
   resize can take seconds and showed a blank frame. Cities without
   a hub album (Toronto, Montreal) use their heroes plus non-"places" strip

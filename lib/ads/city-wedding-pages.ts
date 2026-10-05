@@ -153,7 +153,7 @@ export const WEDDING_CITIES: WeddingCity[] = [
       bcFrame(4, "A couple embracing in a Japanese garden beside a wooden gate"),
       bcFrame(13, "A couple sitting on the rocks below a waterfall"),
     ],
-    work: { eyebrow: "Recent work", title: ["Weddings and couples", "across BC."], lead: "Couples I’ve photographed across British Columbia, from formal gardens and quiet beaches to the mountains. Turn the pages.", album: "British Columbia", photos: BC_WORK },
+    work: { eyebrow: "Recent work", title: ["Weddings and couples", "across BC."], lead: "Couples I’ve photographed across British Columbia, from formal gardens and quiet beaches to the mountains. Turn the pages.", album: "British Columbia", photos: VANCOUVER_WORK },
     coverage: ["Victoria & Greater Victoria", "Gardens, heritage rooms & the coast"],
     about: "From a garden ceremony to a celebration by the water, we’ll make space for photographs that feel like you. We’ll keep the portrait plan close to your day, so you can get back to the people who came to celebrate.",
     coverageQuestion: "Do you cover Greater Victoria and the rest of the island?",

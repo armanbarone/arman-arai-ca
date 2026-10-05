@@ -521,8 +521,8 @@ Everything in this list is live and was verified with a real HTTP check.
   "Recent work" gallery. Do not remove it from the hero again.
   **Section backgrounds alternate** (funnel.story on <main>, nth-of-type odd =
   var(--paper), even = #17140f), so no two sections in a row match.
-  **Google Ads "Submit lead form":** `LEAD_FORM_CONVERSION` in lib/analytics.ts
-  (AW-18464850778/ySE3CPyOtYsdENqG3eRE, from the owner's pasted snippet) fires
+  **Google Ads "Wedding inquiry form (Google tag)":** `LEAD_FORM_CONVERSION` in
+  lib/analytics.ts (AW-18464850778/asFlCIaeypEdENqG3eRE) fires
   in `trackWeddingInquiry`, beside GA4 `wedding_inquiry`, once per sent form,
   transaction_id `ca-lead-<sentAt>`. The snippet's gtag_report_conversion()
   is a click wrapper; on a thank-you page the event is sent on open instead.
@@ -530,6 +530,14 @@ Everything in this list is live and was verified with a real HTTP check.
   1p-conversion) with the same oid: that is normal. Tags never run on
   localhost; to test, map a hostname to 127.0.0.1 in Chrome and abort the
   measurement hits so nothing reaches the real accounts.
+  The first label, ySE3CPyOtYsdENqG3eRE (from the owner's pasted snippet), was
+  live here from 2026-10-01 to 2026-10-05 and sent every conversion into a
+  deleted conversion action, which discards them. Deleted actions cannot be
+  restored, so the replacement above is a NEW action: never restore the old
+  label. Ads-side follow-up the owner holds: once the new action reads
+  "Recording conversions", set the GA4 `generate_lead` action to secondary,
+  because `trackWeddingInquiry` also fires `generate_lead` via `trackLead` and
+  one sent form would otherwise count as two leads.
 
 ---
 

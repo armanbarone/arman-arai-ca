@@ -1,5 +1,6 @@
 import { CITY_PHOTOS, CITY_WORK, type Photo } from "../images";
-import { BANFF_WORK, BC_WORK, VANCOUVER_WORK, type WorkPhoto } from "./hub-work";
+import { VANCOUVER_WORK, type WorkPhoto } from "./hub-work";
+import { CALGARY_LANDING, MONTREAL_LANDING, VICTORIA_LANDING } from "./city-landing-album";
 
 /** A hero photograph, with an optional object-position for the phone's wide crop. */
 export type HeroPhoto = Photo & { position?: string };
@@ -105,6 +106,7 @@ export const WEDDING_CITIES: WeddingCity[] = [
     coverageAnswer: "Yes. Montréal, Laval, the South Shore, the Laurentians and the Eastern Townships. Share your venue and date on our call, and we’ll talk through coverage and any travel before you book.",
     planningQuestion: "Can we have Old Montréal portraits without leaving our guests for hours?",
     planningAnswer: "Yes. We’ll choose a small number of spots near your venue and allow time for walking, family photographs and a weather backup. You don’t need a long list of locations to come back with photographs you love.",
+    work: { eyebrow: "The photographs", title: ["Montréal", "through the year."], lead: "Montréal from Old Montréal in the snow to the blossom streets and the autumn maples. Turn the pages.", album: "Montréal", photos: MONTREAL_LANDING },
     albums: ["luca-lauren", "nicole-js", "parsa-marjan"],
   },
   {
@@ -125,7 +127,7 @@ export const WEDDING_CITIES: WeddingCity[] = [
       cityFrame("banff/banff-55", "A couple laughing together in a wooden canoe on Lake Louise"),
       cityFrame("banff/banff-56", "Northern lights over a mountain lake behind a couple"),
     ],
-    work: { eyebrow: "Recent work", title: ["Banff and", "the Rockies."], lead: "Couples I’ve photographed in the mountains west of Calgary. Turn the pages.", album: "Banff & the Rockies", photos: BANFF_WORK },
+    work: { eyebrow: "The photographs", title: ["Calgary and", "the Rockies."], lead: "Calgary, the foothills and the prairie beyond. Turn the pages.", album: "Calgary & the Rockies", photos: CALGARY_LANDING },
     coverage: ["Calgary & area", "Banff, Canmore & the Rockies"],
     about: "From a celebration in Calgary to a ceremony in the Rockies, we’ll build the photography around your day, with room for mountain portraits and a plan for changing weather. Your people and your plans come first.",
     coverageQuestion: "Do you photograph weddings in Banff, Lake Louise and Canmore too?",
@@ -153,7 +155,7 @@ export const WEDDING_CITIES: WeddingCity[] = [
       bcFrame(4, "A couple embracing in a Japanese garden beside a wooden gate"),
       bcFrame(13, "A couple sitting on the rocks below a waterfall"),
     ],
-    work: { eyebrow: "Recent work", title: ["Weddings and couples", "across BC."], lead: "Couples I’ve photographed across British Columbia, from formal gardens and quiet beaches to the mountains. Turn the pages.", album: "British Columbia", photos: VANCOUVER_WORK },
+    work: { eyebrow: "The photographs", title: ["Victoria,", "gardens and coast."], lead: "Victoria's gardens, its heritage rooms and the coast around it. Turn the pages.", album: "Victoria", photos: VICTORIA_LANDING },
     coverage: ["Victoria & Greater Victoria", "Gardens, heritage rooms & the coast"],
     about: "From a garden ceremony to a celebration by the water, we’ll make space for photographs that feel like you. We’ll keep the portrait plan close to your day, so you can get back to the people who came to celebrate.",
     coverageQuestion: "Do you cover Greater Victoria and the rest of the island?",

@@ -93,11 +93,19 @@ export const WEDDING_CITIES: WeddingCity[] = [
   {
     slug: "montreal", name: "Montréal", workLine: "From Old Montréal to the Eastern Townships.",
     heroes: [
+      /* The basilica frame stays (owner, 2026-10-05: "the first shot of hero
+         section in montreal is good but the rest can be replaced"). The other
+         four are the new Montréal frames, chosen because each one says
+         Montréal on sight and each is tall or square, so it survives the
+         phone's crop as well as the desktop one. The Luca & Lauren frames they
+         replace are still in that couple's complete album further down. */
       albumFrame("luca-lauren", "039", "The Notre-Dame Basilica interior in blue and gold as the bride's train follows her up the aisle"),
-      albumFrame("luca-lauren", "038", "A couple seated before the priest under stained glass during their church ceremony"),
-      { ...albumFrame("luca-lauren", "048", "A couple embracing on stone steps between tall columns in Old Montréal"), position: "50% 12%" },
-      albumFrame("luca-lauren", "032", "A couple under pink flowers with the Montréal skyline behind them"),
-      { ...albumFrame("luca-lauren", "050", "A bride and groom standing against an ivy-covered stone wall"), position: "50% 8%" },
+      // The cross is at the very top of this frame and the phone's shorter crop
+      // cut it off entirely, leaving a dark stand of trees.
+      { ...cityFrame("montreal/landing/montreal-landing-07", "A couple on a snowy path below the lit cross on Mount Royal"), position: "50% 18%" },
+      cityFrame("montreal/landing/montreal-landing-01", "A couple under a street lamp on a snowy cobblestone street in Old Montréal"),
+      cityFrame("montreal/landing/montreal-landing-03", "A couple forehead to forehead through branches of red maple"),
+      cityFrame("montreal/landing/montreal-landing-09", "A couple against a wall of red autumn ivy on a stone building"),
     ],
     interlude: [CITY_PHOTOS.montreal.places[0], CITY_PHOTOS.montreal.places[2], CITY_PHOTOS.montreal.places[3]],
     coverage: ["Montréal & the surrounding area", "Old Port, city rooms & country estates"],

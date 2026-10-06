@@ -51,10 +51,7 @@
 
 /* The form's second step: tap answers. */
 .stepCount { font-family: var(--font-jost), sans-serif; font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); margin-left: 10px; vertical-align: middle; }
-/* Not ".check .stepLead": the form's .check comes from vancouver.module.css, a different
-   hash, so that selector never matched and the line ran unstyled into the first field.
-   Doubled so it outranks vancouver.module.css's ".page p { margin: 0 }". */
-.stepLead.stepLead { font-size: 13px; color: var(--dark-body); margin: -4px 0 16px; }
+.check .stepLead { font-size: 13px; color: var(--dark-body); margin: -4px 0 16px; }
 .group { border: 0; padding: 0; margin: 0 0 16px; min-width: 0; }
 .group legend { padding: 0; font-size: 11px; margin-bottom: 8px; }
 .group legend span { color: var(--muted); }

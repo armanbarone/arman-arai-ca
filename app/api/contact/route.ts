@@ -67,11 +67,6 @@ export async function POST(req: NextRequest) {
     // checks no calendar: a date is validated as a real future day and
     // nothing more. A couple without a date sends a season instead.
     const isInquiry = type === "wedding-inquiry";
-    // Step one of that form on its own (names, email, date), sent when the
-    // couple presses Continue, so a lead who never finishes step two still
-    // reaches the owner. No guide and no auto-reply: those wait for the full
-    // form, which arrives as its own "wedding-inquiry" email.
-    const isInquiryStart = type === "wedding-inquiry-start";
     const availability = isDateCheck ? checkWeddingDate(body.weddingDate) : null;
     if (availability && "error" in availability) {
       return NextResponse.json({ error: availability.error }, { status: 400 });
@@ -89,30 +84,6 @@ export async function POST(req: NextRequest) {
     }
 
     let inquiryRows: [string, string][] = [];
-    if (isInquiryStart) {
-      for (const [key, max] of [["name", 80], ["email", 100]] as const) {
-        if (typeof body[key] !== "string" || !body[key].trim() || body[key].length > max) {
-          return NextResponse.json({ error: "Please fill in your names and email." }, { status: 400 });
-        }
-        body[key] = body[key].trim();
-      }
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(body.email)) {
-        return NextResponse.json({ error: "Please enter a valid email address." }, { status: 400 });
-      }
-      if (body.weddingDate) {
-        const valid = checkWeddingDate(body.weddingDate);
-        if ("error" in valid) return NextResponse.json({ error: valid.error }, { status: 400 });
-      } else if (!(typeof body.weddingSeason === "string" && SEASON_PATTERN.test(body.weddingSeason))) {
-        return NextResponse.json({ error: "Choose your wedding date, or roughly when it will be." }, { status: 400 });
-      }
-      if (!pricingMarket(String(body.pricingMarket ?? ""))) return NextResponse.json({ error: "Please reload the page and try again." }, { status: 400 });
-      inquiryRows = [
-        ["Names", body.name],
-        ["Email", body.email],
-        ["Wedding date", body.weddingDate ? `${body.weddingDate} (${weekdayOf(body.weddingDate)})` : `No date yet: ${body.weddingSeason}`],
-        ["Status", "Step one only. If they finish step two, the full inquiry follows as its own email and the auto-reply goes out then. If no second email arrives, they stopped here and have had nothing from you yet."],
-      ];
-    }
     let autoReply: PricingInquiry | null = null;
     let guideId: string | null = null;
     if (isInquiry) {
@@ -225,7 +196,7 @@ export async function POST(req: NextRequest) {
 
     const isQuick = type === "quick";
     // "founding" is what the ads landing pages send; subjectLabel names which one.
-    const isLanding = type === "founding" || isDateCheck || isInquiry || isInquiryStart;
+    const isLanding = type === "founding" || isDateCheck || isInquiry;
     const subject = isLanding
       ? `${leadSourceTag(source)}${body.subjectLabel || "Landing Page Inquiry"} — ${body.name}`
       : isQuick
@@ -241,7 +212,7 @@ export async function POST(req: NextRequest) {
       ["Landing page", body.page || ""],
     ].filter((r): r is [string, string] => Boolean(r[1]));
 
-    const rows: [string, string][] = isInquiry || isInquiryStart
+    const rows: [string, string][] = isInquiry
       ? [...inquiryRows, ...attribution]
       : isLanding
       ? [

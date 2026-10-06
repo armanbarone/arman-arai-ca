@@ -20,11 +20,6 @@ export const FORM_ID = "get-pricing";
  *  its old value so links already pointing at #get-pricing still land. */
 export const CTA_LABEL = "Send Inquiry";
 
-/** A wa.me link with a first message already typed. Here for the same reason
- *  as FORM_ID: the server-rendered hero button and the client form both use it. */
-export const whatsappHref = (phoneE164: string, text: string) => `https://wa.me/${phoneE164.replace(/\D/g, "")}?text=${encodeURIComponent(text)}`;
-export const whatsappGreeting = (city: string) => `Hi Arman, I'm asking about wedding photography in ${city}.`;
-
 export const PRICING_TIER_SLUGS = ["signature", "complete", "photo-film"] as const;
 export const pricingTiers = (): Tier[] => PRICING_TIER_SLUGS.map((slug) => TIERS.find((tier) => tier.slug === slug)!);
 

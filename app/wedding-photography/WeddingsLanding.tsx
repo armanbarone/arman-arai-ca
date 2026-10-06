@@ -5,7 +5,7 @@ import { ARMAN, CITY_PHOTOS } from "@/lib/images";
 import { SITE } from "@/lib/site";
 import type { WeddingCity } from "@/lib/ads/city-wedding-pages";
 import { cityWeddingMetadata } from "@/lib/ads/city-wedding-metadata";
-import { CTA_LABEL, FORM_ID, funnelCollections, pricingTiers, tierItems, whatsappGreeting, whatsappHref, type PricingMarket } from "@/lib/ads/pricing-request";
+import { CTA_LABEL, FORM_ID, funnelCollections, pricingTiers, tierItems, type PricingMarket } from "@/lib/ads/pricing-request";
 import { proofByN, proofSrc } from "@/lib/reviews";
 import AlbumBrowser from "./AlbumBrowser";
 import HeroConveyor from "./HeroConveyor";
@@ -25,12 +25,7 @@ import styles from "./vancouver-weddings/landing.module.css";
  * line), one line under "See how your day could feel", the album photos and
  * the footer. The stylesheet is the vancouver-weddings one itself, so the
  * pages cannot drift apart. The form is the shared two-step InquiryForm, so
- * every send fires the auto-reply and lands on the city's thank-you URL.
- *
- * Departures from the copy (2026-10-05, from the Google Ads review: all ad
- * traffic is on phones, and the form sat ~5,500px down): the inquiry section
- * now comes straight after the hero instead of last, so the sections are
- * renumbered, and the hero carries a WhatsApp button on phones only. */
+ * every send fires the auto-reply and lands on the city's thank-you URL. */
 
 export function weddingsMetadata(city: WeddingCity, path: string): Metadata {
   const from = Math.min(...pricingTiers().map((tier) => tier.price));
@@ -78,7 +73,6 @@ export default function WeddingsLanding({ city, market, path }: { city: WeddingC
             <p className={styles.heroLead}>Honest moments. A little direction.<br />Photographs that feel like the two of you.</p>
             <p className={styles.heroPrice}>Collections from <strong>{money(from)}</strong><span>8, 10 or 12 hours · CAD before tax</span></p>
             <a className={styles.primaryCta} href={`#${FORM_ID}`}>{CTA_LABEL}<span aria-hidden="true">↗</span></a>
-            <a className={styles.whatsappCta} href={whatsappHref(SITE.phoneE164, whatsappGreeting(city.name))} target="_blank" rel="noopener noreferrer">Message me on WhatsApp<span>{phone}</span></a>
             <p className={styles.heroMicro}>An engagement session in every collection.</p>
           </div>
           <div className={`${original.heroArt} ${funnel.heroArt} ${styles.heroFrames}`}>
@@ -88,13 +82,8 @@ export default function WeddingsLanding({ city, market, path }: { city: WeddingC
           </div>
         </section>
 
-        <section id={FORM_ID} className={`${styles.section} ${styles.ink} ${styles.inquiry}`} aria-labelledby="inquiry-title">
-          <div className={styles.inquiryCopy}><SectionLabel number="01">Your wedding starts here</SectionLabel><h2 id="inquiry-title">Tell me about<br /><em>your day.</em></h2><p>Two quick steps. A pricing guide made for your wedding.</p><p className={styles.inquiryNote}>You can decide how we talk next.<br />Email, WhatsApp or a call.</p></div>
-          <div className={styles.formPanel}><InquiryForm city={city.name} market={market.slug} page={path} /><p className={styles.messageLinks}>Rather message? <MessageLinks phone={phone} phoneE164={SITE.phoneE164} city={city.name} /></p></div>
-        </section>
-
         <section id="photographs" className={`${styles.section} ${styles.paper}`} aria-labelledby="photographs-title">
-          <SectionLabel number="02">The photographs</SectionLabel>
+          <SectionLabel number="01">The photographs</SectionLabel>
           <div className={styles.workIntro}>
             <div><h2 id="photographs-title">See how your day<br /><em>could feel.</em></h2><p>{city.workLine} Explore the photographs at your own pace.</p><div className={styles.shortNotes}><p><strong>Real moments.</strong> Space to be with your people.</p><p><strong>Relaxed portraits.</strong> Clear direction when you need it.</p></div></div>
             <CityWorkAlbum photos={albumPhotos} place={city.name} />
@@ -106,13 +95,13 @@ export default function WeddingsLanding({ city, market, path }: { city: WeddingC
         <section className={`${styles.section} ${styles.ink}`} aria-labelledby="about-title">
           <div className={styles.about}>
             <figure className={styles.portrait}><Image src={ARMAN.src} alt={ARMAN.alt} fill sizes="(max-width: 760px) 40vw, 32vw" quality={78} /></figure>
-            <div className={styles.aboutHeading}><SectionLabel number="03">Your photographer</SectionLabel><h2 id="about-title">Hi, I’m Arman.<br /><em>I’m with you.</em></h2></div>
+            <div className={styles.aboutHeading}><SectionLabel number="02">Your photographer</SectionLabel><h2 id="about-title">Hi, I’m Arman.<br /><em>I’m with you.</em></h2></div>
             <div className={styles.aboutBody}><p>I photograph your wedding from start to finish. I’ll guide the portraits, plan the family photographs, and leave room for the moments you couldn’t plan.</p><ul className={styles.promiseList}><li>A timeline built around your day.</li><li>Simple direction, so you can relax.</li><li>A preview of your photographs the next day.</li></ul><blockquote>“Only one person understood our vision the way we were imagining it.”<a href={proofSrc(8)} target="_blank" rel="noopener noreferrer">Samantha · Read the Google review ↗</a></blockquote></div>
           </div>
         </section>
 
         <section id="collections" className={`${styles.section} ${styles.paper}`} aria-labelledby="collections-title">
-          <SectionLabel number="04">The collections</SectionLabel>
+          <SectionLabel number="03">The collections</SectionLabel>
           <div className={styles.headingRow}><h2 id="collections-title">Your coverage.<br /><em>Your collection.</em></h2><p>Three clear options. The same care in every one.</p></div>
           <p className={styles.includedLine}>Every collection includes a 60-minute engagement session, real film, next-day previews and vertical reels in your first week.</p>
           <div className={styles.priceGrid}>{tiers.map((tier) => <article key={tier.slug} className={styles.priceCard}>
@@ -126,16 +115,20 @@ export default function WeddingsLanding({ city, market, path }: { city: WeddingC
         </section>
 
         <section className={`${styles.section} ${styles.ink}`} aria-labelledby="reviews-title">
-          <SectionLabel number="05">From the couples</SectionLabel><h2 id="reviews-title">The words<br /><em>that stay with me.</em></h2>
+          <SectionLabel number="04">From the couples</SectionLabel><h2 id="reviews-title">The words<br /><em>that stay with me.</em></h2>
           <div className={styles.reviews}>{reviews.map(({ n, who, quote }) => { const proof = proofByN(n); return <figure key={n}><blockquote>“{quote}”</blockquote><figcaption>{who}</figcaption><a className={styles.reviewProof} href={proofSrc(n)} target="_blank" rel="noopener noreferrer"><Image src={proofSrc(n)} alt={proof.alt} width={proof.w} height={proof.h} sizes="160px" quality={72} /><span>Read the original message ↗</span></a></figure>; })}</div>
         </section>
 
         <section className={`${styles.section} ${styles.paper}`} aria-labelledby="process-title">
-          <SectionLabel number="06">How it works</SectionLabel><h2 id="process-title">A simple start.</h2>
+          <SectionLabel number="05">How it works</SectionLabel><h2 id="process-title">A simple start.</h2>
           <ol className={styles.steps}><li><span>01</span><div><h3>Tell me about your day.</h3><p>Send the two-step form. Your personal pricing guide is ready when you submit.</p></div></li><li><span>02</span><div><h3>Choose what fits.</h3><p>Talk it through over email, WhatsApp or a free 30-minute call. The call is optional.</p></div></li><li><span>03</span><div><h3>Make it yours.</h3><p>A signed contract and a 30% non-refundable deposit secure your booking. Then we plan together.</p></div></li></ol>
           <p className={styles.paymentNote}>The remaining payments: 35% at 60 days before your wedding, and 35% at 30 days before.</p>
         </section>
 
+        <section id={FORM_ID} className={`${styles.section} ${styles.ink} ${styles.inquiry}`} aria-labelledby="inquiry-title">
+          <div className={styles.inquiryCopy}><SectionLabel number="06">Your wedding starts here</SectionLabel><h2 id="inquiry-title">Tell me about<br /><em>your day.</em></h2><p>Two quick steps. A pricing guide made for your wedding.</p><p className={styles.inquiryNote}>You can decide how we talk next.<br />Email, WhatsApp or a call.</p></div>
+          <div className={styles.formPanel}><InquiryForm city={city.name} market={market.slug} page={path} /><p className={styles.messageLinks}>Rather message? <MessageLinks phone={phone} phoneE164={SITE.phoneE164} city={city.name} /></p></div>
+        </section>
       </main>
       <BookingNavigation classes={styles} startingPrice={from} note="CAD before tax" form={action} />
     </InquiryFunnel>

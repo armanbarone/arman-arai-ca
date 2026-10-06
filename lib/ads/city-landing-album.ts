@@ -23,12 +23,18 @@ const frame = (city: string, n: string, alt: string, width: number, height: numb
   alt, width, height,
 });
 
-/** Calgary and the Alberta foothills. */
+/** Calgary, the foothills and the ranch country: the second batch is Western,
+ *  so the order alternates the city and the Stampede side of it. */
 export const CALGARY_LANDING: WorkPhoto[] = [
+  frame("calgary", "08", "A couple riding one horse across the foothills at sunset, the Rockies behind them", 2016, 1344),
   frame("calgary", "01", "A couple on the red arches of the Peace Bridge, the Calgary skyline behind them in falling snow", 2048, 1152),
+  frame("calgary", "10", "A couple at the rail of a floodlit rodeo arena as a rider crosses the dust behind them", 1152, 2048),
+  frame("calgary", "06", "A couple in cowboy hats, the bride laughing under her veil, black and white", 2048, 2048),
   frame("calgary", "03", "A couple alone in a prairie field as lightning breaks over the mountains at sunset", 2048, 1152),
+  frame("calgary", "07", "A bride resting her head against a horse in a barn doorway, her partner beside her in a cowboy hat", 1536, 2048),
   frame("calgary", "02", "A bride laughing under her veil in low golden light, her partner close behind her", 1536, 2048),
   frame("calgary", "05", "A couple beside a red prairie barn as the sun goes down behind the fields", 1344, 2016),
+  frame("calgary", "09", "A couple in a vintage car at night, the bride lying back across the seat", 1344, 2016),
   frame("calgary", "04", "A couple nose to nose in deep cold, frost on their hair and lashes", 1344, 2016),
 ];
 

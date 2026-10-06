@@ -90,34 +90,34 @@ export async function readGuide(id: string): Promise<GuideRecord | null> {
 export const DAY_PLAN: Record<string, { note?: string; rows: { part: string; what: string }[] }> = {
   signature: {
     rows: [
-      { part: "Getting ready", what: "The last hour before you leave: the details, getting dressed, the people closest to you." },
-      { part: "Portraits", what: "Time for the two of you, before or after the ceremony, wherever the light is kindest." },
-      { part: "Ceremony", what: "All of it, from the walk in to the walk out." },
-      { part: "Family photographs", what: "Run from the family-photo plan we make beforehand, so it takes minutes, not the afternoon." },
-      { part: "Cocktail hour", what: "Your guests, candid, while you finally get a drink." },
-      { part: "Reception", what: "Entrances, speeches, your first dance and the start of the dancing." },
+      { part: "Getting ready", what: "The final preparations, the details, and the people with you." },
+      { part: "Portraits", what: "Time for the two of you, with simple direction and a location that fits the day." },
+      { part: "Ceremony", what: "The arrivals, vows, reactions, and walk back down the aisle." },
+      { part: "Family photographs", what: "The group photographs, organised around the list we prepare together." },
+      { part: "Cocktail hour", what: "Candid photographs of your guests catching up and celebrating." },
+      { part: "Reception", what: "Entrances, speeches, first dances, and the dance floor within your coverage." },
     ],
   },
   complete: {
-    note: "A second photographer joins for four hours, placed where two angles matter most. We choose where together.",
+    note: "Legacy includes a second photographer for four hours. We’ll decide together where that extra coverage is most useful.",
     rows: [
-      { part: "Getting ready", what: "From earlier in the day, with time for the details and the people around you." },
-      { part: "First look and portraits", what: "Unhurried time for the two of you, with room to move to a second spot." },
-      { part: "Ceremony", what: "All of it, from the walk in to the walk out." },
-      { part: "Family photographs", what: "Run from the family-photo plan we make beforehand, so it takes minutes, not the afternoon." },
-      { part: "Cocktail hour and the room", what: "Your guests, candid, and the room before anyone sits down." },
-      { part: "Reception", what: "Entrances, speeches, your first dance and well into the dancing." },
+      { part: "Getting ready", what: "Preparations and details, with room for an earlier start." },
+      { part: "First look and portraits", what: "A first look if you want one, and time for portraits without rushing." },
+      { part: "Ceremony", what: "The arrivals, vows, reactions, and walk back down the aisle." },
+      { part: "Family photographs", what: "The group photographs, organised around the list we prepare together." },
+      { part: "Cocktail hour and the room", what: "Your guests together, plus the reception details before everyone sits down." },
+      { part: "Reception", what: "Speeches, first dances, and more time on the dance floor, within your ten hours." },
     ],
   },
   "photo-film": {
-    note: "A dedicated filmmaker is there for all twelve hours, beside me.",
+    note: "Photo + Film includes a dedicated filmmaker alongside your photographer for all twelve hours.",
     rows: [
-      { part: "Getting ready", what: "From the start of the morning." },
-      { part: "First look and portraits", what: "Photographed and filmed, side by side." },
-      { part: "Ceremony", what: "All of it, on camera and on film." },
-      { part: "Family photographs", what: "Run from the family-photo plan we make beforehand, so it takes minutes, not the afternoon." },
-      { part: "Cocktail hour", what: "Your guests, candid." },
-      { part: "Reception", what: "Speeches, your first dance and the dance floor, through to the end of the night." },
+      { part: "Getting ready", what: "Preparations and the people around you, photographed and filmed." },
+      { part: "First look and portraits", what: "Time for the two of you, with photography and film planned together." },
+      { part: "Ceremony", what: "The vows and reactions, with an audio plan agreed beforehand." },
+      { part: "Family photographs", what: "The group photographs, organised around the list we prepare together." },
+      { part: "Cocktail hour", what: "Candid coverage of your guests and the celebration." },
+      { part: "Reception", what: "Speeches, first dances, and the party, within your twelve hours of coverage." },
     ],
   },
 };
@@ -126,11 +126,11 @@ export const DAY_PLAN: Record<string, { note?: string; rows: { part: string; wha
  * same promises the email may make (lib/auto-reply-brief.ts), and nothing a
  * collection does not already include. */
 export const PRIORITY_PROMISE: Record<string, { title: string; promise: string }> = {
-  candid: { title: "Candid moments", promise: "Most of the day I stay out of your way and watch. The glance before the vows, the friend who cries first, the laugh you won’t remember having: I’m already standing where they happen." },
-  family: { title: "Family and friends", promise: "We plan the family photographs together before the day, name by name, so they take minutes and everyone gets back to the party. In between, I photograph your people the way they really are with you." },
-  portraits: { title: "Portraits of the two of you", promise: "You don’t need to know how to pose. I’ll give you clear, simple direction, where to stand and what to do with your hands, and you’ll still look like yourselves. The engagement session in every collection is where I learn how the two of you actually stand." },
-  party: { title: "The party", promise: "The entrances, the speeches, the first dance and the dance floor. Film prints go into your guests’ hands on the night, and your reels arrive in the first week, while everyone is still talking about it." },
-  film: { title: "Film of the day", promise: "Every collection includes a feature film. Photo + Film goes further: a dedicated filmmaker beside me for all twelve hours, with your vows or speeches in the film wherever the audio comes back clean." },
+  candid: { title: "Candid moments", promise: "I’ll keep direction to the parts of the day that need it, leaving room to photograph the reactions, conversations, and moments as they happen." },
+  family: { title: "Family and friends", promise: "We’ll prepare your family-photo list together, then leave time for candid photographs of the people you’ve brought together." },
+  portraits: { title: "Portraits of the two of you", promise: "You don’t need posing experience. I’ll give you simple direction and plan a manageable portrait window, so you can get back to your guests." },
+  party: { title: "The party", promise: "We’ll align the coverage with your speeches, first dance, and time on the dance floor, so the celebration is part of the story." },
+  film: { title: "Film of the day", promise: "Every collection includes a feature film. If film is a priority, Photo + Film adds a dedicated filmmaker for twelve hours and a plan for recording your vows and speeches." },
 };
 
 /** Which rows of the day plan each priority is about, so the guide can mark them. */
@@ -162,4 +162,3 @@ export function reviewsFor(priorities: string[] = []) {
   for (const review of DEFAULT_REVIEWS) if (picked.length < 3 && !picked.some((r) => r.n === review.n)) picked.push(review);
   return picked.slice(0, 3);
 }
-

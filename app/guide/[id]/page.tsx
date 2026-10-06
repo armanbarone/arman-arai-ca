@@ -140,9 +140,8 @@ export default async function GuidePage({ params }: { params: Promise<{ id: stri
       </section>
 
       <section className={guide.section} aria-labelledby="approach-title">
-        <div className={guide.sectionHeading}>
-          <div><p className={guide.eyebrow}>02 / Photographing your day</p><h2 id="approach-title">Room for what matters.</h2></div>
-          <p>We’ll plan the photographs around your ceremony, your people, and the time you want to spend with them.</p>
+        <div className={`${guide.sectionHeading} ${guide.simpleHeading}`}>
+          <div><p className={guide.eyebrow}>02 / Photographing your day</p><h2 id="approach-title">{priorities.length ? "Your priorities." : "Your day’s coverage."}</h2></div>
         </div>
         {priorities.length ? <div className={guide.priorities}>{priorities.map((p) => {
           const item = PRIORITY_PROMISE[p];

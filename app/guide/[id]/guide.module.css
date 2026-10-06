@@ -67,6 +67,7 @@
 .sectionHeading { display: grid; grid-template-columns: 1fr .7fr; gap: 56px; align-items: end; margin-bottom: 30px; }
 .sectionHeading .eyebrow { margin-bottom: 16px; }
 .sectionHeading > p { color: var(--body); line-height: 1.7; }
+.simpleHeading { display: block; margin-bottom: 24px; }
 .featured { display: grid; grid-template-columns: .75fr 1.35fr; gap: 42px; background: #eee9de; color: #252820; padding: 38px; }
 .collectionIntro { padding-right: 20px; border-right: 1px solid #cac9ba; min-width: 0; }
 .page .badge { display: inline-block; font-size: 11px; letter-spacing: .09em; text-transform: uppercase; padding: 5px 10px; border: 1px solid #adb09d; color: #45513f; }

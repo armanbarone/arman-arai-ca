@@ -166,6 +166,39 @@ export function trackLead(method: string) {
   w.fbq?.("track", "Lead");
 }
 
+export type ContactMethod = "whatsapp" | "email" | "phone" | "sms";
+
+/** A tap on a WhatsApp, email, phone or text link. GA4 ONLY: no Google Ads
+ *  conversion and no Meta event, so it is not generate_lead either. A tap is
+ *  not a lead; Ads bids on the sent form (trackWeddingInquiry). */
+export function trackContactClick(method: ContactMethod) {
+  if (!permitted()) return;
+  startTracking();
+  (window as TrackingWindow).gtag?.("event", "contact_click", { send_to: GA4_ID, method, landing_page: window.location.pathname });
+}
+
+/** The contact method a link opens, or null when it is not a contact link. */
+export function contactMethodOf(href: string): ContactMethod | null {
+  if (/^https:\/\/(wa\.me|api\.whatsapp\.com)\//i.test(href)) return "whatsapp";
+  if (/^mailto:/i.test(href)) return "email";
+  if (/^tel:/i.test(href)) return "phone";
+  if (/^sms:/i.test(href)) return "sms";
+  return null;
+}
+
+/** Report every contact-link tap on the page, server-rendered links included,
+ *  with one listener. Returns the cleanup for useEffect. */
+export function listenForContactClicks() {
+  const onClick = (event: MouseEvent) => {
+    const link = (event.target as Element | null)?.closest?.("a[href]");
+    const method = link ? contactMethodOf(link.getAttribute("href") || "") : null;
+    if (!method) return;
+    try { trackContactClick(method); } catch { /* Analytics must never block a tap. */ }
+  };
+  document.addEventListener("click", onClick, true);
+  return () => document.removeEventListener("click", onClick, true);
+}
+
 /** Where a sent pricing-request form lands: its own URL, so Google Ads can
  *  count the inquiry by URL. PublicTracking leaves these pages alone; the page
  *  starts the tags itself, and only when this tab really sent the form. */

@@ -27,6 +27,8 @@
 .primaryCta { display: inline-flex; justify-content: space-between; align-items: center; gap: 60px; min-height: 54px; padding: 14px 24px; background: #c8a77d; color: #201a12 !important; font-size: 15px; font-weight: 400; border: 1px solid #c8a77d; transition: background .2s; }
 .primaryCta:hover { background: #dfc39f; }
 .heroCopy .heroMicro { margin-top: 12px; color: #bcb09f; font-size: 12px; }
+/* The pricing pages' WhatsApp button: phones only, where all the ad traffic is. */
+.whatsappCta { display: none; }
 .clean .heroFrames { position: relative; grid-area: auto; padding: 0 7% 24px 0; width: 100%; min-width: 0; }
 .heroPhoto { position: relative; width: 100%; aspect-ratio: 4 / 4.5; overflow: hidden; }
 .heroPhoto img, .heroInset img { object-fit: cover; }
@@ -162,6 +164,8 @@
   .heroCopy .heroLead { font-size: 15px; }
   .heroCopy .heroPrice { margin: 18px 0 15px; font-size: 15px; }
   .primaryCta { width: 100%; }
+  .whatsappCta { display: flex; justify-content: space-between; align-items: center; gap: 12px; width: 100%; min-height: 50px; margin-top: 10px; padding: 12px 24px; border: 1px solid #a68a66; color: #f2ebdf; font-size: 15px; }
+  .whatsappCta span { font-size: 12px; color: #bcb09f; white-space: nowrap; }
   .heroCopy .heroMicro { font-size: 11px; margin-top: 10px; }
   .clean .heroFrames { padding: 0 5% 16px 0; }
   .heroPhoto { aspect-ratio: 4 / 3; }

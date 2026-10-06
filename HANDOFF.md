@@ -317,8 +317,21 @@ Everything in this list is live and was verified with a real HTTP check.
   packages: 3k, 4.2k and 5.9k" (Signature, Complete, Photo + Film, read from
   TIERS); "There is no checking the date" (no page, screen or email may say a
   date is open, available or booked); and ONE action: the only button is
-  "Get Pricing", repeated with the same label in the header, the sticky bar and
-  the closing section, never as three equal buttons on the collection cards.
+  CTA_LABEL, "Send Inquiry" since 2026-10-05 (it was "Get Pricing"; FORM_ID
+  stays `get-pricing` so old #anchors still land), repeated with the same label
+  in the header, the sticky bar and the closing section, never as three equal
+  buttons on the collection cards.
+  **2026-10-05, from the Google Ads review** (8 form_start vs 2 generate_lead
+  in 28 days, all ad traffic on phones, the form ~5,500px down): the inquiry
+  section now sits straight after the hero (~850px on a phone) and the sections
+  are renumbered; step one is only names, email and date, and Continue POSTs
+  it in the background as `type: "wedding-inquiry-start"`, which emails Arman a
+  "Started pricing form" lead with no guide and no auto-reply (mobile and venue
+  moved to step two); the hero has a phones-only WhatsApp button; every
+  WhatsApp/email/phone/text tap fires GA4 `contact_click` with `method`
+  (whatsapp/email/phone/sms), GA4 only, never Ads or Meta
+  (`listenForContactClicks` in lib/analytics.ts). The conversion constants
+  and `trackWeddingInquiry` are untouched.
   WhatsApp/text (778-302-5231, on WhatsApp) is the secondary line. The form
   captures the lead, then the page becomes the thank-you view: pricing with the
   best fit marked, the prefilled calendar, and email/WhatsApp/text instead.

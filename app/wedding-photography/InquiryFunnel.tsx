@@ -1,10 +1,10 @@
 "use client";
 
 import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from "react";
-import { pricingThankYouPath, trackPageView, trackWeddingInquiry } from "@/lib/analytics";
+import { listenForContactClicks, pricingThankYouPath, trackPageView, trackWeddingInquiry } from "@/lib/analytics";
 import {
   BUDGET_OPTIONS, COVERAGE_OPTIONS, CTA_LABEL, FORM_ID, GUEST_OPTIONS, MAX_PRIORITIES, NOTE_MAX, PRIORITY_OPTIONS, SETUP_OPTIONS,
-  labelOf, longDate, priorityLabels, recommendCollection, seasonOptions, weekdayOf,
+  labelOf, longDate, priorityLabels, recommendCollection, seasonOptions, weekdayOf, whatsappGreeting, whatsappHref,
 } from "@/lib/ads/pricing-request";
 import { weddingToday } from "@/lib/wedding-availability";
 import WeddingCalendar from "./wedding-calendar";
@@ -17,12 +17,15 @@ import funnel from "./inquiry.module.css";
  *
  * One action. The form's button is the only button on the page, and every
  * other call to action on it is that same button, with the same words,
- * scrolling back to the form. WhatsApp and text sit under it as a quiet line.
+ * scrolling back to the form. WhatsApp and text sit under it as a quiet line,
+ * plus one WhatsApp button in the hero on phones. Every WhatsApp, email,
+ * phone or text tap is reported to GA4 as contact_click.
  *
  * The form is the conversion, not the call. It is sent before anything else
  * happens, so a couple who never books a time has still left a name, an email
  * and a mobile number, and the auto-reply (lib/auto-reply.ts) reaches their
- * inbox within a minute. The page checks no calendar and says nothing about
+ * inbox within a minute. Step one alone (names, email, date) is already sent
+ * to the owner as a started inquiry, so a couple who stops there is not lost. The page checks no calendar and says nothing about
  * whether a date is free.
  *
  * A sent form moves the browser to its own URL,
@@ -77,11 +80,10 @@ function readSent(market: string): Sent | null {
 const money = (amount: number) => `C$${amount.toLocaleString("en-CA")}`;
 
 type Contact = { phone: string; phoneE164: string };
-const whatsappHref = (phoneE164: string, text: string) => `https://wa.me/${phoneE164.replace(/\D/g, "")}?text=${encodeURIComponent(text)}`;
 
 /** WhatsApp or text, as the secondary line under the form and on the thank-you view. */
 export function MessageLinks({ phone, phoneE164, city }: Contact & { city: string }) {
-  return <><a href={whatsappHref(phoneE164, `Hi Arman, I'm asking about wedding photography in ${city}.`)} target="_blank" rel="noopener noreferrer">WhatsApp</a> or <a href={`sms:${phoneE164}`}>text</a> <span className={funnel.nowrap}>{phone}</span></>;
+  return <><a href={whatsappHref(phoneE164, whatsappGreeting(city))} target="_blank" rel="noopener noreferrer">WhatsApp</a> or <a href={`sms:${phoneE164}`}>text</a> <span className={funnel.nowrap}>{phone}</span></>;
 }
 
 export default function InquiryFunnel({ children, collections, city, page, phone, phoneE164, travelNote }: {
@@ -93,6 +95,7 @@ export default function InquiryFunnel({ children, collections, city, page, phone
   travelNote: string;
 } & Contact) {
   const [sent, setSent] = useState<Sent | null>(null);
+  useEffect(listenForContactClicks, []);
   const show = (value: Sent) => { setSent(value); window.scrollTo({ top: 0 }); };
   const edit = () => {
     setSent(null);
@@ -104,11 +107,14 @@ export default function InquiryFunnel({ children, collections, city, page, phone
   </FunnelContext.Provider>;
 }
 
-/* Two steps (owner, 2026-10-01: a more personal form). Step one is who,
-   when and where; step two is the day itself, mostly taps. Step two's
+/* Two steps (owner, 2026-10-01: a more personal form). Step one is only
+   names, email and date (2026-10-05: 8 form starts to 2 leads in 28 days, all
+   on phones), and pressing Continue sends it to the owner as a started
+   inquiry, so the lead is kept even if step two is never finished. Step two
+   is the mobile number, the venue and the day itself, mostly taps. Its
    fields are only required once it is open, so Enter on step one moves on
    instead of tripping over fields that cannot be seen yet. The page's other
-   buttons still say Get Pricing and scroll here; Continue is inside the form. */
+   buttons say CTA_LABEL and scroll here; Continue is inside the form. */
 export function InquiryForm({ city, market, page }: { city: string; market: string; page: string }) {
   const send = useContext(FunnelContext);
   const [status, setStatus] = useState<"idle" | "sending" | "error">("idle");
@@ -119,6 +125,9 @@ export function InquiryForm({ city, market, page }: { city: string; market: stri
   const [priorities, setPriorities] = useState<string[]>([]);
   const [attribution, setAttribution] = useState<Record<string, string>>({});
   const sending = useRef(false);
+  /** What step one last sent as a started inquiry, so Back then Continue
+   *  sends it again only when something changed. */
+  const started = useRef("");
   const firstStep = useRef<HTMLDivElement>(null);
   const secondTitle = useRef<HTMLParagraphElement>(null);
 
@@ -140,8 +149,36 @@ export function InquiryForm({ city, market, page }: { city: string; market: stri
     for (const field of fields) if (!field.reportValidity()) return;
     setError("");
     setStatus("idle");
+    sendStarted();
     setStep(2);
     requestAnimationFrame(() => secondTitle.current?.focus());
+  }
+
+  /** Step one, sent in the background: the couple never waits on it and a
+   *  failure never stops them. The full form still goes through /api/contact
+   *  as before; this only emails the owner, with no auto-reply and no guide. */
+  function sendStarted() {
+    const form = firstStep.current?.closest("form");
+    if (!form) return;
+    const data = new FormData(form);
+    const value = (key: string) => String(data.get(key) || "").trim();
+    const payload = {
+      type: "wedding-inquiry-start",
+      subjectLabel: `Started pricing form — ${city}`,
+      pricingMarket: market,
+      name: value("names"),
+      email: value("email"),
+      weddingDate: noDate ? "" : value("weddingDate"),
+      weddingSeason: noDate ? value("weddingSeason") : "",
+      company: value("company"), // honeypot
+      ...attribution,
+    };
+    const key = JSON.stringify([payload.name, payload.email, payload.weddingDate, payload.weddingSeason]);
+    if (started.current === key) return;
+    started.current = key;
+    fetch("/api/contact", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload), keepalive: true })
+      .then((res) => { if (!res.ok) started.current = ""; })
+      .catch(() => { started.current = ""; });
   }
 
   function back() {
@@ -232,10 +269,6 @@ export function InquiryForm({ city, market, page }: { city: string; market: stri
           <input id="inq-email" name="email" type="email" required maxLength={100} autoComplete="email" />
         </div>
         <div className={styles.checkField}>
-          <label htmlFor="inq-phone">Mobile</label>
-          <input id="inq-phone" name="phone" type="tel" required maxLength={30} autoComplete="tel" inputMode="tel" />
-        </div>
-        <div className={styles.checkField}>
           <div className={funnel.labelRow}>
             <label htmlFor={noDate ? "inq-season" : "inq-date"}>{noDate ? "Roughly when" : "Wedding date"}</label>
             <button type="button" className={funnel.dateToggle} onClick={() => setNoDate((value) => !value)}>{noDate ? "I have a date" : "No date yet?"}</button>
@@ -244,15 +277,21 @@ export function InquiryForm({ city, market, page }: { city: string; market: stri
             ? <select id="inq-season" name="weddingSeason" required className={funnel.select} defaultValue=""><option value="" disabled>Choose</option>{(today ? seasonOptions(today) : []).map((season) => <option key={season}>{season}</option>)}</select>
             : <input id="inq-date" name="weddingDate" type="date" required min={today || undefined} />}
         </div>
-        <div className={styles.checkField}>
-          <label htmlFor="inq-where">Venue or area</label>
-          <input id="inq-where" name="location" type="text" required maxLength={90} placeholder="Venue, or area" />
-        </div>
       </div>
     </div>
     <div hidden={!two}>
       <p className={styles.checkTitle} id="inq-step2" ref={secondTitle} tabIndex={-1}>Now, your day <span className={funnel.stepCount}>Step 2 of 2</span></p>
-      <p className={funnel.stepLead}>A few taps, so everything I send you fits your wedding.</p>
+      <p className={funnel.stepLead}>Got it. A few more details, mostly taps, so everything I send you fits your wedding.</p>
+      <div className={`${styles.checkRow} ${funnel.group}`}>
+        <div className={styles.checkField}>
+          <label htmlFor="inq-phone">Mobile</label>
+          <input id="inq-phone" name="phone" type="tel" required={two} maxLength={30} autoComplete="tel" inputMode="tel" />
+        </div>
+        <div className={styles.checkField}>
+          <label htmlFor="inq-where">Venue or area</label>
+          <input id="inq-where" name="location" type="text" required={two} maxLength={90} placeholder="Venue, or area" />
+        </div>
+      </div>
       <fieldset className={funnel.group}>
         <legend>Roughly how many guests?</legend>
         <div className={funnel.chips}>{GUEST_OPTIONS.map((option) => <label key={option.value} className={funnel.chip}><input type="radio" name="guests" value={option.value} required={two} /><span>{option.label}</span></label>)}</div>
@@ -309,6 +348,7 @@ export function ThankYouFromSession({ market, ...props }: ThankYouProps & { mark
     const found = readSent(market);
     setSent(found);
     if (!found) return;
+    const stopListening = listenForContactClicks();
     try {
       trackPageView();
       if (sessionStorage.getItem(REPORTED_KEY) !== String(found.sentAt)) {
@@ -316,6 +356,7 @@ export function ThankYouFromSession({ market, ...props }: ThankYouProps & { mark
         sessionStorage.setItem(REPORTED_KEY, String(found.sentAt));
       }
     } catch { /* Analytics must never interrupt a lead. */ }
+    return stopListening;
   }, [market, props.page]);
   if (sent === undefined) return null;
   if (!sent) return <section className={funnel.thanks} aria-labelledby="thanks-title">
@@ -332,7 +373,7 @@ export function ThankYouFromSession({ market, ...props }: ThankYouProps & { mark
 
 /* The thank-you screen (owner, 2026-10-01): their inquiry played back, not
    a price list, because the guide and the email carry the pricing. One click
-   to the guide stays on screen: they pressed Get Pricing, and the email can
+   to the guide stays on screen: they asked for pricing, and the email can
    land in spam. Only when no guide could be made does the price list show
    here instead, so nobody leaves without their pricing. */
 function ThankYou({ sent, collections, city, page, phone, phoneE164, travelNote, onEdit }: ThankYouProps & { sent: Sent; onEdit?: () => void }) {

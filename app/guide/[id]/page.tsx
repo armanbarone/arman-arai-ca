@@ -3,31 +3,17 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import { DAY_PLAN, PRIORITY_PLAN_PARTS, PRIORITY_PROMISE, readGuide, reviewsFor } from "@/lib/guide";
 import { WEDDING_CITIES } from "@/lib/ads/city-wedding-pages";
-import { BUDGET_OPTIONS, COVERAGE_OPTIONS, GUEST_OPTIONS, SETUP_OPTIONS, funnelCollections, labelOf, longDate, pricingMarket, priorityLabels, recommendCollection, weekdayOf } from "@/lib/ads/pricing-request";
+import { BUDGET_OPTIONS, COVERAGE_OPTIONS, GUEST_OPTIONS, SETUP_OPTIONS, labelOf, longDate, pricingMarket, pricingTiers, recommendCollection } from "@/lib/ads/pricing-request";
 import { SITE, TERMS, tierBySlug } from "@/lib/site";
-import { proofByN, proofSrc } from "@/lib/reviews";
+import { proofSrc } from "@/lib/reviews";
 import { weddingAlbumsFor } from "@/app/wedding-photography/landing-content";
-import HeroConveyor from "@/app/wedding-photography/HeroConveyor";
 import WeddingCalendar from "@/app/wedding-photography/wedding-calendar";
 import { MessageLinks } from "@/app/wedding-photography/InquiryFunnel";
-import styles from "@/app/wedding-photography/vancouver.module.css";
-import funnel from "@/app/wedding-photography/inquiry.module.css";
 import guide from "./guide.module.css";
 
-/* /guide/<id>: one couple's wedding guide, made when they sent the pricing
- * form and linked from the email that follows it (see lib/guide.ts).
- *
- * The newsletter idea the owner brought (2026-10-01): the pricing page gets
- * the inquiry, a guide made for that one couple turns it into a booking. So
- * everything here is theirs: their details as they typed them, the collection
- * that fits and the one above it, how their hours could run, photographs from
- * their city, three complete weddings, and one next step, the call.
- *
- * Private: noindex, never cached, no advertising tags (PublicTracking skips
- * /guide), and the couple's email is used only to prefill the calendar. Same
- * rules as the first email: nothing about a date being open, and no travel or
- * extra costs. */
-
+// A private guide rendered from the inquiry and the current collection facts.
+// Do not imply personal review, date availability, or a confirmed day schedule.
+// Keep the email confined to the existing calendar prefill.
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: { absolute: "Your wedding guide | Arman Arai" },
@@ -43,155 +29,176 @@ export default async function GuidePage({ params }: { params: Promise<{ id: stri
   const city = record ? WEDDING_CITIES.find((item) => item.slug === record.market) : undefined;
   if (!record || !market || !city) notFound();
 
-  const when = record.weddingDate ? `${weekdayOf(record.weddingDate)}, ${longDate(record.weddingDate)}`
-    : record.weddingSeason && record.weddingSeason !== "Later than that" ? record.weddingSeason : "";
-  const coverage = COVERAGE_OPTIONS.find((option) => option.value === record.coverage)?.label ?? "Not sure yet";
-  const budget = BUDGET_OPTIONS.find((option) => option.value === record.budget)?.label ?? "Not sure yet";
+  const when = record.weddingDate ? longDate(record.weddingDate)
+    : record.weddingSeason && record.weddingSeason !== "Later than that" ? record.weddingSeason : "Still deciding";
+  const coverage = labelOf(COVERAGE_OPTIONS, record.coverage) ?? "Not sure yet";
+  const budget = labelOf(BUDGET_OPTIONS, record.budget) ?? "Not sure yet";
   const fit = recommendCollection(record.coverage, record.budget, record);
   const fitTier = tierBySlug(fit.slug)!;
-  const stepUpTier = fit.stepUp ? tierBySlug(fit.stepUp) : undefined;
-  const reason = fit.basis === "coverage" ? `It matches the ${coverage.toLowerCase()} you asked for.`
-    : fit.basis === "budget" ? "It is the closest to the budget you gave."
-      : "It is the collection most couples book, and the easiest place to start.";
-  const plan = DAY_PLAN[fit.slug];
-  const collections = funnelCollections();
-  const albums = weddingAlbumsFor(city.albums);
-  const phone = SITE.phone.replace(/^\+1\s*/, "");
-  const page = `guide/${market.slug}`;
-  const priorities = record.priorities ?? [];
-  const matters = priorityLabels(priorities);
+  const reason = record.budget === "under-3000"
+    ? "The suggested collection is above the budget range you selected. We can talk through coverage and budget on our call."
+    : fit.basis === "coverage"
+      ? `Based on the ${coverage.toLowerCase()} you selected. We’ll confirm the coverage together once your timeline is clearer.`
+      : fit.basis === "budget"
+        ? "A starting point based on your budget. We’ll talk through how much of the day you’d like covered."
+        : "A starting point while your plans take shape. We’ll work out the right amount of coverage together.";
+  const priorities = [...new Set(record.priorities ?? [])].filter((p) => PRIORITY_PROMISE[p]);
   const marked = new Set(priorities.flatMap((p) => PRIORITY_PLAN_PARTS[p] ?? []));
+  const plan = DAY_PLAN[fit.slug];
+  const albums = weddingAlbumsFor(city.albums);
   const reviews = reviewsFor(priorities);
-  const told: [string, string][] = [
-    ["Date", when || "To be decided"],
-    ["Where", record.location],
-    ...(record.guests ? [["Guests", labelOf(GUEST_OPTIONS, record.guests)!] as [string, string]] : []),
-    ...(record.setup ? [["Ceremony and reception", labelOf(SETUP_OPTIONS, record.setup)!] as [string, string]] : []),
-    ...(matters.length ? [["What matters most", matters.join(", ")] as [string, string]] : []),
+  const hero = city.heroes[0];
+  const phone = SITE.phone.replace(/^\+1\s*/, "");
+  const details: [string, string][] = [
+    ["Wedding date", when],
+    ["Venue / location", record.location || "Still deciding"],
     ["Coverage", coverage],
-    ["Budget", budget],
-    ...(record.note ? [["Your note", record.note] as [string, string]] : []),
+    ["Photography budget", budget],
+    ...(labelOf(GUEST_OPTIONS, record.guests) ? [["Guests", labelOf(GUEST_OPTIONS, record.guests)!] as [string, string]] : []),
+    ...(labelOf(SETUP_OPTIONS, record.setup) ? [["Ceremony & reception", labelOf(SETUP_OPTIONS, record.setup)!] as [string, string]] : []),
   ];
-  const balance = TERMS.balance.charAt(0).toUpperCase() + TERMS.balance.slice(1);
+  const highlights = [fitTier.crew, fitTier.engagement, fitTier.film, ...(fitTier.album.includes("included") ? [fitTier.album] : [])];
 
-  return <div className={`${styles.page} ${styles.dark} ${guide.page}`} data-landing-theme="dark" data-landing-city={city.slug}>
-    <header className={styles.header}>
-      <span className={styles.wordmark}>Arman Arai<span>WEDDING PHOTOGRAPHY</span></span>
-      <nav aria-label="Page navigation"><a className={styles.headerCta} href="#book-a-call">Book a free call <span aria-hidden="true">↗</span></a></nav>
+  return <div className={guide.page} data-landing-theme="dark" data-landing-city={city.slug}>
+    <a className={guide.skipLink} href="#guide-content">Skip to your guide</a>
+    <header className={guide.header}>
+      <span className={guide.wordmark}>Arman Arai<span>Wedding photography</span></span>
+      <nav aria-label="Guide navigation">
+        <a className={guide.navLink} href="#your-collection">Collections</a>
+        <a className={guide.navLink} href="#wedding-galleries">Galleries</a>
+        <a className={guide.headerCta} href="#book-a-call">Book a call <span aria-hidden="true">↗</span></a>
+      </nav>
     </header>
-    <main>
-      <section className={funnel.hero} aria-labelledby="hero-title">
-        <div className={funnel.heroTop}>
-          <p className={`${styles.eyebrow} ${funnel.heroEyebrow}`}>Your wedding guide · {city.name}</p>
-          <h1 id="hero-title" className={`${funnel.heroTitle} ${guide.title}`}>{record.names},{" "}<br /><em>your wedding day.</em></h1>
-          <p className={styles.heroIntro}>Congratulations. I’ve read everything you sent me, and this page is built around it: {when ? <strong className={guide.plain}>{when}</strong> : "your day"}{record.location ? <> at <strong className={guide.plain}>{record.location}</strong></> : null}, the collection that fits, and how I’ll photograph the parts that matter most to you.</p>
+
+    <main id="guide-content" className={guide.main}>
+      <section className={guide.hero} aria-labelledby="hero-title">
+        <div className={guide.heroCopy}>
+          <p className={guide.eyebrow}>Your wedding guide · {city.name}</p>
+          <h1 id="hero-title">{record.names}</h1>
+          <p className={guide.heroLead}>Wedding photography,<br /><em>built around your day.</em></p>
+          <p className={guide.intro}>Here’s a starting point for your coverage, what’s included, and the photographs you can expect.</p>
+          <div className={guide.heroActions}>
+            <a className={guide.button} href="#book-a-call">Book a free call <span aria-hidden="true">↗</span></a>
+            <a className={guide.textLink} href="#your-collection">Explore your collection <span aria-hidden="true">↓</span></a>
+          </div>
         </div>
-        <div className={`${styles.heroArt} ${funnel.heroArt}`}>
-          <HeroConveyor
-            photos={city.heroes}
-            large={{ className: `${styles.heroImage} ${funnel.heroImage}`, sizes: "(max-width: 760px) 80vw, (max-width: 1600px) 38vw, 608px", caption: "A day you felt. Photographs you keep." }}
-            small={{ className: styles.heroInset, sizes: "(max-width: 760px) 28vw, (max-width: 1600px) 14vw, 224px" }}
-          />
-          <span className={styles.heroSideNote}>Documentary feeling / Editorial eye</span>
-        </div>
-        <div className={`${funnel.formPanel} ${guide.toldPanel}`}>
-          <p className={styles.eyebrow}>What you told me</p>
-          <dl className={guide.told}>{told.map(([label, value]) => <div key={label}><dt>{label}</dt><dd>{value}</dd></div>)}</dl>
-          <p className={guide.changed}>Something changed? Reply to my email, or message me on <MessageLinks phone={phone} phoneE164={SITE.phoneE164} city={city.name} />.</p>
-          <a className={`${styles.button} ${guide.cta}`} href="#book-a-call">Book your free video call <span aria-hidden="true">↗</span></a>
-        </div>
+        <figure className={guide.heroPhoto}>
+          <Image src={hero.src} alt={hero.alt} fill priority quality={85} sizes="(max-width: 760px) 90vw, (max-width: 1280px) 45vw, 552px" style={{ objectPosition: hero.position ?? "50% 50%" }} />
+          <figcaption>Arman Arai · Wedding photography</figcaption>
+        </figure>
       </section>
 
-      {matters.length ? <section className={guide.section} aria-labelledby="matters-title">
-        <div className={styles.sectionHeading}>
-          <div><p className={styles.eyebrow}>What matters to you</p><h2 id="matters-title">You told me.<br /><em>Here’s how I’ll deliver it.</em></h2></div>
-          <p>You picked {matters.length === 1 ? "one thing" : "two things"} out of everything a wedding day holds. That’s where my attention goes.</p>
+      <section className={guide.detailsPanel} aria-labelledby="details-title">
+        <div className={guide.detailsHeading}>
+          <h2 id="details-title">Your plans so far</h2>
+          <a href={`mailto:${SITE.email}?subject=${encodeURIComponent("An update to our wedding inquiry")}`}>Update a detail <span aria-hidden="true">↗</span></a>
         </div>
-        <div className={guide.promises}>{priorities.map((p) => PRIORITY_PROMISE[p]).filter(Boolean).map((item) => <article key={item.title}><h3>{item.title}</h3><p>{item.promise}</p></article>)}</div>
-      </section> : null}
-
-      <section className={guide.section} aria-labelledby="collection-title">
-        <div className={styles.sectionHeading}>
-          <div><p className={styles.eyebrow}>Your collection</p><h2 id="collection-title">{fitTier.name}.<br /><em>{money(fitTier.price)}.</em></h2></div>
-          <p>{reason}{stepUpTier ? ` If you want a little more of the day, ${stepUpTier.name} is worth a look.` : ""}</p>
-        </div>
-        <div className={`${funnel.thanksCopy} ${guide.collections}`}>
-          <ol className={funnel.pricing} aria-label="Your collections">
-            {collections.map((collection) => {
-              const best = collection.slug === fit.slug;
-              const stepUp = collection.slug === fit.stepUp;
-              return <li key={collection.slug} className={`${funnel.collection}${best ? ` ${funnel.best}` : ""}`}>
-                {best && <p className={funnel.bestTag}>Best fit for you</p>}
-                {stepUp && <p className={funnel.stepUpTag}>Worth a look · {fit.stepUpReason}</p>}
-                <details open={best}>
-                  <summary>
-                    <span className={funnel.collectionName}>{collection.name}<small>{collection.hoursLabel}</small></span>
-                    <span className={funnel.collectionPrice}>{money(collection.price)}</span>
-                  </summary>
-                  <ul>{collection.items.map((item) => <li key={item}>{item}</li>)}</ul>
-                </details>
-              </li>;
-            })}
-          </ol>
-          <p className={funnel.pricingNote}>Canadian dollars before tax. Tap a collection to see everything in it.</p>
-        </div>
+        <dl className={guide.weddingDetails}>{details.map(([label, value]) => <div key={label}><dt>{label}</dt><dd>{value}</dd></div>)}</dl>
+        {record.note ? <details className={guide.inquiryNote}><summary>Your note</summary><p>{record.note}</p></details> : null}
       </section>
 
-      <section className={guide.section} aria-labelledby="plan-title">
-        <div className={styles.sectionHeading}>
-          <div><p className={styles.eyebrow}>Your {fitTier.hours} hours</p><h2 id="plan-title">How the day<br /><em>could run.</em></h2></div>
-          <p>A shape, not a schedule. On our call we build your real timeline around {record.location || "your venue"}, your ceremony time and the people who matter most.</p>
+      <section id="your-collection" className={guide.section} aria-labelledby="collection-title">
+        <div className={guide.sectionHeading}>
+          <div><p className={guide.eyebrow}>01 / Coverage & collections</p><h2 id="collection-title">A good place to start.</h2></div>
+          <p>{reason}</p>
         </div>
-        {plan.note ? <p className={guide.planNote}>{plan.note}</p> : null}
-        <ol className={guide.plan}>{plan.rows.map((row) => <li key={row.part} className={marked.has(row.part) ? guide.marked : undefined}>{marked.has(row.part) ? <em className={guide.markTag}>Matters to you</em> : null}<strong>{row.part}</strong><span>{row.what}</span></li>)}</ol>
+        <article className={guide.featured} aria-labelledby="recommended-title">
+          <div className={guide.collectionIntro}>
+            <p className={guide.badge}>Suggested for your day</p>
+            <h3 id="recommended-title">{fitTier.name}</h3>
+            <p className={guide.coverage}>{fitTier.coverage}</p>
+            <p className={guide.price}>{money(fitTier.price)}<span>Canadian dollars · before tax</span></p>
+            <a className={guide.cardLink} href="#book-a-call">Talk through this collection <span aria-hidden="true">↗</span></a>
+          </div>
+          <div className={guide.collectionContents}>
+            <dl className={guide.deliverables}>
+              <div><dt>Photographs</dt><dd>{fitTier.images}</dd></div>
+              <div><dt>Preview</dt><dd>{fitTier.preview}</dd></div>
+              <div><dt>Delivery</dt><dd>{fitTier.delivery}</dd></div>
+            </dl>
+            <ul className={guide.highlights}>{highlights.map((item) => <li key={item}>{item}</li>)}</ul>
+            <details className={guide.includedDetails}>
+              <summary>Everything included in {fitTier.name}</summary>
+              <ul className={guide.fullIncludes}>{fitTier.includes.map((item) => <li key={item}>{item}</li>)}</ul>
+            </details>
+          </div>
+        </article>
+        <div className={guide.alternatives}>
+          {pricingTiers().filter((tier) => tier.slug !== fit.slug).map((tier) => <article key={tier.slug} className={guide.alternative}>
+            <p className={guide.alternativeLabel}>{tier.slug === fit.stepUp ? "Also worth considering" : "Another option"}</p>
+            <details>
+              <summary>
+                <span className={guide.alternativeName}>{tier.name}<small>{tier.coverage}</small></span>
+                <span className={guide.alternativePrice}>{money(tier.price)}</span>
+              </summary>
+              <p className={guide.alternativeCrew}>{tier.crew}</p>
+              <ul className={guide.fullIncludes}>{tier.includes.map((item) => <li key={item}>{item}</li>)}</ul>
+            </details>
+          </article>)}
+        </div>
+        <p className={guide.smallPrint}>All collection prices are before tax. Open a collection to see the full inclusions.</p>
       </section>
 
-      <section className={styles.interlude} aria-label={`Wedding photographs from ${city.name}`}>
-        {city.interlude.map((photo) => <figure key={photo.src}><Image src={photo.src} alt={photo.alt} fill quality={72} sizes="(max-width: 760px) 78vw, 33vw" /></figure>)}
+      <section className={guide.section} aria-labelledby="approach-title">
+        <div className={`${guide.sectionHeading} ${guide.simpleHeading}`}>
+          <div><p className={guide.eyebrow}>02 / Photographing your day</p><h2 id="approach-title">{priorities.length ? "Your priorities." : "Your day’s coverage."}</h2></div>
+        </div>
+        {priorities.length ? <div className={guide.priorities}>{priorities.map((p) => {
+          const item = PRIORITY_PROMISE[p];
+          return <article key={p}><p className={guide.priorityLabel}>Your priority</p><h3>{item.title}</h3><p>{item.promise}</p></article>;
+        })}</div> : null}
+        <details className={guide.dayPlan}>
+          <summary><span>A sample {fitTier.hours}-hour day<small>An outline to discuss, with timings still to be agreed.</small></span></summary>
+          {plan.note ? <p className={guide.planNote}>{plan.note}</p> : null}
+          <ol className={guide.plan}>{plan.rows.map((row) => <li key={row.part}>
+            <div><h3>{row.part}</h3>{marked.has(row.part) ? <span className={guide.markTag}>Your priority</span> : null}</div>
+            <p>{row.what}</p>
+          </li>)}</ol>
+        </details>
       </section>
 
-      <section className={guide.section} aria-labelledby="albums-title">
-        <div className={styles.sectionHeading}>
-          <div><p className={styles.eyebrow}>The whole day</p><h2 id="albums-title">This is what<br /><em>you receive.</em></h2></div>
-          <p>Every photograph from three complete weddings, from the morning to the last dance, exactly as the couples received them.</p>
+      <section id="wedding-galleries" className={guide.section} aria-labelledby="albums-title">
+        <div className={guide.sectionHeading}>
+          <div><p className={guide.eyebrow}>03 / The photographs</p><h2 id="albums-title">See the whole story.</h2></div>
+          <p>Explore three full wedding galleries to see the portraits, the people, and the moments in between.</p>
         </div>
         <div className={guide.albums}>
           {albums.map((album) => <a key={album.id} href={`/galleries/${album.id}`} target="_blank" rel="noopener noreferrer" className={guide.album}>
-            <span className={guide.albumImage}><Image src={album.cover.src} alt={album.cover.alt} fill quality={70} sizes="(max-width: 760px) 86vw, 30vw" /></span>
-            <strong>{album.title}</strong><span>{album.subtitle}</span><span className={guide.albumLink}>See the whole day <span aria-hidden="true">↗</span></span>
+            <span className={guide.albumImage}><Image src={album.cover.src} alt={album.cover.alt} fill quality={85} sizes="(max-width: 760px) 90vw, (max-width: 1280px) 30vw, 368px" /></span>
+            <span className={guide.albumTitle}>{album.title}<span aria-hidden="true">↗</span></span>
+            <span className={guide.albumSubtitle}>{album.subtitle}</span>
+            <span className={guide.albumLink}>View full gallery</span>
           </a>)}
         </div>
-      </section>
-
-      <section className={styles.reviews} aria-labelledby="reviews-title">
-        <div className={styles.sectionHeading}><div><p className={styles.eyebrow}>When the photographs arrive</p><h2 id="reviews-title">Don’t take<br /><em>my word for it.</em></h2></div><p>The couples who were where you are now. Tap a message to read the original.</p></div>
-        <div className={styles.reviewsGrid}>
-          {reviews.map(({ n, who, quote }) => { const proof = proofByN(n); return <figure key={n}><blockquote>“{quote}”</blockquote><figcaption>{who}</figcaption><a href={proofSrc(n)} target="_blank" rel="noopener noreferrer" aria-label={`Read ${who}’s original message`}><Image src={proofSrc(n)} alt={proof.alt} width={proof.w} height={proof.h} quality={80} sizes="(max-width: 760px) 78vw, 25vw" /><span>Read the original message ↗</span></a></figure>; })}
+        <div className={guide.reviews} role="group" aria-label="Words from past couples">
+          <p className={guide.eyebrow}>Words from past couples</p>
+          <div className={guide.reviewsGrid}>{reviews.map(({ n, who, quote }) => <figure key={n}>
+            <blockquote>“{quote}”</blockquote>
+            <figcaption>{who}<a href={proofSrc(n)} target="_blank" rel="noopener noreferrer" aria-label={`Read ${who}’s original message`}>Read their message <span aria-hidden="true">↗</span></a></figcaption>
+          </figure>)}</div>
         </div>
-      </section>
-
-      <section className={guide.section} aria-labelledby="steps-title">
-        <div className={styles.sectionHeading}>
-          <div><p className={styles.eyebrow}>How booking works</p><h2 id="steps-title">Three steps.<br /><em>No pressure.</em></h2></div>
-          <p>There is no obligation to book after our call.</p>
-        </div>
-        <ol className={guide.steps}>
-          <li><strong>A free 30-minute video call</strong><span>We talk through your day, the photographs you love and the collection that fits.</span></li>
-          <li><strong>Your contract and deposit</strong><span>{TERMS.retainer}, with the signed contract.</span></li>
-          <li><strong>The balance</strong><span>{balance}.</span></li>
-        </ol>
       </section>
 
       <section id="book-a-call" className={`${guide.section} ${guide.booking}`} aria-labelledby="call-title">
-        <div className={`${funnel.nextStep} ${guide.bookingCopy}`}>
-          <p className={styles.eyebrow}>The next step</p>
-          <h2 id="call-title" className={funnel.nextTitle}>A free 30-minute<br /><em>video call.</em></h2>
-          <p>Pick a time that suits you. Bring your questions, your plans and anything you’re unsure about. I’ll take it from there. No obligation.</p>
-          <div className={funnel.noCall}><p><strong>Rather not do a call?</strong> That’s fine. Reply to my email, or message me on <MessageLinks phone={phone} phoneE164={SITE.phoneE164} city={city.name} />.</p></div>
+        <div className={guide.bookingCopy}>
+          <p className={guide.eyebrow}>04 / The next step</p>
+          <h2 id="call-title">Let’s talk<br /><em>through your day.</em></h2>
+          <p className={guide.callMeta}>Free · 30 minutes · Video call</p>
+          <p>We’ll go over your plans, answer your questions, and work out which collection makes sense for you. There’s no obligation to book.</p>
+          <ol className={guide.steps} aria-label="How booking works">
+            <li><strong>Meet on a video call</strong><p>Choose a time in the calendar. You don’t need a finished timeline.</p></li>
+            <li><strong>Make it official</strong><p>{TERMS.retainer}, with the signed contract.</p></li>
+            <li><strong>Split the remaining balance</strong><p>{TERMS.balance.charAt(0).toUpperCase() + TERMS.balance.slice(1)}.</p></li>
+          </ol>
+          <p className={guide.messageOption}><strong>Prefer to write?</strong> Reply to my email, or message me on <MessageLinks phone={phone} phoneE164={SITE.phoneE164} city={city.name} />.</p>
         </div>
-        <div className={guide.calendar}><WeddingCalendar page={page} theme="dark" classes={styles} prefill={{ name: record.names, email: record.email }} /></div>
+        <div className={guide.calendar}><WeddingCalendar page={`guide/${market.slug}`} theme="dark" classes={guide} prefill={{ name: record.names, email: record.email }} /></div>
       </section>
     </main>
-    <footer className={styles.footer}><span className={styles.footerBrand}>Arman Arai<span>Wedding photography · {city.name}</span></span><div><a href={`mailto:${SITE.email}`}>{SITE.email}</a><a href="/privacy-policy" target="_blank" rel="noopener noreferrer">Privacy policy</a><span>© {new Date().getFullYear()} Arman Arai</span></div></footer>
+
+    <footer className={guide.footer}>
+      <span className={guide.footerBrand}>Arman Arai<span>Wedding photography</span></span>
+      <div><a href={`mailto:${SITE.email}`}>{SITE.email}</a><a href="/privacy-policy" target="_blank" rel="noopener noreferrer">Privacy policy</a><span>© {new Date().getFullYear()} Arman Arai</span></div>
+    </footer>
   </div>;
 }

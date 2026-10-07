@@ -1,6 +1,6 @@
 import { CITY_PHOTOS, CITY_WORK, type Photo } from "../images";
 import { VANCOUVER_WORK, type WorkPhoto } from "./hub-work";
-import { CALGARY_LANDING, MONTREAL_LANDING, VICTORIA_LANDING } from "./city-landing-album";
+import { CALGARY_LANDING, MONTREAL_LANDING, TORONTO_LANDING, VICTORIA_LANDING } from "./city-landing-album";
 
 /** A hero photograph, with an optional object-position for the phone's wide crop. */
 export type HeroPhoto = Photo & { position?: string };
@@ -88,6 +88,7 @@ export const WEDDING_CITIES: WeddingCity[] = [
     coverageAnswer: "Yes. Toronto, Mississauga, Oakville, Vaughan, Markham and the surrounding area. I also photograph weddings in Niagara, Prince Edward County and beyond. Tell me your venue and date; any travel is quoted separately before you book.",
     planningQuestion: "Our ceremony and reception are in different places. How do portraits fit?",
     planningAnswer: "We’ll look at the route together and choose a portrait location that fits it. Time for travel, family photographs and a covered backup goes into the plan, so you can spend more of the day with your guests.",
+    work: { eyebrow: "The photographs", title: ["Toronto, Niagara and", "the County."], lead: "Two Ontario weddings, from a stone chapel in the Niagara hills to a glass pavilion in Prince Edward County. Turn the pages.", album: "Toronto & Ontario", photos: TORONTO_LANDING },
     albums: ["eathon-jessica", "elisha-michael", "luca-lauren"],
   },
   {

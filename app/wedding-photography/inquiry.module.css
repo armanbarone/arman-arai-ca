@@ -21,6 +21,10 @@
 .heroArt .slideActive { opacity: 1; }
 .formPanel { grid-area: form; }
 
+.messageInput { display: block; width: 100%; min-width: 0; min-height: 90px; border: 0; border-bottom: .5px solid #97836a; border-radius: 0; padding: 10px 0; background: transparent; color: var(--ink); font: inherit; font-size: 16px; line-height: 1.5; resize: vertical; }
+.messageInput::placeholder { color: var(--muted); }
+.messageInput:focus { border-bottom-color: var(--gold); }
+
 .labelRow { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
 .dateToggle { background: none; border: 0; padding: 0; margin-bottom: 5px; font-size: 11px !important; color: var(--muted); text-decoration: underline; text-underline-offset: 3px; white-space: nowrap; }
 .dateToggle:hover { color: var(--gold); }

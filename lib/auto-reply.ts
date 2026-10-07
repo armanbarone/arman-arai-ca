@@ -136,16 +136,16 @@ function inquiryPrompt(inquiry: PricingInquiry, fitName: string, basis: string) 
     ? "Their date: BOOKED. Arman is already booked on their date and is not available that day."
     : inquiry.dateStatus === "open"
       ? "Their date: OPEN. Arman is available on their date as of now."
-      : `Their date: no exact date, only a season (${inquiry.weddingSeason ?? "not given"}). Arman has dates open in it as of now.`;
+      : "Their date: no exact date supplied. Do not claim availability or create urgency about an unknown date. We can check availability when they have one.";
   return `Write the email for this inquiry. ${dateLine}
-The collection that fits best is ${fitName}, chosen from ${basis}.
+${rec.basis === "default" ? `${fitName} is only a starting point: no coverage or budget was supplied. Do not claim it fits their day or that you know their needs. Invite them to explore the guide and work out coverage together.` : `The suggested collection is ${fitName}, chosen from ${basis}.`}
 ${stepUpLine}
 ${guideLine}
 
 <inquiry>
 Names: ${asData(inquiry.names)}
 Wedding date: ${when}
-Venue or area: ${asData(inquiry.location)}
+Venue or area: ${inquiry.location ? asData(inquiry.location) : "Not given"}
 Guests: ${labelOf(GUEST_OPTIONS, inquiry.guests) ?? "Not given"}
 Ceremony and reception: ${labelOf(SETUP_OPTIONS, inquiry.setup) ?? "Not given"}
 What matters most to them: ${matters.length ? matters.join(", ") : "Not given"}
@@ -175,6 +175,7 @@ export function checkedBody(text: string, dateStatus?: "open" | "booked"): strin
   if (/\b(?:hold|holding|held|reserve|reserved|reserving|pencil(?:led)?)\b[^.]{0,30}\b(?:date|day)\b|\b(?:date|day)\b[^.]{0,30}\b(?:held|reserved|on hold)\b/i.test(body)) return null;
   if (dateStatus === "booked" && (!/\bbooked\b/i.test(body) || /\bavailable on\b|\bstill (?:open|free|available)\b/i.test(body))) return null;
   if (dateStatus === "open" && (!/\bavailab/i.test(body) || /\balready booked\b|\bnot available\b|\bunavailable\b/i.test(body))) return null;
+  if (!dateStatus && /\bavailab(?:le|ility)\b|\b(?:calendar|dates?)\b[^.]{0,50}\b(?:open|free|booked)\b|\bfirst come\b|\bdon[’']t wait\b/i.test(body)) return null;
   const allowed = allowedAmounts();
   for (const amount of body.match(/(?:C\$|\$)\s?\d[\d,]*/g) ?? []) {
     if (!allowed.has(Number(amount.replace(/[^\d]/g, "")))) return null;
@@ -254,11 +255,11 @@ export function fallbackBody(inquiry: PricingInquiry, fitName: string) {
       ? `I'll be straight with you: I'm already booked on ${when}. If there's any flexibility in your date, I'd love to talk it through.`
       : inquiry.dateStatus === "open"
         ? `Good news: I'm available on ${when} as of now. Dates go first come, first served, so if you love what you see, don't wait too long.`
-        : inquiry.weddingSeason && inquiry.weddingSeason !== "Later than that"
-          ? `As of now I have dates open in ${inquiry.weddingSeason}, and they go first come, first served.`
-          : "As of now my calendar is open that far ahead, and dates go first come, first served.",
-    `Here's what I think is right for you: ${fitName}, at ${money(tier.price)}. ${FIT_LINE[fit.slug] ?? ""}${matters ? ` And since ${matters.charAt(0).toLowerCase() + matters.slice(1)} ${plural ? "matter" : "matters"} most to you, that's exactly where my attention goes.` : ""}`.trim(),
-    `${inquiry.guideUrl ? "Everything is on the page I made for you, just below. " : ""}The easiest next step is a free 30-minute video call. If you'd rather just message, WhatsApp works too.`,
+        : "You don’t need a finished timeline to start. Once you have a date, we can check it together.",
+    fit.basis === "default"
+      ? `${fitName} starts at ${money(tier.price)} for eight hours. It’s a starting point while your plans take shape; we’ll work out the right coverage together.`
+      : `Here's what I think is right for you: ${fitName}, at ${money(tier.price)}. ${FIT_LINE[fit.slug] ?? ""}${matters ? ` And since ${matters.charAt(0).toLowerCase() + matters.slice(1)} ${plural ? "matter" : "matters"} most to you, that's exactly where my attention goes.` : ""}`.trim(),
+    `${inquiry.guideUrl ? "Your guide has the collection options and prices, just below. " : ""}Reply with questions, message me on WhatsApp or book a free 30-minute video call.`,
     "Arman",
   ].join("\n\n");
 }
@@ -279,11 +280,12 @@ function detailsBlock(inquiry: PricingInquiry) {
   const setup = labelOf(SETUP_OPTIONS, inquiry.setup);
   const matters = priorityLabels(inquiry.priorities);
   const rows: [string, string][] = [
-    ["Date", when], ["Where", inquiry.location],
+    ["Date", when], ["Where", inquiry.location || "To be decided"],
     ...(guests ? [["Guests", guests] as [string, string]] : []),
     ...(setup ? [["Ceremony and reception", setup] as [string, string]] : []),
     ...(matters.length ? [["What matters most", matters.join(", ")] as [string, string]] : []),
-    ["Coverage", coverage], ["Budget", budget],
+    ...(inquiry.coverage !== "unsure" ? [["Coverage", coverage] as [string, string]] : []),
+    ...(inquiry.budget !== "unsure" ? [["Budget", budget] as [string, string]] : []),
     ...(inquiry.note ? [["Your note", inquiry.note] as [string, string]] : []),
   ];
   return `<div style="margin:6px 0 24px;padding:16px 18px;background:#F7F3EC;border-radius:8px;font-family:Arial,Helvetica,sans-serif;font-size:14px;line-height:1.6;color:#2C2420;">
@@ -336,7 +338,7 @@ export function render(inquiry: PricingInquiry, body: string, fitSlug: string, s
     ...(guide ? [`Your wedding guide: ${guide}`] : []),
     `Book your free video call: ${calendar}`,
     `Message me on WhatsApp: ${whatsapp}`,
-    `What you told me: ${[whenPhrase(inquiry) || "Date to be decided", inquiry.location, COVERAGE_OPTIONS.find((option) => option.value === inquiry.coverage)?.label ?? "Not sure yet", BUDGET_OPTIONS.find((option) => option.value === inquiry.budget)?.label ?? "Not sure yet"].join(" · ")}`,
+    `Your plans so far: ${[whenPhrase(inquiry) || "Date to be decided", inquiry.location || "Venue to be decided", ...(inquiry.coverage !== "unsure" ? [labelOf(COVERAGE_OPTIONS, inquiry.coverage)] : []), ...(inquiry.budget !== "unsure" ? [labelOf(BUDGET_OPTIONS, inquiry.budget)] : []), inquiry.note].filter(Boolean).join(" · ")}`,
     ...(guide ? [] : [tiers.map((tier) => `${tier.name}, ${tier.hours} hours${tier.slug === fitSlug ? " (best fit)" : tier.slug === stepUpSlug ? " (worth a look)" : ""}: ${money(tier.price)}`).join("\n"), "Canadian dollars, before tax."]),
     `Arman Arai · Wedding photography · ${SITE.domain} · ${SITE.phone}`,
   ].join("\n\n");
@@ -347,7 +349,7 @@ export async function sendInquiryAutoReply(inquiry: PricingInquiry): Promise<voi
   const started = Date.now();
   const fit = recommendCollection(inquiry.coverage, inquiry.budget, inquiry);
   const fitName = tierBySlug(fit.slug)!.name;
-  const basis = fit.basis === "coverage" ? "the coverage they asked for" : fit.basis === "budget" ? "their budget" : "neither, because they are unsure of both; Signature is the collection most couples book";
+  const basis = fit.basis === "coverage" ? "the coverage they asked for" : fit.basis === "budget" ? "their budget" : "no coverage or budget supplied; Signature is a starting point to discuss together";
   let body: string | null = null;
   let subject = fallbackSubject(inquiry);
   let source = "claude";

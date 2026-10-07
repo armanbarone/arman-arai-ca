@@ -31,6 +31,94 @@ const inquiry = {
   guests: "50-120", setup: "same", priorities: ["candid", "family"], company: "",
 };
 
+test("names and email alone deliver an inquiry and guide without invented wedding details", async () => {
+  const previous = process.env.RESEND_API_KEY;
+  process.env.RESEND_API_KEY = "stub-only";
+  try {
+    for (const market of ["vancouver", "toronto", "montreal", "calgary", "victoria"]) {
+      const h = harness();
+      const response = await h.POST({ json: async () => ({
+        type: "wedding-inquiry", pricingMarket: market,
+        name: "  Sarah & James  ", email: "  couple@example.com  ",
+      }) });
+      assert.equal(response.status, 200);
+      assert.equal((await response.json()).guide, "/guide/abcdefghijklmnopqrstuv");
+      assert.equal(h.guides[0].names, "Sarah & James");
+      assert.equal(h.guides[0].email, "couple@example.com");
+      assert.equal(h.guides[0].location, "");
+      assert.equal(h.guides[0].coverage, "unsure");
+      assert.equal(h.guides[0].budget, "unsure");
+      assert.equal(h.guides[0].weddingDate, undefined);
+      assert.equal(h.guides[0].weddingSeason, undefined);
+      assert.equal(h.guides[0].priorities, undefined);
+      assert.equal(h.notifications.length, 1);
+      assert.match(h.notifications[0].html, /Guide starting point/);
+      assert.doesNotMatch(h.notifications[0].html, /undefined|dates open in/);
+      assert.equal(h.queued.length, 1);
+      await h.queued[0]();
+      assert.equal(h.replies[0].dateStatus, undefined);
+      assert.equal(h.replies[0].market.slug, market);
+      assert.equal(h.replies[0].guideUrl, "https://www.armanarai.ca/guide/abcdefghijklmnopqrstuv");
+    }
+  } finally {
+    if (previous === undefined) delete process.env.RESEND_API_KEY;
+    else process.env.RESEND_API_KEY = previous;
+  }
+});
+
+test("optional date, venue and message are preserved without qualification answers", async () => {
+  const previous = process.env.RESEND_API_KEY;
+  process.env.RESEND_API_KEY = "stub-only";
+  try {
+    const h = harness();
+    const response = await h.POST({ json: async () => ({
+      type: "wedding-inquiry", pricingMarket: "vancouver", name: inquiry.name, email: inquiry.email,
+      weddingDate: inquiry.weddingDate, location: "  Cecil Green Park House  ",
+      note: "We’re camera shy. Can you help us feel comfortable?",
+    }) });
+    assert.equal(response.status, 200);
+    assert.equal(h.guides[0].weddingDate, inquiry.weddingDate);
+    assert.equal(h.guides[0].location, inquiry.location);
+    assert.match(h.guides[0].note, /camera shy/);
+    await h.queued[0]();
+    assert.equal(h.replies[0].dateStatus, "open");
+    assert.equal(h.replies[0].coverage, "unsure");
+  } finally {
+    if (previous === undefined) delete process.env.RESEND_API_KEY;
+    else process.env.RESEND_API_KEY = previous;
+  }
+});
+
+test("an invalid optional date fails before creating a guide or sending mail", async () => {
+  const h = harness();
+  const response = await h.POST({ json: async () => ({
+    type: "wedding-inquiry", pricingMarket: "vancouver", name: inquiry.name, email: inquiry.email,
+    weddingDate: "2027-02-30",
+  }) });
+  assert.equal(response.status, 400);
+  assert.equal(h.guides.length + h.notifications.length + h.queued.length, 0);
+});
+
+test("the minimal-inquiry reply presents a starting point and makes no availability claim", () => {
+  const load = loader();
+  const { fallbackBody, checkedBody, render } = load("@/lib/auto-reply");
+  const { pricingMarket } = load("@/lib/ads/pricing-request");
+  const minimal = {
+    names: inquiry.name, email: inquiry.email, location: "", coverage: "unsure", budget: "unsure",
+    cityName: "Vancouver", market: pricingMarket("vancouver"),
+    page: "wedding-photography/vancouver-pricing", receivedAt: Date.now(),
+    guideUrl: "https://www.armanarai.ca/guide/abcdefghijklmnopqrstuv",
+  };
+  const body = fallbackBody(minimal, "Signature");
+  assert.match(body, /starting point/);
+  assert.doesNotMatch(body, /available|calendar is open|dates open|right for you|first come/i);
+  assert.equal(checkedBody(body), body);
+  assert.equal(checkedBody(body + "\n\nMy calendar is open as of now."), null);
+  const email = render(minimal, body, "signature");
+  assert.match(email.html, /Open your wedding guide/);
+  assert.doesNotMatch(email.html, /Coverage:<\/span>|Budget:<\/span>|undefined/);
+});
+
 test("an inquiry without mobile creates its guide, notifies the studio and queues the couple's email", async () => {
   const previous = process.env.RESEND_API_KEY;
   process.env.RESEND_API_KEY = "stub-only";

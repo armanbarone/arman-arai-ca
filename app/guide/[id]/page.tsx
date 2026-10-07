@@ -52,8 +52,8 @@ export default async function GuidePage({ params }: { params: Promise<{ id: stri
   const details: [string, string][] = [
     ["Wedding date", when],
     ["Venue / location", record.location || "Still deciding"],
-    ["Coverage", coverage],
-    ["Photography budget", budget],
+    ...(record.coverage !== "unsure" ? [["Coverage", coverage] as [string, string]] : []),
+    ...(record.budget !== "unsure" ? [["Photography budget", budget] as [string, string]] : []),
     ...(labelOf(GUEST_OPTIONS, record.guests) ? [["Guests", labelOf(GUEST_OPTIONS, record.guests)!] as [string, string]] : []),
     ...(labelOf(SETUP_OPTIONS, record.setup) ? [["Ceremony & reception", labelOf(SETUP_OPTIONS, record.setup)!] as [string, string]] : []),
   ];
@@ -104,7 +104,7 @@ export default async function GuidePage({ params }: { params: Promise<{ id: stri
         </div>
         <article className={guide.featured} aria-labelledby="recommended-title">
           <div className={guide.collectionIntro}>
-            <p className={guide.badge}>Suggested for your day</p>
+            <p className={guide.badge}>{fit.basis === "default" ? "A starting point" : "Suggested for your day"}</p>
             <h3 id="recommended-title">{fitTier.name}</h3>
             <p className={guide.coverage}>{fitTier.coverage}</p>
             <p className={guide.price}>{money(fitTier.price)}<span>Canadian dollars · before tax</span></p>

@@ -64,8 +64,8 @@ export async function POST(req: NextRequest) {
 
     const isDateCheck = type === "wedding-date-check";
     // The pricing-request form on /wedding-photography/<city>-pricing. It
-    // checks no calendar: a date is validated as a real future day and
-    // nothing more. A couple without a date sends a season instead.
+    // accepts names and email alone. Any supplied date is validated, then
+    // its availability is used in the email only.
     const isInquiry = type === "wedding-inquiry";
     const availability = isDateCheck ? checkWeddingDate(body.weddingDate) : null;
     if (availability && "error" in availability) {
@@ -87,9 +87,9 @@ export async function POST(req: NextRequest) {
     let autoReply: PricingInquiry | null = null;
     let guideId: string | null = null;
     if (isInquiry) {
-      for (const [key, max] of [["name", 80], ["email", 100], ["location", 90]] as const) {
+      for (const [key, max] of [["name", 80], ["email", 100]] as const) {
         if (typeof body[key] !== "string" || !body[key].trim() || body[key].length > max) {
-          return NextResponse.json({ error: "Please fill in your names, email and venue or area." }, { status: 400 });
+          return NextResponse.json({ error: "Please enter your names and email." }, { status: 400 });
         }
         body[key] = body[key].trim();
       }
@@ -98,6 +98,14 @@ export async function POST(req: NextRequest) {
       }
       // This inquiry collects no mobile number. Ignore it from older open tabs too.
       delete body.phone;
+      if (body.location != null && (typeof body.location !== "string" || body.location.length > 90)) {
+        return NextResponse.json({ error: "Please keep your venue or area under 90 characters." }, { status: 400 });
+      }
+      body.location = typeof body.location === "string" ? body.location.trim() : "";
+      // Older open forms can still send selections. Missing choices mean we
+      // have not discussed them yet, not that the couple chose a collection.
+      body.coverage = body.coverage || "unsure";
+      body.budget = body.budget || "unsure";
       const coverage = COVERAGE_OPTIONS.find((option) => option.value === body.coverage);
       const budget = BUDGET_OPTIONS.find((option) => option.value === body.budget);
       if (!coverage || !budget) {
@@ -106,14 +114,13 @@ export async function POST(req: NextRequest) {
       if (body.weddingDate) {
         const valid = checkWeddingDate(body.weddingDate);
         if ("error" in valid) return NextResponse.json({ error: valid.error }, { status: 400 });
-      } else if (!(typeof body.weddingSeason === "string" && SEASON_PATTERN.test(body.weddingSeason))) {
-        return NextResponse.json({ error: "Choose your wedding date, or roughly when it will be." }, { status: 400 });
+      } else if (body.weddingSeason && !(typeof body.weddingSeason === "string" && SEASON_PATTERN.test(body.weddingSeason))) {
+        return NextResponse.json({ error: "Please choose a valid wedding season." }, { status: 400 });
       }
       const market = pricingMarket(String(body.pricingMarket ?? ""));
       const cityName = WEDDING_CITIES.find((city) => city.slug === market?.slug)?.name;
       if (!market || !cityName) return NextResponse.json({ error: "Please reload the page and try again." }, { status: 400 });
-      // The form's second step. Optional here, so a form loaded before it
-      // existed still goes through; the form itself requires all but the note.
+      // Keep optional day details from older forms; the short form only sends a note.
       const day = cleanDayDetails(body);
       // Date checking is back, in the email only (owner, 2026-10-02): the
       // booked list in lib/wedding-availability.ts says open or booked.
@@ -132,18 +139,18 @@ export async function POST(req: NextRequest) {
       inquiryRows = [
         ["Names", body.name],
         ["Email", body.email],
-        ["Wedding date", body.weddingDate ? `${body.weddingDate} (${weekdayOf(body.weddingDate)})` : `No date yet: ${body.weddingSeason}`],
-        ["Where", body.location],
-        ["Guests", labelOf(GUEST_OPTIONS, day.guests) ?? "Not given"],
-        ["Ceremony and reception", labelOf(SETUP_OPTIONS, day.setup) ?? "Not given"],
-        ["What matters most", priorityLabels(day.priorities).join(", ") || "Not given"],
+        ["Wedding date", body.weddingDate ? `${body.weddingDate} (${weekdayOf(body.weddingDate)})` : body.weddingSeason || "Not decided yet"],
+        ["Where", body.location || "Not decided yet"],
+        ...(day.guests ? [["Guests", labelOf(GUEST_OPTIONS, day.guests)!] as [string, string]] : []),
+        ...(day.setup ? [["Ceremony and reception", labelOf(SETUP_OPTIONS, day.setup)!] as [string, string]] : []),
+        ...(day.priorities?.length ? [["What matters most", priorityLabels(day.priorities).join(", ")] as [string, string]] : []),
         ...(day.note ? ([["Their note", day.note]] as [string, string][]) : []),
-        ["Coverage", coverage.label],
-        ["Budget", budget.label],
-        ["Shown as best fit", `${fit.name}, C$${fit.price.toLocaleString("en-CA")}`],
+        ...(coverage.value !== "unsure" ? [["Coverage", coverage.label] as [string, string]] : []),
+        ...(budget.value !== "unsure" ? [["Budget", budget.label] as [string, string]] : []),
+        [recommendation.basis === "default" ? "Guide starting point" : "Suggested collection", `${fit.name}, C$${fit.price.toLocaleString("en-CA")}`],
         ...(stepUp ? ([["Suggested step up", `${stepUp.name}, C$${stepUp.price.toLocaleString("en-CA")}`]] as [string, string][]) : []),
         ["Their guide", guideId ? guideUrl(guideId) : "Could not be made; their email carries the price table instead"],
-        ["Their date", dateStatus === "booked" ? "BOOKED: on your booked list. The email tells them you're not available that day." : dateStatus === "open" ? "Open. The email tells them you're available as of now, first come, first served." : "No exact date. The email says you have dates open in that season as of now."],
+        ["Their date", dateStatus === "booked" ? "BOOKED: on your booked list. The email tells them you're not available that day." : dateStatus === "open" ? "Open. The email tells them you're available as of now, first come, first served." : "No exact date supplied. Availability can be checked once they have a date."],
         ["Auto-reply", autoReply ? "Sending to the couple about 30 seconds after this; you are BCC'd" : "Off: the Anthropic federation variables are not set in Vercel"],
       ];
     }

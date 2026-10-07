@@ -3,8 +3,8 @@
 import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from "react";
 import { listenForContactClicks, pricingThankYouPath, trackPageView, trackWeddingInquiry } from "@/lib/analytics";
 import {
-  BUDGET_OPTIONS, COVERAGE_OPTIONS, CTA_LABEL, FORM_ID, GUEST_OPTIONS, MAX_PRIORITIES, NOTE_MAX, PRIORITY_OPTIONS, SETUP_OPTIONS,
-  labelOf, longDate, priorityLabels, recommendCollection, seasonOptions, weekdayOf,
+  BUDGET_OPTIONS, COVERAGE_OPTIONS, CTA_LABEL, FORM_ID, GUEST_OPTIONS, NOTE_MAX, SETUP_OPTIONS,
+  labelOf, longDate, priorityLabels, recommendCollection, weekdayOf,
 } from "@/lib/ads/pricing-request";
 import { weddingToday } from "@/lib/wedding-availability";
 import WeddingCalendar from "./wedding-calendar";
@@ -12,7 +12,7 @@ import { ATTRIBUTION_KEYS, fbclidFromCookie, gclidFromCookie } from "@/lib/attri
 import styles from "./vancouver.module.css";
 import funnel from "./inquiry.module.css";
 
-/* The pricing-request funnel: ad → this page → a two-step form → a thank-you
+/* The pricing-request funnel: ad → this page → a short form → a thank-you
  * screen that plays their answers back and opens their pricing guide.
  *
  * One action. The form's button is the only button on the page, and every
@@ -46,7 +46,7 @@ type Sent = {
   location: string;
   coverage: string;
   budget: string;
-  /** The second step (guests, setup, up to two priorities, an optional note). */
+  /** Optional details retained for inquiries sent from older open forms. */
   guests?: string;
   setup?: string;
   priorities?: string[];
@@ -106,23 +106,15 @@ export default function InquiryFunnel({ children, collections, city, page, phone
   </FunnelContext.Provider>;
 }
 
-/* Two steps (owner, 2026-10-01: a more personal form). Step one is who,
-   when and where; step two is the day itself, mostly taps. Step two's
-   fields are only required once it is open, so Enter on step one moves on
-   instead of tripping over fields that cannot be seen yet. The page's other
-   buttons say CTA_LABEL and scroll here; Continue is inside the form. */
+/* First contact needs names and an email. Wedding details are optional;
+   collection choices can wait until the couple has read their guide. */
 export function InquiryForm({ city, market, page }: { city: string; market: string; page: string }) {
   const send = useContext(FunnelContext);
   const [status, setStatus] = useState<"idle" | "sending" | "error">("idle");
   const [error, setError] = useState("");
   const [today, setToday] = useState("");
-  const [noDate, setNoDate] = useState(false);
-  const [step, setStep] = useState<1 | 2>(1);
-  const [priorities, setPriorities] = useState<string[]>([]);
   const [attribution, setAttribution] = useState<Record<string, string>>({});
   const sending = useRef(false);
-  const firstStep = useRef<HTMLDivElement>(null);
-  const secondTitle = useRef<HTMLParagraphElement>(null);
 
   useEffect(() => {
     setToday(weddingToday());
@@ -137,28 +129,9 @@ export function InquiryForm({ city, market, page }: { city: string; market: stri
     setAttribution(captured);
   }, []);
 
-  function next() {
-    const fields = firstStep.current?.querySelectorAll<HTMLInputElement | HTMLSelectElement>("input, select") ?? [];
-    for (const field of fields) if (!field.reportValidity()) return;
-    setError("");
-    setStatus("idle");
-    setStep(2);
-    requestAnimationFrame(() => secondTitle.current?.focus());
-  }
-
-  function back() {
-    setStep(1);
-    requestAnimationFrame(() => firstStep.current?.querySelector("input")?.focus());
-  }
-
-  const togglePriority = (value: string, on: boolean) =>
-    setPriorities((current) => (on ? [...current.filter((item) => item !== value), value].slice(0, MAX_PRIORITIES) : current.filter((item) => item !== value)));
-
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (step === 1) { next(); return; }
     if (sending.current) return;
-    if (!priorities.length) { setError("Choose what matters most to you: one or two."); setStatus("error"); return; }
     sending.current = true;
     setStatus("sending");
     setError("");
@@ -166,18 +139,12 @@ export function InquiryForm({ city, market, page }: { city: string; market: stri
     const value = (key: string) => String(form.get(key) || "").trim();
     const payload = {
       type: "wedding-inquiry",
-      subjectLabel: `Wedding inquiry — ${city}`,
+      subjectLabel: "Wedding inquiry — " + city,
       pricingMarket: market,
       name: value("names"),
       email: value("email"),
-      weddingDate: noDate ? "" : value("weddingDate"),
-      weddingSeason: noDate ? value("weddingSeason") : "",
+      weddingDate: value("weddingDate"),
       location: value("location"),
-      guests: value("guests"),
-      setup: value("setup"),
-      priorities,
-      coverage: value("coverage"),
-      budget: value("budget"),
       note: value("note"),
       company: value("company"), // honeypot
       ...attribution,
@@ -192,19 +159,14 @@ export function InquiryForm({ city, market, page }: { city: string; market: stri
         names: payload.name,
         email: payload.email,
         date: payload.weddingDate || undefined,
-        season: payload.weddingSeason || undefined,
         location: payload.location,
-        coverage: payload.coverage,
-        budget: payload.budget,
-        guests: payload.guests || undefined,
-        setup: payload.setup || undefined,
-        priorities,
+        coverage: "unsure",
+        budget: "unsure",
         note: payload.note || undefined,
         emailed: data.autoReply === true,
         ...(typeof data.guide === "string" && GUIDE_PATH.test(data.guide) ? { guide: data.guide } : {}),
       };
-      // Its own URL, so the conversion can be counted by URL. Only if storage
-      // is blocked does the thank-you view open in place instead.
+      // Keep the conversion URL and the session gate for genuine submissions.
       if (storeSent(sent)) { window.location.assign(pricingThankYouPath(market)); return; }
       try { trackWeddingInquiry(page, String(sent.sentAt)); } catch { /* Analytics must never interrupt a lead. */ }
       setStatus("idle");
@@ -217,77 +179,36 @@ export function InquiryForm({ city, market, page }: { city: string; market: stri
     }
   }
 
-  const two = step === 2;
-  return <form className={styles.check} onSubmit={onSubmit} aria-labelledby={two ? "inq-step2" : "inq-title"}>
-    {/* Honeypot. No human ever sees this; anything that fills it is dropped. */}
+  return <form className={styles.check} onSubmit={onSubmit} aria-labelledby="inq-title">
     <input type="text" name="company" tabIndex={-1} autoComplete="off" aria-hidden="true" className={styles.honeypot} />
-    <div ref={firstStep} hidden={two}>
-      <p className={styles.checkTitle} id="inq-title">Tell me about your day <span className={funnel.stepCount}>Step 1 of 2</span></p>
-      <div className={styles.checkRow}>
-        <div className={`${styles.checkField} ${styles.checkWide}`}>
-          <label htmlFor="inq-names">Your names</label>
-          <input id="inq-names" name="names" type="text" required maxLength={80} autoComplete="name" placeholder="e.g. Sarah & James" />
-        </div>
-        <div className={`${styles.checkField} ${styles.checkWide}`}>
-          <label htmlFor="inq-email">Email</label>
-          <input id="inq-email" name="email" type="email" required maxLength={100} autoComplete="email" />
-        </div>
-        <div className={styles.checkField}>
-          <div className={funnel.labelRow}>
-            <label htmlFor={noDate ? "inq-season" : "inq-date"}>{noDate ? "Roughly when" : "Wedding date"}</label>
-            <button type="button" className={funnel.dateToggle} onClick={() => setNoDate((value) => !value)}>{noDate ? "I have a date" : "No date yet?"}</button>
-          </div>
-          {noDate
-            ? <select id="inq-season" name="weddingSeason" required className={funnel.select} defaultValue=""><option value="" disabled>Choose</option>{(today ? seasonOptions(today) : []).map((season) => <option key={season}>{season}</option>)}</select>
-            : <input id="inq-date" name="weddingDate" type="date" required min={today || undefined} />}
-        </div>
-        <div className={styles.checkField}>
-          <label htmlFor="inq-where">Venue or area</label>
-          <input id="inq-where" name="location" type="text" required maxLength={90} placeholder="Venue, or area" />
-        </div>
+    <p className={styles.checkTitle} id="inq-title">Let’s start with you</p>
+    <div className={styles.checkRow}>
+      <div className={[styles.checkField, styles.checkWide].join(" ")}>
+        <label htmlFor="inq-names">Your names</label>
+        <input id="inq-names" name="names" type="text" required maxLength={80} autoComplete="name" placeholder="e.g. Sarah & James" />
       </div>
-    </div>
-    <div hidden={!two}>
-      <p className={styles.checkTitle} id="inq-step2" ref={secondTitle} tabIndex={-1}>Now, your day <span className={funnel.stepCount}>Step 2 of 2</span></p>
-      <p className={funnel.stepLead}>Tell me what you know so far. Not sure about coverage or budget? Choose “Not sure yet” and we’ll work it out together.</p>
-      <fieldset className={funnel.group}>
-        <legend>Roughly how many guests?</legend>
-        <div className={funnel.chips}>{GUEST_OPTIONS.map((option) => <label key={option.value} className={funnel.chip}><input type="radio" name="guests" value={option.value} required={two} /><span>{option.label}</span></label>)}</div>
-      </fieldset>
-      <fieldset className={funnel.group}>
-        <legend>Ceremony and reception</legend>
-        <div className={funnel.chips}>{SETUP_OPTIONS.map((option) => <label key={option.value} className={funnel.chip}><input type="radio" name="setup" value={option.value} required={two} /><span>{option.label}</span></label>)}</div>
-      </fieldset>
-      <fieldset className={funnel.group}>
-        <legend>What matters most? <span>Pick up to two</span></legend>
-        <div className={funnel.chips}>{PRIORITY_OPTIONS.map((option) => {
-          const on = priorities.includes(option.value);
-          return <label key={option.value} className={funnel.chip}><input type="checkbox" name="priorities" value={option.value} checked={on} disabled={!on && priorities.length >= MAX_PRIORITIES} onChange={(event) => togglePriority(option.value, event.target.checked)} /><span>{option.label}</span></label>;
-        })}</div>
-      </fieldset>
-      <div className={styles.checkRow}>
-        <div className={styles.checkField}>
-          <label htmlFor="inq-coverage">Coverage</label>
-          <select id="inq-coverage" name="coverage" required={two} className={funnel.select} defaultValue=""><option value="" disabled>Choose</option>{COVERAGE_OPTIONS.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}</select>
-        </div>
-        <div className={styles.checkField}>
-          <label htmlFor="inq-budget">Photography budget</label>
-          <select id="inq-budget" name="budget" required={two} className={funnel.select} defaultValue=""><option value="" disabled>Choose</option>{BUDGET_OPTIONS.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}</select>
-        </div>
-        <div className={`${styles.checkField} ${styles.checkWide}`}>
-          <label htmlFor="inq-note">Anything I should know? <span>Optional</span></label>
-          <input id="inq-note" name="note" type="text" maxLength={NOTE_MAX} placeholder="A tradition, a worry, a moment you can’t miss" />
-        </div>
+      <div className={[styles.checkField, styles.checkWide].join(" ")}>
+        <label htmlFor="inq-email">Email</label>
+        <input id="inq-email" name="email" type="email" required maxLength={100} autoComplete="email" />
+      </div>
+      <div className={styles.checkField}>
+        <label htmlFor="inq-date">Wedding date <span>Optional</span></label>
+        <input id="inq-date" name="weddingDate" type="date" min={today || undefined} />
+      </div>
+      <div className={styles.checkField}>
+        <label htmlFor="inq-venue">Venue or area <span>Optional</span></label>
+        <input id="inq-venue" name="location" type="text" maxLength={90} placeholder="If you have somewhere in mind" />
+      </div>
+      <div className={[styles.checkField, styles.checkWide].join(" ")}>
+        <label htmlFor="inq-note">Tell me a little about your plans <span>Optional</span></label>
+        <textarea id="inq-note" name="note" maxLength={NOTE_MAX} rows={3} className={funnel.messageInput} placeholder="Share whatever you know so far, or ask a question." />
       </div>
     </div>
     {status === "error" && <p className={styles.checkError} role="alert">{error}</p>}
     <button className={styles.checkButton} type="submit" disabled={status === "sending"}>
-      {two ? (status === "sending" ? "Sending…" : CTA_LABEL) : "Continue"}
-      <span aria-hidden="true">↗</span>
+      {status === "sending" ? "Sending…" : CTA_LABEL}<span aria-hidden="true">↗</span>
     </button>
-    {two
-      ? <p className={styles.checkMicro}><button type="button" className={funnel.backLink} onClick={back}>Back</button> Your guide opens when you send this and follows by email. You don’t need to choose a collection yet. <a href="/privacy-policy" target="_blank" rel="noopener noreferrer">Privacy policy</a>.</p>
-      : <p className={styles.checkMicro}>I’ll email your personal guide, then help you choose the coverage that fits.</p>}
+    <p className={styles.checkMicro}>Just your names and email are enough. Your guide opens when you send this and follows by email. <a href="/privacy-policy" target="_blank" rel="noopener noreferrer">Privacy policy</a>.</p>
   </form>;
 }
 
@@ -348,17 +269,17 @@ function ThankYou({ sent, collections, city, page, phone, phoneE164, travelNote,
   const matters = priorityLabels(sent.priorities);
   const recap: [string, string][] = [
     ["Date", when || "To be decided"],
-    ["Where", sent.location],
+    ["Where", sent.location || "To be decided"],
     ...(guests ? [["Guests", guests] as [string, string]] : []),
     ...(setup ? [["Ceremony and reception", setup] as [string, string]] : []),
     ...(matters.length ? [["What matters most", matters.join(", ")] as [string, string]] : []),
-    ["Coverage", coverage],
-    ["Budget", budget],
+    ...(sent.coverage !== "unsure" ? [["Coverage", coverage] as [string, string]] : []),
+    ...(sent.budget !== "unsure" ? [["Budget", budget] as [string, string]] : []),
     ...(sent.note ? [["Your note", sent.note] as [string, string]] : []),
   ];
   const reason = fit.basis === "coverage" ? `Matches the ${coverage.toLowerCase()} you asked for.`
     : fit.basis === "budget" ? "Closest to the budget you gave."
-      : "The collection most couples book.";
+      : "A starting point while we work out your coverage together.";
   const lead = `Here’s your pricing${when ? ` for your ${when}` : ""}${sent.location ? ` at ${sent.location}` : ""}.${sent.emailed ? ` A note from me about your day is on its way to ${sent.email}.` : ""}`;
 
   return <section className={funnel.thanks} aria-labelledby="thanks-title">
@@ -368,7 +289,7 @@ function ThankYou({ sent, collections, city, page, phone, phoneE164, travelNote,
         <p className={styles.eyebrow}>Your inquiry · {city}</p>
         <h1 id="thanks-title" ref={heading} tabIndex={-1} className={funnel.thanksTitle}>Thank you, {sent.names}.</h1>
         {guide ? <>
-          <p className={funnel.thanksLead}>Here’s everything you told me. Your pricing guide is already built around it.</p>
+          <p className={funnel.thanksLead}>Your inquiry is sent. Your guide has the collection prices and coverage explained, ready to explore.</p>
           <dl className={funnel.recap}>{recap.map(([label, value]) => <div key={label}><dt>{label}</dt><dd>{value}</dd></div>)}</dl>
           <a className={`${styles.button} ${funnel.guideButton}`} href={guide}>Open your pricing guide <span aria-hidden="true">↗</span></a>
           <p className={funnel.guideNote}>Collection prices, what’s included and how your coverage could work, on one page made for you.{sent.emailed ? ` Your guide is also on its way to ${sent.email}.` : ""} You can reply with questions before choosing anything.</p>

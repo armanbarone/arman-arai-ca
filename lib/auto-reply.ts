@@ -125,12 +125,12 @@ function inquiryPrompt(inquiry: PricingInquiry, fitName: string, basis: string) 
   const budget = BUDGET_OPTIONS.find((option) => option.value === inquiry.budget)?.label ?? "Not sure yet";
   const when = inquiry.weddingDate ? whenPhrase(inquiry) : `No exact date yet. Roughly: ${inquiry.weddingSeason ?? "not given"}`;
   const rec = recommendCollection(inquiry.coverage, inquiry.budget, inquiry);
-  const stepUpLine = rec.stepUp
+  const stepUpLine = rec.basis === "default" ? "Do not recommend a specific collection or an upgrade before learning about their day." : rec.stepUp
     ? `The collection one step up, worth mentioning once as something to consider: ${tierBySlug(rec.stepUp)!.name}, because: ${rec.stepUpReason}`
     : "Do not suggest a bigger collection for this couple.";
   const matters = priorityLabels(inquiry.priorities);
   const guideLine = inquiry.guideUrl
-    ? `A wedding guide page has been made for this couple and is linked right under your note: their collection, how their hours could run, and photographs from ${inquiry.cityName}. Point to it once, in one short sentence, before the invitation to the call. Do not describe it beyond that.`
+    ? "A wedding guide is linked right under your note: five complete portfolio albums, how Arman helps with the day, all three collections and prices, and sample coverage outlines. Point to it once and invite them to explore it before choosing anything."
     : "No wedding guide page was made for this couple. Do not mention one.";
   const dateLine = inquiry.dateStatus === "booked"
     ? "Their date: BOOKED. Arman is already booked on their date and is not available that day."
@@ -138,7 +138,7 @@ function inquiryPrompt(inquiry: PricingInquiry, fitName: string, basis: string) 
       ? "Their date: OPEN. Arman is available on their date as of now."
       : "Their date: no exact date supplied. Do not claim availability or create urgency about an unknown date. We can check availability when they have one.";
   return `Write the email for this inquiry. ${dateLine}
-${rec.basis === "default" ? `${fitName} is only a starting point: no coverage or budget was supplied. Do not claim it fits their day or that you know their needs. Invite them to explore the guide and work out coverage together.` : `The suggested collection is ${fitName}, chosen from ${basis}.`}
+${rec.basis === "default" ? `No coverage or budget was supplied. Collections start at ${money(pricingTiers()[0].price)}. Do not recommend a specific collection or pretend to know their needs. Invite them to explore the guide and work out coverage together.` : `The suggested collection is ${fitName}, chosen from ${basis}.`}
 ${stepUpLine}
 ${guideLine}
 
@@ -257,7 +257,7 @@ export function fallbackBody(inquiry: PricingInquiry, fitName: string) {
         ? `Good news: I'm available on ${when} as of now. Dates go first come, first served, so if you love what you see, don't wait too long.`
         : "You don’t need a finished timeline to start. Once you have a date, we can check it together.",
     fit.basis === "default"
-      ? `${fitName} starts at ${money(tier.price)} for eight hours. It’s a starting point while your plans take shape; we’ll work out the right coverage together.`
+      ? `Collections start at ${money(pricingTiers()[0].price)}. We’ll work out the right coverage together, around the moments you want photographed.`
       : `Here's what I think is right for you: ${fitName}, at ${money(tier.price)}. ${FIT_LINE[fit.slug] ?? ""}${matters ? ` And since ${matters.charAt(0).toLowerCase() + matters.slice(1)} ${plural ? "matter" : "matters"} most to you, that's exactly where my attention goes.` : ""}`.trim(),
     `${inquiry.guideUrl ? "Your guide has the collection options and prices, just below. " : ""}Reply with questions, message me on WhatsApp or book a free 30-minute video call.`,
     "Arman",
@@ -299,13 +299,13 @@ function detailsBlock(inquiry: PricingInquiry) {
  *  so the button still shows on a phone's first screen. The button is a mid
  *  tone (rust) so it reads on white and on a dark-mode background alike, and
  *  stays distinct from the gold call button. */
-function guideBlock(inquiry: PricingInquiry, guideUrl: string, hours: number) {
+function guideBlock(inquiry: PricingInquiry, guideUrl: string) {
   const photo = WEDDING_CITIES.find((city) => city.slug === inquiry.market.slug)?.heroes[0];
   const image = photo ? photo.src.replace("https://cdn.armanarai.ca/", "https://cdn.armanarai.ca/cdn-cgi/image/format=jpeg,quality=78,width=1120,height=747,fit=cover,gravity=auto/") : null;
   return `<div style="margin:28px 0 8px;">
     ${image ? `<a href="${escapeHtml(guideUrl)}" style="display:block;text-decoration:none;"><img src="${escapeHtml(image)}" width="560" alt="${escapeHtml(photo!.alt)}" style="display:block;width:100%;max-width:560px;height:auto;border:0;border-radius:8px;"></a>` : ""}
     <p style="margin:16px 0 6px;font-size:24px;line-height:1.2;">Your wedding guide</p>
-    <p style="margin:0 0 16px;font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.6;color:#6B6258;">Your collection options, prices and a sample ${hours}-hour plan, on one page made for you. Reply with questions and I’ll help you choose.</p>
+    <p style="margin:0 0 16px;font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.6;color:#6B6258;">Explore the portfolio albums, see all three collection prices and find out how I’ll help with your day. Reply with questions and we’ll work out the coverage together.</p>
     ${bigButton(guideUrl, "Open your wedding guide", "#A95C31", "#FFFFFF")}
   </div>`;
 }
@@ -316,17 +316,17 @@ export function render(inquiry: PricingInquiry, body: string, fitSlug: string, s
   const whatsapp = `https://wa.me/${SITE.phoneE164.replace(/\D/g, "")}?text=${encodeURIComponent(`Hi Arman, it's ${inquiry.names}. We asked about wedding photography in ${inquiry.cityName}.`)}`;
   const tiers = pricingTiers();
   const guide = inquiry.guideUrl;
-  const hours = tierBySlug(fitSlug)!.hours;
+  const hasRecommendation = recommendCollection(inquiry.coverage, inquiry.budget, inquiry).basis !== "default";
   const priceTable = `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;margin:8px 0 6px;border-top:1px solid #D9CEBC;">
-    ${tiers.map((tier) => `<tr><td style="padding:12px 0;border-bottom:1px solid #EDE7DA;font-size:18px;">${escapeHtml(tier.name)} <span style="font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#6B6258;">${tier.hours} hours</span>${tier.slug === fitSlug ? ` <span style="font-family:Arial,Helvetica,sans-serif;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#9A7A54;">Best fit</span>` : tier.slug === stepUpSlug ? ` <span style="font-family:Arial,Helvetica,sans-serif;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#6B6258;">Worth a look</span>` : ""}</td><td style="padding:12px 0 12px 16px;border-bottom:1px solid #EDE7DA;text-align:right;white-space:nowrap;font-size:18px;">${money(tier.price)}</td></tr>`).join("")}
+    ${tiers.map((tier) => `<tr><td style="padding:12px 0;border-bottom:1px solid #EDE7DA;font-size:18px;">${escapeHtml(tier.name)} <span style="font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#6B6258;">${tier.hours} hours</span>${hasRecommendation && tier.slug === fitSlug ? ` <span style="font-family:Arial,Helvetica,sans-serif;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#9A7A54;">Best fit</span>` : hasRecommendation && tier.slug === stepUpSlug ? ` <span style="font-family:Arial,Helvetica,sans-serif;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#6B6258;">Worth a look</span>` : ""}</td><td style="padding:12px 0 12px 16px;border-bottom:1px solid #EDE7DA;text-align:right;white-space:nowrap;font-size:18px;">${money(tier.price)}</td></tr>`).join("")}
   </table>
   <p style="margin:0 0 26px;font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#6B6258;">Canadian dollars, before tax.</p>`;
   const html = `<div style="font-family:Georgia,serif;max-width:560px;margin:0 auto;color:#2C2420;font-size:17px;line-height:1.65;">
   ${body.split(/\n{2,}/).map((p) => `<p style="margin:0 0 16px;">${escapeHtml(p).replace(/\n/g, "<br>")}</p>`).join("")}
-  ${guide ? guideBlock(inquiry, guide, hours) : ""}
+  ${guide ? guideBlock(inquiry, guide) : ""}
   <div style="margin:${guide ? "10px" : "28px"} 0 22px;">
     ${bigButton(calendar, "Book your free video call", "#B8956A", "#1A1612")}
-    <p style="margin:-4px 0 18px;text-align:center;font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#6B6258;">30 minutes, no obligation. Pick any time that suits you.</p>
+    <p style="margin:-4px 0 18px;text-align:center;font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#6B6258;">Optional, 30 minutes, no obligation. You can also reply to this email.</p>
     ${bigButton(whatsapp, "Message me on WhatsApp", "#25D366", "#FFFFFF")}
   </div>
   ${detailsBlock(inquiry)}
@@ -336,10 +336,10 @@ export function render(inquiry: PricingInquiry, body: string, fitSlug: string, s
   const text = [
     body,
     ...(guide ? [`Your wedding guide: ${guide}`] : []),
-    `Book your free video call: ${calendar}`,
+    `Optional free 30-minute video call: ${calendar}`,
     `Message me on WhatsApp: ${whatsapp}`,
     `Your plans so far: ${[whenPhrase(inquiry) || "Date to be decided", inquiry.location || "Venue to be decided", ...(inquiry.coverage !== "unsure" ? [labelOf(COVERAGE_OPTIONS, inquiry.coverage)] : []), ...(inquiry.budget !== "unsure" ? [labelOf(BUDGET_OPTIONS, inquiry.budget)] : []), inquiry.note].filter(Boolean).join(" · ")}`,
-    ...(guide ? [] : [tiers.map((tier) => `${tier.name}, ${tier.hours} hours${tier.slug === fitSlug ? " (best fit)" : tier.slug === stepUpSlug ? " (worth a look)" : ""}: ${money(tier.price)}`).join("\n"), "Canadian dollars, before tax."]),
+    ...(guide ? [] : [tiers.map((tier) => `${tier.name}, ${tier.hours} hours${hasRecommendation && tier.slug === fitSlug ? " (best fit)" : hasRecommendation && tier.slug === stepUpSlug ? " (worth a look)" : ""}: ${money(tier.price)}`).join("\n"), "Canadian dollars, before tax."]),
     `Arman Arai · Wedding photography · ${SITE.domain} · ${SITE.phone}`,
   ].join("\n\n");
   return { html, text };
@@ -349,7 +349,7 @@ export async function sendInquiryAutoReply(inquiry: PricingInquiry): Promise<voi
   const started = Date.now();
   const fit = recommendCollection(inquiry.coverage, inquiry.budget, inquiry);
   const fitName = tierBySlug(fit.slug)!.name;
-  const basis = fit.basis === "coverage" ? "the coverage they asked for" : fit.basis === "budget" ? "their budget" : "no coverage or budget supplied; Signature is a starting point to discuss together";
+  const basis = fit.basis === "coverage" ? "the coverage they asked for" : fit.basis === "budget" ? "their budget" : "no coverage or budget supplied";
   let body: string | null = null;
   let subject = fallbackSubject(inquiry);
   let source = "claude";

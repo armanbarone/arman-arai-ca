@@ -99,7 +99,7 @@ test("an invalid optional date fails before creating a guide or sending mail", a
   assert.equal(h.guides.length + h.notifications.length + h.queued.length, 0);
 });
 
-test("the minimal-inquiry reply presents a starting point and makes no availability claim", () => {
+test("the minimal-inquiry reply gives the starting price without recommending a collection or claiming availability", () => {
   const load = loader();
   const { fallbackBody, checkedBody, render } = load("@/lib/auto-reply");
   const { pricingMarket } = load("@/lib/ads/pricing-request");
@@ -110,13 +110,16 @@ test("the minimal-inquiry reply presents a starting point and makes no availabil
     guideUrl: "https://www.armanarai.ca/guide/abcdefghijklmnopqrstuv",
   };
   const body = fallbackBody(minimal, "Signature");
-  assert.match(body, /starting point/);
+  assert.match(body, /Collections start at C\$3,000/);
+  assert.doesNotMatch(body, /Signature|Legacy|Photo \+ Film/);
   assert.doesNotMatch(body, /available|calendar is open|dates open|right for you|first come/i);
   assert.equal(checkedBody(body), body);
   assert.equal(checkedBody(body + "\n\nMy calendar is open as of now."), null);
   const email = render(minimal, body, "signature");
   assert.match(email.html, /Open your wedding guide/);
   assert.doesNotMatch(email.html, /Coverage:<\/span>|Budget:<\/span>|undefined/);
+  const backup = render({ ...minimal, guideUrl: undefined }, body, "signature", "complete");
+  assert.doesNotMatch(backup.html + backup.text, /best fit|worth a look/i);
 });
 
 test("an inquiry without mobile creates its guide, notifies the studio and queues the couple's email", async () => {

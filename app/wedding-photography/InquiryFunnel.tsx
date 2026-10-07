@@ -22,7 +22,7 @@ import funnel from "./inquiry.module.css";
  *
  * The form is the conversion, not the call. It is sent before anything else
  * happens, so a couple who never books a time has still left a name, an email
- * and a mobile number, and the auto-reply (lib/auto-reply.ts) reaches their
+ * and their wedding plans, and the auto-reply (lib/auto-reply.ts) reaches their
  * inbox within a minute. The page checks no calendar and says nothing about
  * whether a date is free.
  *
@@ -166,11 +166,10 @@ export function InquiryForm({ city, market, page }: { city: string; market: stri
     const value = (key: string) => String(form.get(key) || "").trim();
     const payload = {
       type: "wedding-inquiry",
-      subjectLabel: `Pricing request — ${city}`,
+      subjectLabel: `Wedding inquiry — ${city}`,
       pricingMarket: market,
       name: value("names"),
       email: value("email"),
-      phone: value("phone"),
       weddingDate: noDate ? "" : value("weddingDate"),
       weddingSeason: noDate ? value("weddingSeason") : "",
       location: value("location"),
@@ -223,19 +222,15 @@ export function InquiryForm({ city, market, page }: { city: string; market: stri
     {/* Honeypot. No human ever sees this; anything that fills it is dropped. */}
     <input type="text" name="company" tabIndex={-1} autoComplete="off" aria-hidden="true" className={styles.honeypot} />
     <div ref={firstStep} hidden={two}>
-      <p className={styles.checkTitle} id="inq-title">Get your pricing <span className={funnel.stepCount}>Step 1 of 2</span></p>
+      <p className={styles.checkTitle} id="inq-title">Tell me about your day <span className={funnel.stepCount}>Step 1 of 2</span></p>
       <div className={styles.checkRow}>
         <div className={`${styles.checkField} ${styles.checkWide}`}>
           <label htmlFor="inq-names">Your names</label>
           <input id="inq-names" name="names" type="text" required maxLength={80} autoComplete="name" placeholder="e.g. Sarah & James" />
         </div>
-        <div className={styles.checkField}>
+        <div className={`${styles.checkField} ${styles.checkWide}`}>
           <label htmlFor="inq-email">Email</label>
           <input id="inq-email" name="email" type="email" required maxLength={100} autoComplete="email" />
-        </div>
-        <div className={styles.checkField}>
-          <label htmlFor="inq-phone">Mobile</label>
-          <input id="inq-phone" name="phone" type="tel" required maxLength={30} autoComplete="tel" inputMode="tel" />
         </div>
         <div className={styles.checkField}>
           <div className={funnel.labelRow}>
@@ -254,7 +249,7 @@ export function InquiryForm({ city, market, page }: { city: string; market: stri
     </div>
     <div hidden={!two}>
       <p className={styles.checkTitle} id="inq-step2" ref={secondTitle} tabIndex={-1}>Now, your day <span className={funnel.stepCount}>Step 2 of 2</span></p>
-      <p className={funnel.stepLead}>A few taps, so everything I send you fits your wedding.</p>
+      <p className={funnel.stepLead}>Tell me what you know so far. Not sure about coverage or budget? Choose “Not sure yet” and we’ll work it out together.</p>
       <fieldset className={funnel.group}>
         <legend>Roughly how many guests?</legend>
         <div className={funnel.chips}>{GUEST_OPTIONS.map((option) => <label key={option.value} className={funnel.chip}><input type="radio" name="guests" value={option.value} required={two} /><span>{option.label}</span></label>)}</div>
@@ -291,8 +286,8 @@ export function InquiryForm({ city, market, page }: { city: string; market: stri
       <span aria-hidden="true">↗</span>
     </button>
     {two
-      ? <p className={styles.checkMicro}><button type="button" className={funnel.backLink} onClick={back}>Back</button> Your pricing guide is ready the moment you send this, and I answer personally. <a href="/privacy-policy" target="_blank" rel="noopener noreferrer">Privacy policy</a>.</p>
-      : <p className={styles.checkMicro}>Two quick steps. Your pricing guide, made for your day, is ready the moment you send it.</p>}
+      ? <p className={styles.checkMicro}><button type="button" className={funnel.backLink} onClick={back}>Back</button> Your guide opens when you send this and follows by email. You don’t need to choose a collection yet. <a href="/privacy-policy" target="_blank" rel="noopener noreferrer">Privacy policy</a>.</p>
+      : <p className={styles.checkMicro}>I’ll email your personal guide, then help you choose the coverage that fits.</p>}
   </form>;
 }
 
@@ -376,7 +371,7 @@ function ThankYou({ sent, collections, city, page, phone, phoneE164, travelNote,
           <p className={funnel.thanksLead}>Here’s everything you told me. Your pricing guide is already built around it.</p>
           <dl className={funnel.recap}>{recap.map(([label, value]) => <div key={label}><dt>{label}</dt><dd>{value}</dd></div>)}</dl>
           <a className={`${styles.button} ${funnel.guideButton}`} href={guide}>Open your pricing guide <span aria-hidden="true">↗</span></a>
-          <p className={funnel.guideNote}>Your collection, how your day could run and photographs from {city}, on one page made for you.{sent.emailed ? ` A note from me is on its way to ${sent.email}.` : ""}</p>
+          <p className={funnel.guideNote}>Collection prices, what’s included and how your coverage could work, on one page made for you.{sent.emailed ? ` Your guide is also on its way to ${sent.email}.` : ""} You can reply with questions before choosing anything.</p>
         </> : <>
           <p className={funnel.thanksLead}>{lead}</p>
           <ol className={funnel.pricing} aria-label="Your pricing">

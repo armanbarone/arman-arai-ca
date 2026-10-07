@@ -303,7 +303,7 @@ function guideBlock(inquiry: PricingInquiry, guideUrl: string, hours: number) {
   return `<div style="margin:28px 0 8px;">
     ${image ? `<a href="${escapeHtml(guideUrl)}" style="display:block;text-decoration:none;"><img src="${escapeHtml(image)}" width="560" alt="${escapeHtml(photo!.alt)}" style="display:block;width:100%;max-width:560px;height:auto;border:0;border-radius:8px;"></a>` : ""}
     <p style="margin:16px 0 6px;font-size:24px;line-height:1.2;">Your wedding guide</p>
-    <p style="margin:0 0 16px;font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.6;color:#6B6258;">Your collection, how your ${hours} hours could run and photographs from ${escapeHtml(inquiry.cityName)}, on one page made for you.</p>
+    <p style="margin:0 0 16px;font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.6;color:#6B6258;">Your collection options, prices and a sample ${hours}-hour plan, on one page made for you. Reply with questions and I’ll help you choose.</p>
     ${bigButton(guideUrl, "Open your wedding guide", "#A95C31", "#FFFFFF")}
   </div>`;
 }

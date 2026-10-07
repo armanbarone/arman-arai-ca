@@ -82,6 +82,13 @@ export async function readGuide(id: string): Promise<GuideRecord | null> {
   }
 }
 
+/** Explain coverage through the wedding day before listing the deliverables. */
+export const COVERAGE_GUIDANCE: Record<string, string> = {
+  signature: "A starting point for preparations, the ceremony, portraits and the main reception moments. We’ll choose the start and finish around what matters most to you.",
+  complete: "More room for an earlier start, travel between venues or a longer reception. We’ll plan where the second photographer’s four hours will be most useful.",
+  "photo-film": "For a longer day with photography and film planned together. A dedicated filmmaker works alongside me throughout the coverage, with an audio plan for your vows and speeches.",
+};
+
 /* How the hours of each collection usually run. A shape, not a promise: the
  * page says plainly that the real timeline is built on the call. Every claim
  * in it comes from the collection itself in lib/site.ts (the family-photo

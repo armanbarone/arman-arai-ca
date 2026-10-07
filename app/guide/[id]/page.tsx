@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { DAY_PLAN, PRIORITY_PLAN_PARTS, PRIORITY_PROMISE, readGuide, reviewsFor } from "@/lib/guide";
+import { COVERAGE_GUIDANCE, DAY_PLAN, PRIORITY_PLAN_PARTS, PRIORITY_PROMISE, readGuide, reviewsFor } from "@/lib/guide";
 import { WEDDING_CITIES } from "@/lib/ads/city-wedding-pages";
 import { BUDGET_OPTIONS, COVERAGE_OPTIONS, GUEST_OPTIONS, SETUP_OPTIONS, labelOf, longDate, pricingMarket, pricingTiers, recommendCollection } from "@/lib/ads/pricing-request";
 import { SITE, TERMS, tierBySlug } from "@/lib/site";
@@ -76,7 +76,7 @@ export default async function GuidePage({ params }: { params: Promise<{ id: stri
           <p className={guide.eyebrow}>Your wedding guide · {city.name}</p>
           <h1 id="hero-title">{record.names}</h1>
           <p className={guide.heroLead}>Wedding photography,<br /><em>built around your day.</em></p>
-          <p className={guide.intro}>Here’s a starting point for your coverage, what’s included, and the photographs you can expect.</p>
+          <p className={guide.intro}>Here are your collection options, prices and a starting point for your coverage. You don’t need to choose yet; we’ll work it out together.</p>
           <div className={guide.heroActions}>
             <a className={guide.button} href="#book-a-call">Book a free call <span aria-hidden="true">↗</span></a>
             <a className={guide.textLink} href="#your-collection">Explore your collection <span aria-hidden="true">↓</span></a>
@@ -111,6 +111,7 @@ export default async function GuidePage({ params }: { params: Promise<{ id: stri
             <a className={guide.cardLink} href="#book-a-call">Talk through this collection <span aria-hidden="true">↗</span></a>
           </div>
           <div className={guide.collectionContents}>
+            <p className={guide.coverageGuidance}>{COVERAGE_GUIDANCE[fit.slug]}</p>
             <dl className={guide.deliverables}>
               <div><dt>Photographs</dt><dd>{fitTier.images}</dd></div>
               <div><dt>Preview</dt><dd>{fitTier.preview}</dd></div>
@@ -131,12 +132,13 @@ export default async function GuidePage({ params }: { params: Promise<{ id: stri
                 <span className={guide.alternativeName}>{tier.name}<small>{tier.coverage}</small></span>
                 <span className={guide.alternativePrice}>{money(tier.price)}</span>
               </summary>
+              <p className={guide.alternativeCrew}>{COVERAGE_GUIDANCE[tier.slug]}</p>
               <p className={guide.alternativeCrew}>{tier.crew}</p>
               <ul className={guide.fullIncludes}>{tier.includes.map((item) => <li key={item}>{item}</li>)}</ul>
             </details>
           </article>)}
         </div>
-        <p className={guide.smallPrint}>All collection prices are before tax. Open a collection to see the full inclusions.</p>
+        <p className={guide.smallPrint}>All collection prices are in Canadian dollars, before tax. {market.travelNote} Open a collection to see the full inclusions.</p>
       </section>
 
       <section className={guide.section} aria-labelledby="approach-title">

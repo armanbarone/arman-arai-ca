@@ -78,6 +78,7 @@
 .cardLink { display: inline-flex; align-items: center; gap: 20px; min-height: 44px; font-size: 14px; margin-top: 26px; text-decoration: underline !important; text-underline-offset: 5px; }
 .featured :focus-visible { outline-color: #45513f; }
 .collectionContents { min-width: 0; }
+.page .coverageGuidance { margin-bottom: 24px; color: #54574b; line-height: 1.7; }
 .deliverables { display: grid; grid-template-columns: 1fr 1fr 1.1fr; gap: 18px; padding-bottom: 22px; border-bottom: 1px solid #cac9ba; }
 .deliverables dt { font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: #54574b; margin-bottom: 8px; }
 .deliverables dd { margin: 0; font-size: 18px; line-height: 1.35; }

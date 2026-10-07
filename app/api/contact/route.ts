@@ -87,18 +87,17 @@ export async function POST(req: NextRequest) {
     let autoReply: PricingInquiry | null = null;
     let guideId: string | null = null;
     if (isInquiry) {
-      for (const [key, max] of [["name", 80], ["email", 100], ["phone", 30], ["location", 90]] as const) {
+      for (const [key, max] of [["name", 80], ["email", 100], ["location", 90]] as const) {
         if (typeof body[key] !== "string" || !body[key].trim() || body[key].length > max) {
-          return NextResponse.json({ error: "Please fill in your names, email, mobile number and venue or area." }, { status: 400 });
+          return NextResponse.json({ error: "Please fill in your names, email and venue or area." }, { status: 400 });
         }
         body[key] = body[key].trim();
       }
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(body.email)) {
         return NextResponse.json({ error: "Please enter a valid email address." }, { status: 400 });
       }
-      if ((body.phone.match(/\d/g) ?? []).length < 7) {
-        return NextResponse.json({ error: "Please enter a mobile number I can text." }, { status: 400 });
-      }
+      // This inquiry collects no mobile number. Ignore it from older open tabs too.
+      delete body.phone;
       const coverage = COVERAGE_OPTIONS.find((option) => option.value === body.coverage);
       const budget = BUDGET_OPTIONS.find((option) => option.value === body.budget);
       if (!coverage || !budget) {
@@ -133,7 +132,6 @@ export async function POST(req: NextRequest) {
       inquiryRows = [
         ["Names", body.name],
         ["Email", body.email],
-        ["Mobile", body.phone],
         ["Wedding date", body.weddingDate ? `${body.weddingDate} (${weekdayOf(body.weddingDate)})` : `No date yet: ${body.weddingSeason}`],
         ["Where", body.location],
         ["Guests", labelOf(GUEST_OPTIONS, day.guests) ?? "Not given"],

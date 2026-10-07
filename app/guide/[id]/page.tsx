@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { COVERAGE_GUIDANCE, DAY_PLAN, PRIORITY_PROMISE, readGuide, reviewsFor } from "@/lib/guide";
-import { GUIDE_COVERAGE_STEPS, GUIDE_HELP, GUIDE_PORTFOLIO_ALBUMS } from "@/lib/guide-content";
+import { GUIDE_HELP, GUIDE_IMAGES, GUIDE_PORTFOLIO_ALBUMS, GUIDE_TIER_NOTES } from "@/lib/guide-content";
 import { WEDDING_CITIES } from "@/lib/ads/city-wedding-pages";
 import { BUDGET_OPTIONS, COVERAGE_OPTIONS, GUEST_OPTIONS, SETUP_OPTIONS, labelOf, longDate, pricingMarket, pricingTiers, recommendCollection } from "@/lib/ads/pricing-request";
 import { SITE, TERMS, tierBySlug } from "@/lib/site";
@@ -95,63 +95,65 @@ export default async function GuidePage({ params }: { params: Promise<{ id: stri
         <AlbumBrowser albums={GUIDE_PORTFOLIO_ALBUMS} label="Five ways I capture a wedding day" compact classes={guide} imageQuality={85} inquiryAction={{ id: "next-step", label: "Talk through your plans", headingId: "next-title" }} />
       </section>
 
-      <section className={`${guide.section} ${guide.helpSection}`} aria-labelledby="help-title">
-        <div className={`${guide.sectionHeading} ${guide.simpleHeading}`}>
-          <div><p className={guide.eyebrow}>02 / The help you can expect</p><h2 id="help-title">Room to enjoy the day.<br /><em>Help with the photographs.</em></h2></div>
+      <section id="help-with-your-day" className={`${guide.section} ${guide.helpSection}`} aria-labelledby="help-title">
+        <figure className={guide.featurePhoto}><Image src={GUIDE_IMAGES.help.src} alt={GUIDE_IMAGES.help.alt} fill quality={85} sizes="(max-width: 760px) 90vw, (max-width: 1280px) 45vw, 552px" /></figure>
+        <div className={guide.helpCopy}>
+          <p className={guide.eyebrow}>02 / The help you can expect</p><h2 id="help-title">Room to enjoy<br /><em>your day.</em></h2>
+          <div className={guide.helpGrid}>{GUIDE_HELP.map((item) => <article key={item.title}><h3>{item.title}</h3><p>{item.text}</p></article>)}</div>
+          {priorities.length ? <details className={guide.priorityDetails}><summary>The priorities you shared</summary><div className={guide.priorities}>{priorities.map((key) => <article key={key}><h3>{PRIORITY_PROMISE[key].title}</h3><p>{PRIORITY_PROMISE[key].promise}</p></article>)}</div></details> : null}
         </div>
-        <div className={guide.helpGrid}>{GUIDE_HELP.map((item) => <article key={item.title}><h3>{item.title}</h3><p>{item.text}</p></article>)}</div>
-        {priorities.length ? <div className={guide.priorities}><p className={guide.eyebrow}>The priorities you shared</p>{priorities.map((key) => <article key={key}><h3>{PRIORITY_PROMISE[key].title}</h3><p>{PRIORITY_PROMISE[key].promise}</p></article>)}</div> : null}
       </section>
 
       <section id="your-collection" className={guide.section} aria-labelledby="collection-title">
         <div className={guide.sectionHeading}>
           <div><p className={guide.eyebrow}>03 / Collections & prices</p><h2 id="collection-title">Three collections.<br /><em>We’ll find what fits.</em></h2></div>
-          <p>All three include photography, an engagement session and a feature film. The main differences are the hours, the people covering your day and the film. You don’t need to choose before we talk.</p>
+          <p>Photography, an engagement session and a film in every collection. We’ll choose the hours together.</p>
         </div>
         {suggestion ? <p className={guide.suggestion}>{suggestion}</p> : null}
         {record.budget === "under-3000" ? <p className={guide.suggestion}>The collections start above the budget range you previously shared. We can talk through your plans and the prices before you make a decision.</p> : null}
         <div className={guide.collectionGrid}>{tiers.map((tier) => <article key={tier.slug} className={guide.collectionCard} aria-labelledby={`collection-${tier.slug}`}>
+          <figure className={guide.collectionPhoto}><span className={guide.collectionPhotoFrame}><Image src={GUIDE_IMAGES.collections[tier.slug].src} alt={GUIDE_IMAGES.collections[tier.slug].alt} fill quality={85} sizes="(max-width: 760px) 90vw, (max-width: 1000px) 40vw, (max-width: 1280px) 30vw, 368px" /></span></figure>
+          <div className={guide.collectionBody}>
           <div className={guide.collectionTop}>
             {fit.basis !== "default" && tier.slug === fit.slug ? <p className={guide.badge}>Starting point from your inquiry</p> : null}
             <h3 id={`collection-${tier.slug}`}>{tier.name}</h3>
             <p className={guide.coverage}>{tier.coverage}</p>
             <p className={guide.price}>{money(tier.price)}</p>
           </div>
-          <p className={guide.coverageGuidance}>{COVERAGE_GUIDANCE[tier.slug]}</p>
-          <dl className={guide.collectionFacts}>
-            <div><dt>On the day</dt><dd>{tier.crew}</dd></div>
-            <div><dt>Photographs</dt><dd>{tier.images}</dd></div>
-            <div><dt>Film</dt><dd>{tier.film}</dd></div>
-            <div><dt>Printed album</dt><dd>{tier.album}</dd></div>
-            <div><dt>Preview</dt><dd>{tier.preview}</dd></div>
-          </dl>
-          <details className={guide.includedDetails}><summary>Everything included in {tier.name}</summary><ul className={guide.fullIncludes}>{tier.includes.map((item) => <li key={item}>{item}</li>)}</ul></details>
+          <p className={guide.tierNote}>{GUIDE_TIER_NOTES[tier.slug]}</p>
+          <details className={guide.includedDetails}><summary>Everything included in {tier.name}</summary>
+            <p className={guide.coverageGuidance}>{COVERAGE_GUIDANCE[tier.slug]}</p>
+            <ul className={guide.fullIncludes}>{tier.includes.map((item) => <li key={item}>{item}</li>)}</ul>
+          </details>
+          </div>
         </article>)}</div>
-        <p className={guide.smallPrint}>Canadian dollars, before tax. {market.travelNote} Open a collection to see every inclusion.</p>
-        <p className={guide.collectionNote}>Not sure which one fits? Send me your plans so far and I’ll help you work it out. <a href="#next-step">Let’s talk <span aria-hidden="true">↗</span></a></p>
+        <p className={guide.smallPrint}>Canadian dollars, before tax. {market.travelNote}</p>
+        <p className={guide.collectionNote}>You don’t need to choose yet. <a href="#next-step">Let’s work it out together <span aria-hidden="true">↗</span></a></p>
       </section>
 
-      <section className={guide.section} aria-labelledby="coverage-title">
-        <div className={guide.sectionHeading}>
+      <section id="choosing-your-hours" className={guide.section} aria-labelledby="coverage-title">
+        <figure className={guide.coveragePhoto}><Image src={GUIDE_IMAGES.coverage.src} alt={GUIDE_IMAGES.coverage.alt} fill quality={85} sizes="(max-width: 1280px) 90vw, 1160px" /></figure>
+        <div className={guide.coverageIntro}>
           <div><p className={guide.eyebrow}>04 / Choosing the hours</p><h2 id="coverage-title">Start with the moments.<br /><em>We’ll work out the hours.</em></h2></div>
-          <p>A rough ceremony time is enough to start a conversation. We’ll look at what you want photographed and where the day happens before settling on coverage.</p>
-        </div>
-        <ol className={guide.coverageSteps}>{GUIDE_COVERAGE_STEPS.map((item) => <li key={item.title}><h3>{item.title}</h3><p>{item.text}</p></li>)}</ol>
-        <div className={guide.dayPlans}>
-          <p className={guide.eyebrow}>Examples to explore</p>
-          <p className={guide.planIntro}>These outlines show what the different hours could make room for. Your timings and priorities will shape the actual plan.</p>
+          <div className={guide.coverageCopy}>
+          <p>From preparations to the dance floor, tell me what you want photographed. We’ll leave room for portraits, family and travel between venues.</p>
+          <details className={guide.dayPlans}>
+          <summary>Explore sample 8, 10 and 12-hour days</summary>
+          <p className={guide.planIntro}>Examples, not a fixed timeline. Your plans will shape the day.</p>
           {tiers.map((tier) => <details key={tier.slug} className={guide.dayPlan}>
             <summary><span>{tier.name}<small>A sample {tier.hours}-hour day</small></span></summary>
             {DAY_PLAN[tier.slug].note ? <p className={guide.planNote}>{DAY_PLAN[tier.slug].note}</p> : null}
             <ol className={guide.plan}>{DAY_PLAN[tier.slug].rows.map((row) => <li key={row.part}><h3>{row.part}</h3><p>{row.what}</p></li>)}</ol>
           </details>)}
+          </details>
+          </div>
         </div>
       </section>
 
       <section id="wedding-galleries" className={guide.section} aria-labelledby="albums-title">
         <div className={guide.sectionHeading}>
           <div><p className={guide.eyebrow}>05 / Complete wedding stories</p><h2 id="albums-title">See a whole day<br /><em>come together.</em></h2></div>
-          <p>The portfolio albums show different approaches. These complete weddings show the portraits, the people and the moments in between, in one story.</p>
+          <p>Three complete weddings. The portraits, the people and everything in between.</p>
         </div>
         <div className={guide.albums}>{albums.map((album) => <a key={album.id} href={`/galleries/${album.id}`} target="_blank" rel="noopener noreferrer" className={guide.album}>
           <span className={guide.storyImage}><Image src={album.cover.src} alt={album.cover.alt} fill quality={85} sizes="(max-width: 760px) 90vw, (max-width: 1280px) 30vw, 368px" /></span>
@@ -166,19 +168,20 @@ export default async function GuidePage({ params }: { params: Promise<{ id: stri
       </section>
 
       <section id="next-step" className={`${guide.section} ${guide.nextStep}`} aria-labelledby="next-title">
+        <figure className={guide.contactPhoto}><Image src={GUIDE_IMAGES.contact.src} alt={GUIDE_IMAGES.contact.alt} fill quality={85} sizes="(max-width: 760px) 90vw, (max-width: 1280px) 45vw, 552px" /></figure>
         <div className={guide.nextCopy}>
           <p className={guide.eyebrow}>06 / Let’s work it out together</p>
           <h2 id="next-title" tabIndex={-1}>Tell me what’s<br /><em>on your mind.</em></h2>
-          <p>Reply to the email that brought you here, or send me a message. Share the plans you have, a photograph you’re drawn to or a question. You don’t need a finished timeline or a collection choice.</p>
+          <p>A rough plan, a photograph you love, a question. Reply to my email or send me a message and we’ll take it from there.</p>
           <div className={guide.contactActions}><a className={guide.button} href={email}>Email Arman <span aria-hidden="true">↗</span></a><a className={guide.outlineButton} href={whatsapp} target="_blank" rel="noopener noreferrer">Message on WhatsApp <span aria-hidden="true">↗</span></a></div>
-          <p className={guide.contactNote}>If talking is easier, there’s a free 30-minute video call below. The call is optional.</p>
-        </div>
-        <div className={guide.nextDetails}>
+          <p className={guide.contactNote}>Prefer to talk? The call is optional.</p>
+          <details className={guide.bookingDetails}><summary>How booking works</summary>
           <ol className={guide.bookingSteps} aria-label="How booking works">
-            <li><strong>Talk through your plans</strong><p>Email, WhatsApp or a call. We’ll answer your questions and work out the coverage together.</p></li>
-            <li><strong>Confirm the details</strong><p>Once you’re ready, we’ll agree the collection, timings and date.</p></li>
-            <li><strong>Make it official, then plan together</strong><p>{TERMS.retainer}, with the signed contract. Then we’ll build the photography plan around your day.</p></li>
+            <li><strong>Talk through your plans</strong><p>Email, WhatsApp or a call. We’ll work out the coverage together.</p></li>
+            <li><strong>Confirm the details</strong><p>Agree the collection, timings and date.</p></li>
+            <li><strong>Make it official</strong><p>{TERMS.retainer}, with the signed contract.</p></li>
           </ol>
+          </details>
           <details className={guide.paymentDetails}><summary>How the payments work</summary><p>{TERMS.schedule}</p></details>
         </div>
         <details id="book-a-call" className={guide.callDetails}>

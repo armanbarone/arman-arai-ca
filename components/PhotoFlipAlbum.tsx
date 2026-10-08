@@ -7,6 +7,10 @@ interface Props {
   albumSubtitle: string;
   albumDate: string;
   images: string[];
+  width?: number;
+  siteLabel?: string;
+  touchTargetSize?: number;
+  controlColor?: string;
 }
 
 const BK = "#191410";
@@ -47,13 +51,13 @@ function coverRight(title: string, sub: string, date: string): string {
   </div>`;
 }
 
-function closingLeft(): string {
+function closingLeft(siteLabel: string): string {
   return `<div style="width:100%;height:100%;background:${CR};position:relative">
     <div style="position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;padding:40px 28px;box-sizing:border-box">
       <div style="height:0.5px;background:${MU}.12);margin-bottom:18px"></div>
       <div style="font-family:var(--font-serif);font-size:14px;font-weight:300;font-style:italic;color:#5a4636;line-height:2.1;margin-bottom:18px">Thank you for letting me<br>disappear into your day.</div>
       <div style="height:0.5px;background:${MU}.1)"></div>
-      <div style="font-size:10px;letter-spacing:.22em;color:${MU}.22);text-transform:uppercase;margin-top:16px;font-family:var(--font-sans)">armanarai.com</div>
+      <div style="font-size:10px;letter-spacing:.22em;color:${MU}.22);text-transform:uppercase;margin-top:16px;font-family:var(--font-sans)">${siteLabel}</div>
     </div>
   </div>`;
 }
@@ -65,7 +69,9 @@ function closingRight(): string {
   </div>`;
 }
 
-export default function PhotoFlipAlbum({ albumTitle, albumSubtitle, albumDate, images }: Props) {
+export default function PhotoFlipAlbum({ albumTitle, albumSubtitle, albumDate, images, width = 960, siteLabel = "armanarai.com", touchTargetSize = 36, controlColor }: Props) {
+  const pageWidth = width / 2;
+  const pageHeight = width * 627 / 960;
   // Memoised so `paint` keeps a stable identity and the effect below does not
   // re-run on every render.
   const spreads = useMemo(() => {
@@ -86,9 +92,9 @@ export default function PhotoFlipAlbum({ albumTitle, albumSubtitle, albumDate, i
         lbl: `${n} of ${Math.ceil(images.length / 2)}`,
       });
     }
-    out.push({ L: closingLeft(), R: closingRight(), lbl: "Fin" });
+    out.push({ L: closingLeft(siteLabel), R: closingRight(), lbl: "Fin" });
     return out;
-  }, [albumTitle, albumSubtitle, albumDate, images]);
+  }, [albumTitle, albumSubtitle, albumDate, images, siteLabel]);
 
   const [cur, setCur] = useState(0);
   const [busy, setBusy] = useState(false);
@@ -171,7 +177,7 @@ export default function PhotoFlipAlbum({ albumTitle, albumSubtitle, albumDate, i
 
   const btnStyle: React.CSSProperties = {
     background: "transparent", border: "0.5px solid rgba(150,120,90,.3)",
-    color: "#9a7f60", width: 36, height: 36, cursor: "pointer",
+    color: "#9a7f60", width: touchTargetSize, height: touchTargetSize, cursor: "pointer",
     fontSize: 15, display: "flex", alignItems: "center", justifyContent: "center",
     transition: "all .22s", flexShrink: 0, fontFamily: "inherit",
   };
@@ -181,16 +187,16 @@ export default function PhotoFlipAlbum({ albumTitle, albumSubtitle, albumDate, i
       {/* Book */}
       <div style={{ perspective: "2200px", overflowX: "auto", maxWidth: "100%" }}>
         <div style={{
-          position: "relative", width: 960, height: 627, display: "flex",
+          position: "relative", width, height: pageHeight, display: "flex",
           boxShadow: "0 24px 56px rgba(0,0,0,.65), 0 0 0 1px rgba(0,0,0,.3)",
           transformStyle: "preserve-3d",
         }}>
-          <div ref={pLRef} style={{ width: 480, height: 627, overflow: "hidden", position: "relative", flexShrink: 0 }} />
-          <div ref={pRRef} style={{ width: 480, height: 627, overflow: "hidden", position: "relative", flexShrink: 0, transition: "opacity .4s" }} />
+          <div ref={pLRef} style={{ width: pageWidth, height: pageHeight, overflow: "hidden", position: "relative", flexShrink: 0 }} />
+          <div ref={pRRef} style={{ width: pageWidth, height: pageHeight, overflow: "hidden", position: "relative", flexShrink: 0, transition: "opacity .4s" }} />
           {/* Gutter */}
           <div style={{ position: "absolute", left: "50%", top: 0, bottom: 0, width: 4, transform: "translateX(-50%)", background: "linear-gradient(90deg,rgba(0,0,0,.24),rgba(0,0,0,.04),rgba(0,0,0,.2))", zIndex: 5, pointerEvents: "none" }} />
           {/* Flip element */}
-          <div ref={flRef} style={{ position: "absolute", left: 480, top: 0, width: 480, height: 627, transformStyle: "preserve-3d", transformOrigin: "left center", transform: "rotateY(0deg)", display: "none", zIndex: 10 }}>
+          <div ref={flRef} style={{ position: "absolute", left: pageWidth, top: 0, width: pageWidth, height: pageHeight, transformStyle: "preserve-3d", transformOrigin: "left center", transform: "rotateY(0deg)", display: "none", zIndex: 10 }}>
             <div ref={fFRef} style={{ position: "absolute", inset: 0, backfaceVisibility: "hidden", overflow: "hidden" }} />
             <div ref={fBRef} style={{ position: "absolute", inset: 0, backfaceVisibility: "hidden", transform: "rotateY(180deg)", overflow: "hidden" }} />
           </div>
@@ -201,13 +207,13 @@ export default function PhotoFlipAlbum({ albumTitle, albumSubtitle, albumDate, i
       <div style={{ display: "flex", alignItems: "center", gap: 22 }}>
         <button style={{ ...btnStyle, opacity: cur === 0 ? 0.18 : 1, cursor: cur === 0 ? "default" : "pointer" }}
           onClick={goBack} disabled={cur === 0} aria-label="Previous spread">←</button>
-        <div style={{ fontSize: 11, letterSpacing: ".24em", color: "rgba(140,110,80,.45)", textTransform: "uppercase", minWidth: 170, textAlign: "center" }}>
+        <div style={{ fontSize: 11, letterSpacing: ".24em", color: controlColor ?? "rgba(140,110,80,.45)", textTransform: "uppercase", minWidth: 170, textAlign: "center" }}>
           {spreads[cur]?.lbl}
         </div>
         <button style={{ ...btnStyle, opacity: cur === spreads.length - 1 ? 0.18 : 1, cursor: cur === spreads.length - 1 ? "default" : "pointer" }}
           onClick={goFwd} disabled={cur === spreads.length - 1} aria-label="Next spread">→</button>
       </div>
-      <div style={{ fontSize: 10, letterSpacing: ".2em", color: "rgba(140,110,80,.25)", textTransform: "uppercase" }}>
+      <div style={{ fontSize: 10, letterSpacing: ".2em", color: controlColor ?? "rgba(140,110,80,.25)", textTransform: "uppercase" }}>
         Click arrows to turn pages
       </div>
     </div>

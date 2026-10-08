@@ -60,7 +60,16 @@
 .albumBlock { margin-top: 52px; padding-top: 30px; border-top: 1px solid var(--line); }
 .clean .albumBlock h3 { font-size: 32px; line-height: 1.15; }
 .albumBlock > p { font-size: 14px; margin: 8px 0 22px; color: var(--muted); }
-.portfolioAlbum { max-width: 760px; margin: 0 auto; }
+.portfolioStyles > p { max-width: 680px; line-height: 1.7; }
+.paper .portfolioStyles :global([class*="styleAlbums"]) { grid-template-columns: repeat(5, minmax(0, 1fr)); overflow: visible; padding: 0; }
+.paper .portfolioStyles :global([class*="albumTitle"]) { font-size: clamp(23px, 2vw, 29px); }
+.portfolioStyles :global([class*="albumSubtitle"]) { color: var(--muted); font-size: 12px; }
+.portfolioStyles :global([class*="albumDescription"]) { display: block; margin-top: 8px; font-size: 12px; line-height: 1.6; color: var(--muted); }
+.portfolioBook { margin-top: 30px; padding-top: 20px; }
+.portfolioBook img { display: block; }
+.mobileBook { display: none; }
+.portfolioBook :global(button) { color: #d5c5b0 !important; border-color: #9a7a54 !important; }
+.portfolioBook :global(button:focus-visible) { outline: 2px solid #c8a77d; outline-offset: 4px; }
 .paper :global([class*="albumTopline"]) { color: var(--muted); }
 .paper :global([class*="albumBadge"]) { color: #f2ebdf; }
 .paper :global([class*="albumImage"]) { box-shadow: none; }
@@ -142,6 +151,9 @@
 .stickyCta { display: none; }
 
 @media (max-width: 1000px) {
+  .paper .portfolioStyles :global([class*="styleAlbums"]) { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .desktopBook { display: none; }
+  .mobileBook { display: block; }
   .hero { gap: 4%; padding-top: 42px; }
   .clean .hero h1 { font-size: 64px; }
   .workIntro { grid-template-columns: 1fr 1.2fr; gap: 4%; }
@@ -152,6 +164,9 @@
   .inquiry { gap: 5%; }
 }
 @media (max-width: 760px) {
+  .paper .portfolioStyles :global([class*="styleAlbums"]) { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 26px 16px; }
+  .paper .portfolioStyles :global([class*="albumTitle"]) { font-size: 24px; }
+  .portfolioStyles :global([class*="albumDescription"]) { font-size: 11px; }
   .header { padding: 18px 6%; }
   .brand { font-size: 29px; }
   .brand span { font-size: 8px; }

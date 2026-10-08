@@ -205,8 +205,8 @@ export async function POST(req: NextRequest) {
     const subject = isLanding
       ? `${leadSourceTag(source)}${body.subjectLabel || "Landing Page Inquiry"} — ${body.name}`
       : isQuick
-        ? `New Inquiry — ${body.name}`
-        : `Wedding Inquiry — ${body.name}${body.partnerName ? ` & ${body.partnerName}` : ""}`;
+        ? `${leadSourceTag(source)}New Inquiry — ${body.name}`
+        : `${leadSourceTag(source)}Wedding Inquiry — ${body.name}${body.partnerName ? ` & ${body.partnerName}` : ""}`;
 
     // An ad click is worth knowing about on the email itself, not only in the
     // CRM: the campaign that produced a lead changes how fast it gets answered.
@@ -245,6 +245,7 @@ export async function POST(req: NextRequest) {
           ["Wedding Date", body.weddingDate || "Not provided"],
           ["Where", body.venue || "Not provided"],
           ["Best Time", body.bestTime || "Not specified"],
+          ...attribution,
         ]
       : [
           ["Couple", `${body.name ?? ""}${body.partnerName ? ` & ${body.partnerName}` : ""}`],
@@ -259,6 +260,7 @@ export async function POST(req: NextRequest) {
           ["Guests", body.guestCount || "Not provided"],
           ["Coverage", body.collection || "Not specified"],
           ["Referral", body.referral || "Not provided"],
+          ...attribution,
         ];
 
     const html = `

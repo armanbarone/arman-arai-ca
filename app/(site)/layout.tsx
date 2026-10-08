@@ -3,6 +3,7 @@ import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import { InquiryProvider } from "@/components/InquiryContext";
 import InquiryModal from "@/components/InquiryModal";
+import AttributionCapture from "@/components/AttributionCapture";
 import ImageProtect from "@/components/ImageProtect";
 import { MARKETS, REGIONS, SCOPE, SITE, TIERS } from "@/lib/site";
 import "./site.css";
@@ -131,6 +132,7 @@ export default function SiteLayout({ children }: { children: React.ReactNode }) 
         <Footer />
         <InquiryModal />
       </InquiryProvider>
+      <AttributionCapture />
       <Analytics />
     </>
   );

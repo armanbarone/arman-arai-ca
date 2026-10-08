@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { MARKETS } from "@/lib/site";
+import { leadAttribution } from "@/lib/attribution";
 
 const GUEST_COUNTS = [
   "Under 30",
@@ -35,7 +36,7 @@ export default function ContactForm() {
       const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ type: "full", ...form }),
+        body: JSON.stringify({ type: "full", ...form, ...leadAttribution() }),
       });
       setStatus(res.ok ? "sent" : "error");
     } catch {

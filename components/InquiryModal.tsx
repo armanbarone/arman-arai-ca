@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useInquiry } from "./InquiryContext";
+import { leadAttribution } from "@/lib/attribution";
 
 /* The quick inquiry. It asks the four things a first reply needs in order to
  * answer the question the couple actually came with: who you are, how to reach
@@ -45,7 +46,7 @@ export default function InquiryModal() {
       const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ type: "quick", ...form }),
+        body: JSON.stringify({ type: "quick", ...form, ...leadAttribution() }),
       });
       if (res.ok) {
         setStatus("sent");

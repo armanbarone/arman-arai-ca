@@ -7,11 +7,15 @@ interface Props {
   albumSubtitle: string;
   albumDate: string;
   images: string[];
+  siteLabel?: string;
+  touchTargetSize?: number;
+  controlColor?: string;
+  counterWidth?: number;
 }
 
 // Single-page 16:9 album for landscape/widescreen images
 // Each image occupies the full spread; no left/right split
-export default function WideAlbum({ albumTitle, albumSubtitle, albumDate, images }: Props) {
+export default function WideAlbum({ albumTitle, albumSubtitle, albumDate, images, siteLabel = "armanarai.com", touchTargetSize = 36, controlColor, counterWidth = 160 }: Props) {
   const total = images.length + 2; // cover + images + closing
   const [cur, setCur] = useState(0);
   const [busy, setBusy] = useState(false);
@@ -42,7 +46,7 @@ export default function WideAlbum({ albumTitle, albumSubtitle, albumDate, images
   const btnStyle: React.CSSProperties = {
     background: "transparent",
     border: "0.5px solid rgba(150,120,90,.3)",
-    color: "#9a7f60", width: 36, height: 36,
+    color: "#9a7f60", width: touchTargetSize, height: touchTargetSize,
     fontSize: 15, display: "flex", alignItems: "center", justifyContent: "center",
     transition: "all .22s", cursor: "pointer", fontFamily: "inherit",
     flexShrink: 0,
@@ -111,7 +115,7 @@ export default function WideAlbum({ albumTitle, albumSubtitle, albumDate, images
                 Thank you for letting me<br />disappear into your day.
               </div>
               <div style={{ height: 0.5, background: "rgba(110,82,58,.1)" }} />
-              <div style={{ fontSize: "clamp(7px,.9vw,10px)", letterSpacing: ".22em", color: "rgba(110,82,58,.22)", textTransform: "uppercase", marginTop: 18, fontFamily: "var(--font-jost)" }}>armanarai.com</div>
+              <div style={{ fontSize: "clamp(7px,.9vw,10px)", letterSpacing: ".22em", color: "rgba(110,82,58,.22)", textTransform: "uppercase", marginTop: 18, fontFamily: "var(--font-jost)" }}>{siteLabel}</div>
             </div>
           )}
         </div>
@@ -126,7 +130,7 @@ export default function WideAlbum({ albumTitle, albumSubtitle, albumDate, images
           style={{ ...btnStyle, opacity: cur === 0 ? 0.18 : 1, cursor: cur === 0 ? "default" : "pointer" }}
           onClick={() => go(cur - 1, -1)} disabled={cur === 0} aria-label="Previous"
         >←</button>
-        <div style={{ fontSize: 11, letterSpacing: ".24em", color: "rgba(140,110,80,.45)", textTransform: "uppercase", minWidth: 160, textAlign: "center" }}>
+        <div style={{ fontSize: 11, letterSpacing: ".24em", color: controlColor ?? "rgba(140,110,80,.45)", textTransform: "uppercase", minWidth: counterWidth, textAlign: "center" }}>
           {cur === 0 ? "Cover" : cur === total - 1 ? "Fin" : `${cur} of ${images.length}`}
         </div>
         <button
@@ -134,7 +138,7 @@ export default function WideAlbum({ albumTitle, albumSubtitle, albumDate, images
           onClick={() => go(cur + 1, 1)} disabled={cur === total - 1} aria-label="Next"
         >→</button>
       </div>
-      <div style={{ fontSize: 10, letterSpacing: ".2em", color: "rgba(140,110,80,.25)", textTransform: "uppercase" }}>
+      <div style={{ fontSize: 10, letterSpacing: ".2em", color: controlColor ?? "rgba(140,110,80,.25)", textTransform: "uppercase" }}>
         Click arrows to turn pages
       </div>
     </div>

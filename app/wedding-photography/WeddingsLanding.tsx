@@ -7,11 +7,9 @@ import type { WeddingCity } from "@/lib/ads/city-wedding-pages";
 import { cityWeddingMetadata } from "@/lib/ads/city-wedding-metadata";
 import { CTA_LABEL, FORM_ID, funnelCollections, pricingTiers, type PricingMarket } from "@/lib/ads/pricing-request";
 import { proofByN, proofSrc } from "@/lib/reviews";
-import AlbumBrowser from "./AlbumBrowser";
 import HeroConveyor from "./HeroConveyor";
 import InquiryFunnel, { InquiryForm, MessageLinks } from "./InquiryFunnel";
 import { BookingNavigation } from "./wedding-calendar";
-import { stylesOfWork } from "./landing-content";
 import CityWorkAlbum from "./CityWorkAlbum";
 import PortfolioHighlights from "./PortfolioHighlights";
 import original from "./vancouver.module.css";
@@ -90,7 +88,6 @@ export default function WeddingsLanding({ city, market, path }: { city: WeddingC
             <CityWorkAlbum photos={albumPhotos} place={city.name} />
           </div>
           <PortfolioHighlights />
-          <details className={styles.styleDetails}><summary>Explore five photography styles <span aria-hidden="true">+</span></summary><div className={styles.styleContent}><AlbumBrowser albums={stylesOfWork} label="Five complete portfolio collections" compact inquiryAction={action} /></div></details>
         </section>
 
         <section className={`${styles.section} ${styles.ink}`} aria-labelledby="about-title">

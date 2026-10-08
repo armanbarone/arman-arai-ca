@@ -7,9 +7,12 @@ interface Props {
   albumSubtitle: string;
   albumDate: string;
   images: string[];
+  siteLabel?: string;
+  touchTargetSize?: number;
+  controlColor?: string;
 }
 
-export default function MobileAlbum({ albumTitle, albumSubtitle, albumDate, images }: Props) {
+export default function MobileAlbum({ albumTitle, albumSubtitle, albumDate, images, siteLabel = "armanarai.com", touchTargetSize = 34, controlColor }: Props) {
   // pages: cover (0), images (1..n), closing (n+1)
   const total = images.length + 2;
   const [cur, setCur] = useState(0);
@@ -93,7 +96,7 @@ export default function MobileAlbum({ albumTitle, albumSubtitle, albumDate, imag
               Thank you for letting me<br />disappear into your day.
             </div>
             <div style={{ height: 0.5, background: "rgba(110,82,58,.1)" }} />
-            <div style={{ fontSize: 9, letterSpacing: ".22em", color: "rgba(110,82,58,.22)", textTransform: "uppercase", marginTop: 16, fontFamily: "var(--font-jost)" }}>armanarai.com</div>
+            <div style={{ fontSize: 9, letterSpacing: ".22em", color: "rgba(110,82,58,.22)", textTransform: "uppercase", marginTop: 16, fontFamily: "var(--font-jost)" }}>{siteLabel}</div>
           </div>
         )}
 
@@ -108,7 +111,7 @@ export default function MobileAlbum({ albumTitle, albumSubtitle, albumDate, imag
       <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 20, marginTop: 14 }}>
         <button
           onClick={() => go(cur - 1)} disabled={cur === 0}
-          style={{ background: "transparent", border: "0.5px solid rgba(150,120,90,.28)", color: "#9a7f60", width: 34, height: 34, cursor: cur === 0 ? "default" : "pointer", fontSize: 14, opacity: cur === 0 ? 0.18 : 1, display: "flex", alignItems: "center", justifyContent: "center" }}
+          style={{ background: "transparent", border: "0.5px solid rgba(150,120,90,.28)", color: "#9a7f60", width: touchTargetSize, height: touchTargetSize, cursor: cur === 0 ? "default" : "pointer", fontSize: 14, opacity: cur === 0 ? 0.18 : 1, display: "flex", alignItems: "center", justifyContent: "center" }}
           aria-label="Previous"
         >←</button>
         <div style={{ display: "flex", gap: 5, alignItems: "center" }}>
@@ -118,11 +121,11 @@ export default function MobileAlbum({ albumTitle, albumSubtitle, albumDate, imag
         </div>
         <button
           onClick={() => go(cur + 1)} disabled={cur === total - 1}
-          style={{ background: "transparent", border: "0.5px solid rgba(150,120,90,.28)", color: "#9a7f60", width: 34, height: 34, cursor: cur === total - 1 ? "default" : "pointer", fontSize: 14, opacity: cur === total - 1 ? 0.18 : 1, display: "flex", alignItems: "center", justifyContent: "center" }}
+          style={{ background: "transparent", border: "0.5px solid rgba(150,120,90,.28)", color: "#9a7f60", width: touchTargetSize, height: touchTargetSize, cursor: cur === total - 1 ? "default" : "pointer", fontSize: 14, opacity: cur === total - 1 ? 0.18 : 1, display: "flex", alignItems: "center", justifyContent: "center" }}
           aria-label="Next"
         >→</button>
       </div>
-      <div style={{ textAlign: "center", marginTop: 8, fontSize: 9, letterSpacing: ".2em", color: "rgba(140,110,80,.25)", textTransform: "uppercase" }}>
+      <div style={{ textAlign: "center", marginTop: 8, fontSize: 9, letterSpacing: ".2em", color: controlColor ?? "rgba(140,110,80,.25)", textTransform: "uppercase" }}>
         Tap sides to turn · swipe to navigate
       </div>
     </div>

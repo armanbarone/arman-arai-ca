@@ -11,8 +11,9 @@ import AlbumBrowser from "./AlbumBrowser";
 import HeroConveyor from "./HeroConveyor";
 import InquiryFunnel, { InquiryForm, MessageLinks } from "./InquiryFunnel";
 import { BookingNavigation } from "./wedding-calendar";
-import { stylesOfWork, weddingAlbumsFor } from "./landing-content";
+import { stylesOfWork } from "./landing-content";
 import CityWorkAlbum from "./CityWorkAlbum";
+import PortfolioHighlights from "./PortfolioHighlights";
 import original from "./vancouver.module.css";
 import funnel from "./inquiry.module.css";
 import styles from "./vancouver-weddings/landing.module.css";
@@ -57,7 +58,7 @@ export default function WeddingsLanding({ city, market, path }: { city: WeddingC
   const phone = SITE.phone.replace(/^\+1\s*/, "");
   // The hub album where the city has one (lib/ads/hub-work.ts); otherwise its
   // own photographs, leaving out the scene-setting "places" frames.
-  const albumPhotos = city.work?.photos ?? [...city.heroes, ...city.interlude.filter((photo) => !PLACES.has(photo.src))];
+  const albumPhotos = (city.work?.photos ?? [...city.heroes, ...city.interlude.filter((photo) => !PLACES.has(photo.src))]).slice(1);
   return <div className={`${original.page} ${original.dark} ${styles.clean}`} data-landing-theme="dark" data-landing-city={city.slug}>
     <a className={original.skip} href="#main">Skip to content</a>
     <InquiryFunnel city={city.name} page={page} collections={funnelCollections()} phone={phone} phoneE164={SITE.phoneE164} travelNote={market.travelNote}>
@@ -88,7 +89,7 @@ export default function WeddingsLanding({ city, market, path }: { city: WeddingC
             <div><h2 id="photographs-title">See how your day<br /><em>could feel.</em></h2><p>{city.workLine} Explore the photographs at your own pace.</p><div className={styles.shortNotes}><p><strong>Real moments.</strong> Space to be with your people.</p><p><strong>Relaxed portraits.</strong> Clear direction when you need it.</p></div></div>
             <CityWorkAlbum photos={albumPhotos} place={city.name} />
           </div>
-          <div className={styles.albumBlock}><h3>Explore complete wedding stories.</h3><p>Open an album to see the whole day.</p><AlbumBrowser albums={weddingAlbumsFor(city.albums)} label="Complete wedding stories" inquiryAction={action} /></div>
+          <PortfolioHighlights />
           <details className={styles.styleDetails}><summary>Explore five photography styles <span aria-hidden="true">+</span></summary><div className={styles.styleContent}><AlbumBrowser albums={stylesOfWork} label="Five complete portfolio collections" compact inquiryAction={action} /></div></details>
         </section>
 

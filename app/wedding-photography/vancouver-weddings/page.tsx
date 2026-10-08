@@ -10,8 +10,9 @@ import AlbumBrowser from "../AlbumBrowser";
 import HeroConveyor from "../HeroConveyor";
 import InquiryFunnel, { InquiryForm, MessageLinks } from "../InquiryFunnel";
 import { BookingNavigation } from "../wedding-calendar";
-import { stylesOfWork, weddingAlbumsFor } from "../landing-content";
+import { stylesOfWork } from "../landing-content";
 import WorkAlbum from "./WorkAlbum";
+import PortfolioHighlights from "../PortfolioHighlights";
 import original from "../vancouver.module.css";
 import funnel from "../inquiry.module.css";
 import styles from "./landing.module.css";
@@ -68,9 +69,9 @@ export default function VancouverWeddings() {
           <SectionLabel number="01">The photographs</SectionLabel>
           <div className={styles.workIntro}>
             <div><h2 id="photographs-title">See how your day<br /><em>could feel.</em></h2><p>From Vancouver gardens to the Sea-to-Sky. Explore the photographs at your own pace.</p><div className={styles.shortNotes}><p><strong>Real moments.</strong> Space to be with your people.</p><p><strong>Relaxed portraits.</strong> Clear direction when you need it.</p></div></div>
-            <WorkAlbum photos={city.work!.photos} />
+            <WorkAlbum photos={city.work!.photos.slice(1)} />
           </div>
-          <div className={styles.albumBlock}><h3>Explore complete wedding stories.</h3><p>Open an album to see the whole day.</p><AlbumBrowser albums={weddingAlbumsFor(city.albums)} label="Complete wedding stories" inquiryAction={action} /></div>
+          <PortfolioHighlights />
           <details className={styles.styleDetails}><summary>Explore five photography styles <span aria-hidden="true">+</span></summary><div className={styles.styleContent}><AlbumBrowser albums={stylesOfWork} label="Five complete portfolio collections" compact inquiryAction={action} /></div></details>
         </section>
 

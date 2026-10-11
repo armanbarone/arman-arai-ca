@@ -80,9 +80,12 @@ const money = (amount: number) => `C$${amount.toLocaleString("en-CA")}`;
 type Contact = { phone: string; phoneE164: string };
 const whatsappHref = (phoneE164: string, text: string) => `https://wa.me/${phoneE164.replace(/\D/g, "")}?text=${encodeURIComponent(text)}`;
 
-/** WhatsApp or text, as the secondary line under the form and on the thank-you view. */
+/** WhatsApp, text or call, as the secondary line under the form and on the
+ *  thank-you view. The number is inside the tel: link rather than loose text
+ *  after "text", so a tap dials what it says it will and listenForContactClicks
+ *  can report the call (contactMethodOf reads tel: as "phone"). */
 export function MessageLinks({ phone, phoneE164, city }: Contact & { city: string }) {
-  return <><a href={whatsappHref(phoneE164, `Hi Arman, I'm asking about wedding photography in ${city}.`)} target="_blank" rel="noopener noreferrer">WhatsApp</a> or <a href={`sms:${phoneE164}`}>text</a> <span className={funnel.nowrap}>{phone}</span></>;
+  return <><a href={whatsappHref(phoneE164, `Hi Arman, I'm asking about wedding photography in ${city}.`)} target="_blank" rel="noopener noreferrer">WhatsApp</a>, <a href={`sms:${phoneE164}`}>text</a> or <a href={`tel:${phoneE164}`}>call <span className={funnel.nowrap}>{phone}</span></a></>;
 }
 
 export default function InquiryFunnel({ children, collections, city, page, phone, phoneE164, travelNote }: {

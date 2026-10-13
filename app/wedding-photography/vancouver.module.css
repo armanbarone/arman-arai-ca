@@ -26,7 +26,8 @@
 .starting { font-size: 16px; margin-top: 26px !important; margin-bottom: 22px !important; }
 .starting strong { font-weight: 400; }
 .starting > span { display: block; font-size: 11px; color: var(--muted); margin-top: 4px; }
-.button { display: inline-flex; align-items: center; justify-content: space-between; gap: 34px; padding: 17px 24px; min-height: 54px; background: var(--green); color: #fff !important; border: 1px solid var(--green); font-size: 13px; transition: background .2s; }
+.button { display: inline-flex; align-items: center; justify-content: space-between; gap: 16px; padding: 17px 24px; max-width: 100%; min-width: 0; min-height: 54px; background: var(--green); color: #fff !important; border: 1px solid var(--green); font-size: 13px; transition: background .2s; line-height: 1.45; text-align: left; }
+.button > span { flex-shrink: 0; }
 .button:hover { background: #3c5545; }
 .micro { font-size: 10px; margin-top: 10px !important; color: var(--muted); }
 .heroArt { position: relative; padding: 0 6% 30px 5%; }

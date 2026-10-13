@@ -27,7 +27,7 @@ import {
   type WeddingDocument,
 } from "@/lib/portal/wedding";
 import { sha256Hex, randomId } from "@/lib/portal/token";
-import { BUSINESS } from "@/lib/portal/business";
+import { APP_URL, BUSINESS } from "@/lib/portal/business";
 import { sendEmail, layout, esc, footerText } from "@/lib/portal/email";
 import { deliverSignedWeddingDocument } from "@/lib/portal/wedding-delivery";
 import {
@@ -228,13 +228,13 @@ export async function issueWeddingDocument(
           .at(-1);
         if (!proposal)
           throw new Error(
-            "Issue the proposal and obtain both clients’ acceptance before issuing the agreement.",
+            "The agreement attaches the accepted proposal as its appendix, so the proposal has to be signed by both clients first. Open Document system, then Proposal and scope, under Booking.",
           );
         if (
           proposal.bookingHash !== (await sha256Hex(commercialFingerprint(b)))
         )
           throw new Error(
-            "The accepted proposal no longer matches this booking. Issue a new proposal and obtain both clients’ acceptance.",
+            "The accepted proposal no longer matches this booking's dates, price or payment schedule. Open Document system, then Proposal and scope, and issue a fresh one for both clients to accept.",
           );
         d.attachmentIds = [proposal.id];
         d.blocks = [
@@ -305,33 +305,89 @@ export async function issueWeddingDocument(
     refresh(ref);
     const b = await getBooking(ref),
       d = weddingData(b!).documents.find((d) => d.id === id)!;
+    /* Everyone who has to act on this document, plus the studio's own copy.
+       requiredEmails is the signer list, which is not always the two clients,
+       and Arman was not on this list at all: the fully signed PDF reached him
+       through wedding-delivery, but the request for signature never did. */
+    const signers = [
+      ...new Set([
+        ...d.requiredEmails,
+        ...b!.clients.map((c) => c.email),
+      ]),
+    ].filter((e) => e && e.toLowerCase() !== BUSINESS.email.toLowerCase());
+    const sentTo: string[] = [];
+    const failed: string[] = [];
     try {
-      for (const c of b!.clients) {
+      for (const email of signers) {
+        const c = b!.clients.find(
+          (x) => x.email.toLowerCase() === email.toLowerCase(),
+        );
         const url = await directWeddingLink(
-          c.email,
+          email,
           `/portal/${ref}/documents/${id}`,
         );
+        const who = c ? c.preferredName || c.legalName : email;
+        try {
+          const sent = await sendEmail({
+            to: email,
+            subject: `${d.title} is ready · ${ref}`,
+            html: layout({
+              heading: `${esc(who)}, ${esc(d.title.toLowerCase())} is ready`,
+              bodyHtml: `<p>Review your completed wedding document. ${d.requiredEmails.length ? "Each party signs separately using their own email address." : ""}</p>`,
+              button: {
+                label: d.requiredEmails.length
+                  ? "Review and sign"
+                  : "Open document",
+                href: url,
+              },
+            }),
+            text: `Your ${d.title} is ready: ${url}${footerText()}`,
+            idempotencyKey: `wedding-issued/${ref}/${id}/${email}`,
+          });
+          if (!sent.id) throw new Error("Email is not configured");
+          sentTo.push(email);
+        } catch {
+          // One address failing must not hide the ones that went, nor stop the
+          // rest from being tried.
+          failed.push(email);
+        }
+      }
+
+      // The studio's own copy, so Arman sees what the couple just received.
+      try {
         const sent = await sendEmail({
-          to: c.email,
-          subject: `${d.title} is ready · ${ref}`,
+          to: BUSINESS.email,
+          subject: `Issued: ${d.title} · ${ref}`,
           html: layout({
-            heading: `${esc(c.preferredName || c.legalName)}, ${esc(d.title.toLowerCase())} is ready`,
-            bodyHtml: `<p>Review your completed wedding document. ${d.requiredEmails.length ? "Each partner signs separately using their own email address." : ""}</p>`,
+            heading: `${esc(d.title)} is with ${esc(b!.clients.map((c) => c.preferredName || c.legalName).join(" and "))}`,
+            bodyHtml: `<p>${esc(ref)}. Sent for signature to ${esc(sentTo.join(", ") || "nobody")}.${failed.length ? ` Did NOT reach ${esc(failed.join(", "))}.` : ""}</p>`,
             button: {
-              label: d.requiredEmails.length
-                ? "Review and sign"
-                : "Open document",
-              href: url,
+              label: "Open the booking",
+              href: `${APP_URL}/admin/bookings/${ref}/documents`,
             },
           }),
-          text: `Your ${d.title} is ready: ${url}${footerText()}`,
-          idempotencyKey: `wedding-issued/${ref}/${id}/${c.email}`,
+          text: `${d.title} issued on ${ref}. Sent to ${sentTo.join(", ") || "nobody"}.${failed.length ? ` Failed: ${failed.join(", ")}.` : ""}`,
+          idempotencyKey: `wedding-issued-studio/${ref}/${id}/${d.hash}`,
         });
         if (!sent.id) throw new Error("Email is not configured");
+      } catch {
+        failed.push(`${BUSINESS.email} (your copy)`);
       }
+
+      if (sentTo.length === 0) throw new Error("No signer could be emailed");
+      await updateBooking(ref, (x) => {
+        x.events.push({
+          at: new Date().toISOString(),
+          type: "document_notified",
+          actor: "system",
+          detail: { id, sent: sentTo, failed },
+        });
+      });
       return {
         ok: true,
-        message: "Published to the portal and emailed to both partners.",
+        message: failed.length
+          ? `Published. Emailed ${sentTo.join(", ")}. Could not email ${failed.join(", ")}.`
+          : `Published to the portal and emailed ${sentTo.join(", ")}, with a copy to you.`,
       };
     } catch {
       await updateBooking(ref, (b) => {

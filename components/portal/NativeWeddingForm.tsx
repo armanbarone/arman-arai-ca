@@ -34,6 +34,7 @@ export default function NativeWeddingForm({
   initialDue = "",
   initialUpdatedAt = null,
   canPublishChange = true,
+  blockedReason,
 }: {
   template: WeddingTemplate;
   initial: Record<string, string>;
@@ -45,6 +46,8 @@ export default function NativeWeddingForm({
   initialDue?: string;
   initialUpdatedAt?: string | null;
   canPublishChange?: boolean;
+  /** A prerequisite the server knows about and the form cannot see. */
+  blockedReason?: string;
 }) {
   const context = useWeddingPreview();
   const [companyInitials, setCompanyInitials] = useState("");
@@ -60,6 +63,24 @@ export default function NativeWeddingForm({
     [dirty, setDirty] = useState(false);
   const specs = templateFields(t),
     remaining = missingDocumentFields(t, fields);
+  /* Why Publish is disabled. The banner above counts document fields only, so
+     it could read "0 required fields remain" while the countersign block at the
+     bottom of the form still held the button shut, with nothing on the screen
+     saying so. Every condition on the button appears here. */
+  const publishBlockers: string[] = [
+    ...(blockedReason ? [blockedReason] : []),
+    ...(remaining.length
+      ? [`${remaining.length} required field${remaining.length === 1 ? "" : "s"} above`]
+      : []),
+    ...(!canPublishChange ? ["this change order needs a booking revision first"] : []),
+    ...(t.companySigns && name.trim().toLowerCase() !== "arman arai"
+      ? ["your legal name typed as Arman Arai"]
+      : []),
+    ...(t.companySigns && normalizeInitials(companyInitials) !== "AA"
+      ? ["your AA initials"]
+      : []),
+    ...(t.companySigns && !consent ? ["the electronic signature consent box"] : []),
+  ];
   const groups: { title: string; blocks: WeddingBlock[] }[] = [
     { title: "Project details", blocks: [] },
   ];
@@ -247,7 +268,11 @@ export default function NativeWeddingForm({
     <div>
       <div className="wp-message">
         {admin
-          ? `${remaining.length} required fields remain. Unused items must explicitly say Not included or Not applicable. Issued records cannot be silently edited.`
+          ? `${remaining.length} required fields remain. Unused items must explicitly say Not included or Not applicable. Issued records cannot be silently edited.${
+              remaining.length === 0 && publishBlockers.length
+                ? ` Publishing still needs ${publishBlockers.join(", ")}, at the bottom of this page.`
+                : ""
+            }`
           : "Your answers are private to your booking and the studio. Share only details that help us plan your wedding."}
       </div>
       {groups
@@ -389,7 +414,9 @@ export default function NativeWeddingForm({
       )}
       <div className="wp-sticky-actions">
         <p>
-          {dirty
+          {admin && publishBlockers.length > 0 && !dirty
+            ? `To publish: ${publishBlockers.join(", ")}.`
+            : dirty
             ? "You have unsaved changes."
             : admin
               ? "Drafts are visible only to the studio."
@@ -412,14 +439,11 @@ export default function NativeWeddingForm({
             !["form", "request"].includes(t.action) ? (
               <button
                 className={buttonCls}
-                disabled={
-                  pending ||
-                  !canPublishChange ||
-                  remaining.length > 0 ||
-                  (t.companySigns &&
-                    (!consent ||
-                      normalizeInitials(companyInitials) !== "AA" ||
-                      name.trim().toLowerCase() !== "arman arai"))
+                disabled={pending || publishBlockers.length > 0}
+                title={
+                  publishBlockers.length
+                    ? `Still needed: ${publishBlockers.join(", ")}`
+                    : undefined
                 }
                 onClick={() => run("issue")}
               >

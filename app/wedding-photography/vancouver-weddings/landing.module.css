@@ -15,7 +15,7 @@
 .header nav { display: flex; align-items: center; gap: 28px; font-size: 13px; }
 .navLink { padding: 12px 0; border-bottom: 1px solid transparent; }
 .navLink:hover { border-color: var(--gold); }
-.headerCta { display: inline-flex; align-items: center; justify-content: space-between; gap: 22px; min-height: 46px; padding: 10px 18px; border: 1px solid #a68a66; }
+.headerCta { display: inline-flex; align-items: center; justify-content: space-between; gap: 16px; max-width: 300px; min-width: 0; min-height: 46px; padding: 10px 18px; border: 1px solid #a68a66; line-height: 1.45; text-align: left; }
 .hero { max-width: 1440px; margin: auto; display: grid; grid-template-columns: .9fr 1.1fr; align-items: center; gap: 6%; padding: 58px 6% 78px; }
 .eyebrow { font-size: 11px; letter-spacing: .15em; text-transform: uppercase; color: var(--gold); }
 .heroCopy .eyebrow { margin-bottom: 20px; }
@@ -24,7 +24,8 @@
 .heroCopy .heroPrice { margin: 26px 0 20px; font-size: 16px; }
 .heroPrice strong { font-weight: 400; color: #f2ebdf; }
 .heroPrice span { display: block; margin-top: 5px; font-size: 12px; color: #bcb09f; }
-.primaryCta { display: inline-flex; justify-content: space-between; align-items: center; gap: 60px; min-height: 54px; padding: 14px 24px; background: #c8a77d; color: #201a12 !important; font-size: 15px; font-weight: 400; border: 1px solid #c8a77d; transition: background .2s; }
+.primaryCta { display: inline-flex; justify-content: space-between; align-items: center; gap: 20px; max-width: 100%; min-width: 0; min-height: 54px; padding: 14px 24px; background: #c8a77d; color: #201a12 !important; font-size: 15px; font-weight: 400; border: 1px solid #c8a77d; transition: background .2s; line-height: 1.45; text-align: left; }
+.headerCta > span, .primaryCta > span { flex-shrink: 0; }
 .primaryCta:hover { background: #dfc39f; }
 .heroCopy .heroMicro { margin-top: 12px; color: #bcb09f; font-size: 12px; }
 .clean .heroFrames { position: relative; grid-area: auto; padding: 0 7% 24px 0; width: 100%; min-width: 0; }
@@ -110,7 +111,7 @@
 .sharedExtras[open] summary > span { transform: rotate(45deg); }
 .sharedExtras p { font-size: 14px; padding-bottom: 16px; max-width: 780px; color: var(--muted); }
 .section .travel { font-size: 12px; color: var(--muted); margin-top: 22px; max-width: 730px; }
-.collectionCta { display: flex; gap: 22px; align-items: center; margin-top: 28px; }
+.collectionCta { display: flex; flex-wrap: wrap; gap: 22px; align-items: center; margin-top: 28px; }
 .collectionCta p { font-size: 14px; color: var(--muted); }
 .reviews { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 36px; margin-top: 36px; }
 .reviews figure { border-top: 1px solid var(--line); padding-top: 22px; }
@@ -137,7 +138,7 @@
 .formPanel :global([class*="checkField"]) input, .formPanel select { min-height: 48px; font-size: 16px; border-bottom-color: #97836a; }
 .paper .formPanel :global([class*="checkField"]) input, .paper .formPanel select { color-scheme: light; }
 .paper .formPanel :global([class*="checkField"]) input::placeholder { color: var(--muted); }
-.clean .formPanel :global([class*="checkButton"]) { min-height: 54px; padding: 14px 20px; font-size: 15px !important; background: #c8a77d; color: #201a12 !important; border-color: #c8a77d; margin-top: 24px; }
+.clean .formPanel :global([class*="checkButton"]) { min-height: 54px; padding: 14px 20px; font-size: 15px !important; background: #c8a77d; color: #201a12 !important; border-color: #c8a77d; margin-top: 24px; gap: 16px; line-height: 1.45; text-align: left; }
 .clean .formPanel :global([class*="checkButton"]):hover { background: #dfc39f; }
 .formPanel :global([class*="checkMicro"]) { font-size: 12px; line-height: 1.55; color: var(--muted); margin-top: 14px; }
 .formPanel :global([class*="group"]) { margin-bottom: 22px; }
@@ -152,6 +153,8 @@
 .stickyCta { display: none; }
 
 @media (max-width: 1000px) {
+  .header nav { gap: 18px; }
+  .headerCta { max-width: 260px; }
   .clean .portfolioStyles :global([class*="styleAlbums"]) { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .desktopBook { display: none; }
   .mobileBook { display: block; }
@@ -168,12 +171,12 @@
   .clean .portfolioStyles :global([class*="styleAlbums"]) { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 26px 16px; }
   .clean .portfolioStyles :global([class*="albumTitle"]) { font-size: 24px; }
   .portfolioStyles :global([class*="albumDescription"]) { font-size: 11px; }
-  .header { padding: 18px 6%; }
+  .header { padding: 18px 6%; flex-direction: column; align-items: flex-start; gap: 16px; }
   .brand { font-size: 29px; }
   .brand span { font-size: 8px; }
-  .header nav { gap: 0; }
+  .header nav { gap: 0; width: 100%; }
   .navLink { display: none; }
-  .headerCta { font-size: 12px; min-height: 44px; padding: 10px 14px; gap: 16px; }
+  .headerCta { font-size: 12px; min-height: 44px; padding: 10px 14px; gap: 16px; width: 100%; max-width: none; }
   .hero { grid-template-columns: 1fr; padding: 28px 6% 40px; gap: 28px; }
   .heroCopy .eyebrow { font-size: 10px; margin-bottom: 14px; }
   .clean.clean .hero h1 { font-size: clamp(43px, 12.3vw, 66px); margin-bottom: 16px; }
@@ -249,10 +252,10 @@
   .footer { flex-direction: column; align-items: flex-start; gap: 22px; padding: 30px 6%; }
   .footer > div { flex-wrap: wrap; gap: 12px 22px; font-size: 11px; }
   .footer > div > span { width: 100%; }
-  .stickyCta { position: fixed; z-index: 40; bottom: 0; left: 0; right: 0; display: flex; align-items: center; justify-content: space-between; gap: 18px; background: #100e0bf5; border-top: 1px solid #514432; padding: 10px 6% calc(10px + env(safe-area-inset-bottom)); box-shadow: 0 -5px 20px #0002; }
+  .stickyCta { position: fixed; z-index: 40; bottom: 0; left: 0; right: 0; display: grid; grid-template-columns: 86px minmax(0, 1fr); align-items: center; gap: 12px; background: #100e0bf5; border-top: 1px solid #514432; padding: 10px 6% calc(10px + env(safe-area-inset-bottom)); box-shadow: 0 -5px 20px #0002; }
   .stickyCta > span { font-size: 10px; line-height: 1.4; color: #bcb09f; }
   .stickyCta strong { font-size: 14px; font-weight: 400; color: #f2ebdf; }
-  .stickyCta > a { background: #c8a77d; color: #201a12 !important; padding: 12px 18px; min-height: 46px; font-size: 13px; }
+  .stickyCta > a { background: #c8a77d; color: #201a12 !important; padding: 12px 14px; min-width: 0; min-height: 46px; font-size: 12px; line-height: 1.45; }
 }
 @media (max-width: 360px) {
   .priceCard { padding: 18px; }

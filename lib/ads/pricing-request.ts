@@ -5,9 +5,8 @@
  * the thank-you screen and the auto-reply email at once. Source: the owner,
  * 2026-09-28 ("there are only 3 packages: 3k, 4.2k and 5.9k").
  *
- * Nothing here checks a date. The owner, same day: "There is no checking the
- * date." The form asks for the date so the reply can talk about it; no page,
- * email or screen may say a date is open, free, available or booked.
+ * The form collects a date for Arman's reply. Availability is not inferred
+ * by the page or its automatic guide; only Arman confirms whether he is free.
  */
 import { TIERS, type Tier } from "../site";
 
@@ -16,9 +15,8 @@ import { TIERS, type Tier } from "../site";
    component as a client reference, and `#${FORM_ID}` then printed the
    reference's error text into the header and closing buttons' hrefs. */
 export const FORM_ID = "get-pricing";
-/** Owner, 2026-10-05: "Send Inquiry", replacing "Get Pricing". FORM_ID keeps
- *  its old value so links already pointing at #get-pricing still land. */
-export const CTA_LABEL = "Send Inquiry";
+/** Owner's date-focused CTA. FORM_ID preserves existing inquiry links. */
+export const CTA_LABEL = "Send us your date, I'll tell you within 2 minutes if I'm free";
 
 export const PRICING_TIER_SLUGS = ["signature", "complete", "photo-film"] as const;
 export const pricingTiers = (): Tier[] => PRICING_TIER_SLUGS.map((slug) => TIERS.find((tier) => tier.slug === slug)!);

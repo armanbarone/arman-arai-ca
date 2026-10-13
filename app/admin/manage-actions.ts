@@ -2,7 +2,7 @@
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { requireAdmin, requireBookingAccess } from "@/lib/portal/auth";
-import { updateBooking } from "@/lib/portal/store";
+import { getBooking, updateBooking, deleteBookingAndFiles } from "@/lib/portal/store";
 import { WEDDING_TEMPLATES } from "@/lib/portal/wedding";
 import {
   ALWAYS_VISIBLE_WORKFLOWS,
@@ -42,7 +42,9 @@ const schema = z
       .max(60),
   })
   .strict();
-type Result = { ok: true; message: string } | { ok: false; error: string };
+type Result =
+  | { ok: true; message: string; redirect?: string }
+  | { ok: false; error: string };
 const fail = (e: unknown): Result => ({
   ok: false,
   error: e instanceof Error ? e.message : "Please try again.",
@@ -152,6 +154,60 @@ export async function archiveWedding(
       message: restore
         ? "Wedding restored and client access reopened."
         : "Wedding archived. Client access is closed; records and receipts are retained.",
+    };
+  } catch (e) {
+    return fail(e);
+  }
+}
+/**
+ * Delete a wedding for good, for the ones made to try the system out.
+ *
+ * Guarded rather than trusted: the reference has to be typed back, and it
+ * refuses outright where anything real happened. A booking that took money,
+ * had a document signed, or was ever sent to a couple is history, and history
+ * gets archived, not deleted.
+ */
+export async function deleteWedding(
+  ref: string,
+  typedRef: string,
+): Promise<Result> {
+  const admin = await requireAdmin();
+  try {
+    const b = await getBooking(ref);
+    if (!b) throw Error("That wedding no longer exists.");
+    if (typedRef.trim().toUpperCase() !== ref.toUpperCase())
+      throw Error(`Type ${ref} exactly to confirm.`);
+
+    const paid = b.payments?.some((p) => p.status === "succeeded");
+    const signed = b.wedding?.documents?.some(
+      (d) =>
+        !d.deletedAt &&
+        (d.status === "executed" ||
+          d.status === "partial" ||
+          d.signatures?.some((s) => s.party === "client")),
+    );
+    const issued = b.wedding?.documents?.some(
+      (d) => !d.deletedAt && ["issued", "partial", "executed"].includes(d.status),
+    );
+    const invoiced = b.invoices?.some((i) => i.status !== "void");
+    if (paid || signed || issued || invoiced)
+      throw Error(
+        `${ref} has real history on it${
+          paid ? ", a recorded payment" : ""
+        }${signed ? ", a client signature" : ""}${
+          issued ? ", a document sent to the couple" : ""
+        }${invoiced ? ", an issued invoice" : ""}. Archive it instead; deleting it would destroy the record.`,
+      );
+    if (activeCheckouts(b).length)
+      throw Error("Cancel the open checkout before deleting this wedding.");
+
+    const files = await deleteBookingAndFiles(ref);
+    revalidatePath("/admin");
+    revalidatePath("/admin/bookings");
+    return {
+      ok: true,
+      message: `${ref} and ${files} stored file${files === 1 ? "" : "s"} deleted. Nothing about it remains.`,
+      redirect: "/admin",
     };
   } catch (e) {
     return fail(e);

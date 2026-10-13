@@ -10,6 +10,7 @@ import {
   saveClientPortal,
   archiveWedding,
   changeWeddingStage,
+  deleteWedding,
 } from "@/app/admin/manage-actions";
 import { sendInviteAction } from "@/app/admin/actions";
 import { useWeddingPreview } from "./WeddingPreviewProvider";
@@ -43,7 +44,7 @@ export default function WeddingPortalControls({
     [error, setError] = useState(""),
     [pending, start] = useTransition();
   const run = (
-    mode: "save" | "archive" | "restore" | "stage" | "invite",
+    mode: "save" | "archive" | "restore" | "stage" | "invite" | "delete",
     email = "",
   ) =>
     start(async () => {
@@ -149,7 +150,9 @@ export default function WeddingPortalControls({
             ? await archiveWedding(b.ref, reason)
             : mode === "restore"
               ? await archiveWedding(b.ref, "Restored by studio", true)
-              : mode === "stage"
+              : mode === "delete"
+                ? await deleteWedding(b.ref, confirmation)
+                : mode === "stage"
                 ? await changeWeddingStage(b.ref, stage, reason)
                 : await sendInviteAction(b.ref, email);
       if (!r.ok) {
@@ -159,6 +162,11 @@ export default function WeddingPortalControls({
         return;
       }
       setMessage("message" in r ? r.message : "Invitation emailed.");
+      // A deleted wedding takes this page with it, so go somewhere that exists.
+      if ("redirect" in r && r.redirect) {
+        router.push(r.redirect);
+        return;
+      }
       router.refresh();
     });
   const editTask = (id: string, fn: (p: PlanningItem) => void) =>
@@ -474,6 +482,28 @@ export default function WeddingPortalControls({
               onClick={() => run("archive")}
             >
               Archive wedding & close client access
+            </button>
+
+            {/* Permanent deletion, for the ones made to try the system out.
+                The action refuses anything with a payment, a signature, an
+                issued document or an invoice on it, so a real wedding cannot
+                be destroyed by typing a reference into the wrong box. */}
+            <hr className="wp-divider" />
+            <h3>Delete this wedding</h3>
+            <p>
+              Deleting destroys the booking, its documents and its stored files
+              for good. There is no undo. A wedding that has taken a payment,
+              had anything signed, or sent a document or invoice to the couple
+              cannot be deleted; archive it instead.
+            </p>
+            <button
+              className={ghostButtonCls}
+              disabled={pending || confirmation !== b.ref}
+              onClick={() => run("delete")}
+            >
+              {confirmation === b.ref
+                ? `Delete ${b.ref} for good`
+                : `Type ${b.ref} above to delete`}
             </button>
             <hr className="wp-divider" />
             <label className="wp-label">

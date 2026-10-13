@@ -140,6 +140,20 @@ export async function nextReference(year: string): Promise<string> {
   return `AA-CA-${year}-${String(max + 1).padStart(3, "0")}`;
 }
 
+/**
+ * Destroy a booking and everything filed under it. There is no undo.
+ *
+ * Archiving is the right tool for a real wedding: it closes client access and
+ * keeps the records. This is for the ones that should never have existed, and
+ * the caller is responsible for checking that before calling it.
+ */
+export async function deleteBookingAndFiles(ref: string): Promise<number> {
+  const files = await listPathnames(`files/${ref}/`);
+  for (const f of files) await remove(f);
+  await remove(bookingPath(ref));
+  return files.length;
+}
+
 export async function createBooking(booking: Booking): Promise<void> {
   await writeJson(bookingPath(booking.ref), booking, { createOnly: true });
 }

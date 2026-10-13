@@ -12,6 +12,7 @@ import InquiryFunnel, { InquiryForm, MessageLinks } from "./InquiryFunnel";
 import { BookingNavigation } from "./wedding-calendar";
 import CityWorkAlbum from "./CityWorkAlbum";
 import PortfolioHighlights from "./PortfolioHighlights";
+import LandingPricing from "./LandingPricing";
 import original from "./vancouver.module.css";
 import funnel from "./inquiry.module.css";
 import styles from "./vancouver-weddings/landing.module.css";
@@ -62,7 +63,7 @@ export default function WeddingsLanding({ city, market, path }: { city: WeddingC
     <InquiryFunnel city={city.name} page={page} collections={funnelCollections()} phone={phone} phoneE164={SITE.phoneE164} travelNote={market.travelNote}>
       <header className={styles.header}>
         <a className={styles.brand} href="#main" aria-label="Arman Arai, top of page">Arman Arai<span>Wedding photography</span></a>
-        <nav aria-label="Page navigation"><a className={styles.navLink} href="#photographs">Photographs</a><a className={styles.navLink} href="#process-title">How it works</a><a className={styles.headerCta} href={`#${FORM_ID}`}>{CTA_LABEL}<span aria-hidden="true">↗</span></a></nav>
+        <nav aria-label="Page navigation"><a className={styles.navLink} href="#photographs">Photographs</a><a className={styles.navLink} href="#collections">Pricing</a><a className={styles.navLink} href="#process-title">How it works</a><a className={styles.headerCta} href={`#${FORM_ID}`}>{CTA_LABEL}<span aria-hidden="true">↗</span></a></nav>
       </header>
       <main id="main">
         <section className={styles.hero} aria-labelledby="hero-title">
@@ -98,18 +99,20 @@ export default function WeddingsLanding({ city, market, path }: { city: WeddingC
           </div>
         </section>
 
+        <LandingPricing market={market} />
+
         <section className={`${styles.section} ${styles.ink}`} aria-labelledby="reviews-title">
-          <SectionLabel number="03">From the couples</SectionLabel><h2 id="reviews-title">The words<br /><em>that stay with me.</em></h2>
+          <SectionLabel number="04">From the couples</SectionLabel><h2 id="reviews-title">The words<br /><em>that stay with me.</em></h2>
           <div className={styles.reviews}>{reviews.map(({ n, who, quote }) => { const proof = proofByN(n); return <figure key={n}><blockquote>“{quote}”</blockquote><figcaption>{who}</figcaption><a className={styles.reviewProof} href={proofSrc(n)} target="_blank" rel="noopener noreferrer"><Image src={proofSrc(n)} alt={proof.alt} width={proof.w} height={proof.h} sizes="160px" quality={72} /><span>Read the original message ↗</span></a></figure>; })}</div>
         </section>
 
         <section className={`${styles.section} ${styles.paper}`} aria-labelledby="process-title">
-          <SectionLabel number="04">How it works</SectionLabel><h2 id="process-title">A simple start.</h2>
+          <SectionLabel number="05">How it works</SectionLabel><h2 id="process-title">A simple start.</h2>
           <ol className={styles.steps}><li><span>01</span><div><h3>Tell me about your day.</h3><p>Share your plans so far. I’ll email your personal guide with collection prices and coverage explained.</p></div></li><li><span>02</span><div><h3>We’ll work it out together.</h3><p>Ask questions by email, WhatsApp or a free 30-minute call. You don’t need to choose a collection first.</p></div></li><li><span>03</span><div><h3>Make it yours.</h3><p>Once you’re ready, we’ll confirm the details, secure your date and plan together.</p></div></li></ol>
         </section>
 
         <section id={FORM_ID} className={`${styles.section} ${styles.ink} ${styles.inquiry}`} aria-labelledby="inquiry-title">
-          <div className={styles.inquiryCopy}><SectionLabel number="05">Your wedding starts here</SectionLabel><h2 id="inquiry-title">Tell me about<br /><em>your day.</em></h2><p>Share what you know so far. I’ll email your personal guide and help you choose the coverage that fits.</p><p className={styles.inquiryNote}>No finished timeline needed.<br />Ask questions by email, WhatsApp or a call.</p></div>
+          <div className={styles.inquiryCopy}><SectionLabel number="06">Your wedding starts here</SectionLabel><h2 id="inquiry-title">Tell me about<br /><em>your day.</em></h2><p>Share what you know so far. I’ll email your personal guide and help you choose the coverage that fits.</p><p className={styles.inquiryNote}>No finished timeline needed.<br />Ask questions by email, WhatsApp or a call.</p></div>
           <div className={styles.formPanel}><InquiryForm city={city.name} market={market.slug} page={path} /><p className={styles.messageLinks}>Rather message? <MessageLinks phone={phone} phoneE164={SITE.phoneE164} city={city.name} /></p></div>
         </section>
       </main>

@@ -70,31 +70,32 @@ export default function VancouverWeddings() {
             <div><h2 id="photographs-title">See how your day<br /><em>could feel.</em></h2><p>From Vancouver gardens to the Sea-to-Sky. Explore the photographs at your own pace.</p><div className={styles.shortNotes}><p><strong>Real moments.</strong> Space to be with your people.</p><p><strong>Relaxed portraits.</strong> Clear direction when you need it.</p></div></div>
             <WorkAlbum photos={city.work!.photos.slice(1)} />
           </div>
-          <PortfolioHighlights />
         </section>
 
-        <section className={`${styles.section} ${styles.ink}`} aria-labelledby="about-title">
+        <PortfolioHighlights />
+
+        <section className={`${styles.section} ${styles.paper}`} aria-labelledby="about-title">
           <div className={styles.about}>
             <figure className={styles.portrait}><Image src={ARMAN.src} alt={ARMAN.alt} fill sizes="(max-width: 760px) 40vw, 32vw" quality={78} /></figure>
-            <div className={styles.aboutHeading}><SectionLabel number="02">Your photographer</SectionLabel><h2 id="about-title">Hi, I’m Arman.<br /><em>I’m with you.</em></h2></div>
+            <div className={styles.aboutHeading}><SectionLabel number="03">Your photographer</SectionLabel><h2 id="about-title">Hi, I’m Arman.<br /><em>I’m with you.</em></h2></div>
             <div className={styles.aboutBody}><p>I photograph your wedding from start to finish. I’ll guide the portraits, plan the family photographs, and leave room for the moments you couldn’t plan.</p><ul className={styles.promiseList}><li>A timeline built around your day.</li><li>Simple direction, so you can relax.</li><li>A preview of your photographs the next day.</li></ul><blockquote>“Only one person understood our vision the way we were imagining it.”<a href={proofSrc(8)} target="_blank" rel="noopener noreferrer">Samantha · Read the Google review ↗</a></blockquote></div>
           </div>
         </section>
 
         <LandingPricing market={market} />
 
-        <section className={`${styles.section} ${styles.ink}`} aria-labelledby="reviews-title">
-          <SectionLabel number="04">From the couples</SectionLabel><h2 id="reviews-title">The words<br /><em>that stay with me.</em></h2>
+        <section className={`${styles.section} ${styles.paper}`} aria-labelledby="reviews-title">
+          <SectionLabel number="05">From the couples</SectionLabel><h2 id="reviews-title">The words<br /><em>that stay with me.</em></h2>
           <div className={styles.reviews}>{reviews.map(({ n, who, quote }) => { const proof = proofByN(n); return <figure key={n}><blockquote>“{quote}”</blockquote><figcaption>{who}</figcaption><a className={styles.reviewProof} href={proofSrc(n)} target="_blank" rel="noopener noreferrer"><Image src={proofSrc(n)} alt={proof.alt} width={proof.w} height={proof.h} sizes="160px" quality={72} /><span>Read the original message ↗</span></a></figure>; })}</div>
         </section>
 
-        <section className={`${styles.section} ${styles.paper}`} aria-labelledby="process-title">
-          <SectionLabel number="05">How it works</SectionLabel><h2 id="process-title">A simple start.</h2>
+        <section className={`${styles.section} ${styles.ink}`} aria-labelledby="process-title">
+          <SectionLabel number="06">How it works</SectionLabel><h2 id="process-title">A simple start.</h2>
           <ol className={styles.steps}><li><span>01</span><div><h3>Tell me about your day.</h3><p>Share your plans so far. I’ll email your personal guide with collection prices and coverage explained.</p></div></li><li><span>02</span><div><h3>We’ll work it out together.</h3><p>Ask questions by email, WhatsApp or a free 30-minute call. You don’t need to choose a collection first.</p></div></li><li><span>03</span><div><h3>Make it yours.</h3><p>Once you’re ready, we’ll confirm the details, secure your date and plan together.</p></div></li></ol>
         </section>
 
-        <section id={FORM_ID} className={`${styles.section} ${styles.ink} ${styles.inquiry}`} aria-labelledby="inquiry-title">
-          <div className={styles.inquiryCopy}><SectionLabel number="06">Your wedding starts here</SectionLabel><h2 id="inquiry-title">Tell me about<br /><em>your day.</em></h2><p>Share what you know so far. I’ll email your personal guide and help you choose the coverage that fits.</p><p className={styles.inquiryNote}>No finished timeline needed.<br />Ask questions by email, WhatsApp or a call.</p></div>
+        <section id={FORM_ID} className={`${styles.section} ${styles.paper} ${styles.inquiry}`} aria-labelledby="inquiry-title">
+          <div className={styles.inquiryCopy}><SectionLabel number="07">Your wedding starts here</SectionLabel><h2 id="inquiry-title">Tell me about<br /><em>your day.</em></h2><p>Share what you know so far. I’ll email your personal guide and help you choose the coverage that fits.</p><p className={styles.inquiryNote}>No finished timeline needed.<br />Ask questions by email, WhatsApp or a call.</p></div>
           <div className={styles.formPanel}><InquiryForm city={city.name} market={market.slug} page={path} /><p className={styles.messageLinks}>Rather message? <MessageLinks phone={phone} phoneE164={SITE.phoneE164} city={city.name} /></p></div>
         </section>
       </main>

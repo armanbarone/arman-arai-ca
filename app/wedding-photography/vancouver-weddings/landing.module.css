@@ -1,6 +1,6 @@
 /* This edition is deliberately isolated from the original pricing page.
    Shared albums and the inquiry form inherit the palette of their section. */
-.clean.clean { --paper: #100e0b; --ink: #f2ebdf; --muted: #bcb09f; --line: #3e362c; --gold: #c8a77d; --green: #c8a77d; --dark-body: #cfc3b2; background: #100e0b; color: #f2ebdf; font-size: 16px; line-height: 1.6; }
+.clean.clean { --paper: #100e0b; --ink: #f2ebdf; --muted: #bcb09f; --line: #3e362c; --gold: #c8a77d; --green: #c8a77d; --dark-body: #cfc3b2; --dark-card: #1b1712; --dark-panel: #1e1b16; background: #100e0b; color: #f2ebdf; font-size: 16px; line-height: 1.6; }
 .clean.clean h1, .clean.clean h2, .clean.clean h3 { font-weight: 400; letter-spacing: -.035em; }
 .clean.clean h2 { font-size: clamp(42px, 4.7vw, 68px); line-height: 1.04; }
 .clean.clean h1 em, .clean.clean h2 em { color: var(--gold); font-weight: 400; }
@@ -57,12 +57,10 @@
 .workControls button:hover:not(:disabled) { background: #e7dfd2; }
 .workControls button:disabled { opacity: .3; cursor: default; }
 .workAlbum .swipeHint { color: var(--muted); font-size: 12px; margin-top: 8px; }
-.albumBlock { margin-top: 52px; padding-top: 30px; border-top: 1px solid var(--line); }
-.clean .albumBlock h3 { font-size: 32px; line-height: 1.15; }
-.albumBlock > p { font-size: 14px; margin: 8px 0 22px; color: var(--muted); }
-.portfolioStyles > p { max-width: 680px; line-height: 1.7; }
-.paper .portfolioStyles :global([class*="styleAlbums"]) { grid-template-columns: repeat(5, minmax(0, 1fr)); overflow: visible; padding: 0; }
-.paper .portfolioStyles :global([class*="albumTitle"]) { font-size: clamp(23px, 2vw, 29px); }
+.portfolioStyles .portfolioLead { max-width: 680px; line-height: 1.7; font-size: 14px; color: var(--muted); margin: 22px 0 32px; }
+.clean .portfolioStyles :global([class*="styleAlbums"]) { grid-template-columns: repeat(5, minmax(0, 1fr)); overflow: visible; padding: 0; }
+.clean .portfolioStyles :global([class*="albumTitle"]) { font-size: clamp(23px, 2vw, 29px); }
+.portfolioStyles :global([class*="albumTopline"]) { color: var(--muted); }
 .portfolioStyles :global([class*="albumSubtitle"]) { color: var(--muted); font-size: 12px; }
 .portfolioStyles :global([class*="albumDescription"]) { display: block; margin-top: 8px; font-size: 12px; line-height: 1.6; color: var(--muted); }
 .portfolioBook { margin-top: 30px; padding-top: 20px; }
@@ -86,15 +84,15 @@
 .portrait img { object-fit: cover; object-position: 50% 24%; }
 .aboutHeading { grid-area: heading; }
 .aboutBody { grid-area: body; }
-.aboutBody > p { margin-top: 22px; max-width: 560px; color: #cfc3b2; }
+.aboutBody > p { margin-top: 22px; max-width: 560px; color: var(--muted); }
 .promiseList { list-style: none; margin: 24px 0; padding: 0; }
-.promiseList li { padding: 10px 0 10px 22px; position: relative; border-bottom: 1px solid #3e362c; font-size: 15px; }
-.promiseList li::before { content: '✓'; position: absolute; left: 0; color: #c8a77d; }
+.promiseList li { padding: 10px 0 10px 22px; position: relative; border-bottom: 1px solid var(--line); font-size: 15px; }
+.promiseList li::before { content: '✓'; position: absolute; left: 0; color: var(--gold); }
 .aboutBody blockquote { font-family: var(--font-cormorant), Georgia, serif; font-size: 25px; line-height: 1.3; margin: 28px 0 0; }
-.aboutBody blockquote a { display: block; font-family: var(--font-jost), sans-serif; font-size: 12px; margin-top: 12px; color: #c8a77d; }
+.aboutBody blockquote a { display: block; font-family: var(--font-jost), sans-serif; font-size: 12px; margin-top: 12px; color: var(--gold); }
 .includedLine { padding: 17px 0; border-block: 1px solid var(--line); font-size: 14px; color: var(--muted); max-width: 940px; margin-bottom: 28px !important; }
 .priceGrid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; align-items: start; }
-.priceCard { background: #fcfaf6; border: 1px solid #d6cdc0; padding: 26px; min-width: 0; }
+.priceCard { background: var(--dark-card); border: 1px solid var(--line); padding: 26px; min-width: 0; }
 .priceTop > p:first-child { text-transform: uppercase; font-size: 11px; letter-spacing: .09em; color: var(--muted); }
 .clean .priceTop h3 { font-size: 36px; margin-top: 12px; margin-bottom: 18px; }
 .priceTop .price { font-family: var(--font-cormorant), Georgia, serif; font-size: 46px; line-height: 1.05; }
@@ -115,11 +113,11 @@
 .collectionCta { display: flex; gap: 22px; align-items: center; margin-top: 28px; }
 .collectionCta p { font-size: 14px; color: var(--muted); }
 .reviews { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 36px; margin-top: 36px; }
-.reviews figure { border-top: 1px solid #3e362c; padding-top: 22px; }
+.reviews figure { border-top: 1px solid var(--line); padding-top: 22px; }
 .reviews blockquote { font-family: var(--font-cormorant), Georgia, serif; font-size: 29px; line-height: 1.25; margin: 0; min-height: 120px; }
-.reviews figcaption { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: #c8a77d; margin: 16px 0; }
-.reviewProof { display: flex; align-items: center; gap: 14px; font-size: 12px; color: #c8a77d !important; }
-.reviewProof img { width: 76px; height: 58px; object-fit: cover; object-position: center; border: 1px solid #3e362c; }
+.reviews figcaption { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--gold); margin: 16px 0; }
+.reviewProof { display: flex; align-items: center; gap: 14px; font-size: 12px; color: var(--gold) !important; }
+.reviewProof img { width: 76px; height: 58px; object-fit: cover; object-position: center; border: 1px solid var(--line); }
 .reviewProof:hover span { text-decoration: underline; text-underline-offset: 4px; }
 .steps { list-style: none; margin: 32px 0 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 36px; }
 .steps > li { padding-top: 20px; border-top: 1px solid var(--line); }
@@ -129,30 +127,32 @@
 .section .paymentNote { font-size: 12px; color: var(--muted); margin-top: 24px; }
 .pricingLink { display: inline-block; padding: 10px 0; text-decoration: underline !important; text-underline-offset: 3px; }
 .inquiry { display: grid; grid-template-columns: .85fr 1.15fr; gap: 8%; align-items: start; }
-.inquiryCopy > p:not(.sectionLabel) { color: #cfc3b2; margin-top: 22px; max-width: 340px; }
+.inquiryCopy > p:not(.sectionLabel) { color: var(--muted); margin-top: 22px; max-width: 340px; }
 .inquiryCopy .inquiryNote { font-size: 14px; }
-.formPanel { background: #1b1712; padding: 28px; border: 1px solid #514432; min-width: 0; }
+.formPanel { background: var(--dark-card); padding: 28px; border: 1px solid var(--line); min-width: 0; }
 .formPanel :global([class*="checkTitle"]) { font-family: var(--font-cormorant), Georgia, serif; font-size: 30px; line-height: 1.2; margin-bottom: 22px; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
-.formPanel :global([class*="stepCount"]) { font-size: 11px; color: #bcb09f; margin-left: 0; white-space: nowrap; }
+.formPanel :global([class*="stepCount"]) { font-size: 11px; color: var(--muted); margin-left: 0; white-space: nowrap; }
 .formPanel :global([class*="checkField"]) label { font-size: 13px; }
 .formPanel :global([class*="checkRow"]) { gap: 18px 20px; }
 .formPanel :global([class*="checkField"]) input, .formPanel select { min-height: 48px; font-size: 16px; border-bottom-color: #97836a; }
+.paper .formPanel :global([class*="checkField"]) input, .paper .formPanel select { color-scheme: light; }
+.paper .formPanel :global([class*="checkField"]) input::placeholder { color: var(--muted); }
 .clean .formPanel :global([class*="checkButton"]) { min-height: 54px; padding: 14px 20px; font-size: 15px !important; background: #c8a77d; color: #201a12 !important; border-color: #c8a77d; margin-top: 24px; }
 .clean .formPanel :global([class*="checkButton"]):hover { background: #dfc39f; }
-.formPanel :global([class*="checkMicro"]) { font-size: 12px; line-height: 1.55; color: #bcb09f; margin-top: 14px; }
+.formPanel :global([class*="checkMicro"]) { font-size: 12px; line-height: 1.55; color: var(--muted); margin-top: 14px; }
 .formPanel :global([class*="group"]) { margin-bottom: 22px; }
 .formPanel :global([class*="group"]) legend { font-size: 13px; margin-bottom: 10px; }
 .formPanel :global([class*="chip"]) span { min-height: 44px; display: inline-flex; align-items: center; padding: 10px 12px; }
 .formPanel :global([class*="dateToggle"]) { min-height: 32px; margin-bottom: 0; }
-.formPanel .messageLinks { font-size: 12px; color: #bcb09f; margin-top: 22px; padding-top: 18px; border-top: 1px solid #514432; line-height: 1.7; }
-.messageLinks a { color: #c8a77d; text-decoration: underline !important; text-underline-offset: 3px; }
+.formPanel .messageLinks { font-size: 12px; color: var(--muted); margin-top: 22px; padding-top: 18px; border-top: 1px solid var(--line); line-height: 1.7; }
+.messageLinks a { color: var(--gold); text-decoration: underline !important; text-underline-offset: 3px; }
 .footer { max-width: 1440px; margin: auto; padding: 36px 6%; display: flex; align-items: center; justify-content: space-between; gap: 24px; border-top: 1px solid #3e362c; }
 .footer .brand { font-size: 29px; }
 .footer > div { display: flex; gap: 24px; font-size: 12px; color: #bcb09f; }
 .stickyCta { display: none; }
 
 @media (max-width: 1000px) {
-  .paper .portfolioStyles :global([class*="styleAlbums"]) { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .clean .portfolioStyles :global([class*="styleAlbums"]) { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .desktopBook { display: none; }
   .mobileBook { display: block; }
   .hero { gap: 4%; padding-top: 42px; }
@@ -165,8 +165,8 @@
   .inquiry { gap: 5%; }
 }
 @media (max-width: 760px) {
-  .paper .portfolioStyles :global([class*="styleAlbums"]) { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 26px 16px; }
-  .paper .portfolioStyles :global([class*="albumTitle"]) { font-size: 24px; }
+  .clean .portfolioStyles :global([class*="styleAlbums"]) { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 26px 16px; }
+  .clean .portfolioStyles :global([class*="albumTitle"]) { font-size: 24px; }
   .portfolioStyles :global([class*="albumDescription"]) { font-size: 11px; }
   .header { padding: 18px 6%; }
   .brand { font-size: 29px; }
@@ -198,9 +198,7 @@
   .workControls { padding-top: 10px; }
   .workControls p { font-size: 12px; }
   .workControls button { width: 44px; }
-  .albumBlock { margin-top: 30px; padding-top: 24px; }
-  .clean .albumBlock h3 { font-size: 28px; }
-  .albumBlock > p { font-size: 13px; margin-bottom: 16px; }
+  .portfolioStyles .portfolioLead { font-size: 13px; margin: 18px 0 24px; }
   .paper :global([class*="weddingAlbums"]) { grid-template-columns: repeat(3, minmax(0, 72vw)); gap: 16px; }
   .paper :global([class*="styleAlbums"]) { grid-template-columns: repeat(5, minmax(0, 65vw)); }
   .paper :global([class*="albumTitle"]) { font-size: 28px; }

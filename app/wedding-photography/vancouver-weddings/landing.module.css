@@ -127,6 +127,7 @@
 .clean .steps h3 { font-size: 29px; line-height: 1.15; margin: 12px 0; }
 .steps p { color: var(--muted); font-size: 15px; }
 .section .paymentNote { font-size: 12px; color: var(--muted); margin-top: 24px; }
+.pricingLink { display: inline-block; padding: 10px 0; text-decoration: underline !important; text-underline-offset: 3px; }
 .inquiry { display: grid; grid-template-columns: .85fr 1.15fr; gap: 8%; align-items: start; }
 .inquiryCopy > p:not(.sectionLabel) { color: #cfc3b2; margin-top: 22px; max-width: 340px; }
 .inquiryCopy .inquiryNote { font-size: 14px; }

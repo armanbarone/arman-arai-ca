@@ -2,7 +2,9 @@
 import { assertClientPortalAccess } from "@/lib/portal/portal-controls";
 import { revalidatePath } from "next/cache";
 import { requireBookingAccess, requireAdmin } from "@/lib/portal/auth";
-import { updateBooking } from "@/lib/portal/store";
+import { getBooking, updateBooking } from "@/lib/portal/store";
+import { APP_URL, BUSINESS } from "@/lib/portal/business";
+import { sendEmail, layout, esc } from "@/lib/portal/email";
 import {
   ensureWedding,
   templateFor,
@@ -92,6 +94,33 @@ export async function saveWeddingContractDetails(
       });
     });
     refresh(ref);
+    /* "Details sent to Arman" was only ever true of the booking record: it
+       wrote an event and nothing reached him, so a couple could fill their
+       whole contract in and he would find out by noticing a timestamp. */
+    if (submit && session.role !== "admin") {
+      try {
+        const current = await getBooking(ref);
+        const who = current?.clients.find(
+          (c) => c.email.toLowerCase() === session.email.toLowerCase(),
+        );
+        await sendEmail({
+          to: BUSINESS.email,
+          subject: `Contract details submitted · ${ref}`,
+          html: layout({
+            heading: `${esc(who?.preferredName || who?.legalName || session.email)} sent their contract details`,
+            bodyHtml: `<p>${esc(ref)}${current ? ` · ${esc(current.clients.map((c) => c.preferredName || c.legalName).join(" and "))}` : ""}. Review their venues, collection and quote, then approve them so the agreement can go out.</p>`,
+            button: {
+              label: "Review the details",
+              href: `${APP_URL}/admin/bookings/${ref}`,
+            },
+          }),
+          text: `Contract details submitted on ${ref} by ${session.email}.`,
+          idempotencyKey: `contract-details/${ref}/${updatedAt}`,
+        });
+      } catch {
+        // Their submission stands whether or not the studio copy sends.
+      }
+    }
     return {
       ok: true,
       updatedAt,

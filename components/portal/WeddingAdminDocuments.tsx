@@ -55,7 +55,22 @@ export default function WeddingAdminDocuments({
         <section key={stage} className="wp-doc-section">
           <h2>{stage}</h2>
           <div className="wp-doc-grid">
-            {WEDDING_TEMPLATES.filter((t) => t.stage === stage).map((t) => {
+            {WEDDING_TEMPLATES.filter(
+              (t) =>
+                t.stage === stage &&
+                /* The agreement is the contract: it is filled in, sent to every
+                   party to sign, and binding when the last signature lands. A
+                   separate proposal is no longer part of that, so it is not
+                   offered. It still appears where a real one was issued, so
+                   nothing already sent to a couple becomes unreachable. */
+                (t.key !== "proposal" ||
+                  w.documents.some(
+                    (d) =>
+                      d.templateKey === "proposal" &&
+                      !d.deletedAt &&
+                      d.status !== "draft",
+                  )),
+            ).map((t) => {
               const docs = w.documents.filter(
                   (d) => d.templateKey === t.key && !d.deletedAt,
                 ),

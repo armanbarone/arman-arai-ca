@@ -1585,3 +1585,109 @@ textarea.wp-input {
     grid-template-columns: 1fr;
   }
 }
+
+/* The sign-in task dialog (WeddingTaskPopup). Uses the portal's own tokens so
+   it matches the cards behind it, and goes full-bleed on a phone where a
+   centred box with margins wastes the only screen they have. */
+.wp-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgb(8 7 4 / 72%);
+  backdrop-filter: blur(6px);
+  animation: wp-modal-in 0.22s ease-out;
+}
+.wp-modal {
+  width: min(560px, 100%);
+  max-height: calc(100vh - 48px);
+  overflow-y: auto;
+  background: var(--surface);
+  border: 1px solid var(--accent-hover);
+  border-radius: 14px;
+  padding: 34px;
+  box-shadow: 0 24px 60px rgb(8 7 4 / 55%);
+}
+.wp-modal-eyebrow {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--accent);
+  margin-bottom: 12px !important;
+}
+.wp-modal-lead {
+  color: var(--muted);
+  margin-top: 10px !important;
+}
+.wp-modal-tasks {
+  list-style: none;
+  margin: 26px 0 0;
+  padding: 0;
+}
+.wp-modal-tasks li {
+  display: flex;
+  gap: 16px;
+  padding: 18px 0;
+  border-top: 1px solid var(--line);
+}
+.wp-modal-tasks li:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+.wp-modal-step {
+  flex: 0 0 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--button-ink);
+  font-size: 13px;
+  font-weight: 700;
+}
+.wp-modal-tasks a {
+  color: var(--ink);
+  font-size: 17px;
+  font-weight: 650;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.wp-modal-tasks a:hover {
+  color: var(--accent);
+}
+.wp-modal-tasks p {
+  color: var(--muted);
+  font-size: 14px;
+  margin-top: 5px;
+}
+.wp-modal-tasks small {
+  display: block;
+  margin-top: 6px;
+  font-size: 12px;
+  color: var(--accent);
+}
+.wp-modal-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 28px;
+}
+@keyframes wp-modal-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@media (max-width: 560px) {
+  .wp-modal-backdrop { padding: 0; place-items: end stretch; }
+  .wp-modal {
+    max-height: 92vh;
+    border-radius: 14px 14px 0 0;
+    padding: 26px 20px 24px;
+  }
+  .wp-modal-actions .wp-button { width: 100%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .wp-modal-backdrop { animation: none; }
+}

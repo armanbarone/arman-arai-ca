@@ -2,6 +2,7 @@
 import Link from "next/link";
 import WeddingMoodboard from "./WeddingMoodboard";
 import ClientPlanningChecklist from "./ClientPlanningChecklist";
+import WeddingTaskPopup from "./WeddingTaskPopup";
 import { useWeddingBooking } from "./WeddingPreviewProvider";
 import { Card, Eyebrow, buttonCls, ghostButtonCls, StatusPill } from "./Shell";
 import {
@@ -78,6 +79,11 @@ export default function WeddingDashboard({
   const first = tasks[0];
   return (
     <>
+      {/* What is waiting on this person, in front of them on sign-in. Same
+          nextActions list the page below renders, so the two cannot disagree. */}
+      {!preview && b.status !== "cancelled" && (
+        <WeddingTaskPopup tasks={tasks} names={names} />
+      )}
       <section className="wp-hero">
         <div>
           <Eyebrow>

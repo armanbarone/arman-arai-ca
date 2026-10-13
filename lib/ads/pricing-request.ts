@@ -16,7 +16,7 @@ import { TIERS, type Tier } from "../site";
    reference's error text into the header and closing buttons' hrefs. */
 export const FORM_ID = "get-pricing";
 /** Owner's date-focused CTA. FORM_ID preserves existing inquiry links. */
-export const CTA_LABEL = "Send us your date, I'll tell you within 2 minutes if I'm free";
+export const CTA_LABEL = "Send me your date, I'll tell you within 2 minutes if I'm free";
 
 export const PRICING_TIER_SLUGS = ["signature", "complete", "photo-film"] as const;
 export const pricingTiers = (): Tier[] => PRICING_TIER_SLUGS.map((slug) => TIERS.find((tier) => tier.slug === slug)!);

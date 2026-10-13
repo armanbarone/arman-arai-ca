@@ -5,6 +5,7 @@ import { ARMAN, CITY_PHOTOS } from "@/lib/images";
 import { SITE } from "@/lib/site";
 import type { WeddingCity } from "@/lib/ads/city-wedding-pages";
 import { cityWeddingMetadata } from "@/lib/ads/city-wedding-metadata";
+import { landingWorkPhotos } from "@/lib/ads/landing-work-selection";
 import { CTA_LABEL, FORM_ID, funnelCollections, pricingTiers, type PricingMarket } from "@/lib/ads/pricing-request";
 import { proofByN, proofSrc } from "@/lib/reviews";
 import HeroConveyor from "./HeroConveyor";
@@ -57,7 +58,7 @@ export default function WeddingsLanding({ city, market, path }: { city: WeddingC
   const phone = SITE.phone.replace(/^\+1\s*/, "");
   // The hub album where the city has one (lib/ads/hub-work.ts); otherwise its
   // own photographs, leaving out the scene-setting "places" frames.
-  const albumPhotos = (city.work?.photos ?? [...city.heroes, ...city.interlude.filter((photo) => !PLACES.has(photo.src))]).slice(1);
+  const albumPhotos = landingWorkPhotos(city.slug, city.work?.photos ?? [...city.heroes, ...city.interlude.filter((photo) => !PLACES.has(photo.src))]);
   return <div className={`${original.page} ${original.dark} ${styles.clean}`} data-landing-theme="dark" data-landing-city={city.slug}>
     <a className={original.skip} href="#main">Skip to content</a>
     <InquiryFunnel city={city.name} page={page} collections={funnelCollections()} phone={phone} phoneE164={SITE.phoneE164} travelNote={market.travelNote}>

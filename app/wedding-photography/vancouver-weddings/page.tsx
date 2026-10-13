@@ -4,6 +4,7 @@ import { ARMAN } from "@/lib/images";
 import { SITE } from "@/lib/site";
 import { weddingCityRoute } from "@/lib/ads/city-wedding-pages";
 import { cityWeddingMetadata } from "@/lib/ads/city-wedding-metadata";
+import { landingWorkPhotos } from "@/lib/ads/landing-work-selection";
 import { CTA_LABEL, FORM_ID, funnelCollections, pricingMarket, pricingTiers } from "@/lib/ads/pricing-request";
 import { proofByN, proofSrc } from "@/lib/reviews";
 import HeroConveyor from "../HeroConveyor";
@@ -68,7 +69,7 @@ export default function VancouverWeddings() {
           <SectionLabel number="01">The photographs</SectionLabel>
           <div className={styles.workIntro}>
             <div><h2 id="photographs-title">See how your day<br /><em>could feel.</em></h2><p>From Vancouver gardens to the Sea-to-Sky. Explore the photographs at your own pace.</p><div className={styles.shortNotes}><p><strong>Real moments.</strong> Space to be with your people.</p><p><strong>Relaxed portraits.</strong> Clear direction when you need it.</p></div></div>
-            <WorkAlbum photos={city.work!.photos.slice(1)} />
+            <WorkAlbum photos={landingWorkPhotos(city.slug, city.work!.photos)} />
           </div>
         </section>
 

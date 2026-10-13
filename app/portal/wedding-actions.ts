@@ -597,6 +597,41 @@ export async function signWeddingDocument(
         };
       }
     }
+    /* A single signature used to notify nobody: the studio heard nothing until
+       the last party signed and the PDF went out. Each signature is reported as
+       it happens, with who is still outstanding. */
+    try {
+      const latest = await getBooking(ref);
+      const doc = weddingData(latest!).documents.find((x) => x.id === id)!;
+      const signed = doc.signatures
+        .filter((x) => x.party === "client")
+        .map((x) => x.email.toLowerCase());
+      const waiting = doc.requiredEmails.filter(
+        (e) => !signed.includes(e.toLowerCase()),
+      );
+      const nameFor = (email: string) => {
+        const c = latest!.clients.find(
+          (x) => x.email.toLowerCase() === email.toLowerCase(),
+        );
+        return c ? c.preferredName || c.legalName : email;
+      };
+      await sendEmail({
+        to: BUSINESS.email,
+        subject: `${nameFor(session.email)} signed ${doc.title} · ${ref}`,
+        html: layout({
+          heading: `${esc(nameFor(session.email))} signed ${esc(doc.title.toLowerCase())}`,
+          bodyHtml: `<p>${esc(ref)}. Still waiting on ${esc(waiting.map(nameFor).join(" and "))}. It becomes binding when they sign, and the completed PDF goes to everyone.</p>`,
+          button: {
+            label: "Open the booking",
+            href: `${APP_URL}/admin/bookings/${ref}/documents`,
+          },
+        }),
+        text: `${nameFor(session.email)} signed ${doc.title} on ${ref}. Waiting on ${waiting.map(nameFor).join(", ")}.`,
+        idempotencyKey: `wedding-signed/${ref}/${id}/${session.email}`,
+      });
+    } catch {
+      // Their signature is recorded either way; the studio copy is not a gate.
+    }
     return {
       ok: true,
       message:
@@ -686,6 +721,32 @@ export async function saveWeddingForm(
       });
     });
     refresh(ref);
+    /* Submitting used to write an event and nothing else, so the studio only
+       found out by opening the booking and noticing a timestamp. */
+    if (submit && session.role !== "admin") {
+      try {
+        const b = await getBooking(ref);
+        const who = b?.clients.find(
+          (c) => c.email.toLowerCase() === session.email.toLowerCase(),
+        );
+        await sendEmail({
+          to: BUSINESS.email,
+          subject: `${t.title} submitted · ${ref}`,
+          html: layout({
+            heading: `${esc(who?.preferredName || who?.legalName || session.email)} submitted ${esc(t.title.toLowerCase())}`,
+            bodyHtml: `<p>${esc(ref)}${b ? ` · ${esc(b.clients.map((c) => c.preferredName || c.legalName).join(" and "))}` : ""}. Their answers are on the booking.</p>`,
+            button: {
+              label: "Read the answers",
+              href: `${APP_URL}/admin/bookings/${ref}/planning/${key}`,
+            },
+          }),
+          text: `${t.title} submitted on ${ref} by ${session.email}.`,
+          idempotencyKey: `wedding-form-submitted/${ref}/${key}/${updatedAt}`,
+        });
+      } catch {
+        // Never fail their submission because the studio's copy would not send.
+      }
+    }
     return {
       ok: true,
       updatedAt,

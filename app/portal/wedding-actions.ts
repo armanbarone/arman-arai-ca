@@ -34,7 +34,7 @@ import {
   OPERATION_REGISTERS,
   calculateBudgetRow,
 } from "@/lib/portal/operations";
-import { roundDiv } from "@/lib/portal/money";
+import { roundDiv, formatCad } from "@/lib/portal/money";
 import {
   documentSections,
   initialsForName,
@@ -778,6 +778,33 @@ export async function reportWeddingPayment(
       });
     });
     refresh(ref);
+    /* The one notification that cannot be skipped: an Interac transfer has no
+       webhook, so this click is the only signal that money may be on its way,
+       and nothing moves until Arman checks the bank and records it himself. */
+    try {
+      const current = await getBooking(ref);
+      const who = current?.clients.find(
+        (c) => c.email.toLowerCase() === session.email.toLowerCase(),
+      );
+      const inst = current?.schedule.find((i) => i.id === installmentId);
+      const owed = inst ? inst.totalCents - inst.paidCents : 0;
+      await sendEmail({
+        to: BUSINESS.email,
+        subject: `Interac reported sent · ${formatCad(owed)} · ${ref}`,
+        html: layout({
+          heading: `${esc(who?.preferredName || who?.legalName || session.email)} says they have sent an Interac transfer`,
+          bodyHtml: `<p>${esc(ref)} · ${esc(inst?.label || "an instalment")} · ${esc(formatCad(owed))} outstanding.</p><p><strong>Nothing has changed on their balance.</strong> Check the transfer has landed in the bank, then record it on the payments page with the amount and the transaction reference.</p>`,
+          button: {
+            label: "Record the payment",
+            href: `${APP_URL}/admin/bookings/${ref}/payments`,
+          },
+        }),
+        text: `${session.email} reported an Interac transfer on ${ref} for ${formatCad(owed)}. Confirm it in the bank and record it.`,
+        idempotencyKey: `aa-ca-etransfer/${ref}/${installmentId}/${new Date().toISOString().slice(0, 13)}`,
+      });
+    } catch {
+      // Their report is recorded regardless.
+    }
     return {
       ok: true,
       message:

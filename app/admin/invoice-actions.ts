@@ -22,6 +22,7 @@ import { renderInvoicePdf } from "@/lib/portal/invoice-pdf";
 import { templateFor } from "@/lib/portal/wedding";
 import { sendEmail, layout, esc, footerText } from "@/lib/portal/email";
 import { formatCad, formatDate } from "@/lib/portal/money";
+import { APP_URL, BUSINESS } from "@/lib/portal/business";
 import {
   connectStripe,
   paymentSetupStatus,
@@ -127,6 +128,28 @@ async function emailInvoice(ref: string, id: string) {
     const i = b.invoices?.find((x) => x.id === id);
     if (i) delete i.deliveryError;
   });
+
+  /* The studio's own copy. Issuing an invoice emailed the couple and left no
+     trace in Arman's inbox, so the only record he had of billing someone was
+     the booking page. */
+  try {
+    await sendEmail({
+      to: BUSINESS.email,
+      subject: `Invoice ${v.number} issued · ${formatCad(v.amountDueCents)} · ${ref}`,
+      html: layout({
+        heading: `Invoice ${esc(v.number)} is with ${esc(v.clients.map((c: { preferredName?: string; legalName: string }) => c.preferredName || c.legalName).join(" and "))}`,
+        bodyHtml: `<p><strong>${esc(formatCad(v.amountDueCents))} CAD</strong> for ${esc(v.label.toLowerCase())}, due ${esc(formatDate(v.dueDate))}. Emailed to ${esc(v.clients.map((c: { email: string }) => c.email).join(", "))}, with the PDF attached to their copy.</p><p>${v.cardEnabled ? "Card payment is enabled, so a card payment confirms itself." : "Card payment is off for this invoice."} An Interac transfer has to be confirmed by you before their balance moves.</p>`,
+        button: {
+          label: "Open payments",
+          href: `${APP_URL}/admin/bookings/${ref}/payments`,
+        },
+      }),
+      text: `Invoice ${v.number} issued on ${ref}: ${formatCad(v.amountDueCents)} due ${formatDate(v.dueDate)}.`,
+      idempotencyKey: `aa-ca-invoice-studio/${ref}/${id}/${v.number}`,
+    });
+  } catch {
+    // The couple have their invoice; the studio copy is not worth failing for.
+  }
 }
 export async function issueWeddingInvoice(
   ref: string,

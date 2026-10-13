@@ -1,7 +1,9 @@
 import "server-only";
 import Stripe from "stripe";
 import { getBooking, updateBooking, readJson, writeJson } from "./store";
-import { APP_URL } from "./business";
+import { APP_URL, BUSINESS } from "./business";
+import { sendEmail, layout, esc } from "./email";
+import { formatCad } from "./money";
 import { invoiceBalance, activeCheckouts, invoiceBasis } from "./billing";
 import { randomId } from "./token";
 const CONFIG = "billing/stripe-configuration.json";
@@ -284,6 +286,9 @@ export async function expireWeddingCheckouts(ref: string) {
 }
 export async function reconcileStripeSession(s: Stripe.Checkout.Session) {
   if (s.metadata?.portal !== "aa-ca-wedding" || !s.metadata.ref) return;
+  // Assigned inside the updateBooking callback, which control-flow analysis
+  // cannot see through, so it is read back through an explicitly typed const.
+  let notify: PaidNotice | null = null;
   const ref = s.metadata.ref;
   await updateBooking(ref, (b) => {
     const c = b.checkouts?.find((x) => x.id === s.id),
@@ -361,8 +366,57 @@ export async function reconcileStripeSession(s: Stripe.Checkout.Session) {
       actor: "system",
       detail: { invoiceId: v.id, sessionId: s.id, cents: c.amountCents },
     });
+    notify = {
+      cents: c.amountCents,
+      label: i?.label || v.label,
+      number: v.number,
+      who: b.clients.map((x) => x.preferredName || x.legalName).join(" and "),
+      outstanding: b.schedule.reduce(
+        (sum, x) =>
+          x.status === "void" ? sum : sum + Math.max(0, x.totalCents - x.paidCents),
+        0,
+      ),
+      needsReview,
+    };
   });
+
+  /* A card payment landed and nobody was told: it changed the booking and the
+     studio had to go looking. Stripe's own receipt goes to the payer; this is
+     the studio's. Outside the updateBooking callback, which must stay pure. */
+  const paid = notify as PaidNotice | null;
+  if (paid) {
+    try {
+      await sendEmail({
+        to: BUSINESS.email,
+        subject: `${formatCad(paid.cents)} paid · ${ref}${paid.needsReview ? " (needs review)" : ""}`,
+        html: layout({
+          heading: `${esc(paid.who)} paid ${esc(formatCad(paid.cents))}`,
+          bodyHtml: `<p>${esc(paid.label)} on invoice ${esc(paid.number)}, by card.${
+            paid.needsReview
+              ? " <strong>This one did not reconcile cleanly and needs review.</strong>"
+              : ""
+          }</p><p>Outstanding across the booking: ${esc(formatCad(paid.outstanding))}.</p>`,
+          button: {
+            label: "Open payments",
+            href: `${APP_URL}/admin/bookings/${ref}/payments`,
+          },
+        }),
+        text: `${paid.who} paid ${formatCad(paid.cents)} on ${ref}. Outstanding ${formatCad(paid.outstanding)}.`,
+        idempotencyKey: `aa-ca-paid/${ref}/${s.id}`,
+      });
+    } catch {
+      // The money is recorded; the studio copy is not worth a webhook retry.
+    }
+  }
 }
+type PaidNotice = {
+  cents: number;
+  label: string;
+  number: string;
+  who: string;
+  outstanding: number;
+  needsReview: boolean;
+};
 export async function syncStripeRefund(charge: Stripe.Charge) {
   const ref = charge.metadata?.ref;
   if (!ref || charge.metadata?.portal !== "aa-ca-wedding") return;

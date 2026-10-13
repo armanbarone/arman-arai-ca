@@ -221,27 +221,33 @@ export async function issueWeddingDocument(
           throw new Error(
             "The payment schedule must equal the contract total.",
           );
+        /* The agreement is the contract. It is filled in, sent to every party
+           to read and sign, and it becomes binding when the last of them
+           signs; the signed PDF then goes to all of them. A separately signed
+           proposal is not a precondition for any of that, and requiring one
+           meant filling in a whole contract and then being told to go and get
+           a second document signed first.
+
+           A proposal is still honoured where one exists: if the clients have
+           accepted one and it still matches this booking's dates, price and
+           payment schedule, it rides along as the appendix it always was. A
+           stale one is simply left off rather than blocking the contract. */
         const proposal = w.documents
           .filter(
             (x) => x.templateKey === "proposal" && x.status === "executed",
           )
           .at(-1);
-        if (!proposal)
-          throw new Error(
-            "The agreement attaches the accepted proposal as its appendix, so the proposal has to be signed by both clients first. Open Document system, then Proposal and scope, under Booking.",
-          );
-        if (
-          proposal.bookingHash !== (await sha256Hex(commercialFingerprint(b)))
-        )
-          throw new Error(
-            "The accepted proposal no longer matches this booking's dates, price or payment schedule. Open Document system, then Proposal and scope, and issue a fresh one for both clients to accept.",
-          );
-        d.attachmentIds = [proposal.id];
-        d.blocks = [
-          ...resolveBlocks(t, values),
-          { kind: "h", text: "Appendix — accepted proposal and scope" },
-          ...proposal.blocks,
-        ];
+        const fingerprint = await sha256Hex(commercialFingerprint(b));
+        const appendix =
+          proposal && proposal.bookingHash === fingerprint ? proposal : null;
+        d.attachmentIds = appendix ? [appendix.id] : [];
+        d.blocks = appendix
+          ? [
+              ...resolveBlocks(t, values),
+              { kind: "h", text: "Appendix — accepted proposal and scope" },
+              ...appendix.blocks,
+            ]
+          : resolveBlocks(t, values);
         b.status = "contract_sent";
       } else d.blocks = resolveBlocks(t, values);
       d.fields = values;
@@ -581,7 +587,7 @@ export async function signWeddingDocument(
         return {
           ok: true,
           message:
-            "All signatures are recorded. The completed PDF was emailed to both partners.",
+            "All signatures are recorded. This is now binding, and the completed PDF has been emailed to every party and to the studio.",
         };
       } catch {
         return {

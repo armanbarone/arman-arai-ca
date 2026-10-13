@@ -2,8 +2,8 @@ import { CTA_LABEL, FORM_ID, pricingTiers, type PricingMarket } from "@/lib/ads/
 import styles from "./vancouver-weddings/landing.module.css";
 
 export default function LandingPricing({ market }: { market: PricingMarket }) {
-  return <section id="collections" className={`${styles.section} ${styles.paper}`} aria-labelledby="collections-title">
-    <p className={styles.sectionLabel}><span>03</span>The collections</p>
+  return <section id="collections" className={`${styles.section} ${styles.ink}`} aria-labelledby="collections-title">
+    <p className={styles.sectionLabel}><span>04</span>The collections</p>
     <h2 id="collections-title">Choose your<br /><em>coverage.</em></h2>
     <p className={styles.includedLine}>Three collections, at the same price across Canada. All prices are in Canadian dollars, before sales tax. Optional add-ons are extra.</p>
     <div className={styles.priceGrid}>

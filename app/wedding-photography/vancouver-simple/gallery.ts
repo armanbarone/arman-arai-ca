@@ -1,5 +1,17 @@
 import { VANCOUVER_WORK, type WorkPhoto } from "@/lib/ads/hub-work";
 import { landingWorkPhotos } from "@/lib/ads/landing-work-selection";
+import { CITY_PHOTOS, CITY_WORK } from "@/lib/images";
+
+// Open with the six photographs from the Vancouver pricing page's hero,
+// in its original order. Dimensions preserve each full frame in the swipe rail.
+const opening: WorkPhoto[] = [
+  { ...CITY_PHOTOS.vancouver.hero, width: 1792, height: 2400 },
+  { ...CITY_WORK.vancouver[14], width: 1023, height: 1537 },
+  { ...CITY_WORK.vancouver[6], width: 1023, height: 1537 },
+  { ...CITY_WORK.vancouver[10], width: 1022, height: 1539 },
+  { ...CITY_WORK.vancouver[0], width: 1537, height: 1023 },
+  { ...CITY_WORK.vancouver[9], width: 1023, height: 1538 },
+];
 
 // Keep displayed photographs 01–11 from the existing Vancouver landing album.
 // Its displayed 12–16 stay out of this page; the original album is unchanged.
@@ -15,4 +27,4 @@ const added: WorkPhoto[] = [
   { src: `${folder}0009xc05.jpg`, alt: "A bride and groom sharing a clear umbrella on the steps between stone columns", width: 1004, height: 671 },
 ];
 
-export const VANCOUVER_SIMPLE_GALLERY: WorkPhoto[] = [...previous, ...added];
+export const VANCOUVER_SIMPLE_GALLERY: WorkPhoto[] = [...opening, ...previous, ...added];

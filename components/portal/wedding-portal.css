@@ -1729,3 +1729,59 @@ textarea.wp-input {
 @media (max-width: 760px) {
   .wp-lead-table { min-width: 860px; }
 }
+
+/* Studio dashboard: today's actions, and the diary. */
+.wp-today { margin-bottom: 24px; }
+.wp-today-clear { color: var(--muted); max-width: 62ch; }
+.wp-today-list { list-style: none; margin: 18px 0 0; padding: 0; }
+.wp-today-row {
+  display: flex; align-items: center; gap: 16px;
+  padding: 16px 0; border-top: 1px solid var(--line);
+}
+.wp-today-row:first-child { border-top: 0; padding-top: 0; }
+.wp-today-icon {
+  flex: 0 0 34px; height: 34px; display: grid; place-items: center;
+  border-radius: 8px; background: var(--surface-raised); color: var(--accent);
+  font-size: 15px; font-weight: 700;
+}
+.wp-today-row.is-overdue .wp-today-icon { background: var(--accent); color: var(--button-ink); }
+.wp-today-copy { flex: 1; min-width: 0; }
+.wp-today-copy a { font-weight: 650; text-decoration: underline; text-underline-offset: 3px; }
+.wp-today-copy small { display: block; font-size: 13px; color: var(--muted); margin-top: 3px; }
+.wp-today-actions { display: flex; align-items: center; gap: 14px; flex-shrink: 0; }
+.wp-followup-form {
+  display: grid; grid-template-columns: 1.4fr 1.6fr auto auto; gap: 14px;
+  align-items: end; margin: 18px 0 4px; padding: 18px;
+  background: var(--surface-soft); border: 1px solid var(--line); border-radius: 10px;
+}
+.wp-followup-form .wp-label { margin: 0; }
+
+.wp-calendar { display: flex; flex-direction: column; gap: 26px; margin-top: 18px; }
+.wp-cal-month > h3 { font-size: 15px; letter-spacing: 0.02em; margin-bottom: 12px; }
+.wp-cal-month > h3 span { color: var(--muted); font-weight: 400; }
+.wp-cal-month ul { list-style: none; margin: 0; padding: 0; }
+.wp-cal-row { border-top: 1px solid var(--line); }
+.wp-cal-row:first-child { border-top: 0; }
+.wp-cal-row > a, .wp-cal-row > div {
+  display: flex; align-items: center; gap: 18px; padding: 14px 0;
+}
+.wp-cal-row > a:hover { color: var(--accent); }
+.wp-cal-day { flex: 0 0 52px; text-align: center; }
+.wp-cal-day strong { display: block; font-size: 22px; line-height: 1.1; }
+.wp-cal-day small { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+.wp-cal-what { flex: 1; min-width: 0; font-weight: 600; }
+.wp-cal-what small { display: block; font-weight: 400; font-size: 12px; color: var(--muted); margin-top: 2px; }
+.wp-cal-tag {
+  flex-shrink: 0; font-size: 11px; font-weight: 700; letter-spacing: 0.06em;
+  text-transform: uppercase; padding: 5px 11px; border-radius: 40px;
+  border: 1px solid var(--line); color: var(--muted);
+}
+.wp-cal-tag.is-wedding { color: var(--button-ink); background: var(--accent); border-color: var(--accent); }
+.wp-cal-row.is-backup { opacity: 0.75; }
+
+@media (max-width: 760px) {
+  .wp-followup-form { grid-template-columns: 1fr; }
+  .wp-today-row { flex-wrap: wrap; }
+  .wp-today-copy { min-width: 180px; }
+  .wp-today-actions { margin-left: 50px; }
+}

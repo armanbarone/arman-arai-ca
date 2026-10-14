@@ -49,8 +49,8 @@ export default function WeddingStudioOverview({
     <>
       <div className="wp-heading-row">
         <div>
-          <Eyebrow>Canadian weddings · studio</Eyebrow>
-          <h1>Your weddings, at a glance.</h1>
+          <Eyebrow>Every wedding</Eyebrow>
+          <h2>Your weddings, at a glance.</h2>
           <p className="wp-lead">
             See what needs you, what needs the couple, and what’s already done.
           </p>
@@ -81,50 +81,6 @@ export default function WeddingStudioOverview({
           Stripe & email settings →
         </Link>
       </div>
-      <div className="wp-stats">
-        <div className="wp-stat">
-          <span>Active weddings</span>
-          <strong>{active.length}</strong>
-          <small>One private record per couple</small>
-        </div>
-        <div className="wp-stat">
-          <span>Needs your attention</span>
-          <strong>{attention.length}</strong>
-          <small>Drafts, submissions and payment checks</small>
-        </div>
-        <div className="wp-stat">
-          <span>Received</span>
-          <strong>{formatCad(paid)}</strong>
-          <small>Confirmed client payments</small>
-        </div>
-        <div className="wp-stat">
-          <span>Outstanding</span>
-          <strong>{formatCad(Math.max(0, total - paid))}</strong>
-          <small>Remaining across active bookings</small>
-        </div>
-      </div>
-      {attention.length > 0 && (
-        <Card className="wp-action-hero">
-          <div>
-            <span className="wp-action-number">STUDIO TO-DO</span>
-            <h2>{attention[0].action}</h2>
-            <p>
-              {attention[0].names} · {formatDate(attention[0].date)}
-            </p>
-          </div>
-          <Link
-            onClick={() => preview && context?.selectBooking(attention[0].ref)}
-            className={buttonCls}
-            href={
-              preview
-                ? "/portal/preview/admin/booking"
-                : `/admin/bookings/${attention[0].ref}`
-            }
-          >
-            Open wedding →
-          </Link>
-        </Card>
-      )}
       <div className="wp-filterbar">
         <div className="wp-tabs">
           {[

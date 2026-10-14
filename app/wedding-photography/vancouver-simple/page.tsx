@@ -1,7 +1,7 @@
 import Image from "next/image";
 import type { Metadata } from "next";
 import { Analytics } from "@vercel/analytics/next";
-import { ARMAN, DOCUMENTARY, DREAMY_FINE_ART, EDITORIAL, FILM } from "@/lib/images";
+import { ARMAN, DOCUMENTARY, DREAMY_FINE_ART, EDITORIAL } from "@/lib/images";
 import { galleryBySlug } from "@/lib/galleries";
 import { FORM_ID, funnelCollections, pricingMarket, pricingTiers } from "@/lib/ads/pricing-request";
 import { SITE } from "@/lib/site";
@@ -31,11 +31,11 @@ export const metadata: Metadata = {
   twitter: { card: "summary_large_image", title: "Vancouver Wedding Photography | Arman Arai", images: [topImage] },
 };
 
-// Editorial spread 4 opens at index 6; the film example is the first gallery frame.
+// Editorial spread 4 opens at index 6; 1980s Film uses the gallery's opening frame.
 const margauxOpening = galleryBySlug("margaux-antoine")!.chapters[0].images[0];
 const examples = [
   { label: "Editorial", photo: EDITORIAL[6] },
-  { label: "Film Inspired", photo: FILM[9] },
+  { label: "Film Photography", photo: { src: "https://cdn.armanarai.ca/Landing%20Page%20Pics/IMG-20260602-WA0000.jpg", alt: "A bride holding hands with a flower girl inside a church, lit by flash" } },
   { label: "1980s Film", photo: { src: margauxOpening.url, alt: margauxOpening.alt } },
   { label: "Dreamy Fine Art", photo: DREAMY_FINE_ART[6] },
   { label: "Documentary", photo: DOCUMENTARY[7] },

@@ -8,26 +8,22 @@ export default function HeroHeadline() {
 
   useEffect(() => {
     const text = heading.current;
-    const hero = text?.closest("figure");
-    if (!text || !hero) return;
+    if (!text) return;
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-    let frame = 0;
     const update = () => {
-      frame = 0;
-      const bounds = hero.getBoundingClientRect();
-      const shift = reducedMotion.matches ? 0 : Math.min(100, Math.max(0, -bounds.top) * 0.18);
+      // Movement starts with the first scroll, including while the header is
+      // still visible. Reduced motion keeps a shorter, directly linked drift.
+      const shift = Math.min(reducedMotion.matches ? 60 : 160, Math.max(0, window.scrollY) * (reducedMotion.matches ? 0.12 : 0.32));
       text.style.setProperty("--headline-shift", `${shift.toFixed(1)}px`);
     };
-    const schedule = () => { if (!frame) frame = requestAnimationFrame(update); };
     update();
-    window.addEventListener("scroll", schedule, { passive: true });
-    window.addEventListener("resize", schedule);
-    reducedMotion.addEventListener("change", schedule);
+    window.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update);
+    reducedMotion.addEventListener("change", update);
     return () => {
-      cancelAnimationFrame(frame);
-      window.removeEventListener("scroll", schedule);
-      window.removeEventListener("resize", schedule);
-      reducedMotion.removeEventListener("change", schedule);
+      window.removeEventListener("scroll", update);
+      window.removeEventListener("resize", update);
+      reducedMotion.removeEventListener("change", update);
     };
   }, []);
 

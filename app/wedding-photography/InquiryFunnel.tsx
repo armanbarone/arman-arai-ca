@@ -111,7 +111,9 @@ export default function InquiryFunnel({ children, collections, city, page, phone
 
 /* First contact needs names and an email. Wedding details are optional;
    collection choices can wait until the couple has read their guide. */
-export function InquiryForm({ city, market, page }: { city: string; market: string; page: string }) {
+export function InquiryForm({ city, market, page, variant = "standard", className }: {
+  city: string; market: string; page: string; variant?: "standard" | "minimal"; className?: string;
+}) {
   const send = useContext(FunnelContext);
   const [status, setStatus] = useState<"idle" | "sending" | "error">("idle");
   const [error, setError] = useState("");
@@ -182,36 +184,39 @@ export function InquiryForm({ city, market, page }: { city: string; market: stri
     }
   }
 
-  return <form className={styles.check} onSubmit={onSubmit} aria-labelledby="inq-title">
+  const minimal = variant === "minimal";
+  const namesField = <div className={[styles.checkField, styles.checkWide].join(" ")}>
+    <label htmlFor="inq-names">{minimal ? "Your name" : "Your names"}</label>
+    <input id="inq-names" name="names" type="text" required maxLength={80} autoComplete="name" placeholder={minimal ? "Your name" : "e.g. Sarah & James"} />
+  </div>;
+  const emailField = <div className={[styles.checkField, styles.checkWide].join(" ")}>
+    <label htmlFor="inq-email">{minimal ? "Your email" : "Email"}</label>
+    <input id="inq-email" name="email" type="email" required maxLength={100} autoComplete="email" />
+  </div>;
+  const dateField = <div className={styles.checkField}>
+    <label htmlFor="inq-date">{minimal ? "Your date" : <>Wedding date <span>Optional</span></>}</label>
+    <input id="inq-date" name="weddingDate" type="date" required={minimal} min={today || undefined} />
+  </div>;
+  const venueField = <div className={styles.checkField}>
+    <label htmlFor="inq-venue">{minimal ? "Your venue" : <>Venue or area <span>Optional</span></>}</label>
+    <input id="inq-venue" name="location" type="text" required={minimal} maxLength={90} placeholder={minimal ? "Venue, or still deciding" : "If you have somewhere in mind"} />
+  </div>;
+
+  return <form className={[styles.check, className].filter(Boolean).join(" ")} onSubmit={onSubmit} aria-labelledby={minimal ? "inquiry-title" : "inq-title"}>
     <input type="text" name="company" tabIndex={-1} autoComplete="off" aria-hidden="true" className={styles.honeypot} />
-    <p className={styles.checkTitle} id="inq-title">Let’s start with you</p>
+    {!minimal && <p className={styles.checkTitle} id="inq-title">Let’s start with you</p>}
     <div className={styles.checkRow}>
-      <div className={[styles.checkField, styles.checkWide].join(" ")}>
-        <label htmlFor="inq-names">Your names</label>
-        <input id="inq-names" name="names" type="text" required maxLength={80} autoComplete="name" placeholder="e.g. Sarah & James" />
-      </div>
-      <div className={[styles.checkField, styles.checkWide].join(" ")}>
-        <label htmlFor="inq-email">Email</label>
-        <input id="inq-email" name="email" type="email" required maxLength={100} autoComplete="email" />
-      </div>
-      <div className={styles.checkField}>
-        <label htmlFor="inq-date">Wedding date <span>Optional</span></label>
-        <input id="inq-date" name="weddingDate" type="date" min={today || undefined} />
-      </div>
-      <div className={styles.checkField}>
-        <label htmlFor="inq-venue">Venue or area <span>Optional</span></label>
-        <input id="inq-venue" name="location" type="text" maxLength={90} placeholder="If you have somewhere in mind" />
-      </div>
-      <div className={[styles.checkField, styles.checkWide].join(" ")}>
+      {minimal ? <>{namesField}{dateField}{venueField}{emailField}</> : <>{namesField}{emailField}{dateField}{venueField}</>}
+      {!minimal && <div className={[styles.checkField, styles.checkWide].join(" ")}>
         <label htmlFor="inq-note">Tell me a little about your plans <span>Optional</span></label>
         <textarea id="inq-note" name="note" maxLength={NOTE_MAX} rows={3} className={funnel.messageInput} placeholder="Share whatever you know so far, or ask a question." />
-      </div>
+      </div>}
     </div>
     {status === "error" && <p className={styles.checkError} role="alert">{error}</p>}
     <button className={styles.checkButton} type="submit" disabled={status === "sending"}>
       {status === "sending" ? "Sending…" : CTA_LABEL}<span aria-hidden="true">↗</span>
     </button>
-    <p className={styles.checkMicro}>Just your names and email are enough. Your guide opens when you send this and follows by email. <a href="/privacy-policy" target="_blank" rel="noopener noreferrer">Privacy policy</a>.</p>
+    <p className={styles.checkMicro}>{minimal ? "I’ll reply by email. " : "Just your names and email are enough. Your guide opens when you send this and follows by email. "}<a href="/privacy-policy" target="_blank" rel="noopener noreferrer">Privacy policy</a>.</p>
   </form>;
 }
 

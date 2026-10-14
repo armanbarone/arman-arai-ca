@@ -107,6 +107,15 @@ async function listPathnames(prefix: string): Promise<string[]> {
   return out;
 }
 
+/** Every JSON document under a prefix, with its etag, for small collections. */
+export async function listJson<T>(
+  prefix: string,
+): Promise<{ data: T; etag: string }[]> {
+  const paths = (await listPathnames(prefix)).filter((p) => p.endsWith(".json"));
+  const all = await Promise.all(paths.map((p) => readJson<T>(p)));
+  return all.filter((x): x is { data: T; etag: string } => !!x);
+}
+
 // ---------------------------------------------------------------- bookings
 
 const bookingPath = (ref: string) => `bookings/${ref}.json`;

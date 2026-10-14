@@ -5,6 +5,7 @@ import { WEDDING_CITIES } from "@/lib/ads/city-wedding-pages";
 import { autoReplyEnabled, sendInquiryAutoReply, type PricingInquiry } from "@/lib/auto-reply";
 import { createGuide, guidePath, guideUrl } from "@/lib/guide";
 import { leadSource, leadSourceBox, leadSourceTag } from "@/lib/lead-source";
+import { recordLead } from "@/lib/portal/leads";
 import { tierBySlug } from "@/lib/site";
 
 // The pricing-request auto-reply runs after the response, inside this
@@ -275,6 +276,38 @@ export async function POST(req: NextRequest) {
         ${body.message ? `<div style="margin-top:1.5rem;padding:1.25rem;background:#F7F3EC;border-left:2px solid #C9A89A;"><p style="margin:0 0 0.5rem;color:#A67268;font-size:0.75rem;text-transform:uppercase;">Message</p><p style="margin:0;line-height:1.7;">${escapeHtml(body.message)}</p></div>` : ""}
         <p style="margin-top:2rem;font-size:0.75rem;color:#6B7280;border-top:1px solid #EDE7DA;padding-top:1rem;">Sent via armanarai.ca</p>
       </div>`;
+
+    /* Keep the inquiry before trying to deliver it. An email that fails is a
+       lead Arman can still call; a lead nobody wrote down is gone. recordLead
+       swallows its own errors so the form can never fail because of this. */
+    after(() =>
+      recordLead({
+        receivedAt: new Date().toISOString(),
+        name: String(body.name ?? "").slice(0, 120),
+        partnerName: body.partnerName ? String(body.partnerName).slice(0, 120) : undefined,
+        email: String(body.email ?? "").trim().toLowerCase(),
+        phone: body.phone ? String(body.phone).slice(0, 40) : undefined,
+        source: source.label,
+        formType: type ?? "quick",
+        weddingDate: body.weddingDate ? String(body.weddingDate).slice(0, 40) : undefined,
+        market: body.market ? String(body.market).slice(0, 80) : undefined,
+        venue: body.venue ? String(body.venue).slice(0, 160) : undefined,
+        guestCount: body.guestCount ? String(body.guestCount).slice(0, 40) : undefined,
+        collection: body.collection ? String(body.collection).slice(0, 80) : undefined,
+        message: body.message ? String(body.message).slice(0, 4000) : undefined,
+        attribution: {
+          utmSource: body.utm_source ?? undefined,
+          utmMedium: body.utm_medium ?? undefined,
+          utmCampaign: body.utm_campaign ?? undefined,
+          utmContent: body.utm_content ?? undefined,
+          utmTerm: body.utm_term ?? undefined,
+          gclid: body.gclid ?? undefined,
+          fbclid: body.fbclid ?? undefined,
+          landingPage: body.page ?? undefined,
+          referrer: body.referrer ?? undefined,
+        },
+      }),
+    );
 
     let sent = false;
     // Resend is the site's primary email provider. Retain the existing webhook

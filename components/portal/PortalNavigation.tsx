@@ -24,58 +24,63 @@ export default function PortalNavigation({
         ],
         [
           "02",
+          "Inquiries",
+          preview ? "/portal/preview/admin" : "/admin/inquiries",
+        ],
+        [
+          "03",
           "New wedding",
           preview ? "/portal/preview/admin/new" : "/admin/bookings/new",
         ],
         [
-          "03",
+          "04",
           "All invoices",
           preview ? "/portal/preview/admin/invoices" : "/admin/invoices",
         ],
         [
-          "04",
+          "05",
           "Payment settings",
           preview
             ? "/portal/preview/admin/payment-settings"
             : "/admin/payment-settings",
         ],
         [
-          "05",
+          "06",
           "Document library",
           preview ? "/portal/preview/admin/library" : "/admin/library",
         ],
         ...(activeRef
           ? [
               [
-                "06",
+                "07",
                 "Wedding workspace",
                 preview
                   ? "/portal/preview/admin/booking"
                   : `/admin/bookings/${activeRef}`,
               ],
               [
-                "07",
+                "08",
                 "Client dashboard & access",
                 preview
                   ? "/portal/preview/admin/portal"
                   : `/admin/bookings/${activeRef}/portal`,
               ],
               [
-                "08",
+                "09",
                 "Contract & collection",
                 preview
                   ? "/portal/preview/admin/agreement"
                   : `/admin/bookings/${activeRef}/agreement`,
               ],
               [
-                "09",
+                "10",
                 "Invoices & payments",
                 preview
                   ? "/portal/preview/admin/payments"
                   : `/admin/bookings/${activeRef}/payments`,
               ],
               [
-                "10",
+                "11",
                 "Operations workbook",
                 preview
                   ? "/portal/preview/admin/operations"

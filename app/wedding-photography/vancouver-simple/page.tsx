@@ -2,14 +2,19 @@ import Image from "next/image";
 import type { Metadata } from "next";
 import { Analytics } from "@vercel/analytics/next";
 import { ANALOGUE, ARMAN, DOCUMENTARY, DREAMY_FINE_ART, EDITORIAL, FILM } from "@/lib/images";
-import { FORM_ID, funnelCollections, pricingMarket } from "@/lib/ads/pricing-request";
+import { FORM_ID, funnelCollections, pricingMarket, pricingTiers } from "@/lib/ads/pricing-request";
 import { SITE } from "@/lib/site";
+import { proofByN, proofSrc } from "@/lib/reviews";
 import InquiryFunnel, { InquiryForm } from "../InquiryFunnel";
+import HeroHeadline from "./HeroHeadline";
+import GalleryRail from "./GalleryRail";
+import { VANCOUVER_SIMPLE_GALLERY } from "./gallery";
 import styles from "./page.module.css";
 
 const path = "/wedding-photography/vancouver-simple";
 const topImage = "https://cdn.armanarai.ca/Landing%20Page%20Pics/TOP%20IMAGE.png";
 const market = pricingMarket("vancouver")!;
+const from = Math.min(...pricingTiers().map((tier) => tier.price));
 
 export const metadata: Metadata = {
   title: { absolute: "Vancouver Wedding Photography | Arman Arai" },
@@ -36,26 +41,29 @@ const examples = [
 
 // These excerpts are transcribed in lib/reviews.ts from the published originals.
 const reviews = [
-  { who: "Jennifer", quote: "We just went through the preview gallery and we are OBSESSED!" },
-  { who: "Megan", quote: "I did not expect to get emotional over the album but here we are." },
-  { who: "Brianna", quote: "It’s everything I ever wanted and more." },
+  { n: 2, who: "Jennifer", quote: "We just went through the preview gallery and we are OBSESSED!" },
+  { n: 3, who: "Megan", quote: "I did not expect to get emotional over the album but here we are." },
+  { n: 5, who: "Brianna", quote: "It’s everything I ever wanted and more." },
 ];
 
 export default function VancouverSimplePage() {
   return <div className={styles.page} data-landing-city="vancouver" data-landing-variant="minimal">
     <InquiryFunnel collections={funnelCollections()} city="Vancouver" page={path.slice(1)} phone={SITE.phone.replace(/^\+1\s*/, "")} phoneE164={SITE.phoneE164} travelNote={market.travelNote}>
       <header className={styles.header}>
-        <p className={styles.brand}>Arman Arai<span>Wedding photography</span></p>
+        <p className={styles.brand}>Arman Arai<span>Vancouver wedding photography</span></p>
+        <p className={styles.startingPrice}>Collections start from ${from.toLocaleString("en-CA")}<span>CAD · before tax</span></p>
       </header>
       <main>
         <figure className={styles.hero}>
           <Image src={topImage} alt="A bride and groom close together in warm light, seen through reflections" width={2016} height={1344} priority sizes="(max-width: 1440px) 100vw, 1440px" quality={85} />
+          <span className={styles.heroShade} aria-hidden="true" />
+          <HeroHeadline />
         </figure>
 
         <section className={styles.forYou} aria-labelledby="for-you-title">
           <div className={styles.intro}>
             <p className={styles.eyebrow}>Who is this for?</p>
-            <h1 id="for-you-title">For couples who desire to be themselves,<br className={styles.desktopBreak} /> <em>and a bit more.</em></h1>
+            <h2 id="for-you-title">For couples who desire to be themselves,<br className={styles.desktopBreak} /> <em>and a bit more.</em></h2>
             <p className={styles.lead}>I capture your day in five different ways, from honest moments to artful portraits.</p>
           </div>
           <div className={styles.examples}>
@@ -79,11 +87,16 @@ export default function VancouverSimplePage() {
           </div>
         </section>
 
+        <section className={styles.gallery} aria-labelledby="gallery-title">
+          <div className={styles.galleryIntro}><h2 id="gallery-title">Your day, <em>in Vancouver.</em></h2><p id="gallery-hint">Swipe to explore · {VANCOUVER_SIMPLE_GALLERY.length} photographs</p></div>
+          <GalleryRail photos={VANCOUVER_SIMPLE_GALLERY} />
+        </section>
+
         <section className={styles.reviews} aria-labelledby="reviews-title">
           <div className={styles.sectionInner}>
             <p className={styles.eyebrow}>From the couples</p>
             <h2 id="reviews-title">In their words.</h2>
-            <div className={styles.quotes}>{reviews.map(({ who, quote }) => <figure key={who}><blockquote>“{quote}”</blockquote><figcaption>{who}</figcaption></figure>)}</div>
+            <div className={styles.quotes}>{reviews.map(({ n, who, quote }) => { const proof = proofByN(n); return <figure key={who}><blockquote>“{quote}”</blockquote><figcaption>{who}</figcaption><Image className={styles.reviewImage} src={proofSrc(n)} alt={proof.alt} width={proof.w} height={proof.h} sizes="(max-width: 700px) calc(100vw - 48px), 360px" quality={85} /></figure>; })}</div>
           </div>
         </section>
 

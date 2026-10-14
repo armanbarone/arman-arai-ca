@@ -28,9 +28,10 @@
 .startingPrice span { display: block; margin-top: 2px; color: var(--muted); font-size: 9px; letter-spacing: .05em; }
 .hero { position: relative; max-width: 1440px; height: clamp(480px, 74svh, 640px); margin-inline: auto !important; overflow: hidden; isolation: isolate; }
 .hero img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 57% center; }
-.heroShade { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(16,14,11,.16), rgba(16,14,11,.58) 35%, rgba(16,14,11,.58) 83%, rgba(16,14,11,.18)); }
+.heroShade { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(16,14,11,.08), rgba(16,14,11,.16)); }
 .heroCaption { position: absolute; inset: 0; display: grid; place-items: center; padding: 24px; }
-.page .heroHeadline { max-width: 90%; font-size: clamp(46px, 13vw, 78px); font-weight: 500; line-height: .98; letter-spacing: -.025em; text-align: center; color: #fff6e7; text-shadow: 0 2px 4px rgba(0,0,0,.8), 0 6px 26px rgba(0,0,0,.6); transform: translate3d(0, var(--headline-shift, 0px), 0); will-change: transform; }
+.page .heroHeadline { position: relative; isolation: isolate; max-width: 72%; font-size: clamp(32px, 9vw, 42px); font-weight: 500; line-height: 1.08; letter-spacing: -.025em; text-align: center; color: #fff6e7; text-shadow: 0 1px 2px rgba(0,0,0,.95), 0 3px 14px rgba(0,0,0,.85); transform: translate3d(0, var(--headline-shift, 0px), 0); will-change: transform; }
+.heroHeadline::before { content: ""; position: absolute; inset: -22px -30px; z-index: -1; pointer-events: none; background: radial-gradient(ellipse, rgba(16,14,11,.48) 40%, rgba(16,14,11,.22) 65%, transparent 85%); filter: blur(9px); }
 .heroHeadline span, .heroHeadline em { display: block; }
 .heroHeadline em { color: #ead2b2; }
 .forYou { background: #f4f0e7; color: #242019; padding: 52px 20px 48px; }
@@ -94,7 +95,7 @@
   .brand { font-size: 38px; }
   .hero { height: min(76svh, 820px); min-height: 540px; }
   .hero img { object-position: center 45%; }
-  .page .heroHeadline { font-size: clamp(78px, 8vw, 112px); }
+  .page .heroHeadline { font-size: clamp(44px, 4.3vw, 58px); }
   .forYou { padding: 72px 5% 64px; }
   .desktopBreak { display: initial; }
   .examples { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 32px 20px; margin-top: 42px; }
@@ -111,5 +112,5 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .page * { scroll-behavior: auto; }
-  .page .heroHeadline { transform: none; will-change: auto; }
+  .page .heroHeadline { will-change: auto; }
 }

@@ -1,5 +1,6 @@
 import { after, NextRequest, NextResponse } from "next/server";
-import { checkWeddingDate, checkWeddingDateLive } from "@/lib/wedding-availability";
+import { checkWeddingDate } from "@/lib/wedding-availability";
+import { checkWeddingDateLive } from "@/lib/wedding-availability-server";
 import { BUDGET_OPTIONS, COVERAGE_OPTIONS, GUEST_OPTIONS, SEASON_PATTERN, SETUP_OPTIONS, cleanDayDetails, labelOf, pricingMarket, priorityLabels, recommendCollection, weekdayOf } from "@/lib/ads/pricing-request";
 import { WEDDING_CITIES } from "@/lib/ads/city-wedding-pages";
 import { autoReplyEnabled, sendInquiryAutoReply, type PricingInquiry } from "@/lib/auto-reply";

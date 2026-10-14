@@ -1,5 +1,5 @@
 import { after, NextRequest, NextResponse } from "next/server";
-import { checkWeddingDate } from "@/lib/wedding-availability";
+import { checkWeddingDate, checkWeddingDateLive } from "@/lib/wedding-availability";
 import { BUDGET_OPTIONS, COVERAGE_OPTIONS, GUEST_OPTIONS, SEASON_PATTERN, SETUP_OPTIONS, cleanDayDetails, labelOf, pricingMarket, priorityLabels, recommendCollection, weekdayOf } from "@/lib/ads/pricing-request";
 import { WEDDING_CITIES } from "@/lib/ads/city-wedding-pages";
 import { autoReplyEnabled, sendInquiryAutoReply, type PricingInquiry } from "@/lib/auto-reply";
@@ -68,7 +68,7 @@ export async function POST(req: NextRequest) {
     // accepts names and email alone. Any supplied date is validated, then
     // its availability is used in the email only.
     const isInquiry = type === "wedding-inquiry";
-    const availability = isDateCheck ? checkWeddingDate(body.weddingDate) : null;
+    const availability = isDateCheck ? await checkWeddingDateLive(body.weddingDate) : null;
     if (availability && "error" in availability) {
       return NextResponse.json({ error: availability.error }, { status: 400 });
     }
@@ -113,7 +113,7 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ error: "Please choose your coverage and your budget." }, { status: 400 });
       }
       if (body.weddingDate) {
-        const valid = checkWeddingDate(body.weddingDate);
+        const valid = await checkWeddingDateLive(body.weddingDate);
         if ("error" in valid) return NextResponse.json({ error: valid.error }, { status: 400 });
       } else if (body.weddingSeason && !(typeof body.weddingSeason === "string" && SEASON_PATTERN.test(body.weddingSeason))) {
         return NextResponse.json({ error: "Please choose a valid wedding season." }, { status: 400 });
@@ -125,7 +125,7 @@ export async function POST(req: NextRequest) {
       const day = cleanDayDetails(body);
       // Date checking is back, in the email only (owner, 2026-10-02): the
       // booked list in lib/wedding-availability.ts says open or booked.
-      const dateCheck = body.weddingDate ? checkWeddingDate(body.weddingDate) : null;
+      const dateCheck = body.weddingDate ? await checkWeddingDateLive(body.weddingDate) : null;
       const dateStatus = dateCheck && "availability" in dateCheck ? (dateCheck.availability === "unavailable" ? "booked" as const : "open" as const) : undefined;
       const recommendation = recommendCollection(coverage.value, budget.value, day);
       const fit = tierBySlug(recommendation.slug)!;

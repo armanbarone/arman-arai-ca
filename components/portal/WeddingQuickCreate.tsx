@@ -2,6 +2,7 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { saveBookingAction, sendInviteAction } from "@/app/admin/actions";
+import { linkLeadToBooking } from "@/app/admin/lead-actions";
 import { blankBookingInput } from "@/lib/portal/blank";
 import {
   PACKAGES,
@@ -31,12 +32,18 @@ import { useWeddingPreview } from "./WeddingPreviewProvider";
 import { Card, Eyebrow, buttonCls } from "./Shell";
 export default function WeddingQuickCreate({
   preview = false,
+  prefill,
+  fromLeadId,
 }: {
   preview?: boolean;
+  /** Carried over from an inquiry, so nothing is typed twice. */
+  prefill?: Partial<ReturnType<typeof blankBookingInput>>;
+  /** The inquiry this came from, linked to the wedding once it exists. */
+  fromLeadId?: string;
 }) {
   const router = useRouter(),
     context = useWeddingPreview(),
-    [value, setValue] = useState(blankBookingInput()),
+    [value, setValue] = useState(() => ({ ...blankBookingInput(), ...prefill })),
     [invite, setInvite] = useState(false),
     [error, setError] = useState(""),
     [pending, start] = useTransition();
@@ -143,6 +150,9 @@ export default function WeddingQuickCreate({
         setError(result.error);
         return;
       }
+      // The inquiry becomes the wedding: marked booked and pointed at it, so
+      // the tracker's close rate and value stop needing to be typed in twice.
+      if (fromLeadId) await linkLeadToBooking(fromLeadId, result.ref);
       if (invite) {
         const replies = await Promise.all(
           value.clients.map((c) => sendInviteAction(result.ref, c.email)),

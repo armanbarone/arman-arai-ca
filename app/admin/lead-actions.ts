@@ -158,3 +158,28 @@ export async function importLeads(
     return fail(e);
   }
 }
+
+/**
+ * An inquiry became a wedding. Called the moment the booking is created, so
+ * the tracker's booked count, close rate and value follow the real thing
+ * instead of waiting to be typed in again.
+ */
+export async function linkLeadToBooking(
+  leadId: string,
+  bookingRef: string,
+): Promise<Result> {
+  await requireAdmin();
+  try {
+    await updateLead(leadId, (l) => {
+      l.bookingRef = bookingRef;
+      l.booked = true;
+      l.consult = true;
+      l.stage = "booked";
+    });
+    revalidatePath("/admin");
+    revalidatePath("/admin/inquiries");
+    return { ok: true, message: `Linked to ${bookingRef}.` };
+  } catch (e) {
+    return fail(e);
+  }
+}

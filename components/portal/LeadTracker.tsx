@@ -226,7 +226,16 @@ export default function LeadTracker({ leads: initial }: { leads: Lead[] }) {
               <label className="wp-label is-wide">Notes<textarea className="wp-input" rows={3} defaultValue={l.notes ?? ""} onBlur={(e) => patch(l.id, { notes: e.target.value })} /></label>
             </div>
             <div className="wp-toolbar">
-              {l.bookingRef && <Link className={ghostButtonCls} href={`/admin/bookings/${l.bookingRef}`}>Open the wedding →</Link>}
+              {l.bookingRef ? (
+                <Link className={ghostButtonCls} href={`/admin/bookings/${l.bookingRef}`}>Open the wedding →</Link>
+              ) : (
+                /* The handover. Their names, email, phone, date and place go
+                   across, and this inquiry is marked booked and linked to the
+                   wedding the moment it is created. */
+                <Link className={buttonCls} href={`/admin/bookings/new?from=${l.id}`}>
+                  Start a wedding from this inquiry →
+                </Link>
+              )}
               <button className="wp-text-button" disabled={pending}
                 onClick={() => start(async () => {
                   const r = await removeLead(l.id);

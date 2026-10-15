@@ -155,6 +155,17 @@ export default function WeddingStudioOverview({
                       >
                         Manage →
                       </Link>
+                      {/* Deleting a wedding is guarded in the action itself, so
+                          the link only has to make it findable. It was three
+                          screens inside the booking before. */}
+                      {!preview && (
+                        <Link
+                          className="wp-text-button wp-danger wp-row-delete"
+                          href={`/admin/bookings/${r.ref}/portal#delete`}
+                        >
+                          Delete
+                        </Link>
+                      )}
                     </td>
                   </tr>
                 ))}

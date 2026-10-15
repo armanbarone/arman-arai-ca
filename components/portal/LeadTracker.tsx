@@ -3,7 +3,7 @@
 import { useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { saveLead, removeLead, addLeadByHand } from "@/app/admin/lead-actions";
+import { saveLead, removeLead, removeLeads, addLeadByHand } from "@/app/admin/lead-actions";
 import { LEAD_STAGES, type Lead, type LeadStage } from "@/lib/portal/lead-types";
 import { formatCad } from "@/lib/portal/money";
 import { Card, Eyebrow, buttonCls, ghostButtonCls } from "./Shell";
@@ -47,6 +47,11 @@ export default function LeadTracker({ leads: initial }: { leads: Lead[] }) {
   const [q, setQ] = useState("");
   const [open, setOpen] = useState<string | null>(null);
   const [adding, setAdding] = useState(false);
+  // Selection, so a run of test submissions goes in one go rather than one
+  // buried text button at a time.
+  const [picked, setPicked] = useState<string[]>([]);
+  const toggle = (id: string) =>
+    setPicked((p) => (p.includes(id) ? p.filter((x) => x !== id) : [...p, id]));
   const [draft, setDraft] = useState({
     name: "", email: "", receivedAt: new Date().toISOString().slice(0, 10),
     source: "Referral", phone: "", weddingDate: "", message: "",
@@ -122,6 +127,23 @@ export default function LeadTracker({ leads: initial }: { leads: Lead[] }) {
         </select>
         <button className={ghostButtonCls} onClick={download} disabled={!rows.length}>Export CSV</button>
         <button className={ghostButtonCls} onClick={() => setAdding((v) => !v)}>{adding ? "Close" : "Add one by hand"}</button>
+        {picked.length > 0 && (
+          <button
+            className={ghostButtonCls}
+            disabled={pending}
+            onClick={() => {
+              if (!confirm(`Delete ${picked.length} inquir${picked.length === 1 ? "y" : "ies"}? This cannot be undone.`)) return;
+              start(async () => {
+                const r = await removeLeads(picked);
+                if (!r.ok) { setError(r.error); return; }
+                setPicked([]);
+                router.refresh();
+              });
+            }}
+          >
+            Delete {picked.length} selected
+          </button>
+        )}
       </div>
 
       {error && <div className="wp-message wp-message-error" role="alert">{error}</div>}
@@ -161,6 +183,14 @@ export default function LeadTracker({ leads: initial }: { leads: Lead[] }) {
           <table className="wp-table wp-lead-table">
             <thead>
               <tr>
+                <th className="wp-pick-col">
+                  <input
+                    type="checkbox"
+                    aria-label="Select every inquiry shown"
+                    checked={picked.length > 0 && picked.length === rows.length}
+                    onChange={(e) => setPicked(e.target.checked ? rows.map((r) => r.id) : [])}
+                  />
+                </th>
                 <th>Date</th><th>Name</th><th>Source</th><th>Wedding date</th>
                 <th>Consult</th><th>Booked</th><th>Value</th><th>Stage</th><th />
               </tr>
@@ -168,6 +198,14 @@ export default function LeadTracker({ leads: initial }: { leads: Lead[] }) {
             <tbody>
               {rows.map((l) => (
                 <tr key={l.id} className={l.booked ? "is-booked" : l.stage === "lost" ? "is-lost" : undefined}>
+                  <td className="wp-pick-col">
+                    <input
+                      type="checkbox"
+                      aria-label={`Select ${l.name}`}
+                      checked={picked.includes(l.id)}
+                      onChange={() => toggle(l.id)}
+                    />
+                  </td>
                   <td>{day(l.receivedAt)}</td>
                   <td>
                     <strong>{l.name}{l.partnerName ? ` & ${l.partnerName}` : ""}</strong>
@@ -190,7 +228,24 @@ export default function LeadTracker({ leads: initial }: { leads: Lead[] }) {
                       {LEAD_STAGES.map((s) => <option key={s.key} value={s.key}>{s.label}</option>)}
                     </select>
                   </td>
-                  <td><button className="wp-text-button" onClick={() => setOpen(open === l.id ? null : l.id)}>{open === l.id ? "Close" : "Open"}</button></td>
+                  <td className="wp-row-actions">
+                    <button className="wp-text-button" onClick={() => setOpen(open === l.id ? null : l.id)}>{open === l.id ? "Close" : "Open"}</button>
+                    <button
+                      className="wp-text-button wp-danger"
+                      disabled={pending}
+                      onClick={() => {
+                        if (!confirm(`Delete ${l.name}'s inquiry? This cannot be undone.`)) return;
+                        start(async () => {
+                          const r = await removeLead(l.id);
+                          if (!r.ok) { setError(r.error); return; }
+                          if (open === l.id) setOpen(null);
+                          router.refresh();
+                        });
+                      }}
+                    >
+                      Delete
+                    </button>
+                  </td>
                 </tr>
               ))}
             </tbody>

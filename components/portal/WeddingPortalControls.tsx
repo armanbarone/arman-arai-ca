@@ -489,7 +489,7 @@ export default function WeddingPortalControls({
                 issued document or an invoice on it, so a real wedding cannot
                 be destroyed by typing a reference into the wrong box. */}
             <hr className="wp-divider" />
-            <h3>Delete this wedding</h3>
+            <h3 id="delete">Delete this wedding</h3>
             <p>
               Deleting destroys the booking, its documents and its stored files
               for good. There is no undo. A wedding that has taken a payment,

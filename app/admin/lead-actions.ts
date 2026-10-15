@@ -183,3 +183,27 @@ export async function linkLeadToBooking(
     return fail(e);
   }
 }
+
+/** Clear out several at once, which is what a run of test submissions needs. */
+export async function removeLeads(ids: string[]): Promise<Result> {
+  await requireAdmin();
+  try {
+    let gone = 0;
+    for (const id of ids) {
+      try {
+        await deleteLead(id);
+        gone++;
+      } catch {
+        // One that has already vanished should not stop the rest.
+      }
+    }
+    revalidatePath("/admin");
+    revalidatePath("/admin/inquiries");
+    return {
+      ok: true,
+      message: `${gone} inquir${gone === 1 ? "y" : "ies"} removed.`,
+    };
+  } catch (e) {
+    return fail(e);
+  }
+}

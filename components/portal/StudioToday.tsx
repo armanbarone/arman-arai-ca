@@ -7,6 +7,7 @@ import {
   addFollowUp,
   setFollowUpDone,
   snoozeFollowUp,
+  removeFollowUp,
 } from "@/app/admin/followup-actions";
 import { QUICK_FOLLOW_UPS, type FollowUpSubject } from "@/lib/portal/followup-types";
 import { buttonCls, ghostButtonCls, Card, Eyebrow } from "./Shell";
@@ -162,6 +163,16 @@ export default function StudioToday({
                       onClick={() => run(() => snoozeFollowUp(a.followUpId!, 3))}
                     >
                       +3d
+                    </button>
+                    <button
+                      className="wp-text-button wp-danger"
+                      disabled={pending}
+                      onClick={() => {
+                        if (!confirm("Delete this follow-up?")) return;
+                        run(() => removeFollowUp(a.followUpId!));
+                      }}
+                    >
+                      Delete
                     </button>
                   </>
                 ) : (

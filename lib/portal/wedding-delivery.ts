@@ -28,6 +28,7 @@ async function sendSignedWeddingDocument(ref: string, id: string) {
       BUSINESS.email,
     ]),
   ];
+  const failures: string[] = [];
   for (const email of recipients) {
     const latest = await getBooking(ref);
     const current = weddingData(latest!).documents.find((x) => x.id === id)!;
@@ -51,7 +52,9 @@ async function sendSignedWeddingDocument(ref: string, id: string) {
             content: pdf,
           },
         ],
-        idempotencyKey: `wedding-signed/${ref}/${id}/${email}`,
+        // The hash pins the key to this exact version of the document, so a
+        // withdrawn and re-issued agreement can never reuse the old one.
+        idempotencyKey: `wedding-signed/${ref}/${id}/${(d.hash ?? "nohash").slice(0, 12)}/${email}`,
       });
       if (!sent.id)
         throw new Error(
@@ -65,17 +68,23 @@ async function sendSignedWeddingDocument(ref: string, id: string) {
         };
       });
     } catch (err) {
+      /* Record it and keep going. Throwing here meant the first address that
+         failed stopped every other party receiving their own signed contract,
+         which is how a whole delivery was lost to one rejected key. */
+      failures.push(
+        `${email}: ${err instanceof Error ? err.message : "delivery failed"}`,
+      );
       await updateBooking(ref, (b) => {
         const x = ensureWedding(b).documents.find((x) => x.id === id)!;
-        x.deliveryError =
-          err instanceof Error ? err.message : "Email delivery failed";
+        x.deliveryError = failures.join(" · ");
       });
-      throw err;
     }
   }
+  if (failures.length === recipients.length)
+    throw new Error(`No copy could be delivered. ${failures.join(" · ")}`);
   await updateBooking(ref, (b) => {
     const x = ensureWedding(b).documents.find((x) => x.id === id)!;
-    delete x.deliveryError;
+    if (failures.length === 0) delete x.deliveryError;
     b.events.push({
       at: new Date().toISOString(),
       type: "signed_pdf_delivered",

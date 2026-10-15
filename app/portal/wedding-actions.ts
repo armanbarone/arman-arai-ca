@@ -627,7 +627,11 @@ export async function signWeddingDocument(
           },
         }),
         text: `${nameFor(session.email)} signed ${doc.title} on ${ref}. Waiting on ${waiting.map(nameFor).join(", ")}.`,
-        idempotencyKey: `wedding-signed/${ref}/${id}/${session.email}`,
+        /* Must not collide with the signed-PDF delivery, which has always
+           keyed on wedding-signed/<ref>/<id>/<email>. Using the same shape
+           here burned that key with a different body, and Resend then refused
+           the couple's own copy of their contract. */
+        idempotencyKey: `wedding-signed-studio/${ref}/${id}/${session.email}`,
       });
     } catch {
       // Their signature is recorded either way; the studio copy is not a gate.

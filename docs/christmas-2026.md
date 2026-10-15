@@ -9,7 +9,7 @@
 
 ## Launch
 
-1. Review the proposed packages and delivery promises in `lib/christmas/catalog.ts` and `components/christmas/ChristmasExperience.tsx`. Prices are CAD $249 / $349 / $499 plus applicable tax. This version sells digital photographs; prints are not included.
+1. Review the proposed packages and delivery promises in `lib/christmas/catalog.ts` and `components/christmas/ChristmasExperience.tsx`. Prices are CAD $300 without Santa / $400 with Santa plus applicable tax. This version sells digital photographs; prints are not included.
 2. Replace the three AI concept photographs under `public/christmas/` with photographs of the completed studio when available. Update the visible concept captions and alt text together. No claim that the generated families are previous clients is made.
 3. Connect the existing Canadian live Stripe account through `/admin/payment-settings`. The Christmas integration uses the existing `STRIPE_SECRET_KEY`, webhook and private Vercel Blob store. No secret keys belong in the repository or browser.
 4. Enable and configure Stripe Tax in the merchant account. Checkout uses automatic tax, exclusive of the advertised collection price, and collects a billing address.
@@ -36,3 +36,9 @@ The public page shows a closed-bookings message by default. The preview provides
 `node --experimental-strip-types --test scripts/christmas-inventory.test.mjs`
 
 The tests cover 20 concurrent attempts for one slot, Santa eligibility, unreleased and purchased slots, uncertain expired holds, overlapping allocations and invalid dates. Run the repository TypeScript check and production build as well. An actual browser check and end-to-end Stripe payment remain necessary before live sales.
+
+## Christmas cabin theme
+
+The October redesign uses Berkshire Swash and Nunito Sans, a dark evergreen and cranberry palette, a photographic keepsake collage, and a letter-from-Santa section. The atmosphere includes canvas snowfall and rising embers, softly animated fireplace glow and flame silhouettes, Christmas lights, and a tiny Santa sleigh with reindeer that crosses the sky periodically. All decoration ignores pointer events. Animation can be paused and follows reduced-motion preferences; rendering pauses while the tab is hidden. Button sounds are a short synthesized bell chord, start only after interaction, and have a mute control. Sound preference is stored locally. No ambient sound autoplays.
+
+Only two packages can be purchased: **Christmas together, CAD $300 without Santa**, and **Christmas with Santa, CAD $400 with Santa**, plus applicable tax. The retired third package is rejected by checkout validation.

@@ -24,7 +24,7 @@ export function validSlot(date: string, time: string) {
   const d = new Date(date + "T12:00:00Z");
   return Number.isFinite(d.getTime()) && d.toISOString().slice(0, 10) === date && date >= "2026-11-27" && date <= "2026-12-23";
 }
-// A 40-minute appointment safely contains the longest 35-minute package and turnover.
+// A 40-minute appointment safely contains the 20-minute Santa package with generous turnover time.
 export function overlaps(a: Pick<Slot, "date" | "time">, b: Pick<Slot, "date" | "time">) {
   const minutes = (t: string) => { const [h, m] = t.split(":").map(Number); return h * 60 + m; };
   return a.date === b.date && Math.abs(minutes(a.time) - minutes(b.time)) < 40;

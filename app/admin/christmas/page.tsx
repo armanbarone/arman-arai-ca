@@ -21,7 +21,7 @@ export default async function ChristmasAdmin() {
         <button className="wp-button">Save booking settings</button>
       </form>
     </section>
-    <section className="wp-card"><h2>Release an appointment</h2><p>Each appointment has a 40-minute allocation, allowing up to 35 minutes of photography and a changeover. Unreleased time is never described as purchased.</p>
+    <section className="wp-card"><h2>Release an appointment</h2><p>Each appointment has a 40-minute allocation, allowing up to 20 minutes of photography and generous changeover time. Unreleased time is never described as purchased.</p>
       <form action={releaseChristmasSlot} style={{ display: "flex", flexWrap: "wrap", alignItems: "end", gap: 16 }}>
         <label className="wp-label">Date<input className="wp-input" type="date" name="date" min="2026-11-27" max="2026-12-23" required /></label>
         <label className="wp-label">Start<input className="wp-input" type="time" name="time" min="09:00" max="16:59" required /></label>

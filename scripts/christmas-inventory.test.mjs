@@ -13,7 +13,7 @@ function memoryStore(slot) {
   };
 }
 const slot = { id: "2026-12-05_1000", date: "2026-12-05", time: "10:00", santa: true, published: true };
-const reservation = id => ({ id, tokenHash: "a".repeat(64), packageId: "santa", name: "Test family", email: "test@example.com", phone: "6045550100", createdAt: Date.now(), expiresAt: Date.now()+2100000, subtotalCents: 34900, status: "pending", bookingDetails: { studioAddress: "Test studio", postalCode: "V6G 1A1", arrivalNotes: "", cancellationPolicy: "Test policy" } });
+const reservation = id => ({ id, tokenHash: "a".repeat(64), packageId: "santa", name: "Test family", email: "test@example.com", phone: "6045550100", createdAt: Date.now(), expiresAt: Date.now()+2100000, subtotalCents: 40000, status: "pending", bookingDetails: { studioAddress: "Test studio", postalCode: "V6G 1A1", arrivalNotes: "", cancellationPolicy: "Test policy" } });
 test("simultaneous attempts allocate exactly one family to an appointment", async () => {
   const store = memoryStore(slot);
   const result = await Promise.allSettled(Array.from({ length: 20 }, (_, i) => claimSlot(store, slot.id, reservation(String(i)), true)));
@@ -28,7 +28,7 @@ test("Santa package cannot purchase a family-only appointment", async () => {
 });
 test("family package can purchase a family-only appointment", async () => {
   const store = memoryStore({ ...slot, santa: false });
-  await claimSlot(store, slot.id, { ...reservation("a"), packageId: "family", subtotalCents: 24900 }, false);
+  await claimSlot(store, slot.id, { ...reservation("a"), packageId: "family", subtotalCents: 30000 }, false);
   assert.equal(store.value().reservation.packageId, "family");
 });
 test("unreleased and paid appointments cannot be reserved", async () => {

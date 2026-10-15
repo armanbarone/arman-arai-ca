@@ -1,13 +1,10 @@
 export const PACKAGES = [
-  { id: "family", name: "Christmas together", tag: "THE FAMILY SESSION", price: 24900, minutes: 15, images: 8, sets: 2, santa: false,
+  { id: "family", name: "Christmas together", tag: "THE FIRESIDE FAMILY SESSION", price: 30000, minutes: 15, images: 8, sets: 2, santa: false,
     description: "Just your people, a little Christmas magic, and photographs that feel like you.",
     features: ["15 minutes in the Christmas studio", "8 edited, full-resolution photographs", "Two styled settings", "Private online gallery + personal print rights"] },
-  { id: "santa", name: "A little Santa magic", tag: "FAMILY + SANTA", price: 34900, minutes: 20, images: 10, sets: 2, santa: true,
+  { id: "santa", name: "Christmas with Santa", tag: "A PRIVATE VISIT FROM SANTA", price: 40000, minutes: 20, images: 10, sets: 2, santa: true,
     description: "A private visit with Santa, a story to share, and a family portrait to keep.",
     features: ["20 minutes, including your Santa visit", "10 edited, full-resolution photographs", "Family portraits + photographs with Santa", "Private online gallery + personal print rights"] },
-  { id: "keepsake", name: "The whole Christmas story", tag: "THE KEEPSAKE SESSION", price: 49900, minutes: 35, images: 20, sets: 3, santa: true,
-    description: "A little more time for shy smiles, siblings, Santa, and all the in-between moments.",
-    features: ["35 minutes, including your Santa visit", "20 edited, full-resolution photographs", "Three styled settings", "Private online gallery + personal print rights"] },
 ] as const;
 export type PackageId = typeof PACKAGES[number]["id"];
 export const packageById = (id: string) => PACKAGES.find(p => p.id === id);

@@ -49,6 +49,7 @@ export default function PortalNavigation({
           "Document library",
           preview ? "/portal/preview/admin/library" : "/admin/library",
         ],
+        ...(!preview ? [["✦", "Christmas sessions", "/admin/christmas"]] : []),
         ...(activeRef
           ? [
               [

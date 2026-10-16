@@ -116,12 +116,12 @@ export default function LeadTracker({ leads: initial }: { leads: Lead[] }) {
       </div>
 
       <div className="wp-filterbar">
-        <input className="wp-input" placeholder="Search name, email, venue, notes" value={q} onChange={(e) => setQ(e.target.value)} />
-        <select className="wp-input" style={{ width: "auto" }} value={stage} onChange={(e) => setStage(e.target.value as LeadStage | "all")}>
+        <input className="wp-input" aria-label="Search inquiries" placeholder="Search name, email, venue, notes" value={q} onChange={(e) => setQ(e.target.value)} />
+        <select className="wp-input" aria-label="Filter by stage" style={{ width: "auto" }} value={stage} onChange={(e) => setStage(e.target.value as LeadStage | "all")}>
           <option value="all">Every stage</option>
           {LEAD_STAGES.map((s) => <option key={s.key} value={s.key}>{s.label}</option>)}
         </select>
-        <select className="wp-input" style={{ width: "auto" }} value={source} onChange={(e) => setSource(e.target.value)}>
+        <select className="wp-input" aria-label="Filter by source" style={{ width: "auto" }} value={source} onChange={(e) => setSource(e.target.value)}>
           <option value="all">Every source</option>
           {sources.map((s) => <option key={s} value={s}>{s}</option>)}
         </select>
@@ -221,10 +221,11 @@ export default function LeadTracker({ leads: initial }: { leads: Lead[] }) {
                   <td>
                     <input className="wp-input wp-value-input" defaultValue={l.valueCents ? (l.valueCents / 100).toFixed(0) : ""}
                       placeholder="—" inputMode="decimal" disabled={pending}
+                      aria-label={`Contract value for ${l.name}, in dollars`}
                       onBlur={(e) => { if (e.target.value !== (l.valueCents ? (l.valueCents / 100).toFixed(0) : "")) patch(l.id, { value: e.target.value }); }} />
                   </td>
                   <td>
-                    <select className="wp-input wp-stage-input" value={l.stage} disabled={pending} onChange={(e) => patch(l.id, { stage: e.target.value as LeadStage })}>
+                    <select className="wp-input wp-stage-input" aria-label={`Stage for ${l.name}`} value={l.stage} disabled={pending} onChange={(e) => patch(l.id, { stage: e.target.value as LeadStage })}>
                       {LEAD_STAGES.map((s) => <option key={s.key} value={s.key}>{s.label}</option>)}
                     </select>
                   </td>
@@ -273,12 +274,12 @@ export default function LeadTracker({ leads: initial }: { leads: Lead[] }) {
               ))}
             </dl>
             <div className="wp-form-grid">
-              <label className="wp-label">Wedding date<input className="wp-input" defaultValue={l.weddingDate ?? ""} onBlur={(e) => patch(l.id, { weddingDate: e.target.value })} /></label>
-              <label className="wp-label">Booking reference<input className="wp-input" defaultValue={l.bookingRef ?? ""} placeholder="AA-CA-2027-072" onBlur={(e) => patch(l.id, { bookingRef: e.target.value })} /></label>
+              <label className="wp-label">Wedding date<input className="wp-input" aria-label="Wedding date" defaultValue={l.weddingDate ?? ""} onBlur={(e) => patch(l.id, { weddingDate: e.target.value })} /></label>
+              <label className="wp-label">Booking reference<input className="wp-input" aria-label="Booking reference" defaultValue={l.bookingRef ?? ""} placeholder="AA-CA-2027-072" onBlur={(e) => patch(l.id, { bookingRef: e.target.value })} /></label>
               {l.stage === "lost" && (
-                <label className="wp-label is-wide">Why it was lost<input className="wp-input" defaultValue={l.lostReason ?? ""} onBlur={(e) => patch(l.id, { lostReason: e.target.value })} /></label>
+                <label className="wp-label is-wide">Why it was lost<input className="wp-input" aria-label="Why it was lost" defaultValue={l.lostReason ?? ""} onBlur={(e) => patch(l.id, { lostReason: e.target.value })} /></label>
               )}
-              <label className="wp-label is-wide">Notes<textarea className="wp-input" rows={3} defaultValue={l.notes ?? ""} onBlur={(e) => patch(l.id, { notes: e.target.value })} /></label>
+              <label className="wp-label is-wide">Notes<textarea className="wp-input" aria-label="Notes" rows={3} defaultValue={l.notes ?? ""} onBlur={(e) => patch(l.id, { notes: e.target.value })} /></label>
             </div>
             <div className="wp-toolbar">
               {l.bookingRef ? (

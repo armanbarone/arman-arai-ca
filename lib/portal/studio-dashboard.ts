@@ -123,6 +123,33 @@ export async function studioDashboard(): Promise<StudioDashboard> {
         });
     }
 
+    /* A document that was signed and could not be delivered. This is the most
+       urgent thing the system can produce and it used to be visible only two
+       screens inside the booking, which is how a signed contract sat
+       undelivered for a day until the couple said something. */
+    for (const d of w.documents) {
+      // A withdrawn or superseded document's old failure is history, not work.
+      if (!d.deliveryError || ["withdrawn", "superseded", "draft"].includes(d.status))
+        continue;
+      actions.push({
+        kind: "delivery",
+        urgency: "overdue",
+        title: `${d.title} was not delivered`,
+        detail: `${b.ref} · ${d.deliveryError.slice(0, 120)}`,
+        href: `/admin/bookings/${b.ref}/documents`,
+      });
+    }
+    for (const inv of b.invoices ?? []) {
+      if (!inv.deliveryError || inv.status === "void") continue;
+      actions.push({
+        kind: "delivery",
+        urgency: "overdue",
+        title: `Invoice ${inv.number} was not delivered`,
+        detail: `${b.ref} · ${inv.deliveryError.slice(0, 120)}`,
+        href: `/admin/bookings/${b.ref}/payments`,
+      });
+    }
+
     // Signatures outstanding on something already sent.
     for (const d of w.documents) {
       if (!["issued", "partial"].includes(d.status) || !d.requiredEmails.length) continue;

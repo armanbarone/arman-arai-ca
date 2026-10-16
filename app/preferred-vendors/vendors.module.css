@@ -1,0 +1,261 @@
+/* The preferred vendor list. Built to read as a sibling of /wedding-guide,
+   so the tokens here are the guide's tokens. Dark, quiet, and legible on a
+   phone in bed, which is where most couples will open it. */
+
+.page {
+  --bg: #11110f;
+  --paper: #f1ece2;
+  --muted: #b3afa4;
+  --gold: #c8af85;
+  --line: #39372f;
+  --panel: #1b1a16;
+  background: var(--bg);
+  color: var(--paper);
+  font: 15px/1.75 var(--font-jost, Arial, sans-serif);
+  min-height: 100vh;
+  padding-bottom: 96px;
+}
+
+.wrap {
+  max-width: 1080px;
+  width: calc(100% - 48px);
+  margin: 0 auto;
+}
+
+.eyebrow {
+  font-size: 10px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.21em;
+  color: var(--gold);
+  margin: 0 0 20px;
+}
+
+.hero {
+  padding: 72px 0 48px;
+  border-bottom: 1px solid var(--line);
+}
+
+.title {
+  font-family: var(--font-cormorant, Georgia, serif);
+  font-weight: 400;
+  font-size: clamp(42px, 7vw, 76px);
+  line-height: 1.02;
+  letter-spacing: -0.035em;
+  margin: 0 0 28px;
+}
+
+.title em {
+  font-style: italic;
+  color: var(--gold);
+}
+
+.lead {
+  color: var(--muted);
+  max-width: 62ch;
+  margin: 0 0 18px;
+}
+
+.lead strong {
+  color: var(--paper);
+  font-weight: 500;
+}
+
+/* The city jump bar. Plain anchors, so it works with no JavaScript. */
+.cities {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 36px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.cityLink {
+  display: inline-block;
+  padding: 10px 18px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--paper);
+  text-decoration: none;
+  font-size: 13px;
+  letter-spacing: 0.02em;
+  transition: border-color 0.2s, color 0.2s;
+}
+
+.cityLink:hover,
+.cityLink:focus-visible {
+  border-color: var(--gold);
+  color: var(--gold);
+}
+
+.city {
+  padding: 64px 0 0;
+  scroll-margin-top: 24px;
+}
+
+.cityName {
+  font-family: var(--font-cormorant, Georgia, serif);
+  font-weight: 400;
+  font-size: clamp(32px, 4.5vw, 52px);
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  margin: 0 0 10px;
+}
+
+.cityArea {
+  color: var(--muted);
+  font-size: 13px;
+  margin: 0 0 40px;
+  max-width: 60ch;
+}
+
+.group {
+  border-top: 1px solid var(--line);
+  padding: 32px 0;
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 32px;
+}
+
+.groupHead {
+  position: sticky;
+  top: 24px;
+  align-self: start;
+}
+
+.groupName {
+  font-family: var(--font-cormorant, Georgia, serif);
+  font-weight: 400;
+  font-size: 26px;
+  letter-spacing: -0.02em;
+  margin: 0 0 12px;
+}
+
+.groupNote {
+  color: var(--muted);
+  font-size: 12.5px;
+  line-height: 1.75;
+  margin: 0;
+}
+
+.vendors {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 2px;
+}
+
+.vendor {
+  background: var(--panel);
+  padding: 20px 22px;
+  border-radius: 4px;
+}
+
+.vendorName {
+  font-size: 16px;
+  color: var(--paper);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: color 0.2s, border-color 0.2s;
+}
+
+.vendorName:hover,
+.vendorName:focus-visible {
+  color: var(--gold);
+  border-bottom-color: var(--gold);
+}
+
+.vendorName span {
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  margin-left: 8px;
+}
+
+.vendorNote {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.7;
+  margin: 8px 0 0;
+}
+
+.outro {
+  margin-top: 72px;
+  padding: 44px;
+  background: var(--panel);
+  border-radius: 6px;
+}
+
+.outro h2 {
+  font-family: var(--font-cormorant, Georgia, serif);
+  font-weight: 400;
+  font-size: clamp(28px, 4vw, 42px);
+  letter-spacing: -0.03em;
+  margin: 0 0 18px;
+  line-height: 1.08;
+}
+
+.outro p {
+  color: var(--muted);
+  margin: 0 0 16px;
+  max-width: 62ch;
+}
+
+.button {
+  display: inline-block;
+  margin-top: 12px;
+  padding: 17px 34px;
+  background: var(--gold);
+  color: #1a1612;
+  border-radius: 4px;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.button:hover,
+.button:focus-visible {
+  background: #d9c29c;
+}
+
+.secondary {
+  display: inline-block;
+  margin: 12px 0 0 14px;
+  font-size: 13px;
+  color: var(--gold);
+  border-bottom: 1px solid #76674f;
+  padding-bottom: 4px;
+  text-decoration: none;
+}
+
+.footer {
+  margin-top: 56px;
+  padding-top: 24px;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 11.5px;
+  line-height: 1.8;
+}
+
+@media (max-width: 860px) {
+  .wrap {
+    width: calc(100% - 32px);
+  }
+  .group {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  .groupHead {
+    position: static;
+  }
+  .outro {
+    padding: 28px;
+  }
+  .secondary {
+    display: block;
+    margin-left: 0;
+  }
+}

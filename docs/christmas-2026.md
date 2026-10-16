@@ -40,7 +40,11 @@ A single private Blob calendar ledger uses ETag compare-and-swap writes, so a re
 
 Berkshire Swash and Nunito Sans typography, evergreen/cranberry/gold colours, keepsake photographs and a letter from Santa. CSS falling snow is present in the rendered markup; shooting stars and two tiny reindeer teams pull Santa's sleigh, sack and gift parcels across the viewport. Moving flames, warm glow, embers and fairy lights provide fireplace motion. Decorative layers ignore pointer events.
 
-Pause magic stops decoration. Reduced-motion preferences are respected initially; pressing Play magic explicitly enables it. An original short metallic sleigh-bell WAV supplies the “chi-chi-chi” click sound. Test bells plays it explicitly, Sound off mutes it, and no sound starts before interaction. The separately hosted private preview is a real bundled React client app with self-hosted assets, not a copied Next.js server document.
+Effects run whenever the page is visible, with no sound or animation controls. Reindeer have staggered body gallops and articulated legs, curved rising/falling flight paths, elastic reins, bobbing sleigh/cargo and a fine 0.5–1.1px stardust trail. Snow is coarser. Fairy lights, stars and firelight use a brighter gold/cranberry/evergreen palette.
+
+On phones the CSS keeps one team, two shooting stars, 24 snowflakes, six embers, eight ambient twinkles and 16 dust particles. It removes expensive per-particle glow and most full-screen filters. Controls have a minimum 44px height, the calendar/cart stack vertically, and the booking dialog uses dynamic viewport height. System reduced-motion preferences use gentler timing while retaining visible effects. Animations pause automatically in hidden tabs, and no animation clock or per-frame React rendering is used. The atmosphere is memoized so calendar interactions do not recreate its particle tree.
+
+Recorded sleigh bells play on enabled buttons and button-style links, using a decoded local 15KB MP3 and native-audio fallback, and start only inside a user interaction. No setting or mute/pause buttons appear. See `christmas-audio.md` for the source, license and the unavailable exact YouTube reference. The owner-private preview is a standalone bundled React application with self-hosted assets.
 
 ## Validation
 

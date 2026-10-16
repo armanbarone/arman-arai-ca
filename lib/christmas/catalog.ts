@@ -1,12 +1,15 @@
 // All amounts are integer Canadian cents. Convert once, only for display.
 export const PACKAGES = [
-  { id: "santa", name: "Christmas with Santa", tag: "YOUR FAMILY. A LITTLE SANTA MAGIC.", price: 30000, minutes: 20, images: 10, sets: 2, santa: true,
+  { id: "santa", name: "Christmas with Santa", tag: "YOUR FAMILY. A LITTLE SANTA MAGIC.", price: 30000, minutes: 20, images: 10, sets: 3, santa: true,
     description: "A private Christmas visit, a story to share, and photographs of your favourite people.",
-    features: ["20-minute Christmas session with Santa", "10 edited, full-resolution digital photographs", "Two styled Christmas settings", "Private online gallery + personal print rights"] },
+    features: ["20-minute Christmas session with Santa", "10 edited, full-resolution digital photographs", "Photographs across all three Christmas sets", "Santa letter mailed to the kids", "A special printed keepsake from your session", "Cookies and warm milk for a cozy Christmas visit", "Private online gallery + personal print rights"] },
 ] as const;
-export const GST_PERCENT = 5;
+export const GRINCH_ADDON = { id: "grinch", name: "Meet The Grinch", price: 5000, description: "Introduce the kids to The Grinch during your session." } as const;
+export const GST_PERCENT = 5, PST_PERCENT = 7;
 export const gstCents = (subtotal: number) => Math.round(subtotal * GST_PERCENT / 100);
-export const totalCents = (subtotal: number) => subtotal + gstCents(subtotal);
+export const pstCents = (subtotal: number) => Math.round(subtotal * PST_PERCENT / 100);
+export const totalCents = (subtotal: number) => subtotal + gstCents(subtotal) + pstCents(subtotal);
+export const sessionSubtotal = (grinch: boolean) => PACKAGES[0].price + (grinch ? GRINCH_ADDON.price : 0);
 export type PackageId = typeof PACKAGES[number]["id"];
 export const packageById = (id: string) => PACKAGES.find(p => p.id === id);
 export const money = (cents: number) => new Intl.NumberFormat("en-CA", { style: "currency", currency: "CAD", maximumFractionDigits: cents % 100 ? 2 : 0 }).format(cents / 100);
@@ -18,7 +21,7 @@ export interface Availability {
   mode: "live" | "preview" | "closed"; slots: PublicSlot[]; location: string;
   cancellationPolicy: string; publishableKey: string; message?: string;
 }
-export const SEASON_START = "2026-11-27", SEASON_END = "2026-12-23";
+export const SEASON_START = "2026-11-01", SEASON_END = "2026-12-20";
 // Every day, 11am–8pm: a 20-minute shoot plus 10 minutes for changeover.
 export function seasonalSlots(): PublicSlot[] {
   const result: PublicSlot[] = [];

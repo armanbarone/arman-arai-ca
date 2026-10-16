@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { claimSlot, overlaps, validSlot } from "../lib/christmas/inventory.ts";
+import { claimSlot, overlaps, validSlot, mergeSeasonalInventory } from "../lib/christmas/inventory.ts";
 const clone = o => structuredClone(o);
 class Conflict extends Error {}
 function memoryStore(slot) {
@@ -43,22 +43,41 @@ test("30-minute allocations reject overlaps and invalid seasonal dates", () => {
   assert.equal(validSlot("2026-12-05", "11:00"), true);
 });
 
-import { PACKAGES, money, gstCents, totalCents, seasonalSlots } from "../lib/christmas/catalog.ts";
+import { PACKAGES, GRINCH_ADDON, money, gstCents, pstCents, totalCents, sessionSubtotal, seasonalSlots } from "../lib/christmas/catalog.ts";
 test("one $300 Santa package; cents format correctly, including $15 GST", () => {
   assert.equal(PACKAGES.length, 1); assert.equal(PACKAGES[0].id, "santa");
   assert.equal(PACKAGES[0].santa, true); assert.equal(PACKAGES[0].price, 30000);
   assert.equal(money(30000), "$300"); assert.equal(money(1500), "$15"); assert.equal(money(31500), "$315");
-  assert.equal(gstCents(30000),1500); assert.equal(totalCents(30000),31500);
+  assert.equal(gstCents(30000),1500); assert.equal(pstCents(30000),2100); assert.equal(totalCents(30000),33600); assert.equal(PACKAGES[0].sets,3);
 });
-test("daily 11am–8pm calendar covers all 27 days and ends at 7:30pm", () => {
+test("daily 11am–8pm calendar covers all 50 days and ends at 7:30pm", () => {
   const slots = seasonalSlots(), dates = [...new Set(slots.map(s=>s.date))];
-  assert.equal(slots.length,486); assert.equal(dates.length,27);
-  assert.equal(dates[0],"2026-11-27"); assert.equal(dates.at(-1),"2026-12-23");
-  assert.equal(new Set(slots.map(s=>s.id)).size,486);
+  assert.equal(slots.length,900); assert.equal(dates.length,50);
+  assert.equal(dates[0],"2026-11-01"); assert.equal(dates.at(-1),"2026-12-20");
+  assert.equal(new Set(slots.map(s=>s.id)).size,900);
   for(const date of dates) {
     const day=slots.filter(s=>s.date===date); assert.equal(day.length,18);
     assert.equal(day[0].time,"11:00"); assert.equal(day.at(-1).time,"19:30");
     assert.ok(day.every(s=>s.santa && s.available && validSlot(s.date,s.time)));
   }
   for(const time of ["10:30","20:00","19:45","11:15"]) assert.equal(validSlot("2026-12-05",time),false);
+});
+
+test("optional Grinch appearance adds exactly $50 and taxes cannot be lost in the total", () => {
+ assert.equal(GRINCH_ADDON.price,5000); assert.equal(sessionSubtotal(false),30000);
+ assert.equal(sessionSubtotal(true),35000); assert.equal(gstCents(35000),1750);
+ assert.equal(pstCents(35000),2450); assert.equal(totalCents(35000),39200);
+ assert.equal(money(totalCents(30000)),"$336"); assert.equal(money(totalCents(35000)),"$392");
+});
+test("season upgrade adds early November, preserves reservations and real blocks, and hides late December", () => {
+ const paid={...slot,id:"2026-12-23_1100",date:"2026-12-23",reservation:{...reservation("paid"),status:"paid"}};
+ const blocked={...slot,published:false};
+ const generated=seasonalSlots().map(({available,...s})=>({...s,published:true}));
+ const rows=mergeSeasonalInventory([paid,blocked],generated);
+ assert.equal(rows.find(s=>s.id==="2026-11-01_1100").published,true);
+ assert.equal(rows.find(s=>s.id===blocked.id).published,false);
+ const preserved=rows.find(s=>s.id===paid.id);assert.equal(preserved.published,false);assert.equal(preserved.reservation.status,"paid");
+ assert.equal(validSlot("2026-12-21","11:00"),false);assert.equal(validSlot("2026-11-01","19:30"),true);
+ assert.equal(rows.filter(s=>validSlot(s.date,s.time)).length,900);
+ assert.equal(mergeSeasonalInventory(rows,generated).length,rows.length);
 });

@@ -1,35 +1,31 @@
 import "server-only";
 import { ConflictError, readJson, writeJson } from "@/lib/portal/store";
 import { seasonalSlots } from "./catalog";
-import { overlaps, type ChristmasSettings, type Slot, type InventoryStore } from "./inventory";
+import { mergeSeasonalInventory, overlaps, type ChristmasSettings, type Slot, type InventoryStore } from "./inventory";
 export const SETTINGS_PATH = "christmas/2026/settings.json";
 const INVENTORY_PATH = "christmas/2026/inventory.json";
 const CALENDAR_PATH = "christmas/2026/calendar.json";
 export const slotPath = (id: string) => `christmas/2026/slots/${id}.json`;
-type Calendar = { slots: Slot[] };
-const defaults: ChristmasSettings = { enabled: false, studioAddress: "", postalCode: "", arrivalNotes: "", cancellationPolicy: "", publishableKey: "" };
+type Calendar = { season?: string; slots: Slot[] };
+const SEASON_VERSION = "nov01-dec20-v2";
+const defaults: ChristmasSettings = { enabled: false, studioAddress: "", postalCode: "", arrivalNotes: "", cancellationPolicy: "", publishableKey: "", pstNumber: "" };
 export async function settings() { return (await readJson<ChristmasSettings>(SETTINGS_PATH))?.data ?? defaults; }
 async function calendar() {
-  const saved = await readJson<Calendar>(CALENDAR_PATH);
-  if (saved) return saved;
-  // Upgrade once to a single CAS ledger: one read per refresh rather than 486 reads.
-  // Preserve legacy reservations and actual release decisions during the migration.
-  const index = (await readJson<{ ids: string[] }>(INVENTORY_PATH))?.data;
-  const old = (await Promise.all((index?.ids ?? []).map(id => readJson<Slot>(slotPath(id))))).flatMap(row => row ? [row.data] : []);
-  const slots: Slot[] = seasonalSlots().map(({ available: _available, ...slot }) => ({ ...slot, published: true }));
-  for (const legacy of old) {
-    const existing = slots.findIndex(s => s.id === legacy.id);
-    if (existing >= 0) slots[existing] = { ...legacy, santa: legacy.reservation ? legacy.santa : true };
-    else slots.push(legacy);
-    if (legacy.reservation) for (const slot of slots) if (slot.id !== legacy.id && overlaps(slot, legacy)) slot.published = false;
+  for (let attempt = 0; attempt < 5; attempt++) {
+    const saved = await readJson<Calendar>(CALENDAR_PATH);
+    if (saved?.data.season === SEASON_VERSION) return saved;
+    const index = saved ? null : (await readJson<{ ids: string[] }>(INVENTORY_PATH))?.data;
+    const legacy = saved?.data.slots ?? (await Promise.all((index?.ids ?? []).map(id => readJson<Slot>(slotPath(id))))).flatMap(row => row ? [row.data] : []);
+    const generated: Slot[] = seasonalSlots().map(({ available: _available, ...slot }) => ({ ...slot, published: true }));
+    const slots = mergeSeasonalInventory(legacy, generated);
+    try { await writeJson(CALENDAR_PATH, { season: SEASON_VERSION, slots }, saved ? { etag: saved.etag } : { createOnly: true }); }
+    catch (error) { if (error instanceof ConflictError) continue; throw error; }
+    const result = await readJson<Calendar>(CALENDAR_PATH);
+    if (result) return result;
   }
-  slots.sort((a, b) => a.id.localeCompare(b.id));
-  try { await writeJson(CALENDAR_PATH, { slots }, { createOnly: true }); }
-  catch (error) { if (!(error instanceof ConflictError)) throw error; }
-  const result = await readJson<Calendar>(CALENDAR_PATH);
-  if (!result) throw Error("Calendar could not be initialized.");
-  return result;
+  throw Error("Calendar could not be initialized. Please retry.");
 }
+
 export async function allSlots(): Promise<Slot[]> { return (await calendar()).data.slots; }
 export const inventoryStore: InventoryStore = {
   read: async id => { const row = await calendar(); const data = row.data.slots.find(s => s.id === id); return data ? { data, etag: row.etag } : null; },

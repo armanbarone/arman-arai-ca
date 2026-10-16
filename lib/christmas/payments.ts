@@ -5,7 +5,7 @@ import { stripeClient, stripeConfiguration } from "@/lib/portal/stripe";
 import { APP_URL, BUSINESS } from "@/lib/portal/business";
 import { sendEmail, layout, esc } from "@/lib/portal/email";
 import { readJson, writeJson, ConflictError } from "@/lib/portal/store";
-import { PACKAGES, packageById, money, totalCents, sessionSubtotal, gstCents, pstCents, dateLabel, timeLabel, type Availability, type PackageId } from "./catalog";
+import { PACKAGES, packageById, money, totalCents, sessionSubtotal, gstCents, dateLabel, timeLabel, type Availability, type PackageId } from "./catalog";
 import { christmasCheckoutCatalog } from "./stripe-catalog";
 import { claimSlot, validSlot, SLOT_PATTERN, type Slot, type Reservation } from "./inventory";
 import { allSlots, settings, inventoryStore, updateSlot } from "./store";
@@ -66,7 +66,7 @@ async function reconcileStale(slot: Slot) {
 export async function availability(): Promise<Availability> {
   const cfg = await settings();
   const publishableKey = cfg.publishableKey || process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || "";
-  if (!cfg.enabled || !cfg.studioAddress || !cfg.postalCode || !cfg.pstNumber || !cfg.cancellationPolicy || !publishableKey.startsWith("pk_live_") || !(await paymentReady()))
+  if (!cfg.enabled || !cfg.studioAddress || !cfg.postalCode || !cfg.cancellationPolicy || !publishableKey.startsWith("pk_live_") || !(await paymentReady()))
     return { mode: "closed", slots: [], location: "North Vancouver, BC", cancellationPolicy: cfg.cancellationPolicy, publishableKey: "", message: "Christmas bookings are not open yet. Email Arman for the release date." };
   let rows = await allSlots();
   await Promise.all(rows.filter(s => s.reservation?.status === "pending" && s.reservation.expiresAt + 120000 < Date.now()).map(reconcileStale));
@@ -87,7 +87,7 @@ export async function checkoutRateLimit(ip: string) {
 export async function startCheckout(input: { slotId: string; packageId: PackageId; name: string; email: string; phone: string; acceptedPolicy: string; expectedSubtotal: number; expectedTotal: number; grinch: boolean; delivery: NonNullable<Reservation["delivery"]> }) {
   const cfg = await settings(), pkg = packageById(input.packageId);
   const publicKey = cfg.publishableKey || process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || "";
-  if (!cfg.enabled || !cfg.studioAddress || !cfg.postalCode || !cfg.pstNumber || !cfg.cancellationPolicy || !publicKey.startsWith("pk_live_") || !(await paymentReady())) throw Error("Bookings are not open yet.");
+  if (!cfg.enabled || !cfg.studioAddress || !cfg.postalCode || !cfg.cancellationPolicy || !publicKey.startsWith("pk_live_") || !(await paymentReady())) throw Error("Bookings are not open yet.");
   if (!pkg) throw Error("Choose a valid package.");
   const subtotal = sessionSubtotal(input.grinch), expectedTotal = totalCents(subtotal);
   if (input.acceptedPolicy !== cfg.cancellationPolicy || input.expectedSubtotal !== subtotal || input.expectedTotal !== expectedTotal) throw Error("Booking details changed. Refresh the page and review the price and policy before paying.");
@@ -114,8 +114,8 @@ export async function startCheckout(input: { slotId: string; packageId: PackageI
     payment_intent_data: { shipping: { name: input.name, address: { line1: input.delivery.line1, line2: input.delivery.line2 || undefined, city: input.delivery.city, state: "BC", postal_code: input.delivery.postalCode, country: "CA" } } },
     invoice_creation: { enabled: true, invoice_data: {
       description: `${pkg.name} · North Vancouver · ${dateLabel(slot.date)} at ${timeLabel(slot.time)} Pacific · ${pkg.minutes} minutes · ${pkg.images} digital photographs · ${pkg.sets} sets · Santa letter and printed keepsake${input.grinch ? " · The Grinch" : ""}`,
-      custom_fields: [{ name: "GST/HST registration", value: BUSINESS.gstHstNumber }, { name: "BC PST registration", value: cfg.pstNumber }],
-      footer: "Arasaka Inc., operating as Arman Arai. Digital gallery, mailed Santa letter and printed keepsake. GST 5% + BC PST 7%.",
+      custom_fields: [{ name: "GST/HST registration", value: BUSINESS.gstHstNumber }],
+      footer: "Arasaka Inc., operating as Arman Arai. Digital gallery, mailed Santa letter and printed keepsake. GST 5%.",
       metadata: { service: "christmas-2026", bookingId: id, slotId: slot.id },
     } },
     line_items: [{ quantity: 1, price: catalog.price, tax_rates: catalog.taxRates }, ...(input.grinch ? [{ quantity: 1, price: catalog.grinchPrice, tax_rates: catalog.taxRates }] : [])],

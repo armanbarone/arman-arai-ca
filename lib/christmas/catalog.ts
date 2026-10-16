@@ -5,10 +5,9 @@ export const PACKAGES = [
     features: ["20-minute Christmas session with Santa", "10 edited, full-resolution digital photographs", "Photographs across all three Christmas sets", "Santa letter mailed to the kids", "A special printed keepsake from your session", "Cookies and warm milk for a cozy Christmas visit", "Private online gallery + personal print rights"] },
 ] as const;
 export const GRINCH_ADDON = { id: "grinch", name: "Meet The Grinch", price: 5000, description: "Introduce the kids to The Grinch during your session." } as const;
-export const GST_PERCENT = 5, PST_PERCENT = 7;
+export const GST_PERCENT = 5;
 export const gstCents = (subtotal: number) => Math.round(subtotal * GST_PERCENT / 100);
-export const pstCents = (subtotal: number) => Math.round(subtotal * PST_PERCENT / 100);
-export const totalCents = (subtotal: number) => subtotal + gstCents(subtotal) + pstCents(subtotal);
+export const totalCents = (subtotal: number) => subtotal + gstCents(subtotal);
 export const sessionSubtotal = (grinch: boolean) => PACKAGES[0].price + (grinch ? GRINCH_ADDON.price : 0);
 export type PackageId = typeof PACKAGES[number]["id"];
 export const packageById = (id: string) => PACKAGES.find(p => p.id === id);

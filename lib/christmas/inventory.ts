@@ -1,7 +1,7 @@
 import type { PackageId } from "./catalog";
 export interface ChristmasSettings {
   enabled: boolean; studioAddress: string; postalCode: string; arrivalNotes: string;
-  cancellationPolicy: string; publishableKey: string; pstNumber?: string;
+  cancellationPolicy: string; publishableKey: string;
 }
 export interface Reservation {
   id: string; tokenHash: string; packageId: PackageId; name: string; email: string; phone: string;

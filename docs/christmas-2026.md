@@ -2,7 +2,7 @@
 
 One **$300 CAD** package: a 20-minute family session with Santa, photographs across **three styled sets**, 10 edited full-resolution digital photographs, a private gallery and personal print rights. A **Santa letter mailed to the kids with a special printed photograph from the session**, **cookies and warm milk** are included. One household, up to five people. Arman is Santa.
 
-Parents may add **The Grinch for $50**, within the same appointment and included image allowance. The base remains one package; The Grinch is a separate optional cart item, off by default.
+A prominent, responsive Grinch banner sits directly below the package section. Its Add The Grinch button selects the optional visit and scrolls to booking. Parents may add **The Grinch for $50**, within the same appointment and included image allowance. The base remains one package; The Grinch is a separate optional cart item, off by default.
 
 ## Dates and availability
 
@@ -16,19 +16,19 @@ The booking form collects names for Santa's letter and the parent's BC mailing s
 
 ## Tax and Stripe
 
-The required physical photograph changes the previous digital-only tax treatment. **BC Bulletin PST 126, page 3** says that when tangible photographs are included and not optional, PST applies to the whole photography charge. This implementation treats the optional Grinch appearance as part of the selected photography session and its resulting print package, and applies the same rates to both line items. BC postal delivery is the scope of this checkout.
+The merchant explicitly requested **GST-only collection** for this integration. The cart, server-priced totals, Checkout line items and paid invoice configuration now collect **5% GST**, with no PST charge or PST registration activation gate.
 
-- Base: $300 + $15 GST (5%) + $21 PST (7%) = **$336 CAD**.
-- With The Grinch: $350 + $17.50 GST + $24.50 PST = **$392 CAD**.
+- Base: $300 + $15 GST = **$315 CAD**.
+- With The Grinch: $350 + $17.50 GST = **$367.50 CAD**.
 
-Official source: https://www2.gov.bc.ca/assets/gov/taxes/sales-taxes/publications/pst-126-photographers-videographers-photofinishers.pdf . Review tax treatment before changing the physical inclusions, contract structure or delivery jurisdiction.
+This is a collection configuration, not a finding that the printed-photo package is PST-exempt. BC Bulletin PST 126, page 3, says that a photography charge including required tangible photographs is subject to PST on the whole charge. That tax-treatment question remains unresolved and should be reviewed by the merchant before launch. No tax registration, previously issued invoice or existing tax-rate object is changed by this update. Official source: https://www2.gov.bc.ca/assets/gov/taxes/sales-taxes/publications/pst-126-photographers-videographers-photofinishers.pdf .
 
 Live Arasaka Inc. catalog:
 
 - Main product `prod_VRv3xk15KZIIXJ`, price `price_1UR1DrJ13FhTkCj17wPfWMTM`, CAD `30000` cents; description updated for the new inclusions and dates.
 - Grinch product `prod_VRwSIetrz9JUWh`, price `price_1UR2ZNJ13FhTkCj1RhR5D8wU`, CAD `5000` cents, exclusive of tax.
 
-The server verifies both prices and computes the selected subtotal/total. The client must accept the exact current subtotal, total and policy before any hold is created. Both line items use the reusable manual GST/PST rates, created or reused on activation. Automatic Stripe Tax is not enabled. A paid invoice is generated per successful purchase and includes GST and BC PST registration numbers, appointment and inclusions. No customer invoice or charge was issued during setup.
+The server verifies both prices and computes the selected subtotal/total. The client must accept the exact current subtotal, total and policy before any hold is created. Both line items use only the reusable manual 5% GST rate, created or reused on activation. Automatic Stripe Tax is not enabled. A paid invoice is generated per successful purchase and includes the GST registration number, appointment and inclusions. No customer invoice or charge was issued during setup.
 
 The reservation stores its exact expected total and package snapshot. Reconciliation verifies CAD, live mode, reservation/session metadata, subtotal and total. Legacy GST-only reservations retain their original expected amount rather than being rewritten with current taxes or features. Fulfilment is driven by the signed webhook, with idempotent customer/studio emails; a mail failure never creates another booking.
 
@@ -36,7 +36,7 @@ The reservation stores its exact expected total and package snapshot. Reconcilia
 
 `/christmas` is the customer page; `/christmas/preview` is a clearly labelled demo with no contact submission, inventory hold or payment. `/christmas/confirmation` uses a private bearer token. `/admin/christmas` uses existing admin authentication.
 
-Bookings remain closed until the actual studio street address/postal code, arrival details, cancellation policy, matching live Stripe publishable key, live webhook connection and **BC PST registration number** are configured. `/admin/payment-settings` uses the existing merchant integration. Verify the paid checkout, tax, invoice and email flow before advertising. Replace labelled AI concept photographs with completed-studio photographs when available.
+Bookings remain closed until the actual studio street address/postal code, arrival details, cancellation policy, matching live Stripe publishable key, live webhook connection are configured. `/admin/payment-settings` uses the existing merchant integration. Verify the paid checkout, tax, invoice and email flow before advertising. Replace labelled AI concept photographs with completed-studio photographs when available.
 
 ## Animation and mobile
 
@@ -48,4 +48,4 @@ Phone rules reduce particles, filters and glow while retaining every effect type
 
 `node --experimental-strip-types --test scripts/christmas-inventory.test.mjs`
 
-Nine tests cover concurrent claims, held/paid/unreleased inventory, seasonal date validation and overlaps, cents formatting, base/add-on GST/PST totals, all 50 daily schedules, and safe inventory migration. Run TypeScript and the production build. Render checks cover one flight/deer, new inclusions, cart option and date labels. Browser animation, physical-phone audio/performance and a paid transaction remain separate verification steps.
+Nine tests cover concurrent claims, held/paid/unreleased inventory, seasonal date validation and overlaps, cents formatting, base/add-on GST-only totals, all 50 daily schedules, and safe inventory migration. Run TypeScript and the production build. Render checks cover one flight/deer, new inclusions, cart option and date labels. Browser animation, physical-phone audio/performance and a paid transaction remain separate verification steps.

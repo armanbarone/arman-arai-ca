@@ -8,7 +8,7 @@ const CALENDAR_PATH = "christmas/2026/calendar.json";
 export const slotPath = (id: string) => `christmas/2026/slots/${id}.json`;
 type Calendar = { season?: string; slots: Slot[] };
 const SEASON_VERSION = "nov01-dec20-v2";
-const defaults: ChristmasSettings = { enabled: false, studioAddress: "", postalCode: "", arrivalNotes: "", cancellationPolicy: "", publishableKey: "", pstNumber: "" };
+const defaults: ChristmasSettings = { enabled: false, studioAddress: "", postalCode: "", arrivalNotes: "", cancellationPolicy: "", publishableKey: "" };
 export async function settings() { return (await readJson<ChristmasSettings>(SETTINGS_PATH))?.data ?? defaults; }
 async function calendar() {
   for (let attempt = 0; attempt < 5; attempt++) {

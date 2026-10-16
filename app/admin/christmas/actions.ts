@@ -10,9 +10,9 @@ export async function saveChristmasSettings(form: FormData) {
   await requireAdmin();
   const text = (k: string, max = 2000) => String(form.get(k) || "").trim().slice(0, max);
   const cfg = { enabled: form.get("enabled") === "on", studioAddress: text("studioAddress", 250), postalCode: text("postalCode", 20),
-    arrivalNotes: text("arrivalNotes"), cancellationPolicy: text("cancellationPolicy"), publishableKey: text("publishableKey", 250), pstNumber: text("pstNumber", 40) };
-  if (cfg.enabled && (!cfg.studioAddress || !cfg.postalCode || !cfg.pstNumber || !cfg.cancellationPolicy || !cfg.publishableKey.startsWith("pk_live_") || !(await paymentReady())))
-    throw Error("Before opening bookings: enter the studio address, postal code, BC PST registration, booking policy and live Stripe publishable key, and connect live Stripe in payment settings.");
+    arrivalNotes: text("arrivalNotes"), cancellationPolicy: text("cancellationPolicy"), publishableKey: text("publishableKey", 250) };
+  if (cfg.enabled && (!cfg.studioAddress || !cfg.postalCode || !cfg.cancellationPolicy || !cfg.publishableKey.startsWith("pk_live_") || !(await paymentReady())))
+    throw Error("Before opening bookings: enter the studio address, postal code, booking policy and live Stripe publishable key, and connect live Stripe in payment settings.");
   if (cfg.enabled) await christmasCheckoutCatalog();
   await writeJson(SETTINGS_PATH, cfg);
   revalidatePath("/admin/christmas"); revalidatePath("/christmas");

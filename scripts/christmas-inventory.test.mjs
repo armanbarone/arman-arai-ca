@@ -43,12 +43,12 @@ test("30-minute allocations reject overlaps and invalid seasonal dates", () => {
   assert.equal(validSlot("2026-12-05", "11:00"), true);
 });
 
-import { PACKAGES, GRINCH_ADDON, money, gstCents, pstCents, totalCents, sessionSubtotal, seasonalSlots } from "../lib/christmas/catalog.ts";
+import { PACKAGES, GRINCH_ADDON, money, gstCents, totalCents, sessionSubtotal, seasonalSlots } from "../lib/christmas/catalog.ts";
 test("one $300 Santa package; cents format correctly, including $15 GST", () => {
   assert.equal(PACKAGES.length, 1); assert.equal(PACKAGES[0].id, "santa");
   assert.equal(PACKAGES[0].santa, true); assert.equal(PACKAGES[0].price, 30000);
   assert.equal(money(30000), "$300"); assert.equal(money(1500), "$15"); assert.equal(money(31500), "$315");
-  assert.equal(gstCents(30000),1500); assert.equal(pstCents(30000),2100); assert.equal(totalCents(30000),33600); assert.equal(PACKAGES[0].sets,3);
+  assert.equal(gstCents(30000),1500); assert.equal(totalCents(30000),31500); assert.equal(PACKAGES[0].sets,3);
 });
 test("daily 11am–8pm calendar covers all 50 days and ends at 7:30pm", () => {
   const slots = seasonalSlots(), dates = [...new Set(slots.map(s=>s.date))];
@@ -66,8 +66,8 @@ test("daily 11am–8pm calendar covers all 50 days and ends at 7:30pm", () => {
 test("optional Grinch appearance adds exactly $50 and taxes cannot be lost in the total", () => {
  assert.equal(GRINCH_ADDON.price,5000); assert.equal(sessionSubtotal(false),30000);
  assert.equal(sessionSubtotal(true),35000); assert.equal(gstCents(35000),1750);
- assert.equal(pstCents(35000),2450); assert.equal(totalCents(35000),39200);
- assert.equal(money(totalCents(30000)),"$336"); assert.equal(money(totalCents(35000)),"$392");
+ assert.equal(totalCents(35000),36750);
+ assert.equal(money(totalCents(30000)),"$315"); assert.equal(money(totalCents(35000)),"$367.50");
 });
 test("season upgrade adds early November, preserves reservations and real blocks, and hides late December", () => {
  const paid={...slot,id:"2026-12-23_1100",date:"2026-12-23",reservation:{...reservation("paid"),status:"paid"}};

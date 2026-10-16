@@ -1796,3 +1796,15 @@ textarea.wp-input {
   width: 18px; height: 18px; accent-color: var(--accent); cursor: pointer;
 }
 .wp-row-delete { display: inline-block; margin-left: 16px; }
+
+/* A disclosure that hides something irreversible. It has to look like a
+   control, not a line of prose, or it reads as a heading and never gets
+   opened. */
+.wp .wp-destructive { margin-top: 18px; border-top: 1px solid var(--line); padding-top: 16px; }
+.wp .wp-destructive > summary { cursor: pointer; display: inline-block; list-style: none; }
+.wp .wp-destructive > summary::marker,
+.wp .wp-destructive > summary::-webkit-details-marker { display: none; }
+.wp .wp-destructive > summary::before { content: "¹5"; margin-right: 8px; font-size: 12px; }
+.wp .wp-destructive > p { font-size: 14px; margin: 14px 0; max-width: 60ch; }
+.wp .wp-destructive > .wp-label { margin-top: 14px; }
+.wp .wp-destructive > button { margin-top: 14px; }

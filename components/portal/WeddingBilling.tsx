@@ -20,6 +20,7 @@ import {
   cancelOpenCheckout,
   reconcileClientCheckout,
 } from "@/app/admin/invoice-actions";
+import { reverseWeddingPayment } from "@/app/portal/wedding-actions";
 import { useWeddingBooking, useWeddingPreview } from "./WeddingPreviewProvider";
 import { Card, Eyebrow, StatusPill, buttonCls, ghostButtonCls } from "./Shell";
 export default function WeddingBilling({
@@ -46,7 +47,9 @@ export default function WeddingBilling({
     [message, setMessage] = useState(""),
     [error, setError] = useState(""),
     [pending, start] = useTransition(),
-    [pdfUrl, setPdfUrl] = useState("");
+    [pdfUrl, setPdfUrl] = useState(""),
+    // Which hand-entered receipt is being taken back, and why.
+    [undo, setUndo] = useState({ id: "", reason: "" });
   useEffect(() => {
     if (preview || admin) return;
     const id = new URLSearchParams(window.location.search).get("checkout");
@@ -375,23 +378,40 @@ export default function WeddingBilling({
                       Retry invoice email
                     </button>
                   ) : null}
-                  {balance > 0 && (
-                    <details>
-                      <summary>Void this invoice</summary>
+                  {/* Cancelling an invoice is the thing the owner reaches for
+                      when he has issued the wrong one, so it says so plainly
+                      and stays out of the way of a paid or already-void one. */}
+                  {state !== "void" && balance > 0 && (
+                    <details className="wp-destructive">
+                      <summary className="wp-text-button wp-danger">
+                        Cancel this invoice
+                      </summary>
+                      <p className="wp-muted">
+                        Voids invoice {v.number}, closes any open card checkout
+                        and leaves the instalment unpaid. The reason is written
+                        onto the record, so it has to say something.
+                      </p>
                       <label className="wp-label">
-                        Reason
+                        Why it is being cancelled
                         <input
                           className="wp-input"
+                          aria-label="Reason for cancelling this invoice"
+                          placeholder="Issued against the wrong instalment"
                           value={reason}
                           onChange={(e) => setReason(e.target.value)}
                         />
                       </label>
                       <button
-                        className={ghostButtonCls}
+                        className={`${ghostButtonCls} wp-danger`}
                         disabled={pending || reason.trim().length < 5}
-                        onClick={() => run("void", v.id)}
+                        onClick={() => {
+                          if (!confirm(`Void invoice ${v.number}? This cannot be undone.`)) return;
+                          run("void", v.id);
+                        }}
                       >
-                        Void invoice & close card checkout
+                        {reason.trim().length < 5
+                          ? "Give a reason first"
+                          : "Void invoice & close card checkout"}
                       </button>
                     </details>
                   )}
@@ -427,6 +447,7 @@ export default function WeddingBilling({
                   <th>Amount</th>
                   <th>Method</th>
                   <th>Received</th>
+                  {admin && <th></th>}
                 </tr>
               </thead>
               <tbody>
@@ -450,6 +471,65 @@ export default function WeddingBilling({
                           : "Other"}
                     </td>
                     <td>{formatDate(p.receivedAt.slice(0, 10))}</td>
+                    {admin && (
+                      <td>
+                        {/* A receipt typed against the wrong instalment used to
+                            be permanent. A card charge is not touched here: it
+                            is real money that moved, so it is refunded in
+                            Stripe and comes back on its own. */}
+                        {p.method === "stripe_card" ? (
+                          <small>Refund in Stripe</small>
+                        ) : undo.id === p.id ? (
+                          <div className="wp-row-actions">
+                            <input
+                              className="wp-input wp-stage-input"
+                              aria-label="Reason for reversing this receipt"
+                              placeholder="Recorded in error"
+                              value={undo.reason}
+                              onChange={(e) =>
+                                setUndo({ id: p.id, reason: e.target.value })
+                              }
+                            />
+                            <button
+                              className="wp-text-button wp-danger"
+                              disabled={pending || undo.reason.trim().length < 5}
+                              onClick={() => {
+                                setMessage("");
+                                setError("");
+                                start(async () => {
+                                  const r = await reverseWeddingPayment(
+                                    b.ref,
+                                    p.id,
+                                    undo.reason,
+                                  );
+                                  if (r.ok) {
+                                    setMessage(r.message ?? "Receipt reversed.");
+                                    setUndo({ id: "", reason: "" });
+                                    router.refresh();
+                                  } else setError(r.error);
+                                });
+                              }}
+                            >
+                              Confirm
+                            </button>
+                            <button
+                              className="wp-text-button"
+                              onClick={() => setUndo({ id: "", reason: "" })}
+                            >
+                              Keep it
+                            </button>
+                          </div>
+                        ) : (
+                          <button
+                            className="wp-text-button wp-danger"
+                            disabled={pending || preview}
+                            onClick={() => setUndo({ id: p.id, reason: "" })}
+                          >
+                            Reverse
+                          </button>
+                        )}
+                      </td>
+                    )}
                   </tr>
                 ))}
               </tbody>

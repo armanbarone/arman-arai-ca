@@ -274,6 +274,14 @@ export default function LeadTracker({ leads: initial }: { leads: Lead[] }) {
               ))}
             </dl>
             <div className="wp-form-grid">
+              {/* Who they are, editable. An inquiry arrives with whatever the
+                  form captured, and a wrong email is the one mistake that
+                  stops everything else working. */}
+              <label className="wp-label">Name<input className="wp-input" aria-label="Their name" defaultValue={l.name} onBlur={(e) => patch(l.id, { name: e.target.value })} /></label>
+              <label className="wp-label">Partner<input className="wp-input" aria-label="Partner's name" defaultValue={l.partnerName ?? ""} onBlur={(e) => patch(l.id, { partnerName: e.target.value })} /></label>
+              <label className="wp-label">Email<input className="wp-input" aria-label="Their email" defaultValue={l.email} onBlur={(e) => patch(l.id, { email: e.target.value })} /></label>
+              <label className="wp-label">Phone<input className="wp-input" aria-label="Their phone" defaultValue={l.phone ?? ""} onBlur={(e) => patch(l.id, { phone: e.target.value })} /></label>
+              <label className="wp-label">Source<input className="wp-input" aria-label="Where it came from" defaultValue={l.source} onBlur={(e) => patch(l.id, { source: e.target.value })} /></label>
               <label className="wp-label">Wedding date<input className="wp-input" aria-label="Wedding date" defaultValue={l.weddingDate ?? ""} onBlur={(e) => patch(l.id, { weddingDate: e.target.value })} /></label>
               <label className="wp-label">Booking reference<input className="wp-input" aria-label="Booking reference" defaultValue={l.bookingRef ?? ""} placeholder="AA-CA-2027-072" onBlur={(e) => patch(l.id, { bookingRef: e.target.value })} /></label>
               {l.stage === "lost" && (

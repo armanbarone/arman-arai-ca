@@ -34,7 +34,7 @@ import {
   OPERATION_REGISTERS,
   calculateBudgetRow,
 } from "@/lib/portal/operations";
-import { roundDiv, formatCad } from "@/lib/portal/money";
+import { roundDiv, formatCad, todayInBusinessTz } from "@/lib/portal/money";
 import {
   documentSections,
   initialsForName,
@@ -876,6 +876,75 @@ export async function recordWeddingPayment(
     });
     refresh(ref);
     return { ok: true, message: "Receipt recorded and balance updated." };
+  } catch (e) {
+    return failure(e);
+  }
+}
+
+/**
+ * Undo a payment that was recorded by hand.
+ *
+ * Only ever an Interac or other manual receipt: a Stripe card charge is real
+ * money that moved and has to be refunded in Stripe, not erased here. The
+ * instalment is put back to what it was, so a receipt typed against the wrong
+ * one or for the wrong amount stops being permanent.
+ */
+export async function reverseWeddingPayment(
+  ref: string,
+  paymentId: string,
+  reason: string,
+): Promise<Result> {
+  const admin = await requireAdmin();
+  try {
+    if (reason.trim().length < 5)
+      throw new Error("Say why this receipt is being reversed.");
+    await updateBooking(ref, (b) => {
+      const idx = b.payments.findIndex((p) => p.id === paymentId);
+      if (idx < 0) throw Error("That receipt no longer exists.");
+      const p = b.payments[idx];
+      if (p.method === "stripe_card")
+        throw Error(
+          "That was a card charge. Refund it in Stripe; the refund comes back here on its own.",
+        );
+      const i = b.schedule.find((x) => x.id === p.installmentId);
+      if (i) {
+        i.paidCents = Math.max(0, i.paidCents - p.amountCents);
+        i.status =
+          i.paidCents >= i.totalCents
+            ? "paid"
+            : i.paidCents > 0
+              ? "partially_paid"
+              : i.dueDate < todayInBusinessTz()
+                ? "overdue"
+                : "due";
+        if (i.paidCents === 0) delete i.paidAt;
+      }
+      b.payments.splice(idx, 1);
+      // The deposit is what turns a signed wedding into a booked one, so
+      // taking it back has to be able to turn that around as well.
+      if (
+        b.status === "booked" &&
+        !b.schedule.some((x) => x.kind === "deposit" && x.status === "paid")
+      )
+        b.status = "signed";
+      b.events.push({
+        at: new Date().toISOString(),
+        type: "payment_reversed",
+        actor: admin.email,
+        detail: {
+          paymentId,
+          receiptNumber: p.receiptNumber,
+          cents: p.amountCents,
+          installmentId: p.installmentId,
+          reason: reason.trim(),
+        },
+      });
+    });
+    refresh(ref);
+    return {
+      ok: true,
+      message: "Receipt reversed. The instalment is owing again.",
+    };
   } catch (e) {
     return failure(e);
   }

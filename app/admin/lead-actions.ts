@@ -21,6 +21,13 @@ const fail = (e: unknown): Result => ({
 export async function saveLead(
   id: string,
   patch: {
+    // Who they are, not just where they got to. A typo in an email address
+    // used to mean deleting the inquiry and losing its history to retype it.
+    name?: string;
+    partnerName?: string;
+    email?: string;
+    phone?: string;
+    source?: string;
     stage?: LeadStage;
     consult?: boolean;
     booked?: boolean;
@@ -34,6 +41,21 @@ export async function saveLead(
   await requireAdmin();
   try {
     await updateLead(id, (l) => {
+      if (patch.name !== undefined) {
+        if (patch.name.trim().length < 2) throw new Error("They need a name.");
+        l.name = patch.name.trim();
+      }
+      if (patch.partnerName !== undefined)
+        l.partnerName = patch.partnerName.trim() || undefined;
+      if (patch.email !== undefined) {
+        const e = patch.email.trim().toLowerCase();
+        if (e && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e))
+          throw new Error("That is not an email address.");
+        l.email = e;
+      }
+      if (patch.phone !== undefined) l.phone = patch.phone.trim() || undefined;
+      if (patch.source !== undefined)
+        l.source = patch.source.trim() || "Direct or unknown";
       if (patch.stage) l.stage = patch.stage;
       if (patch.consult !== undefined) l.consult = patch.consult;
       if (patch.booked !== undefined) l.booked = patch.booked;

@@ -97,17 +97,26 @@ export default function WeddingOperations({
                   </div>
                 ))}
               </div>
+              {/* This removes saved entries too: the shortened register is what
+                  gets written on save. The old label said "unsaved", which read
+                  as though a recorded entry could never be taken out. */}
               <button
-                className={ghostButtonCls}
+                className={`${ghostButtonCls} wp-danger`}
                 style={{ marginTop: 20 }}
-                onClick={() =>
+                onClick={() => {
+                  if (
+                    row.some((c) => c?.trim()) &&
+                    !confirm(`Remove entry ${ri + 1} from ${register.title}? Save the register to make it stick.`)
+                  )
+                    return;
+                  setMessage("Entry removed. Save the register to keep it that way.");
                   setData((d) => ({
                     ...d,
                     [key]: d[key].filter((_, i) => i !== ri),
-                  }))
-                }
+                  }));
+                }}
               >
-                Remove this unsaved entry
+                Remove this entry
               </button>
             </div>
           </details>

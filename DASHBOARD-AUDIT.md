@@ -83,3 +83,123 @@ larger; note them rather than rewrite them in the same pass.
 1. Failed deliveries on the dashboard. It has already cost a client email.
 2. The duplicate route, which is a two-line change.
 3. Labels on the inquiry table.
+
+---
+
+# Second pass: the dashboard as something to use
+
+The first pass asked whether every page worked. This one asks whether the owner
+can do the thing he came to do. The method was different too: a script walked
+all nineteen admin pages signed in as the owner and listed every button, link
+and form control on each, so a missing control shows up as an absence rather
+than having to be imagined.
+
+Absence is what it found. Nothing on these pages is broken. Things that should
+be possible simply had no control attached to them.
+
+## Findings
+
+### 4. A hand-recorded payment was permanent — FIXED
+
+`recordWeddingPayment` adds a receipt, adds to `paidCents` and flips the
+instalment to paid. There was no counterpart. Type $1,795.50 against the wrong
+instalment, or type 17955.00, and the booking's balance is wrong for the rest
+of its life. There was no reversal anywhere in the codebase.
+
+This is the worst of the set because it is silent. The schedule says paid, the
+client's dashboard says paid, and the only way back was to edit storage by hand.
+
+**Done.** `reverseWeddingPayment` removes the receipt, returns `paidCents`,
+recomputes the instalment status from its due date, and drops a wedding back
+from booked to signed if the reversal took the deposit with it. It refuses a
+Stripe card charge outright: that is money that actually moved, so it gets
+refunded in Stripe and the refund comes back on its own. A reason is required
+and is written into the audit trail. It is on each row of Received payments.
+
+### 5. The payment schedule could not gain or lose an instalment — FIXED
+
+`saveWeddingSchedule` accepts between one and twelve instalments. The editor
+rendered exactly the rows the package created and offered no way to add or
+remove one. Going from three payments to two was impossible through the
+dashboard, although the server had always allowed it.
+
+**Done.** Add an instalment, and Remove this instalment per row. A row that has
+taken money cannot be removed and says why, since a receipt points at it.
+
+### 6. Buttons greyed themselves out without saying why — FIXED
+
+Save payment schedule was `disabled={locked || pending || sum !== total}`. Three
+separate reasons, no words. This is the same trap as the Publish & countersign
+button: the dashboard knows exactly what is wrong and shows a grey rectangle.
+
+**Done.** The editor lists its blockers in full, and the money one does the
+arithmetic: "The instalments add up to $3,739.84; the contract is $4,986.45. The
+difference is $1,246.61."
+
+### 7. An inquiry's contact details could not be corrected — FIXED
+
+The inquiry table could edit stage, consult, booked, value, booking reference,
+wedding date, lost reason and notes. It could not edit the name, the partner's
+name, the email, the phone or the source. A typo in an email address meant
+deleting the inquiry, losing its message and its history, and retyping it.
+
+**Done.** All five are editable in the detail panel. The email is validated and
+lower-cased on the way in, which is the same casing bug that once stopped a
+client receiving his login link.
+
+### 8. "Remove this unsaved entry" removed saved entries too — FIXED
+
+The operations workbook's remove button filtered the row out of state, and
+saving the register wrote the shortened list. It always worked on saved
+entries. The label said it did not, so it read as unusable for the only case
+anyone cares about.
+
+**Done.** It says Remove this entry, confirms when the row has content, and
+says that saving the register is what makes it stick.
+
+### 9. Void was a line of prose — FIXED
+
+Cancelling an invoice sat behind a bare `<summary>Void this invoice`, with no
+styling, so it read as a heading. It was also offered on an already-void
+invoice.
+
+**Done.** It reads Cancel this invoice, is styled as a control, states what
+voiding does, explains that the reason field is mandatory, confirms, and is
+gone once the invoice is void or paid.
+
+## Checked and already fine
+
+| could he…? | where |
+|---|---|
+| delete a test wedding | Delete on each row of the weddings table, guarded against anything with real history |
+| delete a fake inquiry | per row, plus tick-boxes and a bulk delete |
+| delete a follow-up | on the row in What needs you |
+| withdraw a document | draft deletion, and withdrawal of an issued-but-unsigned one |
+| remove a moodboard photo | Remove photo on each tile |
+| cancel an invoice | finding 9 |
+| archive rather than delete | archive and restore, with a reason |
+
+`/admin/library` and `/admin/invoices` have no action buttons of their own and
+that is correct: one is the source pack to read, the other an index that hands
+off to the booking.
+
+## Verified, not assumed
+
+Every fix above was checked in a real browser against live booking data, not
+inferred from the diff.
+
+- Reverse appears on the receipt for `AA-CA-2027-072`.
+- That wedding's schedule is locked and says the agreement is issued.
+- A draft wedding shows four Remove this instalment buttons and Add an
+  instalment; removing one produces the arithmetic above and disables the save.
+- An inquiry's name and phone were edited through the UI, confirmed changed in
+  storage, then restored to their original values.
+- Receipts reconcile against the schedule across all three bookings: 0
+  discrepancies.
+
+One thing worth recording about the method. The first run of this verification
+appeared to show the new controls missing. The server on port 3300 was
+`next start`, a production server, which serves a build and never recompiles,
+so for one round of checks I was testing the old code and reading it as a
+defect in the new. The schedule-editor absences in findings 5 and 6 were found
+by reading the component, not by trusting that screen.

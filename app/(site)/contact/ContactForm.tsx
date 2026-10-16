@@ -1,45 +1,46 @@
 "use client";
 
 import { useState } from "react";
-import { MARKETS } from "@/lib/site";
 import { leadAttribution } from "@/lib/attribution";
+import { PROMISE_LABEL, PROMISE_NOTE, PROMISE_OPTIONS, REFERRAL_OPTIONS } from "@/lib/contact-form";
 
-const GUEST_COUNTS = [
-  "Under 30",
-  "30 to 80",
-  "80 to 150",
-  "150 to 250",
-  "250+",
-  "Multi-day, several events",
-];
-
+/* The contact page form. The same nine questions as the quick modal and the
+ * landing pages (lib/contact-form.ts), so the first reply has the same facts
+ * whichever button a couple happened to press. */
 export default function ContactForm() {
   const [form, setForm] = useState({
-    name: "",
-    partnerName: "",
-    phone: "",
+    firstName: "",
+    lastName: "",
     email: "",
-    weddingDate: "",
-    market: "",
-    collection: "",
-    venue: "",
-    guestCount: "",
-    message: "",
+    phone: "",
     referral: "",
+    weddingDate: "",
+    location: "",
+    message: "",
+    promise: "",
   });
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
+  const [error, setError] = useState("");
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setStatus("sending");
+    setError("");
     try {
       const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ type: "full", ...form, ...leadAttribution() }),
+        body: JSON.stringify({ type: "full", subjectLabel: "Contact page inquiry", ...form, ...leadAttribution() }),
       });
-      setStatus(res.ok ? "sent" : "error");
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || data.success !== true) {
+        setError(data.error || "Something went wrong. Email me directly at i@armanarai.com and I will pick it up there.");
+        setStatus("error");
+        return;
+      }
+      setStatus("sent");
     } catch {
+      setError("Something went wrong. Email me directly at i@armanarai.com and I will pick it up there.");
       setStatus("error");
     }
   }
@@ -49,6 +50,8 @@ export default function ContactForm() {
     (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) =>
       setForm((f) => ({ ...f, [field]: e.target.value }));
 
+  const label = "block text-[0.68rem] tracking-[0.18em] uppercase text-blush mb-2";
+
   if (status === "sent") {
     return (
       <div className="flex flex-col items-start justify-center h-full py-16">
@@ -56,8 +59,9 @@ export default function ContactForm() {
           Thank you
         </span>
         <p className="font-serif italic text-slate text-lg leading-relaxed max-w-sm">
-          That is in. I answer inside two business hours, with the collection I would
-          recommend and what travel comes to.
+          That is in. I reply personally within 60 minutes. Everything you asked for is already on
+          its way to your inbox, so check your spam and promotions folders if it is not there in a
+          few minutes.
         </p>
       </div>
     );
@@ -67,88 +71,54 @@ export default function ContactForm() {
     <form onSubmit={handleSubmit} className="space-y-6">
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
         <div>
-          <label htmlFor="name" className="block text-[0.68rem] tracking-[0.18em] uppercase text-blush mb-2">Your name</label>
-          <input id="name" name="name" type="text" required autoComplete="given-name" className="form-input" value={form.name} onChange={set("name")} />
+          <label htmlFor="firstName" className={label}>First name</label>
+          <input id="firstName" name="firstName" type="text" required maxLength={60} autoComplete="given-name" placeholder="Enter your first name" className="form-input" value={form.firstName} onChange={set("firstName")} />
         </div>
         <div>
-          <label htmlFor="partnerName" className="block text-[0.68rem] tracking-[0.18em] uppercase text-blush mb-2">Partner&rsquo;s name</label>
-          <input id="partnerName" name="partnerName" type="text" className="form-input" value={form.partnerName} onChange={set("partnerName")} />
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-        <div>
-          <label htmlFor="phone" className="block text-[0.68rem] tracking-[0.18em] uppercase text-blush mb-2">Phone number</label>
-          <input id="phone" name="phone" type="tel" autoComplete="tel" placeholder="+1 416 000 0000" className="form-input" value={form.phone} onChange={set("phone")} />
-        </div>
-        <div>
-          <label htmlFor="email" className="block text-[0.68rem] tracking-[0.18em] uppercase text-blush mb-2">Email address</label>
-          <input id="email" name="email" type="email" required autoComplete="email" className="form-input" value={form.email} onChange={set("email")} />
+          <label htmlFor="lastName" className={label}>Last name</label>
+          <input id="lastName" name="lastName" type="text" required maxLength={60} autoComplete="family-name" placeholder="Enter your last name" className="form-input" value={form.lastName} onChange={set("lastName")} />
         </div>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
         <div>
-          <label htmlFor="weddingDate" className="block text-[0.68rem] tracking-[0.18em] uppercase text-blush mb-2">Wedding date</label>
-          <input id="weddingDate" name="weddingDate" type="text" required placeholder="20 June 2027, or still deciding" className="form-input" value={form.weddingDate} onChange={set("weddingDate")} />
+          <label htmlFor="email" className={label}>Email</label>
+          <input id="email" name="email" type="email" required maxLength={100} autoComplete="email" placeholder="Enter your email" className="form-input" value={form.email} onChange={set("email")} />
         </div>
         <div>
-          <label htmlFor="market" className="block text-[0.68rem] tracking-[0.18em] uppercase text-blush mb-2">Where</label>
-          <select id="market" name="market" required className="form-input cursor-pointer" value={form.market} onChange={set("market")}>
-            <option value="">Select one</option>
-            {MARKETS.map((m) => (
-              <option key={m.slug}>{m.region}</option>
-            ))}
-            <option>Elsewhere in Canada</option>
-          </select>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-        <div>
-          <label htmlFor="guestCount" className="block text-[0.68rem] tracking-[0.18em] uppercase text-blush mb-2">Guest count</label>
-          <select id="guestCount" name="guestCount" className="form-input cursor-pointer" value={form.guestCount} onChange={set("guestCount")}>
-            <option value="">Select one</option>
-            {GUEST_COUNTS.map((g) => (
-              <option key={g}>{g}</option>
-            ))}
-          </select>
-        </div>
-        <div>
-          <label htmlFor="collection" className="block text-[0.68rem] tracking-[0.18em] uppercase text-blush mb-2">Coverage you have in mind</label>
-          <select id="collection" name="collection" className="form-input cursor-pointer" value={form.collection} onChange={set("collection")}>
-            <option value="">Not sure yet, advise me</option>
-            <option>Signature, 8 hours</option>
-            <option>Legacy, 10 hours</option>
-            <option>Photo + Film, 12 hours</option>
-            <option>Multi-day, needs a custom quote</option>
-          </select>
+          <label htmlFor="phone" className={label}>Mobile</label>
+          <input id="phone" name="phone" type="tel" required maxLength={40} autoComplete="tel" placeholder="Enter your phone" className="form-input" value={form.phone} onChange={set("phone")} />
         </div>
       </div>
 
       <div>
-        <label htmlFor="venue" className="block text-[0.68rem] tracking-[0.18em] uppercase text-blush mb-2">Venue, or venues</label>
-        <input id="venue" name="venue" type="text" placeholder="Booked, on a shortlist, or wide open" className="form-input" value={form.venue} onChange={set("venue")} />
-      </div>
-
-      <div>
-        <label htmlFor="referral" className="block text-[0.68rem] tracking-[0.18em] uppercase text-blush mb-2">How did you find me?</label>
-        <select id="referral" name="referral" className="form-input cursor-pointer" value={form.referral} onChange={set("referral")}>
-          <option value="">Select one</option>
-          <option>Google</option>
-          <option>Instagram (@iarmanarai)</option>
-          <option>Pinterest</option>
-          <option>A friend</option>
-          <option>My planner or venue</option>
-          <option>Other</option>
+        <label htmlFor="referral" className={label}>How did you hear about me?</label>
+        <select id="referral" name="referral" required className="form-input cursor-pointer" value={form.referral} onChange={set("referral")}>
+          <option value="" disabled>Choose your option</option>
+          {REFERRAL_OPTIONS.map((option) => (
+            <option key={option} value={option}>{option}</option>
+          ))}
         </select>
       </div>
 
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        <div>
+          <label htmlFor="weddingDate" className={label}>Wedding date <span className="text-slate normal-case tracking-normal">(optional)</span></label>
+          <input id="weddingDate" name="weddingDate" type="text" maxLength={40} placeholder="20 June 2027, or still deciding" className="form-input" value={form.weddingDate} onChange={set("weddingDate")} />
+        </div>
+        <div>
+          <label htmlFor="location" className={label}>Wedding location</label>
+          <input id="location" name="location" type="text" required maxLength={120} placeholder="City and province, or the venue" className="form-input" value={form.location} onChange={set("location")} />
+        </div>
+      </div>
+
       <div>
-        <label htmlFor="message" className="block text-[0.68rem] tracking-[0.18em] uppercase text-blush mb-2">Tell me about the day</label>
+        <label htmlFor="message" className={label}>Your message</label>
         <textarea
           id="message" name="message"
           rows={5}
+          required
+          maxLength={4000}
           placeholder="What the day looks like, how many events, whose traditions are in it, and the twenty minutes you would be heartbroken to lose."
           className="form-input resize-none"
           value={form.message}
@@ -156,11 +126,18 @@ export default function ContactForm() {
         />
       </div>
 
-      {status === "error" && (
-        <p className="text-red-500 text-xs">
-          Something went wrong. Email me directly at i@armanarai.com and I will pick it up there.
-        </p>
-      )}
+      <div>
+        <label htmlFor="promise" className={label}>{PROMISE_LABEL}</label>
+        <select id="promise" name="promise" required className="form-input cursor-pointer" value={form.promise} onChange={set("promise")}>
+          <option value="" disabled>Say you promise</option>
+          {PROMISE_OPTIONS.map((option) => (
+            <option key={option} value={option}>{option}</option>
+          ))}
+        </select>
+        <p className="text-slate text-xs leading-relaxed mt-3">{PROMISE_NOTE}</p>
+      </div>
+
+      {status === "error" && <p role="alert" className="text-red-500 text-xs">{error}</p>}
 
       <button
         type="submit"

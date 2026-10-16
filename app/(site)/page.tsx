@@ -602,7 +602,7 @@ export default function Home() {
             <p className="dr-lede" style={{ marginBottom: "38px" }}>
               Peak Saturdays usually go nine to eighteen months out, and off-season and
               weekday dates open up much later. Send the date, the city and a rough guest
-              count and you will have a real answer inside two business hours.
+              count and you will have a real answer inside 60 minutes.
             </p>
             <div className="dr-cta-row" style={{ justifyContent: "center" }}>
               <InquireButton className="dr-cta" style={{ cursor: "pointer" }}>

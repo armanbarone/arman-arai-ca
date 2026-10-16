@@ -196,7 +196,7 @@ export default function FAQ() {
             ))}
           </div>
           <p className="text-slate text-[0.9rem] mb-8">
-            Still not answered? Ask me directly, and you will have a reply inside two business hours.
+            Still not answered? Ask me directly, and you will have a reply inside 60 minutes.
           </p>
           <InquireButton className="inline-block bg-rose text-ivory text-[0.68rem] tracking-[0.2em] uppercase px-10 py-4 hover:bg-rose-dark transition-colors duration-300 cursor-pointer border-none">
             Ask a question

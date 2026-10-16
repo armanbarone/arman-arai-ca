@@ -556,6 +556,64 @@ Everything in this list is live and was verified with a real HTTP check.
   because `trackWeddingInquiry` also fires `generate_lead` via `trackLead` and
   one sent form would otherwise count as two leads.
 
+### The inquiry workflow, rebuilt 2026-10-14
+
+Three things changed together, on his instruction, and they only make sense
+together.
+
+**1. One form, everywhere.** `lib/contact-form.ts` owns the nine questions every
+form on the site now asks: first name, last name, email, **mobile**, how did you
+hear about us, wedding date (the only optional one), wedding location, message,
+and a required promise to check the spam folder. He supplied a screenshot of the
+field set he wanted, closing line included. The contact page, the `InquiryModal`
+and the landing-page `InquiryForm` all render the same nine and post the same
+shape; `validateInquiry` is run by the browser and again by the route, so the
+server never trusts a field because the client drew it. The mobile number is
+required now, which it was deliberately not before: it will cost some ad
+conversions and he asked for it anyway.
+
+**2. The first email is a fixed template again.** `lib/auto-reply.ts` no longer
+calls a model. The Claude call, `lib/auto-reply-brief.ts` and the structured
+output are deleted. His words: "the automated email should be just informational
+(about general stuff). Mention that i will reply back personally within 60
+minutes." The email leads with three COMPLETE albums (Anastasia & Daniil, Sofia
+& Lucas, Margaux & Antoine) and then runs his four numbered sections: full
+pricing, the welcome guide at `/wedding-guide`, securing the date, and the
+preferred vendor list. **The 7:30 PM call line is fixed** and does not shift to
+"tomorrow" late at night; he chose that explicitly when asked. It is the
+`TONIGHT_CALL` constant.
+
+*The three album thumbnails are picked by eye, not from `cover`.* All three of
+those albums store an abstract as their cover (a doorway, a dessert table, an
+arch) which reads as nothing at thumbnail size in an inbox. I also mismatched a
+truncated filename on the first pass and shipped a foggy black-and-white walk
+instead of the couple. **Render the email and look at it before believing any
+frame is right.**
+
+**3. `/guide/<id>` is gone.** The per-inquiry page built on every submission
+(`lib/guide.ts`, `lib/guide-content.ts`, `app/guide/[id]/`) is deleted: "take
+out that on-fly-ai-generated landing page that you text people". Old links in
+already-sent emails 302 to `/wedding-guide` (302, not 301, because
+`/wedding-guide` is noindex and a permanent redirect into a noindex page
+deindexes the source).
+
+**The response-time promise is 60 minutes now, in all eight places.** It used to
+say "two business hours", and the contact page bragged about "a real answer, not
+an autoresponder" on the very page that now fires one. Changed in
+`contact/page.tsx` (x3), `faq`, the home page, `pricing`, the blog card and
+`llms.txt`. If that number moves again, grep for it; it is prose, not a constant.
+
+**`/preferred-vendors`** is new: 58 businesses across Vancouver, Toronto,
+Montréal, Calgary & Banff, and Victoria, in five categories, from
+`lib/vendors.ts`. noindex and out of the sitemap, like `/wedding-guide`. Every
+domain was fetched and read before it went on the page, and about a dozen
+candidates were dropped because the obvious domain belonged to someone else: a
+recording studio, a Las Vegas chapel, a design firm in Dubai. **Do not add an
+entry whose site you have not opened.** He chose to present these as vendors he
+recommends rather than a neutral shortlist, so the page says he would be glad to
+see them on your day; it does not claim he has worked with any specific one,
+which would be a fact about him that nothing supports.
+
 ---
 
 ## 6. What still needs doing

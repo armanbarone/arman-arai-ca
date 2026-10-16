@@ -7,11 +7,11 @@ import { ENTRY, MARKETS, SITE, STARTING_FROM } from "@/lib/site";
 export const metadata: Metadata = {
   title: "Contact — Check Your Wedding Date",
   description:
-    "Send your date, city and rough guest count. I answer inside two business hours with the collection that fits and what travel comes to. Across Canada, and worldwide outside the USA.",
+    "Send your date, city and rough guest count. The pricing, my welcome guide and my preferred vendor list come straight back by email, and I reply personally within 60 minutes. Across Canada, and worldwide outside the USA.",
   alternates: { canonical: "/contact" },
   openGraph: {
     title: "Contact Arman Arai",
-    description: "Send your date and city. An answer inside two business hours.",
+    description: "Send your date and city. The pricing comes straight back, and I reply personally within 60 minutes.",
     url: `${SITE.url}/contact`,
   },
 };
@@ -55,11 +55,12 @@ export default function Contact() {
       <section className="pb-16 md:pb-24 bg-ivory">
         <div className="page-w page-px grid grid-cols-1 lg:grid-cols-5 gap-12 lg:gap-20">
           <div className="lg:col-span-2">
-            <h2 className="font-serif font-light text-cream text-2xl mb-4">Two business hours</h2>
+            <h2 className="font-serif font-light text-cream text-2xl mb-4">Sixty minutes</h2>
             <p className="text-slate text-sm leading-relaxed mb-4">
-              That is how long you wait for a real answer, not an autoresponder. Send the date, the
-              city and roughly how big the day is. I will tell you what I would actually recommend
-              and what it costs, in the first reply rather than the third.
+              That is how long you wait for a real answer from me. The moment you send this, an
+              email arrives with the full pricing, my welcome guide and my preferred vendor list,
+              so you are not waiting on anybody to find out what this costs. Then I read what you
+              wrote and reply myself, within the hour.
             </p>
             <p className="font-serif italic text-rose text-[0.9rem] leading-relaxed mb-4">
               Booking 2027 and 2028 weddings across Canada, and destination weddings everywhere

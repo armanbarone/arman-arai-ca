@@ -297,7 +297,7 @@ export default async function BlogPost({ params }: Props) {
               ))}
               <Link href="/contact" className="gz-card gz-card--cta" data-gz-reveal data-gz-order={related.length + 1}>
                 <div className="gz-card-kicker">Wanted: couples of quiet ambition</div>
-                <p className="gz-card-blurb">Enquiries to the publisher, armanarai.ca. Answered inside two business hours.</p>
+                <p className="gz-card-blurb">Enquiries to the publisher, armanarai.ca. Answered inside 60 minutes.</p>
                 <div className="gz-card-foot">Reward: the last hour of light.</div>
               </Link>
             </div>

@@ -138,7 +138,7 @@ Not included: sales tax, travel when the wedding requires its own trip, and any 
 ## How booking works
 
 1. Send the date, city and rough guest count via ${SITE.url}/contact
-2. A reply within two business hours, with the collection that fits and what travel comes to
+2. An immediate email with the full pricing, the welcome guide and the preferred vendor list, then a personal reply from Arman within 60 minutes
 3. A 20-minute call
 4. One recommended collection, with the tier above and below it, and the travel figure if the day needs one
 5. A free 48-hour hold on the date

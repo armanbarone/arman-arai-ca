@@ -66,6 +66,12 @@ const nextConfig: NextConfig = {
       // couple arriving from those links is actually looking for.
       { source: "/destination", destination: "/pricing", permanent: true },
       { source: "/collections", destination: "/pricing", permanent: true },
+      /* The per-inquiry wedding guide at /guide/<id> is gone (owner,
+         2026-10-14). Every couple now gets the published guide instead, so the
+         links already sitting in sent emails land there rather than 404. This
+         is a 302: /wedding-guide is noindex, and a permanent redirect into a
+         noindex page would deindex the source. */
+      { source: "/guide/:id", destination: "/wedding-guide", permanent: false },
       // The C$1,500 Short Story ads page. The package is gone (owner,
       // 2026-09-28); the Vancouver ads now land on the pricing-request page,
       // and a click on an old final URL keeps its ?gclid through this.

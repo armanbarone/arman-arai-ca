@@ -43,7 +43,7 @@ const TIER_PHOTO = [DREAMY_FINE_ART[6], EDITORIAL[5], FILM[5], FILM_STRIP[4]];
 
 const PROCESS = [
   { n: "01", t: "You send the date", b: "Date, city, venue if you have one, and roughly how many hours you think you need. Two minutes." },
-  { n: "02", t: "I reply within two business hours", b: "With the collection I would actually recommend, which is not always the middle one, and what travel comes to." },
+  { n: "02", t: "I reply within 60 minutes", b: "The full pricing, the welcome guide and my preferred vendor list reach you the moment you send the form. Then I reply myself, with the collection I would actually recommend, which is not always the middle one." },
   { n: "03", t: "A twenty minute call", b: "Not a sales call. I need to hear the shape of the day before I can quote it properly." },
   { n: "04", t: "One recommended collection", b: "With the one either side of it, the travel figure if your day needs one, and the tax, so you see the whole invoice before you decide." },
   { n: "05", t: "A 48-hour hold on the date", b: "Free, and I will tell you if someone else asks about it in the meantime." },

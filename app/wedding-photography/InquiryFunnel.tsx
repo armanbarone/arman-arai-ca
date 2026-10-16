@@ -2,10 +2,8 @@
 
 import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from "react";
 import { listenForContactClicks, pricingThankYouPath, trackPageView, trackWeddingInquiry } from "@/lib/analytics";
-import {
-  BUDGET_OPTIONS, COVERAGE_OPTIONS, CTA_LABEL, FORM_ID, GUEST_OPTIONS, NOTE_MAX, SETUP_OPTIONS,
-  labelOf, longDate, priorityLabels, recommendCollection, weekdayOf,
-} from "@/lib/ads/pricing-request";
+import { CTA_LABEL, FORM_ID, longDate, weekdayOf } from "@/lib/ads/pricing-request";
+import { PROMISE_LABEL, PROMISE_NOTE, PROMISE_OPTIONS, REFERRAL_OPTIONS } from "@/lib/contact-form";
 import { weddingToday } from "@/lib/wedding-availability";
 import WeddingCalendar from "./wedding-calendar";
 import { ATTRIBUTION_KEYS, fbclidFromCookie, gclidFromCookie } from "@/lib/attribution";
@@ -41,20 +39,13 @@ type Sent = {
   sentAt: number;
   names: string;
   email: string;
+  phone: string;
   date?: string;
-  season?: string;
   location: string;
-  coverage: string;
-  budget: string;
-  /** Optional details retained for inquiries sent from older open forms. */
-  guests?: string;
-  setup?: string;
-  priorities?: string[];
-  note?: string;
+  referral: string;
+  message: string;
   /** True when the server has queued the auto-reply email. */
   emailed: boolean;
-  /** "/guide/<id>", their wedding guide, when the server made one. */
-  guide?: string;
 };
 
 const FunnelContext = createContext<(sent: Sent) => void>(() => {});
@@ -62,7 +53,6 @@ const FunnelContext = createContext<(sent: Sent) => void>(() => {});
 const SENT_KEY = "aa_ca_pricing_inquiry_v1";
 const REPORTED_KEY = "aa_ca_pricing_inquiry_reported_v1";
 const SENT_LIFETIME = 2 * 60 * 60 * 1000;
-const GUIDE_PATH = /^\/guide\/[A-Za-z0-9_-]{22}$/;
 
 /** True when the sent form was stored, so the thank-you URL can show it. */
 function storeSent(sent: Sent) {
@@ -109,8 +99,12 @@ export default function InquiryFunnel({ children, collections, city, page, phone
   </FunnelContext.Provider>;
 }
 
-/* First contact needs names and an email. Wedding details are optional;
-   collection choices can wait until the couple has read their guide. */
+/* The nine questions every form on this site asks (lib/contact-form.ts).
+   The mobile number, how they found me, the message and the spam-folder
+   promise are all required now (owner, 2026-10-14): the reply he sends within
+   the hour is often a text, and a lead with no number is a lead he cannot
+   chase. The "minimal" variant is the same questions in a tighter order for
+   the hero form, not a shorter set. */
 export function InquiryForm({ city, market, page, variant = "standard", className }: {
   city: string; market: string; page: string; variant?: "standard" | "minimal"; className?: string;
 }) {
@@ -146,11 +140,15 @@ export function InquiryForm({ city, market, page, variant = "standard", classNam
       type: "wedding-inquiry",
       subjectLabel: "Wedding inquiry — " + city,
       pricingMarket: market,
-      name: value("names"),
+      firstName: value("firstName"),
+      lastName: value("lastName"),
       email: value("email"),
+      phone: value("phone"),
+      referral: value("referral"),
       weddingDate: value("weddingDate"),
       location: value("location"),
-      note: value("note"),
+      message: value("message"),
+      promise: value("promise"),
       company: value("company"), // honeypot
       ...attribution,
     };
@@ -161,15 +159,14 @@ export function InquiryForm({ city, market, page, variant = "standard", classNam
       const sent: Sent = {
         market,
         sentAt: Date.now(),
-        names: payload.name,
+        names: [payload.firstName, payload.lastName].filter(Boolean).join(" "),
         email: payload.email,
+        phone: payload.phone,
         date: payload.weddingDate || undefined,
         location: payload.location,
-        coverage: "unsure",
-        budget: "unsure",
-        note: payload.note || undefined,
+        referral: payload.referral,
+        message: payload.message,
         emailed: data.autoReply === true,
-        ...(typeof data.guide === "string" && GUIDE_PATH.test(data.guide) ? { guide: data.guide } : {}),
       };
       // Keep the conversion URL and the session gate for genuine submissions.
       if (storeSent(sent)) { window.location.assign(pricingThankYouPath(market)); return; }
@@ -185,38 +182,38 @@ export function InquiryForm({ city, market, page, variant = "standard", classNam
   }
 
   const minimal = variant === "minimal";
-  const namesField = <div className={[styles.checkField, styles.checkWide].join(" ")}>
-    <label htmlFor="inq-names">{minimal ? "Your name" : "Your names"}</label>
-    <input id="inq-names" name="names" type="text" required maxLength={80} autoComplete="name" placeholder={minimal ? "Your name" : "e.g. Sarah & James"} />
-  </div>;
-  const emailField = <div className={[styles.checkField, styles.checkWide].join(" ")}>
-    <label htmlFor="inq-email">{minimal ? "Your email" : "Email"}</label>
-    <input id="inq-email" name="email" type="email" required maxLength={100} autoComplete="email" />
-  </div>;
-  const dateField = <div className={styles.checkField}>
-    <label htmlFor="inq-date">{minimal ? "Your date" : <>Wedding date <span>Optional</span></>}</label>
-    <input id="inq-date" name="weddingDate" type="date" required={minimal} min={today || undefined} />
-  </div>;
-  const venueField = <div className={styles.checkField}>
-    <label htmlFor="inq-venue">{minimal ? "Your venue" : <>Venue or area <span>Optional</span></>}</label>
-    <input id="inq-venue" name="location" type="text" required={minimal} maxLength={90} placeholder={minimal ? "Venue, or still deciding" : "If you have somewhere in mind"} />
-  </div>;
+  const field = (id: string, label: React.ReactNode, input: React.ReactNode, wide = false) =>
+    <div className={[styles.checkField, wide ? styles.checkWide : ""].filter(Boolean).join(" ")} key={id}>
+      <label htmlFor={id}>{label}</label>
+      {input}
+    </div>;
 
   return <form className={[styles.check, className].filter(Boolean).join(" ")} onSubmit={onSubmit} aria-labelledby={minimal ? "inquiry-title" : "inq-title"}>
     <input type="text" name="company" tabIndex={-1} autoComplete="off" aria-hidden="true" className={styles.honeypot} />
     {!minimal && <p className={styles.checkTitle} id="inq-title">Let’s start with you</p>}
     <div className={styles.checkRow}>
-      {minimal ? <>{namesField}{dateField}{venueField}{emailField}</> : <>{namesField}{emailField}{dateField}{venueField}</>}
-      {!minimal && <div className={[styles.checkField, styles.checkWide].join(" ")}>
-        <label htmlFor="inq-note">Tell me a little about your plans <span>Optional</span></label>
-        <textarea id="inq-note" name="note" maxLength={NOTE_MAX} rows={3} className={funnel.messageInput} placeholder="Share whatever you know so far, or ask a question." />
-      </div>}
+      {field("inq-first", "First name", <input id="inq-first" name="firstName" type="text" required maxLength={60} autoComplete="given-name" placeholder="Sarah" />)}
+      {field("inq-last", "Last name", <input id="inq-last" name="lastName" type="text" required maxLength={60} autoComplete="family-name" placeholder="Chen" />)}
+      {field("inq-email", "Email", <input id="inq-email" name="email" type="email" required maxLength={100} autoComplete="email" />)}
+      {field("inq-phone", "Mobile", <input id="inq-phone" name="phone" type="tel" required maxLength={40} autoComplete="tel" placeholder="604 000 0000" />)}
+      {field("inq-referral", "How did you hear about me?", <select id="inq-referral" name="referral" required defaultValue="">
+        <option value="" disabled>Choose your option</option>
+        {REFERRAL_OPTIONS.map((option) => <option key={option} value={option}>{option}</option>)}
+      </select>, true)}
+      {field("inq-date", <>Wedding date <span>Optional</span></>, <input id="inq-date" name="weddingDate" type="date" min={today || undefined} />)}
+      {field("inq-venue", "Wedding location", <input id="inq-venue" name="location" type="text" required maxLength={120} placeholder="City, or the venue if it’s booked" />)}
+      {field("inq-message", "Your message", <textarea id="inq-message" name="message" required maxLength={4000} rows={3} placeholder="Tell me about the day. Anything you know so far, or anything you want to ask." />, true)}
+      {field("inq-promise", PROMISE_LABEL, <select id="inq-promise" name="promise" required defaultValue="">
+        <option value="" disabled>Say you promise</option>
+        {PROMISE_OPTIONS.map((option) => <option key={option} value={option}>{option}</option>)}
+      </select>, true)}
     </div>
+    <p className={styles.checkMicro}>{PROMISE_NOTE}</p>
     {status === "error" && <p className={styles.checkError} role="alert">{error}</p>}
     <button className={styles.checkButton} type="submit" disabled={status === "sending"}>
       {status === "sending" ? "Sending…" : CTA_LABEL}<span aria-hidden="true">↗</span>
     </button>
-    <p className={styles.checkMicro}>{minimal ? "I’ll reply by email. " : "Just your names and email are enough. Your guide opens when you send this and follows by email. "}<a href="/privacy-policy" target="_blank" rel="noopener noreferrer">Privacy policy</a>.</p>
+    <p className={styles.checkMicro}>I reply personally within 60 minutes. <a href="/privacy-policy" target="_blank" rel="noopener noreferrer">Privacy policy</a>.</p>
   </form>;
 }
 
@@ -258,37 +255,22 @@ export function ThankYouFromSession({ market, ...props }: ThankYouProps & { mark
   return <ThankYou sent={sent} {...props} />;
 }
 
-/* The thank-you screen (owner, 2026-10-01): their inquiry played back, not
-   a price list, because the guide and the email carry the pricing. One click
-   to the guide stays on screen: they asked for pricing, and the email can
-   land in spam. Only when no guide could be made does the price list show
-   here instead, so nobody leaves without their pricing. */
+/* The thank-you screen. Their inquiry played back, then the four things the
+   email is about to carry, so a couple whose email lands in Promotions still
+   has the pricing, the guide, the vendor list and a way to book a call. The
+   per-inquiry /guide/<id> page is gone (owner, 2026-10-14); the published
+   guide at /wedding-guide is what everything links to now. */
 function ThankYou({ sent, collections, city, page, phone, phoneE164, travelNote, onEdit }: ThankYouProps & { sent: Sent; onEdit?: () => void }) {
   const heading = useRef<HTMLHeadingElement>(null);
   useEffect(() => { heading.current?.focus({ preventScroll: true }); }, []);
 
-  const fit = recommendCollection(sent.coverage, sent.budget, { guests: sent.guests, setup: sent.setup, priorities: sent.priorities });
-  const coverage = COVERAGE_OPTIONS.find((option) => option.value === sent.coverage)?.label ?? "Not sure yet";
-  const budget = BUDGET_OPTIONS.find((option) => option.value === sent.budget)?.label ?? "Not sure yet";
-  const when = sent.date ? `${weekdayOf(sent.date)}, ${longDate(sent.date)}` : sent.season && sent.season !== "Later than that" ? sent.season : "";
-  const guide = sent.guide && GUIDE_PATH.test(sent.guide) ? sent.guide : undefined;
-  const guests = labelOf(GUEST_OPTIONS, sent.guests);
-  const setup = labelOf(SETUP_OPTIONS, sent.setup);
-  const matters = priorityLabels(sent.priorities);
+  const when = sent.date ? `${weekdayOf(sent.date)}, ${longDate(sent.date)}` : "";
   const recap: [string, string][] = [
     ["Date", when || "To be decided"],
     ["Where", sent.location || "To be decided"],
-    ...(guests ? [["Guests", guests] as [string, string]] : []),
-    ...(setup ? [["Ceremony and reception", setup] as [string, string]] : []),
-    ...(matters.length ? [["What matters most", matters.join(", ")] as [string, string]] : []),
-    ...(sent.coverage !== "unsure" ? [["Coverage", coverage] as [string, string]] : []),
-    ...(sent.budget !== "unsure" ? [["Budget", budget] as [string, string]] : []),
-    ...(sent.note ? [["Your note", sent.note] as [string, string]] : []),
+    ["Mobile", sent.phone],
+    ...(sent.message ? [["What you told me", sent.message] as [string, string]] : []),
   ];
-  const reason = fit.basis === "coverage" ? `Matches the ${coverage.toLowerCase()} you asked for.`
-    : fit.basis === "budget" ? "Closest to the budget you gave."
-      : "A starting point while we work out your coverage together.";
-  const lead = `Here’s your pricing${when ? ` for your ${when}` : ""}${sent.location ? ` at ${sent.location}` : ""}.${sent.emailed ? ` A note from me about your day is on its way to ${sent.email}.` : ""}`;
 
   return <section className={funnel.thanks} aria-labelledby="thanks-title">
     <header className={styles.header}><span className={styles.wordmark}>Arman Arai<span>WEDDING PHOTOGRAPHY</span></span></header>
@@ -296,41 +278,38 @@ function ThankYou({ sent, collections, city, page, phone, phoneE164, travelNote,
       <div className={funnel.thanksCopy}>
         <p className={styles.eyebrow}>Your inquiry · {city}</p>
         <h1 id="thanks-title" ref={heading} tabIndex={-1} className={funnel.thanksTitle}>Thank you, {sent.names}.</h1>
-        {guide ? <>
-          <p className={funnel.thanksLead}>Your inquiry is sent. Your guide has the collection prices and coverage explained, ready to explore.</p>
-          <dl className={funnel.recap}>{recap.map(([label, value]) => <div key={label}><dt>{label}</dt><dd>{value}</dd></div>)}</dl>
-          <a className={`${styles.button} ${funnel.guideButton}`} href={guide}>Open your pricing guide <span aria-hidden="true">↗</span></a>
-          <p className={funnel.guideNote}>Collection prices, what’s included and how your coverage could work, on one page made for you.{sent.emailed ? ` Your guide is also on its way to ${sent.email}.` : ""} You can reply with questions before choosing anything.</p>
-        </> : <>
-          <p className={funnel.thanksLead}>{lead}</p>
-          <ol className={funnel.pricing} aria-label="Your pricing">
-            {collections.map((collection) => {
-              const best = collection.slug === fit.slug;
-              const stepUp = collection.slug === fit.stepUp;
-              return <li key={collection.slug} className={`${funnel.collection}${best ? ` ${funnel.best}` : ""}`}>
-                {best && <p className={funnel.bestTag}>Best fit · {reason}</p>}
-                {stepUp && <p className={funnel.stepUpTag}>Worth a look · {fit.stepUpReason}</p>}
-                <details open={best}>
-                  <summary>
-                    <span className={funnel.collectionName}>{collection.name}<small>{collection.hoursLabel}</small></span>
-                    <span className={funnel.collectionPrice}>{money(collection.price)}</span>
-                  </summary>
-                  <ul>{collection.items.map((item) => <li key={item}>{item}</li>)}</ul>
-                </details>
-              </li>;
-            })}
-          </ol>
-          <p className={funnel.pricingNote}>Canadian dollars before tax. {travelNote} Tap a collection to see everything in it.</p>
-        </>}
+        <p className={funnel.thanksLead}>
+          I&rsquo;ll read this properly and reply to you myself within 60 minutes.
+          {sent.emailed ? ` Everything below is on its way to ${sent.email} as well, so check your spam and promotions folders if it hasn’t landed in a few minutes.` : ""}
+        </p>
+        <dl className={funnel.recap}>{recap.map(([label, value]) => <div key={label}><dt>{label}</dt><dd>{value}</dd></div>)}</dl>
+        <ol className={funnel.pricing} aria-label="Your pricing">
+          {collections.map((collection) => <li key={collection.slug} className={funnel.collection}>
+            <details>
+              <summary>
+                <span className={funnel.collectionName}>{collection.name}<small>{collection.hoursLabel}</small></span>
+                <span className={funnel.collectionPrice}>{money(collection.price)}</span>
+              </summary>
+              <ul>{collection.items.map((item) => <li key={item}>{item}</li>)}</ul>
+            </details>
+          </li>)}
+        </ol>
+        <p className={funnel.pricingNote}>Canadian dollars before tax. {travelNote} Tap a collection to see everything in it.</p>
+        <p style={{ marginTop: 20 }}>
+          <a className={`${styles.button} ${funnel.guideButton}`} href="/wedding-guide">Open the wedding guide <span aria-hidden="true">↗</span></a>
+        </p>
+        <p className={funnel.guideNote}>
+          How I work a wedding day, start to finish. The people I&rsquo;d put on your day are on <a href="/preferred-vendors">my preferred vendor list</a>.
+        </p>
       </div>
       <div className={funnel.nextStep}>
         <p className={styles.eyebrow}>The next step</p>
         <h2 className={funnel.nextTitle}>A free 30-minute<br /><em>video call.</em></h2>
-        <p>Pick a time that suits you. We’ll walk through your day and the collection that fits. No obligation.</p>
+        <p>Pick a time that suits you. We&rsquo;ll walk through your day and the collection that fits. No obligation.</p>
         <WeddingCalendar page={page} theme="dark" classes={styles} prefill={{ name: sent.names, email: sent.email }} />
       </div>
       <div className={funnel.noCall}>
-        <p><strong>Rather not do a call?</strong> That’s fine. {sent.emailed ? "Reply to my email, or message me on " : `I’ll reply to ${sent.email} the same day, or message me on `}<MessageLinks phone={phone} phoneE164={phoneE164} city={city} />.</p>
+        <p><strong>Rather not do a call?</strong> That&rsquo;s fine. {sent.emailed ? "Reply to my email, or message me on " : `I’ll reply to ${sent.email} within the hour, or message me on `}<MessageLinks phone={phone} phoneE164={phoneE164} city={city} />.</p>
         <p className={styles.checkMicro}>A signed contract and a non-refundable 30% deposit secure your date.</p>
         {onEdit
           ? <button type="button" className={styles.checkAnother} onClick={onEdit}>Change my details</button>

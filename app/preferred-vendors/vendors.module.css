@@ -50,10 +50,19 @@
   color: var(--gold);
 }
 
+/* Two columns on a wide screen. A single 62ch column inside a full-width
+   section leaves the right half of the page empty, which is the exact
+   "half-assed" look HANDOFF.md item 13 is about. */
+.leadGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px 56px;
+  margin: 0 0 8px;
+}
+
 .lead {
   color: var(--muted);
-  max-width: 62ch;
-  margin: 0 0 18px;
+  margin: 0;
 }
 
 .lead strong {
@@ -243,6 +252,10 @@
 @media (max-width: 860px) {
   .wrap {
     width: calc(100% - 32px);
+  }
+  .leadGrid {
+    grid-template-columns: 1fr;
+    gap: 16px;
   }
   .group {
     grid-template-columns: 1fr;

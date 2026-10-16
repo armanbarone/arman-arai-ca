@@ -1,17 +1,25 @@
 import { after, NextRequest, NextResponse } from "next/server";
-import { checkWeddingDate } from "@/lib/wedding-availability";
-import { checkWeddingDateLive } from "@/lib/wedding-availability-server";
-import { BUDGET_OPTIONS, COVERAGE_OPTIONS, GUEST_OPTIONS, SEASON_PATTERN, SETUP_OPTIONS, cleanDayDetails, labelOf, pricingMarket, priorityLabels, recommendCollection, weekdayOf } from "@/lib/ads/pricing-request";
+import { fullName, splitName, validateInquiry } from "@/lib/contact-form";
+import { pricingMarket, weekdayOf } from "@/lib/ads/pricing-request";
 import { WEDDING_CITIES } from "@/lib/ads/city-wedding-pages";
-import { autoReplyEnabled, sendInquiryAutoReply, type PricingInquiry } from "@/lib/auto-reply";
-import { createGuide, guidePath, guideUrl } from "@/lib/guide";
+import { autoReplyEnabled, sendInquiryAutoReply, type Inquiry } from "@/lib/auto-reply";
 import { leadSource, leadSourceBox, leadSourceTag } from "@/lib/lead-source";
 import { recordLead } from "@/lib/portal/leads";
-import { tierBySlug } from "@/lib/site";
 
-// The pricing-request auto-reply runs after the response, inside this
-// function's lifetime: one federated token exchange, one Claude call capped
-// at 20 seconds, then Resend.
+/* One inquiry endpoint for every form on the site.
+ *
+ * The site's contact page, the quick modal and the ads landing pages now ask
+ * the same nine questions (lib/contact-form.ts) and post the same shape here,
+ * so there is one validation path, one lead email to Arman, and one auto-reply
+ * to the couple. The old per-form branches are gone, along with the
+ * per-inquiry /guide/<id> page this route used to build: the email links the
+ * published guide at /wedding-guide instead.
+ *
+ * `type` survives only to label the lead email with which form was used.
+ *
+ * The auto-reply runs after the response, inside this function's lifetime, so
+ * the form never waits on it. It sends about 30 seconds after the form.
+ */
 export const maxDuration = 60;
 
 function escapeHtml(value: unknown) {
@@ -52,142 +60,70 @@ async function sendViaResend(subject: string, html: string, replyTo: string) {
   }
 }
 
+/** An ISO date gets its weekday spelled out, because a Friday wedding and a
+ *  Saturday wedding are different conversations. Free text is left alone. */
+function dateLine(value: string) {
+  if (!value) return "Not given";
+  return /^\d{4}-\d{2}-\d{2}$/.test(value) ? `${value} (${weekdayOf(value)})` : value;
+}
+
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
     const { type } = body;
 
-    // The ads landing pages carry a honeypot field no human ever sees. Anything
-    // that fills it is a bot: answer 200 so it believes it succeeded, and send
+    // Every form carries a honeypot field no human ever sees. Anything that
+    // fills it is a bot: answer 200 so it believes it succeeded, and send
     // nothing. Silently dropping beats a 400 that tells a scraper to retry.
     if (typeof body.company === "string" && body.company.trim() !== "") {
       return NextResponse.json({ success: true });
     }
 
-    const isDateCheck = type === "wedding-date-check";
-    // The pricing-request form on /wedding-photography/<city>-pricing. It
-    // accepts names and email alone. Any supplied date is validated, then
-    // its availability is used in the email only.
-    const isInquiry = type === "wedding-inquiry";
-    const availability = isDateCheck ? await checkWeddingDateLive(body.weddingDate) : null;
-    if (availability && "error" in availability) {
-      return NextResponse.json({ error: availability.error }, { status: 400 });
-    }
-    if (isDateCheck) {
-      for (const [key, max] of [["name", 60], ["email", 100], ["location", 90]] as const) {
-        if (typeof body[key] !== "string" || !body[key].trim() || body[key].length > max) {
-          return NextResponse.json({ error: "Please enter your name, email and wedding location." }, { status: 400 });
-        }
-        body[key] = body[key].trim();
-      }
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(body.email)) {
-        return NextResponse.json({ error: "Please enter a valid email address." }, { status: 400 });
-      }
+    // Older open tabs can still post a single `name`. Split it rather than
+    // rejecting a real couple because their tab was open since last week.
+    if (!body.firstName && typeof body.name === "string") {
+      const parts = splitName(body.name);
+      body.firstName = parts.firstName;
+      body.lastName = body.lastName || parts.lastName;
     }
 
-    let inquiryRows: [string, string][] = [];
-    let autoReply: PricingInquiry | null = null;
-    let guideId: string | null = null;
-    if (isInquiry) {
-      for (const [key, max] of [["name", 80], ["email", 100]] as const) {
-        if (typeof body[key] !== "string" || !body[key].trim() || body[key].length > max) {
-          return NextResponse.json({ error: "Please enter your names and email." }, { status: 400 });
+    const checked = validateInquiry(body);
+    if (!checked.ok) return NextResponse.json({ error: checked.error }, { status: 400 });
+    const values = checked.values;
+    const names = fullName(values);
+
+    /* The landing pages send which city page they came from. It sets the
+       travel sentence in the auto-reply and opens the vendor list on their
+       own city; everything else works without it. */
+    const market = pricingMarket(String(body.pricingMarket ?? ""));
+    const cityName = market ? WEDDING_CITIES.find((city) => city.slug === market.slug)?.name : undefined;
+
+    const autoReply: Inquiry | null = autoReplyEnabled()
+      ? {
+          ...values,
+          market: market ?? undefined,
+          cityName,
+          page: typeof body.page === "string" && body.page ? body.page.replace(/^\//, "") : "wedding-photography/vancouver-pricing",
+          receivedAt: Date.now(),
         }
-        body[key] = body[key].trim();
-      }
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(body.email)) {
-        return NextResponse.json({ error: "Please enter a valid email address." }, { status: 400 });
-      }
-      // This inquiry collects no mobile number. Ignore it from older open tabs too.
-      delete body.phone;
-      if (body.location != null && (typeof body.location !== "string" || body.location.length > 90)) {
-        return NextResponse.json({ error: "Please keep your venue or area under 90 characters." }, { status: 400 });
-      }
-      body.location = typeof body.location === "string" ? body.location.trim() : "";
-      // Older open forms can still send selections. Missing choices mean we
-      // have not discussed them yet, not that the couple chose a collection.
-      body.coverage = body.coverage || "unsure";
-      body.budget = body.budget || "unsure";
-      const coverage = COVERAGE_OPTIONS.find((option) => option.value === body.coverage);
-      const budget = BUDGET_OPTIONS.find((option) => option.value === body.budget);
-      if (!coverage || !budget) {
-        return NextResponse.json({ error: "Please choose your coverage and your budget." }, { status: 400 });
-      }
-      if (body.weddingDate) {
-        const valid = await checkWeddingDateLive(body.weddingDate);
-        if ("error" in valid) return NextResponse.json({ error: valid.error }, { status: 400 });
-      } else if (body.weddingSeason && !(typeof body.weddingSeason === "string" && SEASON_PATTERN.test(body.weddingSeason))) {
-        return NextResponse.json({ error: "Please choose a valid wedding season." }, { status: 400 });
-      }
-      const market = pricingMarket(String(body.pricingMarket ?? ""));
-      const cityName = WEDDING_CITIES.find((city) => city.slug === market?.slug)?.name;
-      if (!market || !cityName) return NextResponse.json({ error: "Please reload the page and try again." }, { status: 400 });
-      // Keep optional day details from older forms; the short form only sends a note.
-      const day = cleanDayDetails(body);
-      // Date checking is back, in the email only (owner, 2026-10-02): the
-      // booked list in lib/wedding-availability.ts says open or booked.
-      const dateCheck = body.weddingDate ? await checkWeddingDateLive(body.weddingDate) : null;
-      const dateStatus = dateCheck && "availability" in dateCheck ? (dateCheck.availability === "unavailable" ? "booked" as const : "open" as const) : undefined;
-      const recommendation = recommendCollection(coverage.value, budget.value, day);
-      const fit = tierBySlug(recommendation.slug)!;
-      const stepUp = recommendation.stepUp ? tierBySlug(recommendation.stepUp) : undefined;
-      // The couple's own wedding guide (lib/guide.ts), made now so the email
-      // and the thank-you screen can both link to it. Null if it could not be
-      // saved; the inquiry goes through either way.
-      guideId = await createGuide({ market: market.slug, names: body.name, email: body.email, weddingDate: body.weddingDate || undefined, weddingSeason: body.weddingSeason || undefined, location: body.location, coverage: coverage.value, budget: budget.value, ...day });
-      autoReply = autoReplyEnabled()
-        ? { names: body.name, email: body.email, weddingDate: body.weddingDate || undefined, weddingSeason: body.weddingSeason || undefined, location: body.location, coverage: coverage.value, budget: budget.value, cityName, market, page: `wedding-photography/${market.slug}-pricing`, receivedAt: Date.now(), guideUrl: guideId ? guideUrl(guideId) : undefined, dateStatus, ...day }
-        : null;
-      inquiryRows = [
-        ["Names", body.name],
-        ["Email", body.email],
-        ["Wedding date", body.weddingDate ? `${body.weddingDate} (${weekdayOf(body.weddingDate)})` : body.weddingSeason || "Not decided yet"],
-        ["Where", body.location || "Not decided yet"],
-        ...(day.guests ? [["Guests", labelOf(GUEST_OPTIONS, day.guests)!] as [string, string]] : []),
-        ...(day.setup ? [["Ceremony and reception", labelOf(SETUP_OPTIONS, day.setup)!] as [string, string]] : []),
-        ...(day.priorities?.length ? [["What matters most", priorityLabels(day.priorities).join(", ")] as [string, string]] : []),
-        ...(day.note ? ([["Their note", day.note]] as [string, string][]) : []),
-        ...(coverage.value !== "unsure" ? [["Coverage", coverage.label] as [string, string]] : []),
-        ...(budget.value !== "unsure" ? [["Budget", budget.label] as [string, string]] : []),
-        [recommendation.basis === "default" ? "Guide starting point" : "Suggested collection", `${fit.name}, C$${fit.price.toLocaleString("en-CA")}`],
-        ...(stepUp ? ([["Suggested step up", `${stepUp.name}, C$${stepUp.price.toLocaleString("en-CA")}`]] as [string, string][]) : []),
-        ["Their guide", guideId ? guideUrl(guideId) : "Could not be made; their email carries the price table instead"],
-        ["Their date", dateStatus === "booked" ? "BOOKED: on your booked list. The email tells them you're not available that day." : dateStatus === "open" ? "Open. The email tells them you're available as of now, first come, first served." : "No exact date supplied. Availability can be checked once they have a date."],
-        ["Auto-reply", autoReply ? "Sending to the couple about 30 seconds after this; you are BCC'd" : "Off: the Anthropic federation variables are not set in Vercel"],
-      ];
-    }
+      : null;
 
     // Google Ads, Meta or neither, for the owner's lead email (lib/lead-source.ts).
     const source = leadSource(body);
     const ghlData: Record<string, string> = {
       source: "armanarai.ca",
-      type: type ?? "quick",
-      name: body.name ?? "",
-      phone: body.phone ?? "",
-      email: body.email ?? "",
-      bestTime: body.bestTime ?? "",
-      partnerName: body.partnerName ?? "",
-      weddingDate: body.weddingDate ?? "",
-      ...(availability && "availability" in availability ? { dateAvailability: availability.availability } : {}),
-      market: body.market ?? "",
-      venue: body.venue ?? "",
-      guestCount: body.guestCount ?? "",
-      collection: body.collection ?? "",
-      message: body.message ?? "",
-      referral: body.referral ?? "",
-      // Pricing-request form. Empty on every other form.
+      type: type ?? "inquiry",
+      name: names,
+      firstName: values.firstName,
+      lastName: values.lastName,
+      phone: values.phone,
+      email: values.email,
+      weddingDate: values.weddingDate,
+      location: values.location,
+      referral: values.referral,
+      message: values.message,
+      promise: values.promise,
       pricingMarket: body.pricingMarket ?? "",
-      coverage: body.coverage ?? "",
-      budget: body.budget ?? "",
-      weddingSeason: body.weddingSeason ?? "",
-      guestBand: typeof body.guests === "string" ? body.guests : "",
-      setup: typeof body.setup === "string" ? body.setup : "",
-      priorities: Array.isArray(body.priorities) ? body.priorities.filter((p: unknown) => typeof p === "string").join(",") : "",
-      note: typeof body.note === "string" ? body.note.slice(0, 300) : "",
-      // Landing-page fields (LeadForm). Empty on the site's own forms.
-      preferredMonth: body.preferredMonth ?? "",
-      location: body.location ?? "",
-      guests: body.guests ?? "",
       // Ad attribution, so a booking can be traced to the click that produced it.
       utm_source: body.utm_source ?? "",
       utm_medium: body.utm_medium ?? "",
@@ -201,17 +137,11 @@ export async function POST(req: NextRequest) {
       referrer: body.referrer ?? "",
     };
 
-    const isQuick = type === "quick";
-    // "founding" is what the ads landing pages send; subjectLabel names which one.
-    const isLanding = type === "founding" || isDateCheck || isInquiry;
-    const subject = isLanding
-      ? `${leadSourceTag(source)}${body.subjectLabel || "Landing Page Inquiry"} — ${body.name}`
-      : isQuick
-        ? `${leadSourceTag(source)}New Inquiry — ${body.name}`
-        : `${leadSourceTag(source)}Wedding Inquiry — ${body.name}${body.partnerName ? ` & ${body.partnerName}` : ""}`;
+    const label = body.subjectLabel || (cityName ? `Wedding inquiry — ${cityName}` : "Wedding inquiry");
+    const subject = `${leadSourceTag(source)}${label} — ${names}`;
 
-    // An ad click is worth knowing about on the email itself, not only in the
-    // CRM: the campaign that produced a lead changes how fast it gets answered.
+    /* An ad click is worth knowing about on the email itself, not only in the
+       CRM: the campaign that produced a lead changes how fast it gets answered. */
     const attribution: [string, string][] = [
       ["Campaign", [body.utm_source, body.utm_medium, body.utm_campaign].filter(Boolean).join(" / ")],
       ["Ad content", body.utm_content || ""],
@@ -219,63 +149,29 @@ export async function POST(req: NextRequest) {
       ["Landing page", body.page || ""],
     ].filter((r): r is [string, string] => Boolean(r[1]));
 
-    const rows: [string, string][] = isInquiry
-      ? [...inquiryRows, ...attribution]
-      : isLanding
-      ? [
-          ["Name", body.name ?? ""],
-          ["Email", body.email ?? ""],
-          ["Phone", body.phone || "Not provided"],
-          // The date-check form on /wedding-photography asks for the actual
-          // date rather than a preferred month, because its whole question is
-          // "are you free on this day". Both shapes post here, so each row
-          // appears only when that form sent it.
-          ...(body.weddingDate ? ([["Wedding date", body.weddingDate]] as [string, string][]) : []),
-          ...(availability && "availability" in availability ? ([["Availability", availability.availability]] as [string, string][]) : []),
-          ...(body.preferredMonth ? ([["Preferred month", body.preferredMonth]] as [string, string][]) : []),
-          ["Where", body.location || "Not specified"],
-          ...(body.guests ? ([["Guests", body.guests]] as [string, string][]) : []),
-          ...attribution,
-        ]
-      : isQuick
-      ? [
-          ["Name", body.name ?? ""],
-          ["Email", body.email ?? ""],
-          ["Phone", body.phone || "Not provided"],
-          // The quick form asks for these two now, because without them the
-          // first reply cannot answer the only question it is asked.
-          ["Wedding Date", body.weddingDate || "Not provided"],
-          ["Where", body.venue || "Not provided"],
-          ["Best Time", body.bestTime || "Not specified"],
-          ...attribution,
-        ]
-      : [
-          ["Couple", `${body.name ?? ""}${body.partnerName ? ` & ${body.partnerName}` : ""}`],
-          ["Phone", body.phone || "Not provided"],
-          ["Email", body.email ?? ""],
-          ["Wedding Date", body.weddingDate || "Not provided"],
-          // "Where" and "Coverage" are asked on the contact form (Where is even
-          // required) but were never put on the email, so the two answers that
-          // decide availability and the recommendation arrived nowhere.
-          ["Where", body.market || "Not provided"],
-          ["Venue", body.venue || "Not provided"],
-          ["Guests", body.guestCount || "Not provided"],
-          ["Coverage", body.collection || "Not specified"],
-          ["Referral", body.referral || "Not provided"],
-          ...attribution,
-        ];
+    const rows: [string, string][] = [
+      ["Name", names],
+      ["Email", values.email],
+      ["Mobile", values.phone],
+      ["Wedding date", dateLine(values.weddingDate)],
+      ["Where", values.location],
+      ["How they found you", values.referral],
+      ["Form", cityName ? `${cityName} landing page` : type === "quick" ? "Quick inquiry modal" : "Contact page"],
+      ["Auto-reply", autoReply ? "Sending to them about 30 seconds after this; you are BCC'd" : "OFF: RESEND_API_KEY is not set"],
+      ...attribution,
+    ];
 
     const html = `
       <div style="font-family:Georgia,serif;max-width:520px;margin:0 auto;color:#2C2420;">
         <h2 style="font-size:1.3rem;font-weight:normal;border-bottom:1px solid #D9CEBC;padding-bottom:0.75rem;margin-bottom:1.5rem;">
-          ${escapeHtml(isLanding ? (body.subjectLabel || "Landing Page Inquiry") : isQuick ? "New Website Inquiry" : "Wedding Inquiry")}
+          ${escapeHtml(label)}
         </h2>
         ${leadSourceBox(source)}
         <table style="width:100%;border-collapse:collapse;">
-          ${rows.map(([label, value]) => `<tr><td style="padding:0.5rem 0;color:#A67268;font-size:0.75rem;text-transform:uppercase;letter-spacing:0.1em;width:140px;vertical-align:top;">${escapeHtml(label)}</td><td style="padding:0.5rem 0;">${escapeHtml(value)}</td></tr>`).join("")}
+          ${rows.map(([rowLabel, value]) => `<tr><td style="padding:0.5rem 0;color:#A67268;font-size:0.75rem;text-transform:uppercase;letter-spacing:0.1em;width:140px;vertical-align:top;">${escapeHtml(rowLabel)}</td><td style="padding:0.5rem 0;">${escapeHtml(value)}</td></tr>`).join("")}
         </table>
-        ${body.message ? `<div style="margin-top:1.5rem;padding:1.25rem;background:#F7F3EC;border-left:2px solid #C9A89A;"><p style="margin:0 0 0.5rem;color:#A67268;font-size:0.75rem;text-transform:uppercase;">Message</p><p style="margin:0;line-height:1.7;">${escapeHtml(body.message)}</p></div>` : ""}
-        <p style="margin-top:2rem;font-size:0.75rem;color:#6B7280;border-top:1px solid #EDE7DA;padding-top:1rem;">Sent via armanarai.ca</p>
+        <div style="margin-top:1.5rem;padding:1.25rem;background:#F7F3EC;border-left:2px solid #C9A89A;"><p style="margin:0 0 0.5rem;color:#A67268;font-size:0.75rem;text-transform:uppercase;">Their message</p><p style="margin:0;line-height:1.7;white-space:pre-wrap;">${escapeHtml(values.message)}</p></div>
+        <p style="margin-top:2rem;font-size:0.75rem;color:#6B7280;border-top:1px solid #EDE7DA;padding-top:1rem;">Sent via armanarai.ca · You said you&rsquo;d reply within 60 minutes.</p>
       </div>`;
 
     /* Keep the inquiry before trying to deliver it. An email that fails is a
@@ -284,18 +180,15 @@ export async function POST(req: NextRequest) {
     after(() =>
       recordLead({
         receivedAt: new Date().toISOString(),
-        name: String(body.name ?? "").slice(0, 120),
-        partnerName: body.partnerName ? String(body.partnerName).slice(0, 120) : undefined,
-        email: String(body.email ?? "").trim().toLowerCase(),
-        phone: body.phone ? String(body.phone).slice(0, 40) : undefined,
+        name: names,
+        email: values.email.toLowerCase(),
+        phone: values.phone,
         source: source.label,
-        formType: type ?? "quick",
-        weddingDate: body.weddingDate ? String(body.weddingDate).slice(0, 40) : undefined,
-        market: body.market ? String(body.market).slice(0, 80) : undefined,
-        venue: body.venue ? String(body.venue).slice(0, 160) : undefined,
-        guestCount: body.guestCount ? String(body.guestCount).slice(0, 40) : undefined,
-        collection: body.collection ? String(body.collection).slice(0, 80) : undefined,
-        message: body.message ? String(body.message).slice(0, 4000) : undefined,
+        formType: type ?? "inquiry",
+        weddingDate: values.weddingDate || undefined,
+        market: cityName,
+        venue: values.location,
+        message: values.message,
         attribution: {
           utmSource: body.utm_source ?? undefined,
           utmMedium: body.utm_medium ?? undefined,
@@ -313,7 +206,7 @@ export async function POST(req: NextRequest) {
     let sent = false;
     // Resend is the site's primary email provider. Retain the existing webhook
     // only as a fallback for deployments where it is explicitly configured.
-    if (process.env.RESEND_API_KEY) sent = await sendViaResend(subject, html, body.email);
+    if (process.env.RESEND_API_KEY) sent = await sendViaResend(subject, html, values.email);
     if (!sent && process.env.GHL_WEBHOOK_URL) sent = await sendViaGHL(ghlData);
     if (!sent) {
       console.warn("Contact inquiry delivery failed or no provider is configured.");
@@ -321,13 +214,13 @@ export async function POST(req: NextRequest) {
     }
 
     // The couple's email goes out after this response, so the form never waits
-    // on the model. after() keeps the function alive until it is sent.
+    // on it. after() keeps the function alive until it is sent.
     if (autoReply) {
       const inquiry = autoReply;
       after(() => sendInquiryAutoReply(inquiry));
     }
 
-    return NextResponse.json({ success: true, ...(availability && "availability" in availability ? availability : {}), ...(isInquiry ? { autoReply: Boolean(autoReply), ...(guideId ? { guide: guidePath(guideId) } : {}) } : {}) });
+    return NextResponse.json({ success: true, autoReply: Boolean(autoReply) });
   } catch (err) {
     console.error("Contact API error:", err);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });

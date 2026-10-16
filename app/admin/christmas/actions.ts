@@ -5,6 +5,7 @@ import { writeJson } from "@/lib/portal/store";
 import { settings, SETTINGS_PATH, allSlots, addSlot, updateSlot } from "@/lib/christmas/store";
 import { validSlot, SLOT_PATTERN } from "@/lib/christmas/inventory";
 import { paymentReady } from "@/lib/christmas/payments";
+import { christmasCheckoutCatalog } from "@/lib/christmas/stripe-catalog";
 export async function saveChristmasSettings(form: FormData) {
   await requireAdmin();
   const text = (k: string, max = 2000) => String(form.get(k) || "").trim().slice(0, max);
@@ -12,16 +13,17 @@ export async function saveChristmasSettings(form: FormData) {
     arrivalNotes: text("arrivalNotes"), cancellationPolicy: text("cancellationPolicy"), publishableKey: text("publishableKey", 250) };
   if (cfg.enabled && (!cfg.studioAddress || !cfg.postalCode || !cfg.cancellationPolicy || !cfg.publishableKey.startsWith("pk_live_") || !(await paymentReady())))
     throw Error("Before opening bookings: enter the studio address, postal code, booking policy and live Stripe publishable key, and connect live Stripe in payment settings.");
+  if (cfg.enabled) await christmasCheckoutCatalog();
   await writeJson(SETTINGS_PATH, cfg);
   revalidatePath("/admin/christmas"); revalidatePath("/christmas");
 }
 export async function releaseChristmasSlot(form: FormData) {
   await requireAdmin();
   const date = String(form.get("date") || ""), time = String(form.get("time") || "");
-  if (!validSlot(date, time)) throw Error("Choose November 27 through December 23, 2026, and a start time from 09:00 to 16:59.");
+  if (!validSlot(date, time)) throw Error("Choose November 27 through December 23, 2026, and a start time from 11:00 to 19:30, on the hour or half-hour.");
   const rows = await allSlots();
-  if (rows.length >= 250) throw Error("The calendar already contains 250 appointments.");
-  await addSlot({ id: `${date}_${time.replace(":", "")}`, date, time, santa: form.get("santa") === "on", published: true });
+  if (rows.length >= 1000) throw Error("The calendar already contains 1,000 appointments.");
+  await addSlot({ id: `${date}_${time.replace(":", "")}`, date, time, santa: true, published: true });
   revalidatePath("/admin/christmas"); revalidatePath("/christmas");
 }
 export async function toggleChristmasSlot(form: FormData) {

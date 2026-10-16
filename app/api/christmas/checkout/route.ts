@@ -2,7 +2,7 @@ import { z } from "zod";
 import { startCheckout, checkoutRateLimit } from "@/lib/christmas/payments";
 export const runtime = "nodejs";
 const inputSchema = z.object({
-  slotId: z.string().regex(/^2026-(11|12)-\d{2}_\d{4}$/), packageId: z.enum(["family", "santa"]),
+  slotId: z.string().regex(/^2026-(11|12)-\d{2}_\d{4}$/), packageId: z.literal("santa"),
   name: z.string().trim().min(2).max(100), email: z.email().max(254).transform(s => s.trim().toLowerCase()),
   phone: z.string().trim().min(7).max(35), consent: z.literal(true), website: z.string().max(0).optional(),
   acceptedPolicy: z.string().min(1).max(2000), expectedSubtotal: z.number().int().positive(),

@@ -5,8 +5,9 @@ import { stripeClient, stripeConfiguration } from "@/lib/portal/stripe";
 import { APP_URL, BUSINESS } from "@/lib/portal/business";
 import { sendEmail, layout, esc } from "@/lib/portal/email";
 import { readJson, writeJson, ConflictError } from "@/lib/portal/store";
-import { PACKAGES, packageById, money, dateLabel, timeLabel, type Availability, type PackageId } from "./catalog";
-import { claimSlot, SLOT_PATTERN, type Slot } from "./inventory";
+import { PACKAGES, packageById, money, totalCents, dateLabel, timeLabel, type Availability, type PackageId } from "./catalog";
+import { christmasCheckoutCatalog } from "./stripe-catalog";
+import { claimSlot, validSlot, SLOT_PATTERN, type Slot } from "./inventory";
 import { allSlots, settings, inventoryStore, updateSlot } from "./store";
 const hash = (s: string) => createHash("sha256").update(s).digest("hex");
 export async function paymentReady() {
@@ -26,18 +27,26 @@ export async function reconcileChristmasSession(s: Stripe.Checkout.Session) {
       throw Error("Christmas payment has no matching reservation.");
     }
     if (r.sessionId && r.sessionId !== s.id) throw Error("Checkout session mismatch.");
-    if (!s.livemode || s.currency !== "cad" || s.amount_subtotal !== r.subtotalCents) throw Error("Christmas payment amount or mode mismatch.");
+    if (!s.livemode || s.currency !== "cad" || s.amount_subtotal !== r.subtotalCents || (s.payment_status === "paid" && s.amount_total !== totalCents(r.subtotalCents))) throw Error("Christmas payment amount or mode mismatch.");
     if (s.payment_status === "paid") {
       r.sessionId = s.id; r.status = "paid"; r.paidCents = s.amount_total ?? r.subtotalCents;
+      r.invoiceId = typeof s.invoice === "string" ? s.invoice : s.invoice?.id;
       r.paymentIntent = typeof s.payment_intent === "string" ? s.payment_intent : s.payment_intent?.id;
     } else if (s.status === "expired" && r.status !== "paid") delete slot.reservation;
   });
   const current = await inventoryStore.read(slotId), r = current?.data.reservation;
   if (r?.id !== bookingId || r.status !== "paid" || r.emailsSent) return;
+  if (r.invoiceId && !r.invoiceUrl) {
+    const invoice = await stripeClient().invoices.retrieve(r.invoiceId);
+    if (invoice.hosted_invoice_url) {
+      r.invoiceUrl = invoice.hosted_invoice_url;
+      await updateSlot(slotId, s => { if (s.reservation?.id === r.id) s.reservation.invoiceUrl = r.invoiceUrl; });
+    }
+  }
   const cfg = r.bookingDetails, pkg = packageById(r.packageId)!;
   const when = `${dateLabel(current!.data.date)} at ${timeLabel(current!.data.time)} (Vancouver time)`;
   const subject = `Your Christmas session is booked · ${when}`;
-  const body = `<p>Hi ${esc(r.name)},</p><p>Your <strong>${esc(pkg.name)}</strong> session is confirmed for <strong>${esc(when)}</strong>.</p><p>${esc(cfg.studioAddress)}<br>${esc(cfg.postalCode)}</p><p>${esc(cfg.arrivalNotes)}</p><p>${pkg.minutes} minutes · ${pkg.images} edited images${pkg.santa ? " · Santa included" : " · Family portraits, without Santa"}.</p><p>Paid: ${money(r.paidCents ?? r.subtotalCents)} CAD. Reference: ${esc(r.id)}.</p><p>Gallery delivery: within 5 days, or within 48 hours for sessions from December 18 onward. For photographs before Christmas, book by December 21.</p><p>${esc(cfg.cancellationPolicy)}</p>`;
+  const body = `<p>Hi ${esc(r.name)},</p><p>Your <strong>${esc(pkg.name)}</strong> session is confirmed for <strong>${esc(when)}</strong>.</p><p>${esc(cfg.studioAddress)}<br>${esc(cfg.postalCode)}</p><p>${esc(cfg.arrivalNotes)}</p><p>${pkg.minutes} minutes · ${pkg.images} edited images${pkg.santa ? " · Santa included" : " · Family portraits, without Santa"}.</p><p>Paid: ${money(r.paidCents ?? r.subtotalCents)} CAD. Reference: ${esc(r.id)}.</p>${r.invoiceUrl ? `<p><a href="${esc(r.invoiceUrl)}">View your paid Stripe invoice</a></p>` : "<p>Stripe will provide your paid invoice after payment.</p>"}<p>Gallery delivery: within 5 days, or within 48 hours for sessions from December 18 onward. For photographs before Christmas, book by December 21.</p><p>${esc(cfg.cancellationPolicy)}</p>`;
   await sendEmail({ to: r.email, subject, html: layout({ heading: "A little Christmas, booked.", bodyHtml: body }), text: `${subject}\n${pkg.name}\n${cfg.studioAddress}, ${cfg.postalCode}\n${cfg.arrivalNotes}\nPaid ${money(r.paidCents ?? r.subtotalCents)} CAD\n${cfg.cancellationPolicy}`, idempotencyKey: `christmas-customer-${r.id}` });
   await sendEmail({ to: BUSINESS.email, subject: `Christmas booking · ${when} · ${r.name}`, html: layout({ heading: "A Christmas session was purchased", bodyHtml: `<p>${esc(r.name)} · ${esc(r.email)} · ${esc(r.phone)}</p>${body}` }), text: `${r.name}, ${r.email}, ${r.phone}\n${when}\n${pkg.name}\nReference ${r.id}`, idempotencyKey: `christmas-studio-${r.id}` });
   await updateSlot(slotId, slot => { if (slot.reservation?.id === r.id) slot.reservation.emailsSent = true; });
@@ -57,13 +66,13 @@ export async function availability(): Promise<Availability> {
   const cfg = await settings();
   const publishableKey = cfg.publishableKey || process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || "";
   if (!cfg.enabled || !cfg.studioAddress || !cfg.postalCode || !cfg.cancellationPolicy || !publishableKey.startsWith("pk_live_") || !(await paymentReady()))
-    return { mode: "closed", slots: [], location: "Vancouver, BC", cancellationPolicy: cfg.cancellationPolicy, publishableKey: "", message: "Christmas bookings are not open yet. Email Arman for the release date." };
+    return { mode: "closed", slots: [], location: "North Vancouver, BC", cancellationPolicy: cfg.cancellationPolicy, publishableKey: "", message: "Christmas bookings are not open yet. Email Arman for the release date." };
   let rows = await allSlots();
   await Promise.all(rows.filter(s => s.reservation?.status === "pending" && s.reservation.expiresAt + 120000 < Date.now()).map(reconcileStale));
   rows = await allSlots();
   return {
     mode: "live", location: `${cfg.studioAddress}, ${cfg.postalCode}`, cancellationPolicy: cfg.cancellationPolicy, publishableKey,
-    slots: rows.filter(s => s.published && new Date(`${s.date}T${s.time}:00-08:00`).getTime() > Date.now()).map(({ id, date, time, santa, reservation }) => ({ id, date, time, santa, available: !reservation })),
+    slots: rows.filter(s => s.published && s.santa && validSlot(s.date, s.time) && new Date(`${s.date}T${s.time}:00-08:00`).getTime() > Date.now()).map(({ id, date, time, santa, reservation }) => ({ id, date, time, santa, available: !reservation })),
   };
 }
 export async function checkoutRateLimit(ip: string) {
@@ -80,7 +89,9 @@ export async function startCheckout(input: { slotId: string; packageId: PackageI
   if (!cfg.enabled || !cfg.studioAddress || !cfg.postalCode || !cfg.cancellationPolicy || !publicKey.startsWith("pk_live_") || !(await paymentReady())) throw Error("Bookings are not open yet.");
   if (!pkg) throw Error("Choose a valid package.");
   if (input.acceptedPolicy !== cfg.cancellationPolicy || input.expectedSubtotal !== pkg.price) throw Error("Booking details changed. Refresh the page and review the price and policy before paying.");
+  const catalog = await christmasCheckoutCatalog();
   const current = await inventoryStore.read(input.slotId);
+  if (!current || !validSlot(current.data.date, current.data.time)) throw Error("Choose a valid appointment.");
   if (current) await reconcileStale(current.data);
   const token = randomBytes(32).toString("hex"), id = `XMAS-${randomBytes(10).toString("hex")}`;
   const expiresAt = Math.floor(Date.now() / 1000) * 1000 + 35 * 60000;
@@ -96,10 +107,14 @@ export async function startCheckout(input: { slotId: string; packageId: PackageI
     mode: "payment", ui_mode: "embedded_page", redirect_on_completion: "if_required", return_url: returnUrl,
     allowed_payment_method_types: ["card"], customer_email: input.email,
     client_reference_id: id, metadata: { service: "christmas-2026", slotId: slot.id, bookingId: id },
-    automatic_tax: { enabled: true }, billing_address_collection: "required", expires_at: Math.floor(expiresAt / 1000),
-    line_items: [{ quantity: 1, price_data: { currency: "cad", unit_amount: pkg.price, tax_behavior: "exclusive", product_data: {
-      name: pkg.name, description: `${dateLabel(slot.date)} at ${timeLabel(slot.time)} · ${pkg.minutes} minutes · ${pkg.images} edited images${pkg.santa ? " · Santa included" : " · No Santa"}`,
-    } } }],
+    billing_address_collection: "required", customer_creation: "always", expires_at: Math.floor(expiresAt / 1000),
+    invoice_creation: { enabled: true, invoice_data: {
+      description: `${pkg.name} · North Vancouver · ${dateLabel(slot.date)} at ${timeLabel(slot.time)} Pacific · ${pkg.minutes} minutes · ${pkg.images} digital photographs`,
+      custom_fields: [{ name: "GST/HST registration", value: BUSINESS.gstHstNumber }],
+      footer: "Arasaka Inc., operating as Arman Arai. Digital photographs only. GST 5%.",
+      metadata: { service: "christmas-2026", bookingId: id, slotId: slot.id },
+    } },
+    line_items: [{ quantity: 1, price: catalog.price, tax_rates: [catalog.taxRate] }],
   }, { idempotencyKey: `christmas-${id}` });
   if (!session.client_secret) throw Error("Stripe could not open the payment form. Please contact Arman.");
   await updateSlot(slot.id, s => { if (s.reservation?.id !== id) throw Error("Your appointment changed. Please contact Arman before paying."); s.reservation.sessionId = session.id; });
@@ -122,5 +137,5 @@ export async function bookingStatus(slotId: string, token: string) {
   if (!r) return { status: "expired" };
   const cfg = r.bookingDetails, pkg = PACKAGES.find(p => p.id === r!.packageId)!;
   return { status: r.status, reference: r.id, date: row!.data.date, time: row!.data.time, package: pkg.name, minutes: pkg.minutes, images: pkg.images, santa: pkg.santa,
-    paidCents: r.paidCents, address: cfg.studioAddress, postalCode: cfg.postalCode, arrivalNotes: cfg.arrivalNotes, email: r.email, cancellationPolicy: cfg.cancellationPolicy };
+    paidCents: r.paidCents, invoiceUrl: r.invoiceUrl, address: cfg.studioAddress, postalCode: cfg.postalCode, arrivalNotes: cfg.arrivalNotes, email: r.email, cancellationPolicy: cfg.cancellationPolicy };
 }

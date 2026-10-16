@@ -6,7 +6,7 @@ export interface ChristmasSettings {
 export interface Reservation {
   id: string; tokenHash: string; packageId: PackageId; name: string; email: string; phone: string;
   createdAt: number; expiresAt: number; subtotalCents: number; status: "pending" | "paid";
-  sessionId?: string; paidCents?: number; paymentIntent?: string; emailsSent?: boolean;
+  sessionId?: string; invoiceId?: string; invoiceUrl?: string; paidCents?: number; paymentIntent?: string; emailsSent?: boolean;
   bookingDetails: { studioAddress: string; postalCode: string; arrivalNotes: string; cancellationPolicy: string };
 }
 export interface Slot {
@@ -20,14 +20,14 @@ export interface InventoryStore {
 }
 export const SLOT_PATTERN = /^2026-(?:11|12)-\d{2}_\d{4}$/;
 export function validSlot(date: string, time: string) {
-  if (!/^2026-(11|12)-\d{2}$/.test(date) || !/^(?:0[9]|1[0-6]):[0-5]\d$/.test(time)) return false;
+  if (!/^2026-(11|12)-\d{2}$/.test(date) || !/^(?:1[1-9]):(?:00|30)$/.test(time)) return false;
   const d = new Date(date + "T12:00:00Z");
   return Number.isFinite(d.getTime()) && d.toISOString().slice(0, 10) === date && date >= "2026-11-27" && date <= "2026-12-23";
 }
-// A 40-minute appointment safely contains the 20-minute Santa package with generous turnover time.
+// A 30-minute allocation contains the 20-minute session and ten minutes of changeover.
 export function overlaps(a: Pick<Slot, "date" | "time">, b: Pick<Slot, "date" | "time">) {
   const minutes = (t: string) => { const [h, m] = t.split(":").map(Number); return h * 60 + m; };
-  return a.date === b.date && Math.abs(minutes(a.time) - minutes(b.time)) < 40;
+  return a.date === b.date && Math.abs(minutes(a.time) - minutes(b.time)) < 30;
 }
 export async function claimSlot(store: InventoryStore, id: string, booking: Reservation, needsSanta: boolean): Promise<Slot> {
   if (!SLOT_PATTERN.test(id)) throw Error("Choose a valid appointment.");

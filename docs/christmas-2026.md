@@ -1,44 +1,49 @@
-# Christmas sessions · Vancouver 2026
+# Christmas with Santa · North Vancouver 2026
 
-## Pages
+One package: **$300 CAD with Santa**, plus **5% GST ($15)**, for **$315 total**. Arman is the Santa performer. Includes 20 minutes, 10 edited full-resolution digital photographs, two styled settings, a private download gallery and personal print rights. One household, up to five people. No prints or RAW files.
 
-- `/christmas`: customer landing page, cart, calendar, contact details and embedded Stripe Checkout.
-- `/christmas/preview`: sample appointments and a clearly labelled preview flow. No contact details are sent, no inventory is held, and no payment is taken.
-- `/christmas/confirmation`: private bearer-token booking lookup. Only verified Stripe payments display confirmation. Excluded from advertising tracking and search indexing.
-- `/admin/christmas`: existing admin sign-in, studio settings, appointment releases and purchases.
+## Customer and admin routes
 
-## Launch
+- `/christmas`: landing page, calendar, cart, contact form and embedded Stripe Checkout.
+- `/christmas/preview`: clearly labelled sample booking flow. No real holds, payment or submitted contact information.
+- `/christmas/confirmation`: private token-based payment verification and calendar download; excluded from advertising and search indexing.
+- `/admin/christmas`: authenticated studio details, actual availability and booking management.
 
-1. Review the proposed packages and delivery promises in `lib/christmas/catalog.ts` and `components/christmas/ChristmasExperience.tsx`. Prices are CAD $300 without Santa / $400 with Santa plus applicable tax. This version sells digital photographs; prints are not included.
-2. Replace the three AI concept photographs under `public/christmas/` with photographs of the completed studio when available. Update the visible concept captions and alt text together. No claim that the generated families are previous clients is made.
-3. Connect the existing Canadian live Stripe account through `/admin/payment-settings`. The Christmas integration uses the existing `STRIPE_SECRET_KEY`, webhook and private Vercel Blob store. No secret keys belong in the repository or browser.
-4. Enable and configure Stripe Tax in the merchant account. Checkout uses automatic tax, exclusive of the advertised collection price, and collects a billing address.
-5. In `/admin/christmas`, enter the actual studio street address, postal code, arrival/access notes, cancellation policy and the matching live **publishable** key (`pk_live_…`). This field must never receive a secret key.
-6. Release the appointments that will actually be offered. Mark Santa only after the performer is confirmed. Each allocation is 40 minutes, including turnover. Calendar dates are restricted to November 27–December 23, 2026, Vancouver time. Keep the studio and Santa calendars clear of conflicting commitments before releasing slots.
-7. Open bookings in the admin settings. Before advertising, verify the complete payment, tax, email and booking confirmation flow in the actual Vercel environment. Live card processing cannot be verified without the merchant connection. Do not open sales with an untested payment configuration.
+## Stripe catalog and invoices
 
-The public page shows a closed-bookings message by default. The preview provides the full visual booking flow while live configuration is incomplete. No fake sold-out dates, countdowns, purchase notifications or manufactured remaining counts are used. A remaining-appointments notice appears only when 1–3 real available appointments for the selected collection remain in the published inventory. A smaller first release is supported by actually releasing fewer appointments.
+Created and verified in the connected **Arasaka Inc. live account**:
 
-## Inventory and payment behavior
+- Product `prod_VRv3xk15KZIIXJ`: Christmas Family & Santa Session — North Vancouver.
+- Default one-time CAD price `price_1UR1DrJ13FhTkCj17wPfWMTM`: integer amount `30000`, exclusive of tax.
 
-- Private storage under `christmas/2026/` uses the existing conditional-write Blob adapter. Reservation claims are compare-and-swap operations; simultaneous purchases cannot claim the same appointment.
-- The published calendar returns no customer contact information or booking tokens.
-- A hold is created when the customer proceeds to Stripe, never merely when clicking a date. Holds expire with their fixed 35-minute Stripe Checkout expiry, plus a two-minute reconciliation grace period.
-- An uncertain network error does not release a possibly payable checkout. Expired holds with a known Stripe session are reconciled before reuse. Holds without a session ID are released only after their fixed Stripe deadline has passed.
-- The existing webhook dispatches Christmas sessions separately from wedding invoices. Fulfilment verifies the exact reservation/session metadata, live mode, CAD currency and server-priced subtotal, and is idempotent.
-- Confirmation emails to the purchaser and studio use Resend idempotency keys. Payment is recorded before email delivery; a mail retry cannot create a second booking.
-- Studio details and the agreed policy are captured with the reservation, so later settings edits do not rewrite a purchased booking's terms.
-- A confirmation URL is a private access link. Do not share it. It is excluded from advertising tracking and sent with a no-referrer policy.
-- No appointment is automatically reopened after a refund. Handle a refund in Stripe, contact the family, and reconcile the cancellation before releasing replacement inventory. Purchased appointments are deliberately locked in this first version.
+The server validates this real price before checkout. Saving settings with bookings enabled verifies the catalog and creates or reuses an exclusive manual **5% GST** tax rate, with an idempotency key. Each checkout uses that rate and the reusable price. It does not depend on Stripe Tax automatic calculations: the connected account's Stripe Tax settings currently have no head office and no active registrations. No tax registration was created or modified.
 
-## Verification
+One-time Checkout Sessions set `invoice_creation.enabled = true`. Each successfully paid purchase generates a paid Stripe invoice with the appointment, GST registration number `767392145RT0001`, and merchant name. No fictitious customer invoice or charge is issued during setup. The booking confirmation links to the hosted paid invoice when it is available. The existing webhook verifies the reservation, Stripe session, live mode, CAD currency, $300 subtotal and $315 total before marking a booking paid.
+
+Tax basis for this digital-only in-person BC session: CRA's GST/HST rate guidance (5% GST in BC) and BC's PST-126 photography bulletin (photography services and access to/downloads of digital photographs are not subject to PST). Reassess tax treatment before adding prints, physical products or services performed outside BC.
+
+## Calendar and inventory
+
+The season runs **every day November 27–December 23, 2026, 11 am–8 pm Pacific**. A 20-minute session plus ten minutes of changeover makes 18 starts per day, from 11:00 through 19:30, and 486 potential appointments. All newly generated appointments include Santa. Unrelease real breaks or times you cannot offer in the admin page. Hidden/unreleased appointments are never labelled as purchases. Any remaining count is based on actual released inventory and real payment holds.
+
+A single private Blob calendar ledger uses ETag compare-and-swap writes, so a refresh reads one inventory document rather than hundreds. First initialization preserves legacy reservations and release decisions. Legacy paid bookings are retained; overlapping generated appointments are not offered. Claims reserve one appointment atomically. Holds last the fixed 35-minute Stripe Checkout expiry plus a two-minute reconciliation grace period. An uncertain network failure never releases a possibly payable session early. Public availability contains no family information or booking tokens. Confirmation emails use idempotent delivery keys. Later studio/policy changes do not change the saved terms of an existing reservation.
+
+## Launch configuration
+
+1. Replace the three labelled AI concept photographs with completed-studio photographs when available, updating captions and alt text together.
+2. Confirm the existing live Stripe connection and webhook at `/admin/payment-settings`. Reuse the existing secret-key environment configuration; never place secret keys in the browser or repository.
+3. At `/admin/christmas`, supply the **North Vancouver street address and postal code**, arrival/access notes, cancellation/rescheduling policy and matching live publishable key. The business billing address is not assumed to be the studio address.
+4. Review the daily schedule and unrelease actual unavailable appointments. Confirm the practical camera/performer setup with Arman as Santa.
+5. Save with bookings enabled to verify the Stripe catalog and prepare GST. Complete browser, invoice, tax, payment and confirmation-email verification in the deployment before advertising. The code defaults to closed until all required production settings are present.
+
+## Atmosphere and portable preview
+
+Berkshire Swash and Nunito Sans typography, evergreen/cranberry/gold colours, keepsake photographs and a letter from Santa. CSS falling snow is present in the rendered markup; shooting stars and two tiny reindeer teams pull Santa's sleigh, sack and gift parcels across the viewport. Moving flames, warm glow, embers and fairy lights provide fireplace motion. Decorative layers ignore pointer events.
+
+Pause magic stops decoration. Reduced-motion preferences are respected initially; pressing Play magic explicitly enables it. An original short metallic sleigh-bell WAV supplies the “chi-chi-chi” click sound. Test bells plays it explicitly, Sound off mutes it, and no sound starts before interaction. The separately hosted private preview is a real bundled React client app with self-hosted assets, not a copied Next.js server document.
+
+## Validation
 
 `node --experimental-strip-types --test scripts/christmas-inventory.test.mjs`
 
-The tests cover 20 concurrent attempts for one slot, Santa eligibility, unreleased and purchased slots, uncertain expired holds, overlapping allocations and invalid dates. Run the repository TypeScript check and production build as well. An actual browser check and end-to-end Stripe payment remain necessary before live sales.
-
-## Christmas cabin theme
-
-The October redesign uses Berkshire Swash and Nunito Sans, a dark evergreen and cranberry palette, a photographic keepsake collage, and a letter-from-Santa section. The atmosphere includes canvas snowfall and rising embers, softly animated fireplace glow and flame silhouettes, Christmas lights, and a tiny Santa sleigh with reindeer that crosses the sky periodically. All decoration ignores pointer events. Animation can be paused and follows reduced-motion preferences; rendering pauses while the tab is hidden. Button sounds are a short synthesized bell chord, start only after interaction, and have a mute control. Sound preference is stored locally. No ambient sound autoplays.
-
-Only two packages can be purchased: **Christmas together, CAD $300 without Santa**, and **Christmas with Santa, CAD $400 with Santa**, plus applicable tax. The retired third package is rejected by checkout validation.
+Seven tests cover concurrent reservation attempts, Santa eligibility, held/paid/unreleased inventory, uncertain expired holds, overlap and seasonal boundaries, cents-to-dollars/GST totals, and all 27 daily schedules. TypeScript and the production Next.js build must pass. The portable React preview has its own reproducible `npm ci && npm run build`. Browser playback and an actual paid checkout are separate checks and must not be inferred from successful compilation or static markup.

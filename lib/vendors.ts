@@ -292,6 +292,9 @@ export const VENDOR_CITIES: VendorCity[] = [
 export const vendorCity = (slug: string) =>
   VENDOR_CITIES.find((city) => city.slug === slug || city.market === slug);
 
-/** Total businesses on the list, for the line that says how long it is. */
+/** Distinct businesses on the list, for the line that says how long it is.
+ *  Deduplicated by website, because a few teams work more than one region
+ *  (Young Hip & Married covers BC, Alberta and the Island) and counting them
+ *  once per city would overstate the list. */
 export const vendorCount = () =>
-  VENDOR_CITIES.reduce((sum, city) => sum + city.groups.reduce((n, group) => n + group.vendors.length, 0), 0);
+  new Set(VENDOR_CITIES.flatMap((city) => city.groups.flatMap((group) => group.vendors.map((v) => v.site)))).size;

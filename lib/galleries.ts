@@ -38,6 +38,453 @@ export type Gallery = {
 
 export const GALLERIES: Gallery[] = [
   {
+    "slug": "anastasia-daniil",
+    "names": "Anastasia & Daniil",
+    "location": "A House by the Sea",
+    "date": "October 2024",
+    "stock": "Tri-X 400",
+    "frameCount": 54,
+    "story": "A small white wedding built inside a coast neither of their families had seen. Remote property, weather, stone and sand, and a sky big enough to disappear into. No church, no garden, nothing performing anything. Shot the same way: present, unhurried, looking for what was real rather than what was composed.",
+    "cover": {
+      "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d548b3e0c02fe7eb9fb3.png",
+      "alt": "Anastasia and Daniil's coastal wedding: the opening frame",
+      "w": 640,
+      "h": 965,
+      "orientation": "p"
+    },
+    "hero": {
+      "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d548b3e0c02fe7eb9fb3.png",
+      "alt": "Anastasia and Daniil's coastal wedding: the opening frame",
+      "w": 640,
+      "h": 965,
+      "orientation": "p"
+    },
+    "teasers": [
+      {
+        "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d545e05851175c7318a1.png",
+        "alt": "",
+        "w": 644,
+        "h": 963,
+        "orientation": "p"
+      },
+      {
+        "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d542b3e0c02fe7eb9eff.png",
+        "alt": "",
+        "w": 637,
+        "h": 959,
+        "orientation": "p"
+      },
+      {
+        "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d53fe05851175c7317f7.png",
+        "alt": "",
+        "w": 640,
+        "h": 958,
+        "orientation": "p"
+      }
+    ],
+    "chapters": [
+      {
+        "numeral": "I",
+        "title": "Beginning",
+        "range": "Frames 01 — 18",
+        "images": [
+          {
+            "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d548b3e0c02fe7eb9fb3.png",
+            "alt": "Anastasia and Daniil's coastal wedding, frame 1",
+            "w": 640,
+            "h": 965,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d547fe2210f89e6fe981.png",
+            "alt": "Anastasia and Daniil's coastal wedding, frame 2",
+            "w": 170,
+            "h": 230,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d5473c3aed7c63b46bb2.png",
+            "alt": "Anastasia and Daniil's coastal wedding, frame 3",
+            "w": 642,
+            "h": 964,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d547b3e0c02fe7eb9f9d.png",
+            "alt": "Anastasia and Daniil's coastal wedding, frame 4",
+            "w": 643,
+            "h": 962,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d5476cc0eead5ccf837d.png",
+            "alt": "Anastasia and Daniil's coastal wedding, frame 5",
+            "w": 641,
+            "h": 965,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d5476cc0eead5ccf837c.png",
+            "alt": "Anastasia and Daniil's coastal wedding, frame 6",
+            "w": 636,
+            "h": 965,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d547e05851175c7318cf.png",
+            "alt": "Anastasia and Daniil's coastal wedding, frame 7",
+            "w": 640,
+            "h": 964,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d5476cc0eead5ccf835e.png",
+            "alt": "Anastasia and Daniil's coastal wedding, frame 8",
+            "w": 638,
+            "h": 963,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d546e05851175c7318b7.png",
+            "alt": "Anastasia and Daniil's coastal wedding, frame 9",
+            "w": 639,
+            "h": 962,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d546b3e0c02fe7eb9f75.png",
+            "alt": "Anastasia and Daniil's coastal wedding, frame 10",
+            "w": 635,
+            "h": 964,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d5463c3aed7c63b46b98.png",
+            "alt": "Anastasia and Daniil's coastal wedding, frame 11",
+            "w": 636,
+            "h": 962,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d5466cc0eead5ccf835b.png",
+            "alt": "Anastasia and Daniil's coastal wedding, frame 12",
+            "w": 635,
+            "h": 963,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d5466cc0eead5ccf835a.png",
+            "alt": "Anastasia and Daniil's coastal wedding, frame 13",
+            "w": 637,
+            "h": 961,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d546e05851175c7318b5.png",
+            "alt": "Anastasia and Daniil's coastal wedding, frame 14",
+            "w": 639,
+            "h": 961,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d545e05851175c7318ab.png",
+            "alt": "Anastasia and Daniil's coastal wedding, frame 15",
+            "w": 633,
+            "h": 960,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d545fe2210f89e6fe947.png",
+            "alt": "Anastasia and Daniil's coastal wedding, frame 16",
+            "w": 638,
+            "h": 963,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d545e05851175c7318a1.png",
+            "alt": "Anastasia and Daniil's coastal wedding, frame 17",
+            "w": 644,
+            "h": 963,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d5453c3aed7c63b46b7c.png",
+            "alt": "Anastasia and Daniil's coastal wedding, frame 18",
+            "w": 638,
+            "h": 963,
+            "orientation": "p"
+          }
+        ]
+      },
+      {
+        "numeral": "II",
+        "title": "Middle",
+        "range": "Frames 19 — 36",
+        "images": [
+          {
+            "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d545fe2210f89e6fe945.png",
+            "alt": "Anastasia and Daniil's coastal wedding, frame 19",
+            "w": 642,
+            "h": 961,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d545fe2210f89e6fe943.png",
+            "alt": "Anastasia and Daniil's coastal wedding, frame 20",
+            "w": 636,
+            "h": 959,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d544fe2210f89e6fe935.png",
+            "alt": "Anastasia and Daniil's coastal wedding, frame 21",
+            "w": 637,
+            "h": 962,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d544e05851175c731893.png",
+            "alt": "Anastasia and Daniil's coastal wedding, frame 22",
+            "w": 633,
+            "h": 961,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d544b3e0c02fe7eb9f25.png",
+            "alt": "Anastasia and Daniil's coastal wedding, frame 23",
+            "w": 638,
+            "h": 961,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d544b3e0c02fe7eb9f1f.png",
+            "alt": "Anastasia and Daniil's coastal wedding, frame 24",
+            "w": 642,
+            "h": 963,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d544fe2210f89e6fe927.png",
+            "alt": "Anastasia and Daniil's coastal wedding, frame 25",
+            "w": 638,
+            "h": 963,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d5436cc0eead5ccf82dc.png",
+            "alt": "Anastasia and Daniil's coastal wedding, frame 26",
+            "w": 639,
+            "h": 964,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d5433c3aed7c63b46b34.png",
+            "alt": "Anastasia and Daniil's coastal wedding, frame 27",
+            "w": 635,
+            "h": 960,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d543e05851175c73186a.png",
+            "alt": "Anastasia and Daniil's coastal wedding, frame 28",
+            "w": 642,
+            "h": 964,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d5436cc0eead5ccf82d2.png",
+            "alt": "Anastasia and Daniil's coastal wedding, frame 29",
+            "w": 640,
+            "h": 960,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d543e05851175c731869.png",
+            "alt": "Anastasia and Daniil's coastal wedding, frame 30",
+            "w": 644,
+            "h": 962,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d543b3e0c02fe7eb9f11.png",
+            "alt": "Anastasia and Daniil's coastal wedding, frame 31",
+            "w": 640,
+            "h": 957,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d5423c3aed7c63b46b0d.png",
+            "alt": "Anastasia and Daniil's coastal wedding, frame 32",
+            "w": 636,
+            "h": 955,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d542b3e0c02fe7eb9eff.png",
+            "alt": "Anastasia and Daniil's coastal wedding, frame 33",
+            "w": 637,
+            "h": 959,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d542e05851175c731857.png",
+            "alt": "Anastasia and Daniil's coastal wedding, frame 34",
+            "w": 637,
+            "h": 956,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d5423c3aed7c63b46b06.png",
+            "alt": "Anastasia and Daniil's coastal wedding, frame 35",
+            "w": 634,
+            "h": 958,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d542fe2210f89e6fe8f1.png",
+            "alt": "Anastasia and Daniil's coastal wedding, frame 36",
+            "w": 638,
+            "h": 960,
+            "orientation": "p"
+          }
+        ]
+      },
+      {
+        "numeral": "III",
+        "title": "Ending",
+        "range": "Frames 37 — 54",
+        "images": [
+          {
+            "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d5423c3aed7c63b46b04.png",
+            "alt": "Anastasia and Daniil's coastal wedding, frame 37",
+            "w": 639,
+            "h": 957,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d541b3e0c02fe7eb9ed1.png",
+            "alt": "Anastasia and Daniil's coastal wedding, frame 38",
+            "w": 638,
+            "h": 961,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d5413c3aed7c63b46aee.png",
+            "alt": "Anastasia and Daniil's coastal wedding, frame 39",
+            "w": 638,
+            "h": 962,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d5416cc0eead5ccf829a.png",
+            "alt": "Anastasia and Daniil's coastal wedding, frame 40",
+            "w": 643,
+            "h": 961,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d541b3e0c02fe7eb9ecf.png",
+            "alt": "Anastasia and Daniil's coastal wedding, frame 41",
+            "w": 637,
+            "h": 961,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d541fe2210f89e6fe8d3.png",
+            "alt": "Anastasia and Daniil's coastal wedding, frame 42",
+            "w": 637,
+            "h": 962,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d540e05851175c731812.png",
+            "alt": "Anastasia and Daniil's coastal wedding, frame 43",
+            "w": 638,
+            "h": 964,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d5403c3aed7c63b46ad1.png",
+            "alt": "Anastasia and Daniil's coastal wedding, frame 44",
+            "w": 636,
+            "h": 960,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d540b3e0c02fe7eb9eaf.png",
+            "alt": "Anastasia and Daniil's coastal wedding, frame 45",
+            "w": 639,
+            "h": 963,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d5403c3aed7c63b46ad0.png",
+            "alt": "Anastasia and Daniil's coastal wedding, frame 46",
+            "w": 639,
+            "h": 959,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d540fe2210f89e6fe8ad.png",
+            "alt": "Anastasia and Daniil's coastal wedding, frame 47",
+            "w": 639,
+            "h": 963,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d540e05851175c731810.png",
+            "alt": "Anastasia and Daniil's coastal wedding, frame 48",
+            "w": 639,
+            "h": 955,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d53fe05851175c7317f7.png",
+            "alt": "Anastasia and Daniil's coastal wedding, frame 49",
+            "w": 640,
+            "h": 958,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d53fb3e0c02fe7eb9e8d.png",
+            "alt": "Anastasia and Daniil's coastal wedding, frame 50",
+            "w": 638,
+            "h": 962,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d53f3c3aed7c63b46aba.png",
+            "alt": "Anastasia and Daniil's coastal wedding, frame 51",
+            "w": 638,
+            "h": 963,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d53f6cc0eead5ccf8250.png",
+            "alt": "Anastasia and Daniil's coastal wedding, frame 52",
+            "w": 640,
+            "h": 964,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d53ffe2210f89e6fe883.png",
+            "alt": "Anastasia and Daniil's coastal wedding, frame 53",
+            "w": 639,
+            "h": 955,
+            "orientation": "p"
+          },
+          {
+            "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d53ffe2210f89e6fe884.png",
+            "alt": "Anastasia and Daniil's coastal wedding, frame 54",
+            "w": 640,
+            "h": 962,
+            "orientation": "p"
+          }
+        ]
+      }
+    ]
+  },
+  {
     "slug": "sofia-lucas",
     "names": "Sofia & Lucas",
     "location": "A Quiet Garden, Late Spring",
@@ -1930,453 +2377,6 @@ export const GALLERIES: Gallery[] = [
             "alt": "Parsa & Marjan, A hilltop estate in the Townships: after, frame 3",
             "w": 1023,
             "h": 1537,
-            "orientation": "p"
-          }
-        ]
-      }
-    ]
-  },
-  {
-    "slug": "anastasia-daniil",
-    "names": "Anastasia & Daniil",
-    "location": "A House by the Sea",
-    "date": "October 2024",
-    "stock": "Tri-X 400",
-    "frameCount": 54,
-    "story": "A small white wedding built inside a coast neither of their families had seen. Remote property, weather, stone and sand, and a sky big enough to disappear into. No church, no garden, nothing performing anything. Shot the same way: present, unhurried, looking for what was real rather than what was composed.",
-    "cover": {
-      "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d548b3e0c02fe7eb9fb3.png",
-      "alt": "Anastasia and Daniil's coastal wedding: the opening frame",
-      "w": 640,
-      "h": 965,
-      "orientation": "p"
-    },
-    "hero": {
-      "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d548b3e0c02fe7eb9fb3.png",
-      "alt": "Anastasia and Daniil's coastal wedding: the opening frame",
-      "w": 640,
-      "h": 965,
-      "orientation": "p"
-    },
-    "teasers": [
-      {
-        "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d545e05851175c7318a1.png",
-        "alt": "",
-        "w": 644,
-        "h": 963,
-        "orientation": "p"
-      },
-      {
-        "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d542b3e0c02fe7eb9eff.png",
-        "alt": "",
-        "w": 637,
-        "h": 959,
-        "orientation": "p"
-      },
-      {
-        "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d53fe05851175c7317f7.png",
-        "alt": "",
-        "w": 640,
-        "h": 958,
-        "orientation": "p"
-      }
-    ],
-    "chapters": [
-      {
-        "numeral": "I",
-        "title": "Beginning",
-        "range": "Frames 01 — 18",
-        "images": [
-          {
-            "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d548b3e0c02fe7eb9fb3.png",
-            "alt": "Anastasia and Daniil's coastal wedding, frame 1",
-            "w": 640,
-            "h": 965,
-            "orientation": "p"
-          },
-          {
-            "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d547fe2210f89e6fe981.png",
-            "alt": "Anastasia and Daniil's coastal wedding, frame 2",
-            "w": 170,
-            "h": 230,
-            "orientation": "p"
-          },
-          {
-            "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d5473c3aed7c63b46bb2.png",
-            "alt": "Anastasia and Daniil's coastal wedding, frame 3",
-            "w": 642,
-            "h": 964,
-            "orientation": "p"
-          },
-          {
-            "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d547b3e0c02fe7eb9f9d.png",
-            "alt": "Anastasia and Daniil's coastal wedding, frame 4",
-            "w": 643,
-            "h": 962,
-            "orientation": "p"
-          },
-          {
-            "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d5476cc0eead5ccf837d.png",
-            "alt": "Anastasia and Daniil's coastal wedding, frame 5",
-            "w": 641,
-            "h": 965,
-            "orientation": "p"
-          },
-          {
-            "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d5476cc0eead5ccf837c.png",
-            "alt": "Anastasia and Daniil's coastal wedding, frame 6",
-            "w": 636,
-            "h": 965,
-            "orientation": "p"
-          },
-          {
-            "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d547e05851175c7318cf.png",
-            "alt": "Anastasia and Daniil's coastal wedding, frame 7",
-            "w": 640,
-            "h": 964,
-            "orientation": "p"
-          },
-          {
-            "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d5476cc0eead5ccf835e.png",
-            "alt": "Anastasia and Daniil's coastal wedding, frame 8",
-            "w": 638,
-            "h": 963,
-            "orientation": "p"
-          },
-          {
-            "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d546e05851175c7318b7.png",
-            "alt": "Anastasia and Daniil's coastal wedding, frame 9",
-            "w": 639,
-            "h": 962,
-            "orientation": "p"
-          },
-          {
-            "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d546b3e0c02fe7eb9f75.png",
-            "alt": "Anastasia and Daniil's coastal wedding, frame 10",
-            "w": 635,
-            "h": 964,
-            "orientation": "p"
-          },
-          {
-            "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d5463c3aed7c63b46b98.png",
-            "alt": "Anastasia and Daniil's coastal wedding, frame 11",
-            "w": 636,
-            "h": 962,
-            "orientation": "p"
-          },
-          {
-            "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d5466cc0eead5ccf835b.png",
-            "alt": "Anastasia and Daniil's coastal wedding, frame 12",
-            "w": 635,
-            "h": 963,
-            "orientation": "p"
-          },
-          {
-            "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d5466cc0eead5ccf835a.png",
-            "alt": "Anastasia and Daniil's coastal wedding, frame 13",
-            "w": 637,
-            "h": 961,
-            "orientation": "p"
-          },
-          {
-            "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d546e05851175c7318b5.png",
-            "alt": "Anastasia and Daniil's coastal wedding, frame 14",
-            "w": 639,
-            "h": 961,
-            "orientation": "p"
-          },
-          {
-            "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d545e05851175c7318ab.png",
-            "alt": "Anastasia and Daniil's coastal wedding, frame 15",
-            "w": 633,
-            "h": 960,
-            "orientation": "p"
-          },
-          {
-            "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d545fe2210f89e6fe947.png",
-            "alt": "Anastasia and Daniil's coastal wedding, frame 16",
-            "w": 638,
-            "h": 963,
-            "orientation": "p"
-          },
-          {
-            "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d545e05851175c7318a1.png",
-            "alt": "Anastasia and Daniil's coastal wedding, frame 17",
-            "w": 644,
-            "h": 963,
-            "orientation": "p"
-          },
-          {
-            "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d5453c3aed7c63b46b7c.png",
-            "alt": "Anastasia and Daniil's coastal wedding, frame 18",
-            "w": 638,
-            "h": 963,
-            "orientation": "p"
-          }
-        ]
-      },
-      {
-        "numeral": "II",
-        "title": "Middle",
-        "range": "Frames 19 — 36",
-        "images": [
-          {
-            "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d545fe2210f89e6fe945.png",
-            "alt": "Anastasia and Daniil's coastal wedding, frame 19",
-            "w": 642,
-            "h": 961,
-            "orientation": "p"
-          },
-          {
-            "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d545fe2210f89e6fe943.png",
-            "alt": "Anastasia and Daniil's coastal wedding, frame 20",
-            "w": 636,
-            "h": 959,
-            "orientation": "p"
-          },
-          {
-            "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d544fe2210f89e6fe935.png",
-            "alt": "Anastasia and Daniil's coastal wedding, frame 21",
-            "w": 637,
-            "h": 962,
-            "orientation": "p"
-          },
-          {
-            "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d544e05851175c731893.png",
-            "alt": "Anastasia and Daniil's coastal wedding, frame 22",
-            "w": 633,
-            "h": 961,
-            "orientation": "p"
-          },
-          {
-            "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d544b3e0c02fe7eb9f25.png",
-            "alt": "Anastasia and Daniil's coastal wedding, frame 23",
-            "w": 638,
-            "h": 961,
-            "orientation": "p"
-          },
-          {
-            "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d544b3e0c02fe7eb9f1f.png",
-            "alt": "Anastasia and Daniil's coastal wedding, frame 24",
-            "w": 642,
-            "h": 963,
-            "orientation": "p"
-          },
-          {
-            "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d544fe2210f89e6fe927.png",
-            "alt": "Anastasia and Daniil's coastal wedding, frame 25",
-            "w": 638,
-            "h": 963,
-            "orientation": "p"
-          },
-          {
-            "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d5436cc0eead5ccf82dc.png",
-            "alt": "Anastasia and Daniil's coastal wedding, frame 26",
-            "w": 639,
-            "h": 964,
-            "orientation": "p"
-          },
-          {
-            "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d5433c3aed7c63b46b34.png",
-            "alt": "Anastasia and Daniil's coastal wedding, frame 27",
-            "w": 635,
-            "h": 960,
-            "orientation": "p"
-          },
-          {
-            "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d543e05851175c73186a.png",
-            "alt": "Anastasia and Daniil's coastal wedding, frame 28",
-            "w": 642,
-            "h": 964,
-            "orientation": "p"
-          },
-          {
-            "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d5436cc0eead5ccf82d2.png",
-            "alt": "Anastasia and Daniil's coastal wedding, frame 29",
-            "w": 640,
-            "h": 960,
-            "orientation": "p"
-          },
-          {
-            "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d543e05851175c731869.png",
-            "alt": "Anastasia and Daniil's coastal wedding, frame 30",
-            "w": 644,
-            "h": 962,
-            "orientation": "p"
-          },
-          {
-            "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d543b3e0c02fe7eb9f11.png",
-            "alt": "Anastasia and Daniil's coastal wedding, frame 31",
-            "w": 640,
-            "h": 957,
-            "orientation": "p"
-          },
-          {
-            "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d5423c3aed7c63b46b0d.png",
-            "alt": "Anastasia and Daniil's coastal wedding, frame 32",
-            "w": 636,
-            "h": 955,
-            "orientation": "p"
-          },
-          {
-            "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d542b3e0c02fe7eb9eff.png",
-            "alt": "Anastasia and Daniil's coastal wedding, frame 33",
-            "w": 637,
-            "h": 959,
-            "orientation": "p"
-          },
-          {
-            "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d542e05851175c731857.png",
-            "alt": "Anastasia and Daniil's coastal wedding, frame 34",
-            "w": 637,
-            "h": 956,
-            "orientation": "p"
-          },
-          {
-            "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d5423c3aed7c63b46b06.png",
-            "alt": "Anastasia and Daniil's coastal wedding, frame 35",
-            "w": 634,
-            "h": 958,
-            "orientation": "p"
-          },
-          {
-            "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d542fe2210f89e6fe8f1.png",
-            "alt": "Anastasia and Daniil's coastal wedding, frame 36",
-            "w": 638,
-            "h": 960,
-            "orientation": "p"
-          }
-        ]
-      },
-      {
-        "numeral": "III",
-        "title": "Ending",
-        "range": "Frames 37 — 54",
-        "images": [
-          {
-            "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d5423c3aed7c63b46b04.png",
-            "alt": "Anastasia and Daniil's coastal wedding, frame 37",
-            "w": 639,
-            "h": 957,
-            "orientation": "p"
-          },
-          {
-            "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d541b3e0c02fe7eb9ed1.png",
-            "alt": "Anastasia and Daniil's coastal wedding, frame 38",
-            "w": 638,
-            "h": 961,
-            "orientation": "p"
-          },
-          {
-            "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d5413c3aed7c63b46aee.png",
-            "alt": "Anastasia and Daniil's coastal wedding, frame 39",
-            "w": 638,
-            "h": 962,
-            "orientation": "p"
-          },
-          {
-            "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d5416cc0eead5ccf829a.png",
-            "alt": "Anastasia and Daniil's coastal wedding, frame 40",
-            "w": 643,
-            "h": 961,
-            "orientation": "p"
-          },
-          {
-            "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d541b3e0c02fe7eb9ecf.png",
-            "alt": "Anastasia and Daniil's coastal wedding, frame 41",
-            "w": 637,
-            "h": 961,
-            "orientation": "p"
-          },
-          {
-            "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d541fe2210f89e6fe8d3.png",
-            "alt": "Anastasia and Daniil's coastal wedding, frame 42",
-            "w": 637,
-            "h": 962,
-            "orientation": "p"
-          },
-          {
-            "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d540e05851175c731812.png",
-            "alt": "Anastasia and Daniil's coastal wedding, frame 43",
-            "w": 638,
-            "h": 964,
-            "orientation": "p"
-          },
-          {
-            "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d5403c3aed7c63b46ad1.png",
-            "alt": "Anastasia and Daniil's coastal wedding, frame 44",
-            "w": 636,
-            "h": 960,
-            "orientation": "p"
-          },
-          {
-            "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d540b3e0c02fe7eb9eaf.png",
-            "alt": "Anastasia and Daniil's coastal wedding, frame 45",
-            "w": 639,
-            "h": 963,
-            "orientation": "p"
-          },
-          {
-            "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d5403c3aed7c63b46ad0.png",
-            "alt": "Anastasia and Daniil's coastal wedding, frame 46",
-            "w": 639,
-            "h": 959,
-            "orientation": "p"
-          },
-          {
-            "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d540fe2210f89e6fe8ad.png",
-            "alt": "Anastasia and Daniil's coastal wedding, frame 47",
-            "w": 639,
-            "h": 963,
-            "orientation": "p"
-          },
-          {
-            "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d540e05851175c731810.png",
-            "alt": "Anastasia and Daniil's coastal wedding, frame 48",
-            "w": 639,
-            "h": 955,
-            "orientation": "p"
-          },
-          {
-            "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d53fe05851175c7317f7.png",
-            "alt": "Anastasia and Daniil's coastal wedding, frame 49",
-            "w": 640,
-            "h": 958,
-            "orientation": "p"
-          },
-          {
-            "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d53fb3e0c02fe7eb9e8d.png",
-            "alt": "Anastasia and Daniil's coastal wedding, frame 50",
-            "w": 638,
-            "h": 962,
-            "orientation": "p"
-          },
-          {
-            "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d53f3c3aed7c63b46aba.png",
-            "alt": "Anastasia and Daniil's coastal wedding, frame 51",
-            "w": 638,
-            "h": 963,
-            "orientation": "p"
-          },
-          {
-            "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d53f6cc0eead5ccf8250.png",
-            "alt": "Anastasia and Daniil's coastal wedding, frame 52",
-            "w": 640,
-            "h": 964,
-            "orientation": "p"
-          },
-          {
-            "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d53ffe2210f89e6fe883.png",
-            "alt": "Anastasia and Daniil's coastal wedding, frame 53",
-            "w": 639,
-            "h": 955,
-            "orientation": "p"
-          },
-          {
-            "url": "https://cdn.armanarai.ca/galleries/anastasia-daniil/6a13d53ffe2210f89e6fe884.png",
-            "alt": "Anastasia and Daniil's coastal wedding, frame 54",
-            "w": 640,
-            "h": 962,
             "orientation": "p"
           }
         ]

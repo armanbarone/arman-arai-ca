@@ -140,13 +140,22 @@ export async function listBookings(): Promise<Booking[]> {
     );
 }
 
+/**
+ * References start here rather than at 001.
+ *
+ * The reference is printed on the agreement and every invoice, so a couple
+ * reading AA-CA-2026-002 can count how many weddings the studio has booked.
+ * That is nobody's business but Arman's, so the counter starts above it.
+ */
+const REF_FLOOR = 80;
+
 export async function nextReference(year: string): Promise<string> {
   const paths = await listPathnames(`bookings/AA-CA-${year}-`);
   const max = paths.reduce((m, p) => {
     const n = Number(p.match(/-(\d+)\.json$/)?.[1] ?? 0);
     return Math.max(m, n);
   }, 0);
-  return `AA-CA-${year}-${String(max + 1).padStart(3, "0")}`;
+  return `AA-CA-${year}-${String(Math.max(max, REF_FLOOR) + 1).padStart(3, "0")}`;
 }
 
 /**

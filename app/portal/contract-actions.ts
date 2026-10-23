@@ -171,6 +171,13 @@ export async function approveWeddingContractDetails(
          below instead, for Arman to quote deliberately. */
       const clientAskedForAnotherCollection =
         changedCollection && !!tier && b.packageKey === "custom";
+      /* Money has been received against the agreed figure, so the collection
+         cannot change here any more. Approving the particulars still works;
+         re-pricing needs a change order. */
+      if (changedCollection && tier && b.payments.length)
+        throw new Error(
+          `A payment is already recorded against ${b.packageName}. Use a change order to move them to ${tier.name}.`,
+        );
       if (changedCollection && tier && b.packageKey !== "custom") {
         b.packageKey = tier.slug;
         b.packageName = tier.name;

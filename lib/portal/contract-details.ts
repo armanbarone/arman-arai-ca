@@ -148,10 +148,19 @@ export function missingContractDetails(v: ContractDetails) {
   });
   return missing;
 }
+/**
+ * Whether the couple's particulars are settled and may no longer be edited.
+ *
+ * A received payment used to lock this too, which deadlocked the ordinary case
+ * of a couple who e-transfers before the agreement is issued: their details
+ * could never be approved, so the agreement could never be published, so the
+ * money sat against a contract that could not exist. What a payment must
+ * protect is the price, not the spelling of a street address, and that is
+ * guarded where the price is applied.
+ */
 export function contractIsLocked(b: Booking) {
   return (
     b.status === "cancelled" ||
-    !!b.payments.length ||
     !!b.wedding?.documents.some(
       (d) =>
         d.templateKey === "agreement" &&

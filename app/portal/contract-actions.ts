@@ -164,7 +164,14 @@ export async function approveWeddingContractDetails(
       applyContractDetails(b, v);
       b.event.timezone = TIMEZONES[v.province];
       const tier = collectionFor(v.collectionKey);
-      if (changedCollection && tier) {
+      /* A custom quote was agreed with the couple directly, so their own form
+         can never re-price it. Before this guard, a couple quoted $1,000 who
+         ticked a published collection on their details form had that price
+         applied the moment the details were approved. The ask is recorded
+         below instead, for Arman to quote deliberately. */
+      const clientAskedForAnotherCollection =
+        changedCollection && !!tier && b.packageKey === "custom";
+      if (changedCollection && tier && b.packageKey !== "custom") {
         b.packageKey = tier.slug;
         b.packageName = tier.name;
         const line = b.lines.find((l) => l.kind === "package");
@@ -181,9 +188,19 @@ export async function approveWeddingContractDetails(
         Object.assign(b.fields, collectionBookingFields(tier, v.date));
       }
       if (changedProvince) b.taxes = defaultTaxesFor(v.province);
+      const totalBefore = b.totals.totalCents;
       b.totals = computeTotals(b.lines, b.taxes);
-      b.schedule = buildSchedule(b, todayInBusinessTz());
+      /* Only rebuild the schedule when the money actually moved. Rebuilding it
+         unconditionally threw away a payment schedule set by hand, which is how
+         a single agreed payment turned back into three instalments. */
+      if (b.totals.totalCents !== totalBefore || !b.schedule.length)
+        b.schedule = buildSchedule(b, todayInBusinessTz());
       b.status = "draft";
+      if (clientAskedForAnotherCollection) {
+        const note = `They ticked the ${tier!.name} collection on their details form. The agreed custom quote was kept; requote it deliberately if that is what they want.`;
+        b.internalNotes = b.internalNotes ? `${b.internalNotes}
+${note}` : note;
+      }
       w.intake = {
         ...intake,
         status: "approved",
@@ -233,7 +250,13 @@ export async function approveWeddingContractDetails(
         at,
         type: "contract_details_approved",
         actor: admin.email,
-        detail: { intakeRevision: revision, collection: b.packageKey },
+        detail: {
+          intakeRevision: revision,
+          collection: b.packageKey,
+          ...(clientAskedForAnotherCollection
+            ? { clientRequestedCollection: v.collectionKey }
+            : {}),
+        },
       });
     });
     refresh(ref);

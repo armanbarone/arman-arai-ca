@@ -48,15 +48,27 @@ export default function WeddingContractDetails({
   const b = useWeddingBooking(booking, preview),
     context = useWeddingPreview(),
     router = useRouter();
-  const [v, setV] = useState<ContractDetails>(() => initialContractDetails(b)),
+  /* A studio quote is the agreed one, whatever an older saved form says. One
+     couple's form had "signature" stored in it from when this section still
+     showed the published collections as a menu. */
+  const normalise = (d: ContractDetails): ContractDetails =>
+    b.packageKey === "custom" && d.collectionKey !== "custom"
+      ? { ...d, collectionKey: "custom" }
+      : d;
+  const [v, setV] = useState<ContractDetails>(() =>
+    normalise(initialContractDetails(b)),
+  ),
     [revision, setRevision] = useState(b.wedding?.intake?.updatedAt || null);
+  /* A studio-prepared custom quote was agreed with Arman, not chosen from the
+     website. The couple must not be shown it as a menu. */
+  const studioQuoted = b.packageKey === "custom";
   const [dirty, setDirty] = useState(false),
     [message, setMessage] = useState(""),
     [error, setError] = useState(""),
     [pending, start] = useTransition();
   useEffect(() => {
     if (!dirty) {
-      setV(initialContractDetails(b));
+      setV(normalise(initialContractDetails(b)));
       setRevision(b.wedding?.intake?.updatedAt || null);
     }
   }, [b, dirty]);
@@ -352,22 +364,47 @@ export default function WeddingContractDetails({
         </section>
         <section className="wp-card wp-builder-section">
           <h2>Your photography collection</h2>
-          <p>
-            The same three collections offered on{" "}
-            <a
-              className="wp-inline-link"
-              href="https://www.armanarai.ca/pricing"
-              target="_blank"
-              rel="noreferrer"
-            >
-              the website
-            </a>
-            . Canadian dollars, before tax and separately quoted travel. Arman
-            can adjust your exact coverage, deliverables and quote before you
-            sign.
-          </p>
+          {studioQuoted ? (
+            /* Their price was agreed with Arman directly, so the published
+               collections are not a menu they should be picking from. Offering
+               the radio buttons here once let a couple quoted $1,000 select a
+               $3,000 collection, which approving their details would have
+               charged them. */
+            <>
+              <p>
+                Arman prepared this quote for you directly, so there is nothing
+                to choose here.
+              </p>
+              <div className="wp-message">
+                <strong>{b.packageName}</strong>
+                <span>
+                  {" "}
+                  — {formatCad(b.totals.totalCents)} including tax
+                </span>
+              </div>
+              <p>
+                If you would like something different, say so below and Arman
+                will requote it. Nothing changes until you both sign.
+              </p>
+            </>
+          ) : (
+            <p>
+              The same three collections offered on{" "}
+              <a
+                className="wp-inline-link"
+                href="https://www.armanarai.ca/pricing"
+                target="_blank"
+                rel="noreferrer"
+              >
+                the website
+              </a>
+              . Canadian dollars, before tax and separately quoted travel. Arman
+              can adjust your exact coverage, deliverables and quote before you
+              sign.
+            </p>
+          )}
           <div className="wp-collection-grid">
-            {WEDDING_COLLECTIONS.map((t) => (
+            {studioQuoted ? [] : WEDDING_COLLECTIONS.map((t) => (
               <label
                 key={t.slug}
                 className={`wp-collection ${v.collectionKey === t.slug ? "is-selected" : ""}`}
@@ -394,12 +431,7 @@ export default function WeddingContractDetails({
               </label>
             ))}
           </div>
-          {v.collectionKey === "custom" && (
-            <p className="wp-message">
-              Your studio-prepared custom quote is selected. You can request one
-              of the published collections above.
-            </p>
-          )}
+
           <label className="wp-label">
             Coverage, additions or changes you would like to discuss
             <textarea

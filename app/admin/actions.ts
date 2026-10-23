@@ -318,11 +318,18 @@ export async function saveBookingAction(
       b.lines = input.lines;
       b.allocation = input.allocation;
       b.taxes = input.taxes;
+      const totalBefore = b.totals.totalCents;
       b.totals = totals;
       b.fields = input.fields;
       b.internalNotes = input.internalNotes;
       b.remindersPaused = input.remindersPaused;
-      if (b.status === "draft")
+      /* Rebuild the instalments only when the money moved. This used to run on
+         every save, so editing a venue or a guest count silently put a payment
+         schedule set by hand back to the default three instalments. */
+      if (
+        b.status === "draft" &&
+        (!b.schedule.length || totals.totalCents !== totalBefore)
+      )
         b.schedule = buildSchedule(b, todayInBusinessTz(), b.schedule);
       if (materialChanged)
         for (const d of b.wedding?.documents || [])

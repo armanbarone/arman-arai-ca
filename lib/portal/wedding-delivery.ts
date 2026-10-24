@@ -24,7 +24,8 @@ async function sendSignedWeddingDocument(ref: string, id: string) {
   const recipients = [
     ...new Set([
       ...d.requiredEmails.filter((e) => e !== BUSINESS.email),
-      ...b.clients.map((c) => c.email),
+      // A booking may have only one party, and an empty address is not one.
+      ...b.clients.map((c) => c.email).filter((e) => e.trim()),
       BUSINESS.email,
     ]),
   ];

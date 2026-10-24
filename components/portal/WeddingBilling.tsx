@@ -361,7 +361,10 @@ export default function WeddingBilling({
               {admin && (
                 <>
                   <p>
-                    Email: {Object.keys(v.deliveries || {}).length} / 2 partners{" "}
+                    {/* A booking can have one party, so this counted against a
+                        number that was not always two. */}
+                    Email: {Object.keys(v.deliveries || {}).length} /{" "}
+                    {b.clients.filter((c) => c.email.trim()).length} sent{" "}
                     {v.deliveryError ? "· needs attention" : ""}
                   </p>
                   {v.deliveryError && (

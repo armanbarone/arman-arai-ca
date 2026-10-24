@@ -370,6 +370,12 @@ export default function BookingForm({
               <Card key={i}>
                 <Eyebrow>Partner {i + 1}</Eyebrow>
                 <div className="grid gap-3">
+                  {i === 1 && (
+                    <p className="wp-muted">
+                      Optional. Leave the name and email empty and this wedding
+                      has one contracting party. Do not invent an address.
+                    </p>
+                  )}
                   {/* Not every wedding has two contracting parties. A partner
                       who is not one is still named on the booking, but is not
                       asked to sign and is never emailed the agreement. */}

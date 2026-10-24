@@ -69,7 +69,7 @@ async function emailInvoice(ref: string, id: string) {
   const attachment = Buffer.from(
     await new Response(stored.stream).arrayBuffer(),
   );
-  for (const c of v.clients) {
+  for (const c of v.clients.filter((c) => c.email.trim())) {
     b = await getBooking(ref);
     v = b?.invoices?.find((i) => i.id === id);
     if (

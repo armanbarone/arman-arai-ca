@@ -147,8 +147,8 @@ export function missingContractDetails(
   ])
     if (!value) missing.push(label);
   v.people.forEach((p, i) => {
-    if (p.legalName.length < 3) missing.push(`partner ${i + 1}'s legal name`);
     if (!signers[i]) return;
+    if (p.legalName.length < 3) missing.push(`partner ${i + 1}'s legal name`);
     if (p.phone.length < 7) missing.push(`partner ${i + 1}'s phone`);
     if (
       !p.address.line1 ||
@@ -171,7 +171,9 @@ export function missingContractDetails(
  */
 /** Which of the two people on a booking actually sign. */
 export function signerFlags(b: Booking): [boolean, boolean] {
-  return [b.clients[0]?.signs !== false, b.clients[1]?.signs !== false];
+  const party = (c?: Booking["clients"][number]) =>
+    !!c && c.signs !== false && !!c.email.trim();
+  return [party(b.clients[0]), party(b.clients[1])];
 }
 
 export function contractIsLocked(b: Booking) {

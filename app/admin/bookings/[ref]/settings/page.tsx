@@ -82,7 +82,9 @@ export default async function AdminBookingPage({
         </p>
         <InviteButtons
           bookingRef={booking.ref}
-          emails={booking.clients.map((c) => c.email)}
+          emails={booking.clients
+            .map((c) => c.email)
+            .filter((e) => e.trim())}
         />
       </Card>
 

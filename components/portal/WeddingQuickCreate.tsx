@@ -56,18 +56,27 @@ export default function WeddingQuickCreate({
   const create = () =>
     start(async () => {
       setError("");
+      /* The second partner is optional: left entirely blank there is no
+         second party, rather than a placeholder standing in for one. */
+      const named = (c: { legalName?: string; email?: string }) =>
+        !!(c.legalName ?? "").trim() || !!(c.email ?? "").trim();
+      const wellFormed = (c: { legalName?: string; email?: string }) =>
+        (c.legalName ?? "").trim().length >= 3 &&
+        /^\S+@\S+\.\S+$/.test((c.email ?? "").trim());
+      const second = value.clients[1];
       if (
-        value.clients.some(
-          (c) =>
-            c.legalName.trim().length < 3 || !/^\S+@\S+\.\S+$/.test(c.email),
-        ) ||
-        value.clients[0].email.toLowerCase() ===
-          value.clients[1].email.toLowerCase() ||
+        !wellFormed(value.clients[0]) ||
+        (named(second) && !wellFormed(second)) ||
+        (named(second) &&
+          (value.clients[0].email ?? "").toLowerCase() ===
+            (second.email ?? "").toLowerCase()) ||
         !value.event.date ||
         !value.event.location
       ) {
         setError(
-          "Enter both names, distinct emails, wedding date and municipality.",
+          named(second)
+            ? "Enter both names, distinct emails, wedding date and municipality."
+            : "Enter the first partner's name and email, the wedding date and the municipality.",
         );
         return;
       }
@@ -94,7 +103,7 @@ export default function WeddingQuickCreate({
           eventType: "wedding",
           clients: value.clients.map((c, i) => ({
             ...c,
-            email: c.email.toLowerCase(),
+            email: (c.email ?? "").toLowerCase(),
             id: `sample-${ref}-${i}`,
           })) as Booking["clients"],
           event: {
@@ -154,8 +163,11 @@ export default function WeddingQuickCreate({
       // the tracker's close rate and value stop needing to be typed in twice.
       if (fromLeadId) await linkLeadToBooking(fromLeadId, result.ref);
       if (invite) {
+        // Nobody is invited who has no address to invite.
         const replies = await Promise.all(
-          value.clients.map((c) => sendInviteAction(result.ref, c.email)),
+          value.clients
+            .filter((c) => (c.email ?? "").trim())
+            .map((c) => sendInviteAction(result.ref, c.email!)),
         );
         if (replies.some((r) => !r.ok)) {
           router.push(`/admin/bookings/${result.ref}?invite=retry`);

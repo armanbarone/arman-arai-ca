@@ -253,7 +253,9 @@ export async function issueWeddingDocument(
       d.fields = values;
       d.requiredEmails = ["read"].includes(t.action)
         ? []
-        : b.clients.filter((c) => c.signs !== false).map((c) => c.email);
+        : b.clients
+            .filter((c) => c.signs !== false && c.email.trim())
+            .map((c) => c.email);
       if (!["read"].includes(t.action) && !d.requiredEmails.length)
         throw new Error(
           "Nobody on this booking is marked as signing the agreement.",

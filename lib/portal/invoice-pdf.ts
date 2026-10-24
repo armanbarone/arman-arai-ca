@@ -58,7 +58,7 @@ export async function renderInvoicePdf(
     `Issued ${formatDate(new Intl.DateTimeFormat("en-CA", { timeZone: BUSINESS.timezone, year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date(v.issuedAt)))} | Due ${formatDate(v.dueDate)} | Currency CAD`,
   );
   text("Bill to", 11, true);
-  for (const c of v.clients) {
+  for (const c of v.clients.filter((c) => c.legalName.trim())) {
     text(c.legalName + " | " + c.email);
     text(
       [

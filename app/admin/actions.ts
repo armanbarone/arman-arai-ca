@@ -63,11 +63,41 @@ const clientSchema = z.object({
   }),
 });
 
+/**
+ * The second person on a booking, who may not exist.
+ *
+ * Not every wedding is contracted by two people. Requiring a name and an
+ * email here forced a placeholder into the record, and a placeholder email is
+ * either undeliverable or, worse, somebody else's address. Left entirely
+ * blank, there is simply no second party, which is what the agreement itself
+ * has always allowed: its fields read "Client 2 if any".
+ */
+const secondClientSchema = clientSchema
+  .extend({
+    legalName: z.string().trim().default(""),
+    email: z.string().trim().toLowerCase().default(""),
+  })
+  .superRefine((c, ctx) => {
+    if (!c.legalName && !c.email) return;
+    if (c.legalName.length < 3)
+      ctx.addIssue({
+        code: "custom",
+        message: "Give the second partner's full legal name, or leave them out entirely",
+        path: ["legalName"],
+      });
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(c.email))
+      ctx.addIssue({
+        code: "custom",
+        message: "Give the second partner's email, or leave them out entirely",
+        path: ["email"],
+      });
+  });
+
 export type BookingInput = z.input<typeof bookingSchema>;
 
 const bookingSchema = z
   .object({
-    clients: z.tuple([clientSchema, clientSchema]),
+    clients: z.tuple([clientSchema, secondClientSchema]),
     packageKey: z.string(),
     packageName: z.string().trim().min(2),
     event: z.object({
@@ -113,7 +143,7 @@ const bookingSchema = z
     remindersPaused: z.boolean().default(false),
   })
   .superRefine((b, ctx) => {
-    if (b.clients[0].email === b.clients[1].email)
+    if (b.clients[1].email && b.clients[0].email === b.clients[1].email)
       ctx.addIssue({
         code: "custom",
         message: "Each partner needs their own email address",

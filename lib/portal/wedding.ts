@@ -216,7 +216,11 @@ export function seedFields(
   b: Booking,
 ): Record<string, string> {
   const fields: Record<string, string> = {};
-  const names = b.clients.map((c) => c.legalName).join(" & ");
+  // A booking may have one party, and "Johnson Hsin & " is not a name.
+  const names = b.clients
+    .map((c) => c.legalName)
+    .filter((n) => n.trim())
+    .join(" & ");
   for (const f of templateFields(t)) {
     const s = f.label.toLowerCase();
     if (/project identifier/.test(s)) fields[f.id] = b.ref;
@@ -261,7 +265,13 @@ export function seedFields(
     ) {
       const part = Number(f.id.split(".").at(-1)) - 1;
       const c = b.clients[part];
-      if (c)
+      /* An empty slot is not a person. These fields read "Client 2 if any",
+         and the agreement requires an item that does not apply to say so
+         rather than sit blank, so it says so by itself instead of needing a
+         placeholder typed into the booking. */
+      const present = !!c && (!!c.legalName.trim() || !!c.email.trim());
+      if (c && !present) fields[f.id] = "Not applicable";
+      else if (c)
         fields[f.id] = /full legal name/.test(s)
           ? c.legalName
           : /mailing address/.test(s)

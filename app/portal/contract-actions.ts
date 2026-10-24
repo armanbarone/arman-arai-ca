@@ -232,7 +232,15 @@ ${note}` : note;
             .reverse()
             .find((d) => d.templateKey === key),
           t = templateFor(key, b);
-        const fields = { ...previous?.fields, ...defaultDocumentFields(t, b) },
+        /* Regenerating from the booking must not blank an answer somebody
+           wrote. A deliverable the studio marked "Not included" has no
+           corresponding booking field to derive from, so the default for it is
+           an empty string, and letting that win wiped eleven answers out of a
+           prepared agreement the moment the couple's details were approved. */
+        const defaults = defaultDocumentFields(t, b);
+        for (const k of Object.keys(defaults))
+          if (!String(defaults[k] ?? "").trim()) delete defaults[k];
+        const fields = { ...previous?.fields, ...defaults },
           blocks = resolveBlocks(t, fields);
         let d = w.documents.find(
           (d) => d.templateKey === key && d.status === "draft",

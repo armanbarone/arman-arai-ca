@@ -32,6 +32,14 @@ export interface Client {
   email: string; // lower-case
   phone: string;
   address: Address;
+  /**
+   * Whether this person is a contracting party who signs the agreement.
+   * Undefined means yes, so every booking made before this existed is
+   * unchanged. Set false for a partner who is named on the wedding but is not
+   * a party to it, which is also the only honest way to hold a booking whose
+   * second partner has no email address.
+   */
+  signs?: boolean;
 }
 
 export interface PriceLine {

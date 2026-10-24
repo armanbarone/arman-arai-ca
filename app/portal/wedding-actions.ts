@@ -253,7 +253,11 @@ export async function issueWeddingDocument(
       d.fields = values;
       d.requiredEmails = ["read"].includes(t.action)
         ? []
-        : b.clients.map((c) => c.email);
+        : b.clients.filter((c) => c.signs !== false).map((c) => c.email);
+      if (!["read"].includes(t.action) && !d.requiredEmails.length)
+        throw new Error(
+          "Nobody on this booking is marked as signing the agreement.",
+        );
       d.bookingHash = await sha256Hex(commercialFingerprint(b));
       d.commercialSnapshot = commercialFingerprint(b);
       d.initialSections = d.requiredEmails.length

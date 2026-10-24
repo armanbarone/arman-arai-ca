@@ -70,7 +70,9 @@ export default function NativeWeddingForm({
   const publishBlockers: string[] = [
     ...(blockedReason ? [blockedReason] : []),
     ...(remaining.length
-      ? [`${remaining.length} required field${remaining.length === 1 ? "" : "s"} above`]
+      ? [
+          `${remaining.length} required field${remaining.length === 1 ? "" : "s"} above, listed below`,
+        ]
       : []),
     ...(!canPublishChange ? ["this change order needs a booking revision first"] : []),
     ...(t.companySigns && name.trim().toLowerCase() !== "arman arai"
@@ -267,13 +269,37 @@ export default function NativeWeddingForm({
   return (
     <div>
       <div className="wp-message">
-        {admin
-          ? `${remaining.length} required fields remain. Unused items must explicitly say Not included or Not applicable. Issued records cannot be silently edited.${
-              remaining.length === 0 && publishBlockers.length
-                ? ` Publishing still needs ${publishBlockers.join(", ")}, at the bottom of this page.`
-                : ""
-            }`
-          : "Your answers are private to your booking and the studio. Share only details that help us plan your wedding."}
+        {admin ? (
+          publishBlockers.length === 0 ? (
+            "Everything this document needs is filled in. Publishing emails it to each signing party."
+          ) : (
+            /* Naming the fields, not counting them. A greyed-out publish button
+               over the words "10 required fields remain" leaves the only
+               question that matters unanswered: which ten. */
+            <>
+              <strong>Publishing needs {publishBlockers.length === 1 ? "one more thing" : `${publishBlockers.length} more things`}:</strong>
+              <ul>
+                {publishBlockers.map((x) => (
+                  <li key={x}>{x}</li>
+                ))}
+              </ul>
+              {remaining.length > 0 && (
+                <>
+                  Still blank:{" "}
+                  {remaining
+                    .slice(0, 12)
+                    .map((f) => f.label || f.id)
+                    .join("; ")}
+                  {remaining.length > 12 ? `; and ${remaining.length - 12} more` : "."}{" "}
+                  An item that does not apply has to say Not included or Not
+                  applicable rather than being left empty.
+                </>
+              )}
+            </>
+          )
+        ) : (
+          "Your answers are private to your booking and the studio. Share only details that help us plan your wedding."
+        )}
       </div>
       {groups
         .filter((g) => g.blocks.length)

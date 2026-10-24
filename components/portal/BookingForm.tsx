@@ -370,6 +370,27 @@ export default function BookingForm({
               <Card key={i}>
                 <Eyebrow>Partner {i + 1}</Eyebrow>
                 <div className="grid gap-3">
+                  {/* Not every wedding has two contracting parties. A partner
+                      who is not one is still named on the booking, but is not
+                      asked to sign and is never emailed the agreement. */}
+                  <label className="wp-checkbox">
+                    <input
+                      type="checkbox"
+                      checked={c.signs !== false}
+                      onChange={(e) =>
+                        set((cl) => {
+                          cl.signs = e.target.checked ? undefined : false;
+                        })
+                      }
+                    />
+                    This partner signs the agreement
+                  </label>
+                  {c.signs === false && (
+                    <p className="wp-muted">
+                      Named on the wedding but not a party to it. They are not
+                      asked to sign and receive no email.
+                    </p>
+                  )}
                   <div>
                     <label className={labelCls}>Full legal name</label>
                     <input

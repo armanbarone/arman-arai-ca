@@ -12,6 +12,7 @@ import {
   collectionFor,
   collectionBookingFields,
   applyContractDetails,
+  signerFlags,
   type ContractDetails,
 } from "@/lib/portal/contract-details";
 import {
@@ -97,9 +98,9 @@ export default function WeddingContractDetails({
       setError(parsed.error.issues[0]?.message || "Check your details.");
       return;
     }
-    if (submit && missingContractDetails(v).length) {
+    if (submit && missingContractDetails(v, signerFlags(b)).length) {
       setError(
-        `Complete ${missingContractDetails(v).join(", ")}. Use Not applicable for a location you will not use.`,
+        `Complete ${missingContractDetails(v, signerFlags(b)).join(", ")}. Use Not applicable for a location you will not use.`,
       );
       return;
     }

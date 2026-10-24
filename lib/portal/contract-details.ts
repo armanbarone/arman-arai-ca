@@ -125,7 +125,17 @@ export function initialContractDetails(b: Booking): ContractDetails {
         requests: "",
       };
 }
-export function missingContractDetails(v: ContractDetails) {
+/**
+ * What still has to be answered before the particulars can be approved.
+ *
+ * `signers` says which of the two people are contracting parties. A partner
+ * who is named on the wedding but is not a party to it does not need a phone
+ * number or a mailing address, because no notice is ever served on them.
+ */
+export function missingContractDetails(
+  v: ContractDetails,
+  signers: [boolean, boolean] = [true, true],
+) {
   const missing: string[] = [];
   if (!v.date) missing.push("wedding date");
   if (!v.municipality) missing.push("event municipality");
@@ -138,6 +148,7 @@ export function missingContractDetails(v: ContractDetails) {
     if (!value) missing.push(label);
   v.people.forEach((p, i) => {
     if (p.legalName.length < 3) missing.push(`partner ${i + 1}'s legal name`);
+    if (!signers[i]) return;
     if (p.phone.length < 7) missing.push(`partner ${i + 1}'s phone`);
     if (
       !p.address.line1 ||
@@ -158,6 +169,11 @@ export function missingContractDetails(v: ContractDetails) {
  * protect is the price, not the spelling of a street address, and that is
  * guarded where the price is applied.
  */
+/** Which of the two people on a booking actually sign. */
+export function signerFlags(b: Booking): [boolean, boolean] {
+  return [b.clients[0]?.signs !== false, b.clients[1]?.signs !== false];
+}
+
 export function contractIsLocked(b: Booking) {
   return (
     b.status === "cancelled" ||

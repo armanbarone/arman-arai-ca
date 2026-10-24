@@ -40,6 +40,7 @@ const validDate = (value: string) =>
 const isoDate = z.string().refine(validDate, "Use a valid full date");
 
 const clientSchema = z.object({
+  signs: z.boolean().optional(),
   legalName: z.string().trim().min(3, "Full legal name is required"),
   preferredName: z.string().trim().default(""),
   email: z.string().trim().toLowerCase().email("A valid email is required"),

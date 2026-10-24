@@ -16,6 +16,7 @@ import {
   missingContractDetails,
   contractIsLocked,
   applyContractDetails,
+  signerFlags,
   collectionFor,
   collectionBookingFields,
   type ContractDetails,
@@ -49,13 +50,18 @@ export async function saveWeddingContractDetails(
   const { session } = await requireBookingAccess(ref);
   try {
     const v = contractDetailsSchema.parse(raw);
-    if (submit && missingContractDetails(v).length)
-      throw new Error(
-        `Complete ${missingContractDetails(v).join(", ")}. Use Not applicable for a location you will not use.`,
-      );
     let updatedAt = "";
     await updateBooking(ref, (b) => {
       assertClientPortalAccess(b, session);
+      // Inside the callback, where the booking is known: whether a partner
+      // needs a phone and an address depends on whether they are signing.
+      if (submit) {
+        const gaps = missingContractDetails(v, signerFlags(b));
+        if (gaps.length)
+          throw new Error(
+            `Complete ${gaps.join(", ")}. Use Not applicable for a location you will not use.`,
+          );
+      }
       if (
         session.role !== "admin" &&
         !b.clients.some((c) => c.email === session.email)
@@ -154,7 +160,7 @@ export async function approveWeddingContractDetails(
           "Review the current submitted details before approving them.",
         );
       const v = contractDetailsSchema.parse(intake.values);
-      if (missingContractDetails(v).length)
+      if (missingContractDetails(v, signerFlags(b)).length)
         throw new Error(
           "Complete the couple's event details and addresses first.",
         );

@@ -399,7 +399,9 @@ export default function BookingForm({
                       asked to sign and receive no email.
                     </p>
                   )}
-                  {c.signs !== false && !c.email.trim() && c.legalName.trim() && (
+                  {c.signs !== false &&
+                    !(c.email ?? "").trim() &&
+                    (c.legalName ?? "").trim() && (
                     <p className="wp-muted">
                       No email yet, so nothing can be sent to them and they
                       cannot be asked to sign. Enter one and they become a

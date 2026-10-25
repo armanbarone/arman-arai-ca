@@ -79,17 +79,27 @@ const secondClientSchema = clientSchema
   })
   .superRefine((c, ctx) => {
     if (!c.legalName && !c.email) return;
-    if (c.legalName.length < 3)
+    if (c.legalName && c.legalName.length < 3)
       ctx.addIssue({
         code: "custom",
-        message: "Give the second partner's full legal name, or leave them out entirely",
+        message: "Give the second partner's name, or leave them out entirely",
         path: ["legalName"],
       });
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(c.email))
+    /* A name on its own is allowed: the partner is named on the wedding but is
+       not yet a contracting party, which is the honest state while their email
+       is unknown. They become a signing party the moment one is entered. An
+       email with nobody attached to it is not allowed. */
+    if (c.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(c.email))
       ctx.addIssue({
         code: "custom",
-        message: "Give the second partner's email, or leave them out entirely",
+        message: "That is not an email address",
         path: ["email"],
+      });
+    if (c.email && !c.legalName)
+      ctx.addIssue({
+        code: "custom",
+        message: "Give the name that goes with this email address",
+        path: ["legalName"],
       });
   });
 

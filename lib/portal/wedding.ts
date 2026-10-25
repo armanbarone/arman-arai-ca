@@ -269,8 +269,18 @@ export function seedFields(
          and the agreement requires an item that does not apply to say so
          rather than sit blank, so it says so by itself instead of needing a
          placeholder typed into the booking. */
-      const present = !!c && (!!c.legalName.trim() || !!c.email.trim());
-      if (c && !present) fields[f.id] = "Not applicable";
+      /* Three states, not two. Nobody there at all; somebody named on the
+         wedding who is not a contracting party, so their name shows and no
+         notice is ever served on them; or a party, with full details. */
+      const named = !!c && !!c.legalName.trim();
+      const party = !!c && c.signs !== false && !!c.email.trim();
+      if (c && !named && !party) fields[f.id] = "Not applicable";
+      else if (c && named && !party)
+        fields[f.id] = /full legal name/.test(s)
+          ? c.legalName
+          : /preferred name and pronouns/.test(s)
+            ? c.preferredName || c.legalName
+            : "Not applicable";
       else if (c)
         fields[f.id] = /full legal name/.test(s)
           ? c.legalName

@@ -372,8 +372,10 @@ export default function BookingForm({
                 <div className="grid gap-3">
                   {i === 1 && (
                     <p className="wp-muted">
-                      Optional. Leave the name and email empty and this wedding
-                      has one contracting party. Do not invent an address.
+                      Optional. A name on its own is fine: they are named on the
+                      wedding and become a signing party once you have their
+                      email. Leave both empty and this wedding has one
+                      contracting party. Never invent an address.
                     </p>
                   )}
                   {/* Not every wedding has two contracting parties. A partner
@@ -395,6 +397,13 @@ export default function BookingForm({
                     <p className="wp-muted">
                       Named on the wedding but not a party to it. They are not
                       asked to sign and receive no email.
+                    </p>
+                  )}
+                  {c.signs !== false && !c.email.trim() && c.legalName.trim() && (
+                    <p className="wp-muted">
+                      No email yet, so nothing can be sent to them and they
+                      cannot be asked to sign. Enter one and they become a
+                      signing party.
                     </p>
                   )}
                   <div>

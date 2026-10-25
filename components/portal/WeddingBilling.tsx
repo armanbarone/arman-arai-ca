@@ -48,6 +48,10 @@ export default function WeddingBilling({
     [error, setError] = useState(""),
     [pending, start] = useTransition(),
     [pdfUrl, setPdfUrl] = useState(""),
+    /* A booking may have one contracting party, so neither the recipients nor
+       the signatures are always two. Telling one signer to "complete both
+       signatures" leaves him waiting on somebody who does not exist. */
+    recipients = b.clients.filter((c) => c.email.trim()).length,
     // Which hand-entered receipt is being taken back, and why.
     [undo, setUndo] = useState({ id: "", reason: "" });
   useEffect(() => {
@@ -282,7 +286,9 @@ export default function WeddingBilling({
                   disabled={pending || !target || !!b.archivedAt}
                   onClick={() => run("issue")}
                 >
-                  Issue invoice & email both partners →
+                  {recipients === 1
+                    ? "Issue invoice & email it →"
+                    : `Issue invoice & email all ${recipients} of them →`}
                 </button>
               </>
             ) : (
@@ -354,8 +360,9 @@ export default function WeddingBilling({
               </div>
               {!admin && balance > 0 && v.cardEnabled && !signed && (
                 <p>
-                  Complete both agreement signatures before opening card
-                  checkout.
+                  {recipients === 1
+                    ? "Sign the agreement to open card checkout."
+                    : "Every party has to sign the agreement before card checkout opens."}
                 </p>
               )}
               {admin && (

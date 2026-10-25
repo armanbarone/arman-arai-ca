@@ -253,10 +253,21 @@ export async function issueWeddingInvoice(
       };
     }
     refresh(ref);
+    // Who it actually reached, rather than "both partners" on a booking that
+    // may have one contracting party.
+    const after = await getBooking(ref);
+    const sentTo = Object.keys(
+      after?.invoices?.find((x) => x.id === id)?.deliveries ?? {},
+    );
     return {
       ok: true,
-      message:
-        "Invoice issued, PDF attached and payment request emailed to both partners.",
+      message: `Invoice issued, PDF attached and the payment request emailed to ${
+        sentTo.length === 1
+          ? sentTo[0]
+          : sentTo.length
+            ? `${sentTo.length} recipients`
+            : "nobody yet"
+      }.`,
     };
   } catch (e) {
     return fail(e);

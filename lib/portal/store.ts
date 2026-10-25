@@ -149,8 +149,16 @@ export async function listBookings(): Promise<Booking[]> {
  */
 const REF_FLOOR = 80;
 
+/**
+ * The next booking reference, numbered in one sequence across every year.
+ *
+ * Counting per year meant the first booking of each year took the same number,
+ * so AA-CA-2026-081 and AA-CA-2027-081 sat in the store together, telling two
+ * different couples apart by a single character in the middle of the string.
+ * The number is now unique on its own, whatever year it is paired with.
+ */
 export async function nextReference(year: string): Promise<string> {
-  const paths = await listPathnames(`bookings/AA-CA-${year}-`);
+  const paths = await listPathnames("bookings/AA-CA-");
   const max = paths.reduce((m, p) => {
     const n = Number(p.match(/-(\d+)\.json$/)?.[1] ?? 0);
     return Math.max(m, n);

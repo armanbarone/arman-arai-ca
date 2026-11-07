@@ -9,6 +9,8 @@ import { isPricingThankYouPath, isPublicTrackingPath, reportPendingBooking, susp
 export default function PublicTracking() {
   const pathname = usePathname();
   useEffect(() => {
+    // A portable design preview can be served at a different pathname.
+    if (document.querySelector('[data-christmas-preview="true"]')) { suspendTracking(); return; }
     if (!isPublicTrackingPath(pathname)) { suspendTracking(); return; }
     // A pricing thank-you page starts its own tags, and only after a real
     // submission, so a direct visit never counts as a conversion.

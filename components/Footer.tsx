@@ -31,6 +31,7 @@ export default function Footer() {
             <p className="text-[0.58rem] tracking-[0.28em] uppercase text-rose mb-6">Connect</p>
             <ul className="space-y-3">
               <li><Link href="/contact" className="footer-link">Contact</Link></li>
+              <li><Link href="/christmas" className="footer-link">Christmas sessions · North Vancouver</Link></li>
               <li>
                 <Link href="/destination-wedding-photographer" className="footer-link">
                   Destination weddings

@@ -121,6 +121,11 @@ body:has(.xm)::after{display:none}.xm-hearth-flames{position:absolute;bottom:-80
 .xm-album-choice{display:grid;gap:12px;padding:18px;margin:20px 0;border:1px solid #b7a77e;border-radius:6px;background:#f4edda}
 .xm-album-choice strong{display:block;color:#31512a;font-size:14px}.xm-album-choice small{display:block;color:#665e49;font-size:11px;line-height:1.7}
 .xm-album-choice select{width:100%;min-height:48px;padding:10px;background:#fffaf0;color:#263c2b;border:1px solid #a89970;border-radius:4px;font-size:14px}
+.xm-confirmation-prep ul{display:grid;gap:18px;list-style:disc;margin:16px 0 0;padding-left:20px}
+.xm-confirmation-prep li{padding-left:4px}
+.xm-confirmation-prep li::marker{color:#7c602d}
+.xm-confirmation-prep li strong{display:block;font-size:14px;line-height:1.5;color:#244731;margin-bottom:4px}
+.xm-confirmation-prep li p{font-size:13px;line-height:1.7;margin:0}
 .xm-days button small{font-family:var(--font-cabin,sans-serif);font-size:7px;letter-spacing:-.03em;line-height:1.2}.xm-days button.xm-date-unavailable:not(.selected){background:#dfdfd6;color:#797b71;box-shadow:none}
 .xm-days button.xm-date-unavailable{opacity:1}.xm-days button{flex-direction:column;gap:3px;min-height:53px}.xm-release-note{font-size:11px;line-height:1.7;color:#716044;margin-top:16px!important}
 .xm-times button:disabled{opacity:1;background:#deded6;color:#77786e;border-color:#cbccc2;text-decoration:none}.xm-times button small{display:block;font-size:9px;margin-top:4px}

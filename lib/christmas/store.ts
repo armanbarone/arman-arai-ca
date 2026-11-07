@@ -1,22 +1,32 @@
 import "server-only";
 import { ConflictError, readJson, writeJson } from "@/lib/portal/store";
-import { seasonalSlots } from "./catalog";
+import { seasonalSlots, BOOKING_POLICY } from "./catalog";
 import { mergeSeasonalInventory, overlaps, type ChristmasSettings, type Slot, type InventoryStore } from "./inventory";
 export const SETTINGS_PATH = "christmas/2026/settings.json";
 const INVENTORY_PATH = "christmas/2026/inventory.json";
 const CALENDAR_PATH = "christmas/2026/calendar.json";
 export const slotPath = (id: string) => `christmas/2026/slots/${id}.json`;
 type Calendar = { season?: string; slots: Slot[] };
-const SEASON_VERSION = "nov01-dec20-v2";
-const defaults: ChristmasSettings = { enabled: false, studioAddress: "", postalCode: "", arrivalNotes: "", cancellationPolicy: "", publishableKey: "" };
-export async function settings() { return (await readJson<ChristmasSettings>(SETTINGS_PATH))?.data ?? defaults; }
+const SEASON_VERSION = "nov09-dec20-hourly-albums-v3";
+const defaults: ChristmasSettings = { enabled: true, studioAddress: "583 E Kings Rd, North Vancouver, BC", postalCode: "V7N 1J2", arrivalNotes: "Plenty of street parking. Please arrive dressed and ready for your appointment.", cancellationPolicy: BOOKING_POLICY, publishableKey: "", launchVersion: SEASON_VERSION };
+export async function settings() {
+  for (let attempt = 0; attempt < 5; attempt++) {
+    const saved = await readJson<ChristmasSettings>(SETTINGS_PATH);
+    if (saved?.data.launchVersion === SEASON_VERSION) return saved.data;
+    // Apply the owner's November launch terms once; later admin changes are retained.
+    const cfg = { ...defaults, publishableKey: saved?.data.publishableKey || "" };
+    try { await writeJson(SETTINGS_PATH, cfg, saved ? { etag: saved.etag } : { createOnly: true }); return cfg; }
+    catch (e) { if (!(e instanceof ConflictError)) throw e; }
+  }
+  throw Error("Booking settings changed. Please retry.");
+}
 async function calendar() {
   for (let attempt = 0; attempt < 5; attempt++) {
     const saved = await readJson<Calendar>(CALENDAR_PATH);
     if (saved?.data.season === SEASON_VERSION) return saved;
     const index = saved ? null : (await readJson<{ ids: string[] }>(INVENTORY_PATH))?.data;
     const legacy = saved?.data.slots ?? (await Promise.all((index?.ids ?? []).map(id => readJson<Slot>(slotPath(id))))).flatMap(row => row ? [row.data] : []);
-    const generated: Slot[] = seasonalSlots().map(({ available: _available, ...slot }) => ({ ...slot, published: true }));
+    const generated: Slot[] = seasonalSlots().map(({ available, status: _status, ...slot }) => ({ ...slot, published: available }));
     const slots = mergeSeasonalInventory(legacy, generated);
     try { await writeJson(CALENDAR_PATH, { season: SEASON_VERSION, slots }, saved ? { etag: saved.etag } : { createOnly: true }); }
     catch (error) { if (error instanceof ConflictError) continue; throw error; }
@@ -34,6 +44,7 @@ export const inventoryStore: InventoryStore = {
     if (row.etag !== etag) throw new ConflictError();
     const at = row.data.slots.findIndex(s => s.id === id);
     if (at < 0) throw Error("Appointment not found.");
+    if (data.reservation && !row.data.slots[at].reservation && row.data.slots.some(s => s.id !== id && s.reservation && overlaps(s, data))) throw Error("That appointment overlaps an existing booking. Choose another time.");
     row.data.slots[at] = data;
     await writeJson(CALENDAR_PATH, row.data, { etag });
   },
@@ -54,7 +65,7 @@ export async function addSlot(slot: Slot) {
     const row = await calendar();
     const existing = row.data.slots.find(s => s.id === slot.id);
     if (existing?.reservation) throw Error("A reserved appointment cannot be changed.");
-    if (row.data.slots.some(s => s.id !== slot.id && overlaps(s, slot))) throw Error("Appointments must be at least 30 minutes apart.");
+    if (row.data.slots.some(s => s.id !== slot.id && overlaps(s, slot))) throw Error("Appointments must be at least 60 minutes apart.");
     if (existing) Object.assign(existing, slot); else row.data.slots.push(slot);
     row.data.slots.sort((a, b) => a.id.localeCompare(b.id));
     try { await writeJson(CALENDAR_PATH, row.data, { etag: row.etag }); return; }

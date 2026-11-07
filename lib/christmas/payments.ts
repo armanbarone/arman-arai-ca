@@ -1,19 +1,20 @@
 import "server-only";
 import { randomBytes, createHash, timingSafeEqual } from "node:crypto";
 import type Stripe from "stripe";
-import { stripeClient, stripeConfiguration } from "@/lib/portal/stripe";
+import { stripeClient, stripeConfiguration, connectStripe, paymentSetupStatus } from "@/lib/portal/stripe";
 import { APP_URL, BUSINESS } from "@/lib/portal/business";
 import { sendEmail, layout, esc } from "@/lib/portal/email";
 import { readJson, writeJson, ConflictError } from "@/lib/portal/store";
-import { PACKAGES, packageById, money, totalCents, sessionSubtotal, gstCents, dateLabel, timeLabel, type Availability, type PackageId } from "./catalog";
+import { PACKAGES, packageById, money, sessionQuote, validAlbumCount, gstCents, dateLabel, timeLabel, type Availability, type PackageId } from "./catalog";
 import { christmasCheckoutCatalog } from "./stripe-catalog";
-import { claimSlot, validSlot, SLOT_PATTERN, type Slot, type Reservation } from "./inventory";
+import { claimSlot, validSlot, SLOT_PATTERN, publicSlots, recentBookings, type Slot, type Reservation } from "./inventory";
 import { allSlots, settings, inventoryStore, updateSlot } from "./store";
 const hash = (s: string) => createHash("sha256").update(s).digest("hex");
 export async function paymentReady() {
   const key = process.env.STRIPE_SECRET_KEY || "";
-  const config = await stripeConfiguration();
-  return process.env.VERCEL_ENV === "production" && /^(sk|rk)_live_/.test(key) && config?.mode === "live";
+  if (process.env.VERCEL_ENV !== "production" || !/^(sk|rk)_live_/.test(key)) return false;
+  if (!(await stripeConfiguration())) await connectStripe("Christmas launch authorized by owner");
+  return (await paymentSetupStatus()).connected;
 }
 export async function reconcileChristmasSession(s: Stripe.Checkout.Session) {
   if (s.metadata?.service !== "christmas-2026") return;
@@ -29,7 +30,7 @@ export async function reconcileChristmasSession(s: Stripe.Checkout.Session) {
     if (r.sessionId && r.sessionId !== s.id) throw Error("Checkout session mismatch.");
     if (!s.livemode || s.currency !== "cad" || s.amount_subtotal !== r.subtotalCents || (s.payment_status === "paid" && s.amount_total !== (r.totalCents ?? r.subtotalCents + gstCents(r.subtotalCents)))) throw Error("Christmas payment amount or mode mismatch.");
     if (s.payment_status === "paid") {
-      r.sessionId = s.id; r.status = "paid"; r.paidCents = s.amount_total ?? r.subtotalCents;
+      r.sessionId = s.id; r.status = "paid"; r.paidCents = s.amount_total ?? r.subtotalCents; r.paidAt ??= Date.now();
       r.invoiceId = typeof s.invoice === "string" ? s.invoice : s.invoice?.id;
       r.paymentIntent = typeof s.payment_intent === "string" ? s.payment_intent : s.payment_intent?.id;
     } else if (s.status === "expired" && r.status !== "paid") delete slot.reservation;
@@ -47,7 +48,7 @@ export async function reconcileChristmasSession(s: Stripe.Checkout.Session) {
   const when = `${dateLabel(current!.data.date)} at ${timeLabel(current!.data.time)} (Vancouver time)`;
   const subject = `Your Christmas session is booked · ${when}`;
   const mailing = r.delivery ? `<p><strong>Santa’s special delivery</strong><br>Letter for: ${esc(r.delivery.letterNames)}<br>${esc(r.name)}<br>${esc(r.delivery.line1)}${r.delivery.line2 ? `<br>${esc(r.delivery.line2)}` : ""}<br>${esc(r.delivery.city)}, BC ${esc(r.delivery.postalCode)}</p><p>A Santa letter with a special printed keepsake from your session will be mailed separately. BC postage is included; postal arrival dates vary.</p>` : "";
-  const body = `<p>Hi ${esc(r.name)},</p><p>Your <strong>${esc(pkg.name)}</strong> session is confirmed for <strong>${esc(when)}</strong>.</p><p>${esc(cfg.studioAddress)}<br>${esc(cfg.postalCode)}</p><p>${esc(cfg.arrivalNotes)}</p><p>${pkg.minutes} minutes · ${pkg.images} edited images · ${pkg.sets} Christmas sets · Santa included${r.grinch ? " · The Grinch appearance included" : ""}.</p><p>Paid: ${money(r.paidCents ?? r.subtotalCents)} CAD. Reference: ${esc(r.id)}.</p>${r.invoiceUrl ? `<p><a href="${esc(r.invoiceUrl)}">View your paid Stripe invoice</a></p>` : "<p>Stripe will provide your paid invoice after payment.</p>"}${mailing}${r.delivery ? "<p>Cookies and warm milk are provided. Please contact us before your visit about allergies.</p>" : ""}<p>Gallery delivery: within 5 days, or within 48 hours for sessions from December 18 onward.</p><p>${esc(cfg.cancellationPolicy)}</p>`;
+  const body = `<p>Hi ${esc(r.name)},</p><p>Your <strong>${esc(pkg.name)}</strong> session is confirmed for <strong>${esc(when)}</strong>.</p><p>${esc(cfg.studioAddress)}<br>${esc(cfg.postalCode)}</p><p>${esc(cfg.arrivalNotes)}</p><p>${pkg.minutes} minutes · ${pkg.images} edited images · ${pkg.sets} Christmas sets · Santa included${r.albums ? ` · ${r.albums} ten-page album(s), 20 photographs each, hand-delivered across Greater Vancouver through Surrey` : r.grinch ? " · The Grinch appearance included" : ""}.</p><p>Paid: ${money(r.paidCents ?? r.subtotalCents)} CAD. Reference: ${esc(r.id)}.</p>${r.invoiceUrl ? `<p><a href="${esc(r.invoiceUrl)}">View your paid Stripe invoice</a></p>` : "<p>Stripe will provide your paid invoice after payment.</p>"}${mailing}${r.delivery ? "<p>Cookies and warm milk are provided. Please contact us before your visit about allergies.</p>" : ""}<p>Gallery delivery: within 5 days, or within 48 hours for sessions from December 18 onward.</p><p>${esc(cfg.cancellationPolicy)}</p>`;
   await sendEmail({ to: r.email, subject, html: layout({ heading: "A little Christmas, booked.", bodyHtml: body }), text: `${subject}\n${pkg.name}\n${cfg.studioAddress}, ${cfg.postalCode}\n${cfg.arrivalNotes}\nPaid ${money(r.paidCents ?? r.subtotalCents)} CAD\n${cfg.cancellationPolicy}`, idempotencyKey: `christmas-customer-${r.id}` });
   await sendEmail({ to: BUSINESS.email, subject: `Christmas booking · ${when} · ${r.name}`, html: layout({ heading: "A Christmas session was purchased", bodyHtml: `<p>${esc(r.name)} · ${esc(r.email)} · ${esc(r.phone)}</p>${body}` }), text: `${r.name}, ${r.email}, ${r.phone}\n${when}\n${pkg.name}\nReference ${r.id}`, idempotencyKey: `christmas-studio-${r.id}` });
   await updateSlot(slotId, slot => { if (slot.reservation?.id === r.id) slot.reservation.emailsSent = true; });
@@ -65,15 +66,16 @@ async function reconcileStale(slot: Slot) {
 }
 export async function availability(): Promise<Availability> {
   const cfg = await settings();
-  const publishableKey = cfg.publishableKey || process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || "";
-  if (!cfg.enabled || !cfg.studioAddress || !cfg.postalCode || !cfg.cancellationPolicy || !publishableKey.startsWith("pk_live_") || !(await paymentReady()))
+  const publishableKey = "";
+  if (!cfg.enabled || !cfg.studioAddress || !cfg.postalCode || !cfg.cancellationPolicy || !(await paymentReady()))
     return { mode: "closed", slots: [], location: "North Vancouver, BC", cancellationPolicy: cfg.cancellationPolicy, publishableKey: "", message: "Christmas bookings are not open yet. Email Arman for the release date." };
+  await christmasCheckoutCatalog();
   let rows = await allSlots();
   await Promise.all(rows.filter(s => s.reservation?.status === "pending" && s.reservation.expiresAt + 120000 < Date.now()).map(reconcileStale));
   rows = await allSlots();
   return {
     mode: "live", location: `${cfg.studioAddress}, ${cfg.postalCode}`, cancellationPolicy: cfg.cancellationPolicy, publishableKey,
-    slots: rows.filter(s => s.published && s.santa && validSlot(s.date, s.time) && new Date(`${s.date}T${s.time}:00-08:00`).getTime() > Date.now()).map(({ id, date, time, santa, reservation }) => ({ id, date, time, santa, available: !reservation })),
+    slots: publicSlots(rows), recentBookings: recentBookings(rows),
   };
 }
 export async function checkoutRateLimit(ip: string) {
@@ -84,12 +86,12 @@ export async function checkoutRateLimit(ip: string) {
   try { await writeJson(key, { count }, current ? { etag: current.etag } : { createOnly: true }); }
   catch (e) { if (e instanceof ConflictError) throw Error("Please try checkout again in a moment."); throw e; }
 }
-export async function startCheckout(input: { slotId: string; packageId: PackageId; name: string; email: string; phone: string; acceptedPolicy: string; expectedSubtotal: number; expectedTotal: number; grinch: boolean; delivery: NonNullable<Reservation["delivery"]> }) {
+export async function startCheckout(input: { slotId: string; packageId: PackageId; name: string; email: string; phone: string; acceptedPolicy: string; expectedSubtotal: number; expectedTotal: number; albums: number; shareActivity: boolean; delivery: NonNullable<Reservation["delivery"]> }) {
   const cfg = await settings(), pkg = packageById(input.packageId);
-  const publicKey = cfg.publishableKey || process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || "";
-  if (!cfg.enabled || !cfg.studioAddress || !cfg.postalCode || !cfg.cancellationPolicy || !publicKey.startsWith("pk_live_") || !(await paymentReady())) throw Error("Bookings are not open yet.");
+  if (!cfg.enabled || !cfg.studioAddress || !cfg.postalCode || !cfg.cancellationPolicy || !(await paymentReady())) throw Error("Bookings are not open yet.");
   if (!pkg) throw Error("Choose a valid package.");
-  const subtotal = sessionSubtotal(input.grinch), expectedTotal = totalCents(subtotal);
+  if (!validAlbumCount(input.albums)) throw Error("Choose a valid album quantity.");
+  const quote = sessionQuote(input.albums), subtotal = quote.subtotal, expectedTotal = quote.total;
   if (input.acceptedPolicy !== cfg.cancellationPolicy || input.expectedSubtotal !== subtotal || input.expectedTotal !== expectedTotal) throw Error("Booking details changed. Refresh the page and review the price and policy before paying.");
   const catalog = await christmasCheckoutCatalog();
   const current = await inventoryStore.read(input.slotId);
@@ -99,7 +101,7 @@ export async function startCheckout(input: { slotId: string; packageId: PackageI
   const expiresAt = Math.floor(Date.now() / 1000) * 1000 + 35 * 60000;
   const slot = await claimSlot(inventoryStore, input.slotId, {
     id, tokenHash: hash(token), packageId: pkg.id, name: input.name, email: input.email, phone: input.phone,
-    grinch: input.grinch, delivery: input.delivery, totalCents: expectedTotal, packageSnapshot: { name: pkg.name, minutes: pkg.minutes, images: pkg.images, sets: pkg.sets, santa: pkg.santa },
+    albums: input.albums, shareActivity: input.shareActivity, gstCents: quote.gst, pstCents: quote.pst, delivery: input.delivery, totalCents: expectedTotal, packageSnapshot: { name: pkg.name, minutes: pkg.minutes, images: input.albums ? 20 : pkg.images, sets: pkg.sets, santa: pkg.santa },
     subtotalCents: subtotal, status: "pending", createdAt: Date.now(), expiresAt,
     bookingDetails: { studioAddress: cfg.studioAddress, postalCode: cfg.postalCode, arrivalNotes: cfg.arrivalNotes, cancellationPolicy: cfg.cancellationPolicy },
   }, pkg.santa);
@@ -107,22 +109,22 @@ export async function startCheckout(input: { slotId: string; packageId: PackageI
   // Never free a hold on an ambiguous network error. Its fixed expiry protects
   // against a late but still payable Checkout Session and double bookings.
   const session = await stripeClient().checkout.sessions.create({
-    mode: "payment", ui_mode: "embedded_page", redirect_on_completion: "if_required", return_url: returnUrl,
-    integration_identifier: "christmas-northvan-gnwhjstq", allowed_payment_method_types: ["card"], customer_email: input.email,
-    client_reference_id: id, metadata: { service: "christmas-2026", slotId: slot.id, bookingId: id, grinch: String(input.grinch) },
+    mode: "payment", success_url: returnUrl, cancel_url: `${APP_URL}/christmas?cancelled=1#booking`,
+    integration_identifier: "christmas-northvan-rqvkmsaz", customer_email: input.email,
+    client_reference_id: id, metadata: { service: "christmas-2026", slotId: slot.id, bookingId: id, albums: String(input.albums) },
     billing_address_collection: "required", customer_creation: "always", expires_at: Math.floor(expiresAt / 1000),
     payment_intent_data: { shipping: { name: input.name, address: { line1: input.delivery.line1, line2: input.delivery.line2 || undefined, city: input.delivery.city, state: "BC", postal_code: input.delivery.postalCode, country: "CA" } } },
     invoice_creation: { enabled: true, invoice_data: {
-      description: `${pkg.name} · North Vancouver · ${dateLabel(slot.date)} at ${timeLabel(slot.time)} Pacific · ${pkg.minutes} minutes · ${pkg.images} digital photographs · ${pkg.sets} sets · Santa letter and printed keepsake${input.grinch ? " · The Grinch" : ""}`,
+      description: `${pkg.name} · North Vancouver · ${dateLabel(slot.date)} at ${timeLabel(slot.time)} Pacific · ${pkg.minutes} minutes · ${input.albums ? 20 : pkg.images} digital photographs · ${pkg.sets} sets · Santa letter and complimentary print${input.albums ? ` · ${input.albums} ten-page album(s), 20 photos each, hand-delivered` : ""}`,
       custom_fields: [{ name: "GST/HST registration", value: BUSINESS.gstHstNumber }],
-      footer: "Arasaka Inc., operating as Arman Arai. Digital gallery, mailed Santa letter and printed keepsake. GST 5%.",
+      footer: "Arasaka Inc., operating as Arman Arai. Digital gallery, mailed Santa letter and complimentary keepsake. Base: GST 5%. Optional printed albums: GST 5% and BC PST 7%. Hand delivery across Greater Vancouver through Surrey.",
       metadata: { service: "christmas-2026", bookingId: id, slotId: slot.id },
     } },
-    line_items: [{ quantity: 1, price: catalog.price, tax_rates: catalog.taxRates }, ...(input.grinch ? [{ quantity: 1, price: catalog.grinchPrice, tax_rates: catalog.taxRates }] : [])],
+    line_items: [{ quantity: 1, price: catalog.price, tax_rates: catalog.taxRates }, ...catalog.albumPrices.slice(0, input.albums).map(price => ({ quantity: 1, price, tax_rates: catalog.albumTaxRates }))],
   }, { idempotencyKey: `christmas-${id}` });
-  if (!session.client_secret) throw Error("Stripe could not open the payment form. Please contact Arman.");
+  if (!session.url) throw Error("Stripe could not open the payment form. Please contact Arman.");
   await updateSlot(slot.id, s => { if (s.reservation?.id !== id) throw Error("Your appointment changed. Please contact Arman before paying."); s.reservation.sessionId = session.id; });
-  return { clientSecret: session.client_secret, publishableKey: publicKey, returnUrl, expiresAt };
+  return { checkoutUrl: session.url, returnUrl, expiresAt };
 }
 export async function bookingStatus(slotId: string, token: string) {
   if (!SLOT_PATTERN.test(slotId) || !/^[a-f0-9]{64}$/.test(token)) return null;
@@ -140,6 +142,6 @@ export async function bookingStatus(slotId: string, token: string) {
   }
   if (!r) return { status: "expired" };
   const cfg = r.bookingDetails, pkg = r.packageSnapshot ?? PACKAGES.find(p => p.id === r!.packageId)!;
-  return { status: r.status, reference: r.id, date: row!.data.date, time: row!.data.time, package: pkg.name, minutes: pkg.minutes, images: pkg.images, sets: pkg.sets, santa: pkg.santa, grinch: r.grinch, delivery: r.delivery,
+  return { status: r.status, reference: r.id, date: row!.data.date, time: row!.data.time, package: pkg.name, minutes: pkg.minutes, images: pkg.images, sets: pkg.sets, santa: pkg.santa, albums: r.albums, grinch: r.grinch, delivery: r.delivery,
     paidCents: r.paidCents, invoiceUrl: r.invoiceUrl, address: cfg.studioAddress, postalCode: cfg.postalCode, arrivalNotes: cfg.arrivalNotes, email: r.email, cancellationPolicy: cfg.cancellationPolicy };
 }

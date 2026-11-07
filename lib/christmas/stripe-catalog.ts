@@ -12,12 +12,13 @@ async function provision() {
   // This known live catalog entry also guards against provisioning the wrong merchant.
   const base = await stripe.prices.retrieve(CHRISTMAS_PRICE);
   if (!base.active || !base.livemode || base.currency !== "cad" || base.unit_amount !== PACKAGES[0].price || base.tax_behavior !== "exclusive" || base.product !== CHRISTMAS_PRODUCT) throw Error("The Christmas Stripe price does not match the advertised package.");
-  await stripe.products.update(CHRISTMAS_PRODUCT, { description: "Approximately 45-minute Christmas session with Santa, three sets, 10 edited digital photos, mailed Santa letter, complimentary printed keepsake gift, cookies and warm milk. November 9–December 20, 2026. GST collected on this package per merchant instruction." });
+  await stripe.products.update(CHRISTMAS_PRODUCT, { description: "Approximately 45 minutes with Santa across three Christmas sets. Includes 10 edited digital photographs, a mailed Santa letter, a complimentary printed keepsake, cookies and warm milk. November 9–December 20, 2026." });
   try { await stripe.products.retrieve(ALBUM_PRODUCT); }
   catch (e) {
     if (!(e instanceof Error) || !("code" in e) || e.code !== "resource_missing") throw e;
-    await stripe.products.create({ id: ALBUM_PRODUCT, name: ALBUM_ADDON.name, description: ALBUM_ADDON.description + " Album buyers receive 20 edited digital photographs. First album $67, second $55, third $45; plus 5% GST and 7% BC PST.", metadata: { service: "christmas-2026", pages: "10", photographs: "20", delivery: "Greater Vancouver through Surrey" } }, { idempotencyKey: "aa-ca-xmas-album-product-2026-v1" });
+    await stripe.products.create({ id: ALBUM_PRODUCT, name: ALBUM_ADDON.name, description: ALBUM_ADDON.description + " Album buyers receive 20 edited digital photographs. First album $67, second $55, third $45. Plus tax.", metadata: { service: "christmas-2026", pages: "10", photographs: "20", delivery: "Greater Vancouver through Surrey" } }, { idempotencyKey: "aa-ca-xmas-album-product-2026-v1" });
   }
+  await stripe.products.update(ALBUM_PRODUCT, { description: ALBUM_ADDON.description + " Album buyers receive 20 edited digital photographs. First album $67, second $55, third $45. Plus tax." });
   const existing = (await stripe.prices.list({ active: true, lookup_keys: lookupKeys, limit: 100 })).data;
   const albumPrices: string[] = [];
   for (const [i, unit_amount] of ALBUM_ADDON.prices.entries()) {

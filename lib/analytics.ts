@@ -30,6 +30,7 @@ export const GOOGLE_ADS_ID = "AW-18464850778";
  *  WEDDINGS_TAG_ID, the same container, so no second script loads for it. */
 export const LEAD_FORM_CONVERSION = `${GOOGLE_ADS_ID}/asFlCIaeypEdENqG3eRE`;
 export const META_PIXEL_ID = "1110472461323039";
+export const CHRISTMAS_PURCHASE_EVENT = "ChristmasSessionPurchase";
 /* AW-18154542346 ("Arman Arai Elopements") used to load here, and a booked call
    on this site was reported to it with that account's own conversion label.
    That is armanarai.com's Ads account, and it is the reason the two accounts
@@ -70,7 +71,7 @@ const sentInMemory = new Set<string>();
 
 export function isPublicTrackingPath(path: string) {
   // Confirmation links carry a private booking token; never send them to ads.
-  if (/^\/christmas\/(confirmation|preview)(?:\/|$)/.test(path)) return false;
+  if (/^\/christmas\/(confirmation|questionnaire|preview)(?:\/|$)/.test(path)) return false;
   // /guide/<id> shows one couple's names and venue: no advertising tags on it.
   return !/^\/(portal|admin|api|guide)(?:\/|$)/.test(path);
 }
@@ -83,7 +84,7 @@ function permitted() {
 
 /** The tags' own on/off switch, used only to silence them inside the portal. */
 function setTagState(on: boolean) {
-  if (!initialized) return;
+  if (!initialized && !metaReady) return;
   const w = window as TrackingWindow;
   const status = on ? "granted" : "denied";
   w.gtag?.("consent", "update", { analytics_storage: status, ad_storage: status, ad_user_data: status, ad_personalization: status });
@@ -103,6 +104,19 @@ function loadTag(id: string, src: string): Promise<boolean> {
   });
 }
 
+function startMetaPixel() {
+  if (metaReady) return;
+  const w = window as TrackingWindow;
+  if (!w.fbq) {
+    const fbq = function () { fbq.callMethod ? fbq.callMethod.apply(fbq, arguments as unknown as unknown[]) : fbq.queue.push(arguments); } as MetaTag;
+    fbq.queue = []; fbq.push = fbq; fbq.loaded = true; fbq.version = "2.0";
+    w.fbq = fbq; w._fbq = fbq;
+  }
+  w.fbq("set", "autoConfig", false, META_PIXEL_ID);
+  w.fbq("init", META_PIXEL_ID);
+  metaReady = loadTag("aa-meta-pixel", "https://connect.facebook.net/en_US/fbevents.js");
+}
+
 export function startTracking() {
   if (!permitted()) return;
   if (initialized) {
@@ -114,6 +128,8 @@ export function startTracking() {
     return;
   }
   initialized = true;
+  suspended = false;
+  (window as unknown as Record<string, unknown>)[`ga-disable-${GA4_ID}`] = false;
   const w = window as TrackingWindow;
   w.dataLayer = w.dataLayer || [];
   w.gtag = w.gtag || function () { w.dataLayer!.push(arguments); };
@@ -125,22 +141,41 @@ export function startTracking() {
   w.gtag("config", WEDDINGS_TAG_ID);
   googleReady = loadTag("aa-google-tag", `https://www.googletagmanager.com/gtag/js?id=${WEDDINGS_TAG_ID}`);
 
-  if (!w.fbq) {
-    const fbq = function () { fbq.callMethod ? fbq.callMethod.apply(fbq, arguments as unknown as unknown[]) : fbq.queue.push(arguments); } as MetaTag;
-    fbq.queue = []; fbq.push = fbq; fbq.loaded = true; fbq.version = "2.0";
-    w.fbq = fbq; w._fbq = fbq;
-  }
-  w.fbq("set", "autoConfig", false, META_PIXEL_ID);
-  w.fbq("init", META_PIXEL_ID);
-  metaReady = loadTag("aa-meta-pixel", "https://connect.facebook.net/en_US/fbevents.js");
+  startMetaPixel();
+  setTagState(true);
 }
 
 /** Also stop already-loaded tags after a client-side move into private pages. */
 export function suspendTracking() {
-  if (!initialized) return;
+  if (!initialized && !metaReady) return;
   suspended = true;
   (window as unknown as Record<string, unknown>)[`ga-disable-${GA4_ID}`] = true;
   setTagState(false);
+}
+
+export type ChristmasPurchase = { eventId: string; paidCents: number; albums: number };
+const christmasInFlight = new Set<string>();
+/** The paid status response supplies this payload. Remove private access
+ * details from the URL before any Meta script can run. */
+export async function trackChristmasPurchase(purchase: ChristmasPurchase) {
+  const safePage = () => typeof window !== "undefined" && window.location.hostname === "www.armanarai.ca" &&
+    window.location.pathname === "/christmas/confirmation" && !window.location.search && !window.location.hash;
+  if (!safePage() || !/^[a-f0-9]{64}$/.test(purchase.eventId) || !Number.isSafeInteger(purchase.paidCents) || purchase.paidCents <= 0 ||
+    !Number.isInteger(purchase.albums) || purchase.albums < 0 || purchase.albums > 3) return;
+  const key = `aa_christmas_purchase_v1:${purchase.eventId}`;
+  if (sentInMemory.has(key) || christmasInFlight.has(key)) return;
+  try { if (localStorage.getItem(key)) return; } catch { /* Memory still prevents repeats in this view. */ }
+  christmasInFlight.add(key);
+  try {
+    startMetaPixel();
+    (window as TrackingWindow).fbq?.("consent", "grant");
+    if (!await metaReady || !safePage()) return;
+    (window as TrackingWindow).fbq?.("trackCustom", CHRISTMAS_PURCHASE_EVENT, {
+      value: purchase.paidCents / 100, currency: "CAD", content_name: "Christmas with Santa 2026", content_category: "christmas_sessions", num_albums: purchase.albums,
+    }, { eventID: purchase.eventId });
+    sentInMemory.add(key);
+    try { localStorage.setItem(key, "sent"); } catch { /* Memory deduplication remains active. */ }
+  } finally { christmasInFlight.delete(key); }
 }
 
 export function trackPageView() {

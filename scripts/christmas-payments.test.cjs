@@ -37,6 +37,23 @@ test('checkout has incremental album lines and separate tax rates', async () => 
     assert.equal(h.rows[0].reservation.packageSnapshot.images, n ? 20 : 10); assert.equal(c.invoice_creation.enabled, true); assert.equal(c.payment_intent_data.receipt_email,'offline@example.invalid'); assert.equal(new URL(c.success_url).pathname,'/christmas/confirmation');
   }
 });
+
+test('only an authenticated paid booking supplies a stable anonymous purchase event', async () => {
+  const h = harness(); await h.payments.startCheckout(h.input(1));
+  const token = new URL(h.created().success_url).searchParams.get('token');
+  const r = h.rows[0].reservation, sessionId = r.sessionId; delete r.sessionId;
+  const pending = await h.payments.bookingStatus(h.rows[0].id, token);
+  assert.equal(pending.purchaseTracking, undefined);
+  r.sessionId = sessionId;
+  await h.payments.reconcileChristmasSession(h.session());
+  const result = await h.payments.bookingStatus(h.rows[0].id, token);
+  assert.match(result.purchaseTracking.eventId, /^[a-f0-9]{64}$/);
+  assert.equal(result.purchaseTracking.paidCents, 39004);
+  assert.equal(result.purchaseTracking.albums, 1);
+  assert.deepEqual(Object.keys(result.purchaseTracking).sort(), ['albums','eventId','paidCents']);
+  assert.equal(await h.payments.bookingStatus(h.rows[0].id, '0'.repeat(64)), null);
+  assert.deepEqual((await h.payments.bookingStatus(h.rows[0].id, token)).purchaseTracking, result.purchaseTracking);
+});
 test('tampered totals and invalid quantities cannot reserve inventory', async () => {
   for (const changed of [{ expectedTotal: 1 }, { expectedSubtotal: 1 }, { albums: 4 }, { albums: -1 }, { albums: 0.5 }]) {
     const h = harness(); await assert.rejects(h.payments.startCheckout({ ...h.input(1), ...changed })); assert.equal(h.rows[0].reservation, undefined); assert.equal(h.created(), undefined);

@@ -1,6 +1,8 @@
 "use client";
 import { useEffect, useState } from "react";
 import { dateLabel, timeLabel, money } from "../../lib/christmas/catalog";
+import { confirmationAccess } from "../../lib/christmas/confirmation-access";
+import { trackChristmasPurchase, type ChristmasPurchase } from "../../lib/analytics";
 import "./christmas.css";
 interface Confirmation { status: string; reference?: string; date?: string; time?: string; package?: string; minutes?: number; images?: number; sets?: number; grinch?: boolean; albums?: number; delivery?: { letterNames: string; line1: string; line2: string; city: string; postalCode: string }; santa?: boolean; paidCents?: number; invoiceUrl?: string; address?: string; postalCode?: string; arrivalNotes?: string; email?: string; cancellationPolicy?: string; questionnaireUrl?: string; questionnaireComplete?: boolean; welcomeSent?: boolean; questionnaireSent?: boolean; error?: string }
 function escapeCalendar(text: string) { return text.replace(/\\/g, "\\\\").replace(/\n/g, "\\n").replace(/;/g, "\\;").replace(/,/g, "\\,"); }
@@ -17,15 +19,17 @@ export default function ChristmasConfirmation({ preview = false }: { preview?: b
   useEffect(() => {
     if (preview) return;
     let active = true, timeout: ReturnType<typeof setTimeout>, attempts = 0;
-    const params = new URLSearchParams(window.location.search), slot = params.get("slot"), token = params.get("token");
-    if (!slot || !token) { setError("This booking link is incomplete. Please check your confirmation or email Arman."); return; }
+    const access = confirmationAccess();
+    if (!access) { setError("This booking link is incomplete. Please check your confirmation or email Arman."); return; }
+    const { slot, token } = access;
     async function check() {
       try {
         const response = await fetch(`/api/christmas/status?slot=${encodeURIComponent(slot!)}&token=${encodeURIComponent(token!)}`, { cache: "no-store", referrerPolicy: "no-referrer" });
-        const result = await response.json() as Confirmation;
+        const result = await response.json() as Confirmation & { purchaseTracking?: ChristmasPurchase };
         if (!active) return;
         if (!response.ok) { setError(result.error || "We could not verify this booking."); return; }
         setBooking(result);
+        if (result.status === "paid" && result.purchaseTracking) void trackChristmasPurchase(result.purchaseTracking).catch(() => { /* Measurement never blocks the booking. */ });
         if (result.status === "pending" && attempts++ < 15) timeout = setTimeout(check, 2500);
       } catch { if (active) setError("Payment could not be verified yet. Refresh shortly or contact Arman before making another payment."); }
     }

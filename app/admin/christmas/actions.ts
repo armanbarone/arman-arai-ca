@@ -31,6 +31,6 @@ export async function toggleChristmasSlot(form: FormData) {
   await requireAdmin();
   const id = String(form.get("id") || "");
   if (!SLOT_PATTERN.test(id)) throw Error("Invalid appointment.");
-  await updateSlot(id, s => { if (s.reservation) throw Error("Reserved or purchased appointments cannot be changed here. Contact the family first."); if (!validSlot(s.date, s.time)) throw Error("That date or time is outside the booking schedule."); s.published = !s.published; });
+  await updateSlot(id, s => { if (s.reservation) throw Error("Reserved or purchased appointments cannot be changed here. Contact the family first."); if (!validSlot(s.date, s.time)) throw Error("That date or time is outside the booking schedule."); s.published = !s.published; s.manuallyBlocked = !s.published; });
   revalidatePath("/admin/christmas"); revalidatePath("/christmas");
 }

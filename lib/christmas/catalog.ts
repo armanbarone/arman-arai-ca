@@ -52,10 +52,9 @@ export function seasonalSlots(): PublicSlot[] {
   const result: PublicSlot[] = [];
   for (let day = new Date(CALENDAR_START + "T12:00:00Z"); day.toISOString().slice(0, 10) <= SEASON_END; day.setUTCDate(day.getUTCDate() + 1)) {
     const date = day.toISOString().slice(0, 10), [start, end] = dayHours(date);
-    const release = new Set(end - start <= 3 ? [start, end - 1] : [start, start + Math.floor((end - start) / 2), end - 1]);
     for (let hour = start; hour < end; hour++) {
       const time = `${String(hour).padStart(2, "0")}:00`;
-      const status: SlotStatus = !isSeasonDate(date) ? "unavailable" : release.has(hour) ? "available" : "unreleased";
+      const status: SlotStatus = !isSeasonDate(date) ? "unavailable" : "available";
       result.push({ id: `${date}_${time.replace(":", "")}`, date, time, santa: true, available: status === "available", status });
     }
   }

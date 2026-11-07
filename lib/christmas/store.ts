@@ -8,6 +8,7 @@ const CALENDAR_PATH = "christmas/2026/calendar.json";
 export const slotPath = (id: string) => `christmas/2026/slots/${id}.json`;
 type Calendar = { season?: string; slots: Slot[] };
 const SEASON_VERSION = "nov09-dec20-hourly-albums-v3";
+const CALENDAR_VERSION = "nov09-dec20-all-offered-v4";
 const defaults: ChristmasSettings = { enabled: true, studioAddress: "583 E Kings Rd, North Vancouver, BC", postalCode: "V7N 1J2", arrivalNotes: "Plenty of street parking. Please arrive dressed and ready for your appointment.", cancellationPolicy: BOOKING_POLICY, publishableKey: "", launchVersion: SEASON_VERSION };
 export async function settings() {
   for (let attempt = 0; attempt < 5; attempt++) {
@@ -23,12 +24,15 @@ export async function settings() {
 async function calendar() {
   for (let attempt = 0; attempt < 5; attempt++) {
     const saved = await readJson<Calendar>(CALENDAR_PATH);
-    if (saved?.data.season === SEASON_VERSION) return saved;
+    if (saved?.data.season === CALENDAR_VERSION) return saved;
     const index = saved ? null : (await readJson<{ ids: string[] }>(INVENTORY_PATH))?.data;
     const legacy = saved?.data.slots ?? (await Promise.all((index?.ids ?? []).map(id => readJson<Slot>(slotPath(id))))).flatMap(row => row ? [row.data] : []);
     const generated: Slot[] = seasonalSlots().map(({ available, status: _status, ...slot }) => ({ ...slot, published: available }));
-    const slots = mergeSeasonalInventory(legacy, generated);
-    try { await writeJson(CALENDAR_PATH, { season: SEASON_VERSION, slots }, saved ? { etag: saved.etag } : { createOnly: true }); }
+    // The owner has opened all scheduled times. Preserve paid/held appointments
+    // and explicit manual blocks; remove only the former automatic release limits.
+    const prior = legacy.map(s => ({ ...s, published: s.manuallyBlocked ? false : true }));
+    const slots = mergeSeasonalInventory(prior, generated);
+    try { await writeJson(CALENDAR_PATH, { season: CALENDAR_VERSION, slots }, saved ? { etag: saved.etag } : { createOnly: true }); }
     catch (error) { if (error instanceof ConflictError) continue; throw error; }
     const result = await readJson<Calendar>(CALENDAR_PATH);
     if (result) return result;

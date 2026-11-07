@@ -1,20 +1,30 @@
 import "server-only";
-import { randomBytes, createHash, timingSafeEqual } from "node:crypto";
+import { randomBytes, createHash } from "node:crypto";
 import type Stripe from "stripe";
 import { stripeClient, stripeConfiguration, connectStripe, paymentSetupStatus } from "@/lib/portal/stripe";
 import { APP_URL, BUSINESS } from "@/lib/portal/business";
-import { sendEmail, layout, esc } from "@/lib/portal/email";
 import { readJson, writeJson, ConflictError } from "@/lib/portal/store";
 import { PACKAGES, packageById, money, sessionQuote, validAlbumCount, gstCents, dateLabel, timeLabel, type Availability, type PackageId } from "./catalog";
 import { christmasCheckoutCatalog } from "./stripe-catalog";
 import { claimSlot, validSlot, SLOT_PATTERN, publicSlots, recentBookings, type Slot, type Reservation } from "./inventory";
 import { allSlots, settings, inventoryStore, updateSlot } from "./store";
+import { authorized, bookingLink } from "./access";
+import { sendBookingNotifications } from "./notifications";
 const hash = (s: string) => createHash("sha256").update(s).digest("hex");
+let webhookReady = false;
 export async function paymentReady() {
   const key = process.env.STRIPE_SECRET_KEY || "";
   if (process.env.VERCEL_ENV !== "production" || !/^(sk|rk)_live_/.test(key)) return false;
   if (!(await stripeConfiguration())) await connectStripe("Christmas launch authorized by owner");
-  return (await paymentSetupStatus()).connected;
+  const ready = (await paymentSetupStatus()).connected;
+  if (ready && !webhookReady) {
+    const cfg = await stripeConfiguration();
+    if (!cfg?.webhookId) return false;
+    const hook = await stripeClient().webhookEndpoints.retrieve(cfg.webhookId);
+    if (!hook.enabled_events.includes("*") && !hook.enabled_events.includes("invoice.paid")) await stripeClient().webhookEndpoints.update(hook.id, { enabled_events: [...hook.enabled_events, "invoice.paid"] as Stripe.WebhookEndpointUpdateParams.EnabledEvent[] });
+    webhookReady = true;
+  }
+  return ready;
 }
 export async function reconcileChristmasSession(s: Stripe.Checkout.Session) {
   if (s.metadata?.service !== "christmas-2026") return;
@@ -44,14 +54,7 @@ export async function reconcileChristmasSession(s: Stripe.Checkout.Session) {
       await updateSlot(slotId, s => { if (s.reservation?.id === r.id) s.reservation.invoiceUrl = r.invoiceUrl; });
     }
   }
-  const cfg = r.bookingDetails, pkg = r.packageSnapshot ?? packageById(r.packageId)!;
-  const when = `${dateLabel(current!.data.date)} at ${timeLabel(current!.data.time)} (Vancouver time)`;
-  const subject = `Your Christmas session is booked · ${when}`;
-  const mailing = r.delivery ? `<p><strong>Santa’s special delivery</strong><br>Letter for: ${esc(r.delivery.letterNames)}<br>${esc(r.name)}<br>${esc(r.delivery.line1)}${r.delivery.line2 ? `<br>${esc(r.delivery.line2)}` : ""}<br>${esc(r.delivery.city)}, BC ${esc(r.delivery.postalCode)}</p><p>A Santa letter with a special printed keepsake from your session will be mailed separately. BC postage is included; postal arrival dates vary.</p>` : "";
-  const body = `<p>Hi ${esc(r.name)},</p><p>Your <strong>${esc(pkg.name)}</strong> session is confirmed for <strong>${esc(when)}</strong>.</p><p>${esc(cfg.studioAddress)}<br>${esc(cfg.postalCode)}</p><p>${esc(cfg.arrivalNotes)}</p><p>${pkg.minutes} minutes · ${pkg.images} edited images · ${pkg.sets} Christmas sets · Santa included${r.albums ? ` · ${r.albums} ten-page album(s), 20 photographs each, hand-delivered across Greater Vancouver through Surrey` : r.grinch ? " · The Grinch appearance included" : ""}.</p><p>Paid: ${money(r.paidCents ?? r.subtotalCents)} CAD. Reference: ${esc(r.id)}.</p>${r.invoiceUrl ? `<p><a href="${esc(r.invoiceUrl)}">View your paid Stripe invoice</a></p>` : "<p>Stripe will provide your paid invoice after payment.</p>"}${mailing}${r.delivery ? "<p>Cookies and warm milk are provided. Please contact us before your visit about allergies.</p>" : ""}<p>Gallery delivery: within 5 days, or within 48 hours for sessions from December 18 onward.</p><p>${esc(cfg.cancellationPolicy)}</p>`;
-  await sendEmail({ to: r.email, subject, html: layout({ heading: "A little Christmas, booked.", bodyHtml: body }), text: `${subject}\n${pkg.name}\n${cfg.studioAddress}, ${cfg.postalCode}\n${cfg.arrivalNotes}\nPaid ${money(r.paidCents ?? r.subtotalCents)} CAD\n${cfg.cancellationPolicy}`, idempotencyKey: `christmas-customer-${r.id}` });
-  await sendEmail({ to: BUSINESS.email, subject: `Christmas booking · ${when} · ${r.name}`, html: layout({ heading: "A Christmas session was purchased", bodyHtml: `<p>${esc(r.name)} · ${esc(r.email)} · ${esc(r.phone)}</p>${body}` }), text: `${r.name}, ${r.email}, ${r.phone}\n${when}\n${pkg.name}\nReference ${r.id}`, idempotencyKey: `christmas-studio-${r.id}` });
-  await updateSlot(slotId, slot => { if (slot.reservation?.id === r.id) slot.reservation.emailsSent = true; });
+  await sendBookingNotifications(slotId);
 }
 async function reconcileStale(slot: Slot) {
   const r = slot.reservation;
@@ -109,11 +112,11 @@ export async function startCheckout(input: { slotId: string; packageId: PackageI
   // Never free a hold on an ambiguous network error. Its fixed expiry protects
   // against a late but still payable Checkout Session and double bookings.
   const session = await stripeClient().checkout.sessions.create({
-    mode: "payment", success_url: returnUrl, cancel_url: `${APP_URL}/christmas?cancelled=1#booking`,
+    mode: "payment", success_url: returnUrl, cancel_url: `${APP_URL}/christmas?cancelled=1&slot=${encodeURIComponent(slot.id)}&token=${token}#booking`,
     integration_identifier: "christmas-northvan-rqvkmsaz", customer_email: input.email,
     client_reference_id: id, metadata: { service: "christmas-2026", slotId: slot.id, bookingId: id, albums: String(input.albums) },
     billing_address_collection: "required", customer_creation: "always", expires_at: Math.floor(expiresAt / 1000),
-    payment_intent_data: { shipping: { name: input.name, address: { line1: input.delivery.line1, line2: input.delivery.line2 || undefined, city: input.delivery.city, state: "BC", postal_code: input.delivery.postalCode, country: "CA" } } },
+    payment_intent_data: { receipt_email: input.email, shipping: { name: input.name, address: { line1: input.delivery.line1, line2: input.delivery.line2 || undefined, city: input.delivery.city, state: "BC", postal_code: input.delivery.postalCode, country: "CA" } } },
     invoice_creation: { enabled: true, invoice_data: {
       description: `${pkg.name} · North Vancouver · ${dateLabel(slot.date)} at ${timeLabel(slot.time)} Pacific · ${pkg.minutes} minutes · ${input.albums ? 20 : pkg.images} digital photographs · ${pkg.sets} sets · Santa letter and complimentary print${input.albums ? ` · ${input.albums} ten-page album(s), 20 photos each, hand-delivered` : ""}`,
       custom_fields: [{ name: "GST/HST registration", value: BUSINESS.gstHstNumber }],
@@ -129,7 +132,7 @@ export async function startCheckout(input: { slotId: string; packageId: PackageI
 export async function bookingStatus(slotId: string, token: string) {
   if (!SLOT_PATTERN.test(slotId) || !/^[a-f0-9]{64}$/.test(token)) return null;
   let row = await inventoryStore.read(slotId), r = row?.data.reservation;
-  if (!r || !timingSafeEqual(Buffer.from(r.tokenHash, "hex"), Buffer.from(hash(token), "hex"))) return null;
+  if (!r || !authorized(r, "confirmation", token)) return null;
   if (r.sessionId && (r.status !== "paid" || !r.emailsSent)) {
     try { await reconcileChristmasSession(await stripeClient().checkout.sessions.retrieve(r.sessionId)); }
     catch (error) {
@@ -143,5 +146,30 @@ export async function bookingStatus(slotId: string, token: string) {
   if (!r) return { status: "expired" };
   const cfg = r.bookingDetails, pkg = r.packageSnapshot ?? PACKAGES.find(p => p.id === r!.packageId)!;
   return { status: r.status, reference: r.id, date: row!.data.date, time: row!.data.time, package: pkg.name, minutes: pkg.minutes, images: pkg.images, sets: pkg.sets, santa: pkg.santa, albums: r.albums, grinch: r.grinch, delivery: r.delivery,
-    paidCents: r.paidCents, invoiceUrl: r.invoiceUrl, address: cfg.studioAddress, postalCode: cfg.postalCode, arrivalNotes: cfg.arrivalNotes, email: r.email, cancellationPolicy: cfg.cancellationPolicy };
+    questionnaireUrl: r.status === "paid" ? bookingLink(slotId, r, "questionnaire") : undefined, questionnaireComplete: !!r.questionnaire, welcomeSent: !!r.welcomeSentAt || !!r.emailsSent, questionnaireSent: !!r.questionnaireSentAt, paidCents: r.paidCents, invoiceUrl: r.invoiceUrl, address: cfg.studioAddress, postalCode: cfg.postalCode, arrivalNotes: cfg.arrivalNotes, email: r.email, cancellationPolicy: cfg.cancellationPolicy };
+}
+
+export async function cancelCheckout(slotId: string, token: string) {
+  if (!SLOT_PATTERN.test(slotId)) return null;
+  const row = await inventoryStore.read(slotId), r = row?.data.reservation;
+  if (!r || !authorized(r, "confirmation", token)) return null;
+  if (r.status === "paid") return { paid: true, confirmationUrl: bookingLink(slotId, r, "confirmation") };
+  if (!r.sessionId) throw Error("Checkout is still opening. Please retry shortly.");
+  let session: Stripe.Checkout.Session;
+  try { session = await stripeClient().checkout.sessions.expire(r.sessionId); }
+  catch { session = await stripeClient().checkout.sessions.retrieve(r.sessionId); }
+  await reconcileChristmasSession(session);
+  if (session.payment_status === "paid") return { paid: true, confirmationUrl: bookingLink(slotId, r, "confirmation") };
+  if (session.status !== "expired") throw Error("The payment hold has not expired yet.");
+  return { cancelled: true };
+}
+export async function reconcileChristmasInvoice(invoice: Stripe.Invoice) {
+  if (invoice.metadata?.service !== "christmas-2026") return;
+  const slotId = invoice.metadata.slotId, bookingId = invoice.metadata.bookingId;
+  if (!slotId || !SLOT_PATTERN.test(slotId) || !bookingId || !invoice.livemode || invoice.currency !== "cad" || invoice.status !== "paid") throw Error("Invalid Christmas invoice.");
+  await updateSlot(slotId, slot => {
+    const r = slot.reservation;
+    if (!r || r.id !== bookingId || r.status !== "paid" || invoice.amount_paid !== r.paidCents) throw Error("Christmas invoice does not match its payment.");
+    r.invoiceId = invoice.id; r.invoiceUrl = invoice.hosted_invoice_url || undefined;
+  });
 }

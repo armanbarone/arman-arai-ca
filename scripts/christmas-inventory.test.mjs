@@ -25,13 +25,13 @@ test('base and all incremental album quantities have exact separate GST/PST tota
  for(let n=0;n<=3;n++){const q=sessionQuote(n);assert.equal(q.total,totals[n]);assert.equal(q.subtotal,subtotals[n]);assert.equal(q.pst,psts[n]);}
  for(const n of [-1,4,0.5,NaN,'1',true]) assert.throws(()=>sessionQuote(n));
 });
-test('hours, blackout dates, season boundaries and release limits hold for every date',()=>{
+test('hours, blackout dates, season boundaries and all offered appointments hold for every date',()=>{
  const slots=seasonalSlots();assert.equal(new Set(slots.map(s=>s.id)).size,slots.length);
  for(const date of new Set(slots.map(s=>s.date))){
   const day=slots.filter(s=>s.date===date),dow=new Date(date+'T12:00:00Z').getUTCDay();
   assert.equal(day[0].time,dow===0?'12:00':dow===6?'10:00':'09:00');assert.equal(day.at(-1).time,dow===0?'14:00':dow===6?'15:00':'16:00');
   const blocked=date<'2026-11-09'||['2026-12-10','2026-12-11','2026-12-12'].includes(date);
-  assert.equal(day.filter(s=>s.available).length,blocked?0:dow===0?2:3);
+  assert.equal(day.filter(s=>s.available).length,blocked?0:day.length);
   for(const s of day)assert.equal(validSlot(s.date,s.time),!blocked);
  }
  assert.equal(slots.at(-1).date,'2026-12-20');

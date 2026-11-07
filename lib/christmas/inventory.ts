@@ -1,6 +1,7 @@
 import type { PackageId } from "./catalog";
 import { createHash } from "node:crypto";
 import { isSeasonDate, scheduledTime, type PublicSlot, type RecentBooking } from "./catalog.ts";
+import type { FamilyQuestionnaire } from "./questionnaire-schema";
 export interface ChristmasSettings {
   enabled: boolean; studioAddress: string; postalCode: string; arrivalNotes: string;
   cancellationPolicy: string; publishableKey: string;
@@ -13,10 +14,13 @@ export interface Reservation {
   albums?: number; shareActivity?: boolean; paidAt?: number; gstCents?: number; pstCents?: number;
   packageSnapshot?: { name: string; minutes: number; images: number; sets: number; santa: boolean };
   sessionId?: string; invoiceId?: string; invoiceUrl?: string; paidCents?: number; paymentIntent?: string; emailsSent?: boolean;
+  welcomeSentAt?: number; questionnaireSentAt?: number; studioSentAt?: number;
+  questionnaire?: { answers: FamilyQuestionnaire; submittedAt: number; updatedAt: number };
   bookingDetails: { studioAddress: string; postalCode: string; arrivalNotes: string; cancellationPolicy: string };
 }
 export interface Slot {
   id: string; date: string; time: string; santa: boolean; published: boolean; reservation?: Reservation;
+  manuallyBlocked?: boolean;
 }
 export interface Versioned<T> { data: T; etag: string }
 export interface InventoryStore {

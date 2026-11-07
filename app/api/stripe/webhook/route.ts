@@ -5,7 +5,7 @@ import {
   syncStripeRefund,
 } from "@/lib/portal/stripe";
 import Stripe from "stripe";
-import { reconcileChristmasSession } from "@/lib/christmas/payments";
+import { reconcileChristmasSession, reconcileChristmasInvoice } from "@/lib/christmas/payments";
 export const runtime = "nodejs";
 export async function POST(req: Request) {
   const signature = req.headers.get("stripe-signature");
@@ -52,6 +52,7 @@ export async function POST(req: Request) {
       if (session.metadata?.service === "christmas-2026") await reconcileChristmasSession(session);
       else await reconcileStripeSession(session);
     }
+    else if (event.type === "invoice.paid") await reconcileChristmasInvoice(event.data.object as Stripe.Invoice);
     else if (event.type === "charge.refunded")
       await syncStripeRefund(event.data.object as Stripe.Charge);
     return Response.json({ received: true });

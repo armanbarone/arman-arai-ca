@@ -5,7 +5,7 @@ import { stripeClient, stripeConfiguration, connectStripe, paymentSetupStatus } 
 import { APP_URL, BUSINESS } from "@/lib/portal/business";
 import { readJson, writeJson, ConflictError } from "@/lib/portal/store";
 import { PACKAGES, packageById, money, sessionQuote, validAlbumCount, gstCents, dateLabel, timeLabel, type Availability, type PackageId } from "./catalog";
-import { christmasCheckoutCatalog } from "./stripe-catalog";
+import { christmasCheckoutCatalog, CHRISTMAS_PRODUCT } from "./stripe-catalog";
 import { claimSlot, validSlot, SLOT_PATTERN, publicSlots, recentBookings, type Slot, type Reservation } from "./inventory";
 import { allSlots, settings, inventoryStore, updateSlot } from "./store";
 import { authorized, bookingLink } from "./access";
@@ -97,13 +97,24 @@ export async function checkoutRateLimit(ip: string) {
   try { await writeJson(key, { count }, current ? { etag: current.etag } : { createOnly: true }); }
   catch (e) { if (e instanceof ConflictError) throw Error("Please try checkout again in a moment."); throw e; }
 }
-export async function startCheckout(input: { slotId: string; packageId: PackageId; name: string; email: string; phone: string; acceptedPolicy: string; expectedSubtotal: number; expectedTotal: number; albums: number; shareActivity: boolean; delivery: NonNullable<Reservation["delivery"]> }) {
+type CheckoutInput = { slotId: string; packageId: PackageId; name: string; email: string; phone: string; acceptedPolicy: string; expectedSubtotal: number; expectedTotal: number; albums: number; shareActivity: boolean; delivery: NonNullable<Reservation["delivery"]> };
+export const OWNER_PAYMENT_CHECK = { subtotal: 952, gst: 48, pst: 0, total: 1000 } as const;
+export async function startCheckout(input: CheckoutInput) {
+  return createCheckout(input, false);
+}
+export async function startOwnerPaymentCheck(input: CheckoutInput) {
+  const { requireAdmin } = await import("@/lib/portal/auth");
+  const owner = await requireAdmin();
+  if (owner.role !== "admin" || owner.email !== BUSINESS.email || input.email !== BUSINESS.email || input.albums !== 0 || input.shareActivity || christmasPaymentMode() !== "live") throw Error("Only the studio owner can open the live payment check.");
+  return createCheckout(input, true);
+}
+async function createCheckout(input: CheckoutInput, ownerPaymentCheck: boolean) {
   const cfg = await settings(), pkg = packageById(input.packageId);
   if (!cfg.enabled || !cfg.studioAddress || !cfg.postalCode || !cfg.cancellationPolicy || !(await paymentReady())) throw Error("Bookings are not open yet.");
   if (christmasPaymentMode() === "test" && input.email !== BUSINESS.email) throw Error("Local test bookings use the studio email only.");
   if (!pkg) throw Error("Choose a valid package.");
   if (!validAlbumCount(input.albums)) throw Error("Choose a valid album quantity.");
-  const quote = sessionQuote(input.albums), subtotal = quote.subtotal, expectedTotal = quote.total;
+  const quote = ownerPaymentCheck ? OWNER_PAYMENT_CHECK : sessionQuote(input.albums), subtotal = quote.subtotal, expectedTotal = quote.total;
   if (input.acceptedPolicy !== cfg.cancellationPolicy || input.expectedSubtotal !== subtotal || input.expectedTotal !== expectedTotal) throw Error("Booking details changed. Refresh the page and review the price and policy before paying.");
   const catalog = await christmasCheckoutCatalog();
   const current = await inventoryStore.read(input.slotId);
@@ -113,7 +124,7 @@ export async function startCheckout(input: { slotId: string; packageId: PackageI
   const expiresAt = Math.floor(Date.now() / 1000) * 1000 + 35 * 60000;
   const slot = await claimSlot(inventoryStore, input.slotId, {
     id, tokenHash: hash(token), packageId: pkg.id, name: input.name, email: input.email, phone: input.phone,
-    albums: input.albums, shareActivity: input.shareActivity, testMode: christmasPaymentMode() === "test", gstCents: quote.gst, pstCents: quote.pst, delivery: input.delivery, totalCents: expectedTotal, packageSnapshot: { name: pkg.name, minutes: pkg.minutes, images: input.albums ? 20 : pkg.images, sets: pkg.sets, santa: pkg.santa },
+    albums: input.albums, shareActivity: input.shareActivity, ownerPaymentCheck: ownerPaymentCheck || undefined, testMode: christmasPaymentMode() === "test", gstCents: quote.gst, pstCents: quote.pst, delivery: input.delivery, totalCents: expectedTotal, packageSnapshot: { name: ownerPaymentCheck ? "Owner live-payment check · Christmas with Santa" : pkg.name, minutes: pkg.minutes, images: input.albums ? 20 : pkg.images, sets: pkg.sets, santa: pkg.santa },
     subtotalCents: subtotal, status: "pending", createdAt: Date.now(), expiresAt,
     bookingDetails: { studioAddress: cfg.studioAddress, postalCode: cfg.postalCode, arrivalNotes: cfg.arrivalNotes, cancellationPolicy: cfg.cancellationPolicy },
   }, pkg.santa);
@@ -123,17 +134,17 @@ export async function startCheckout(input: { slotId: string; packageId: PackageI
   const session = await stripeClient().checkout.sessions.create({
     mode: "payment", success_url: returnUrl, cancel_url: `${APP_URL}/christmas?cancelled=1&slot=${encodeURIComponent(slot.id)}&token=${token}#booking`,
     integration_identifier: "christmas-northvan-rqvkmsaz", customer_email: input.email,
-    client_reference_id: id, metadata: { service: "christmas-2026", slotId: slot.id, bookingId: id, albums: String(input.albums) },
+    client_reference_id: id, metadata: { service: "christmas-2026", slotId: slot.id, bookingId: id, albums: String(input.albums), ...(ownerPaymentCheck ? { owner_payment_check: "true" } : {}) },
     billing_address_collection: "required", customer_creation: "always", expires_at: Math.floor(expiresAt / 1000),
     custom_text: { submit: { message: `Your payment window ends at ${new Intl.DateTimeFormat("en-CA", { hour: "numeric", minute: "2-digit", timeZone: "America/Vancouver" }).format(new Date(expiresAt))} Vancouver time. Your appointment is confirmed after payment.` } },
     payment_intent_data: { receipt_email: input.email, shipping: { name: input.name, address: { line1: input.delivery.line1, line2: input.delivery.line2 || undefined, city: input.delivery.city, state: "BC", postal_code: input.delivery.postalCode, country: "CA" } } },
     invoice_creation: { enabled: true, invoice_data: {
-      description: `${pkg.name} · North Vancouver · ${dateLabel(slot.date)} at ${timeLabel(slot.time)} Pacific · ${pkg.minutes} minutes · ${input.albums ? 20 : pkg.images} digital photographs · ${pkg.sets} sets · Santa letter and complimentary print${input.albums ? ` · ${input.albums} ten-page album(s), 20 photos each, hand-delivered` : ""}`,
+      description: `${ownerPaymentCheck ? "Owner live-payment verification · " : ""}${pkg.name} · North Vancouver · ${dateLabel(slot.date)} at ${timeLabel(slot.time)} Pacific · ${pkg.minutes} minutes · ${input.albums ? 20 : pkg.images} digital photographs · ${pkg.sets} sets · Santa letter and complimentary print${input.albums ? ` · ${input.albums} ten-page album(s), 20 photos each, hand-delivered` : ""}`,
       custom_fields: [{ name: "GST/HST registration", value: BUSINESS.gstHstNumber }],
       footer: "Arasaka Inc., operating as Arman Arai. Digital gallery, mailed Santa letter and complimentary keepsake. Base: GST 5%. Optional printed albums: GST 5% and BC PST 7%. Hand delivery across Greater Vancouver through Surrey.",
       metadata: { service: "christmas-2026", bookingId: id, slotId: slot.id },
     } },
-    line_items: [{ quantity: 1, price: catalog.price, tax_rates: catalog.taxRates }, ...catalog.albumPrices.slice(0, input.albums).map(price => ({ quantity: 1, price, tax_rates: catalog.albumTaxRates }))],
+    line_items: [{ quantity: 1, ...(ownerPaymentCheck ? { price_data: { currency: "cad", product: CHRISTMAS_PRODUCT, unit_amount: OWNER_PAYMENT_CHECK.subtotal, tax_behavior: "exclusive" as const } } : { price: catalog.price }), tax_rates: catalog.taxRates }, ...catalog.albumPrices.slice(0, input.albums).map(price => ({ quantity: 1, price, tax_rates: catalog.albumTaxRates }))],
   }, { idempotencyKey: `christmas-${id}` });
   if (!session.url) throw Error("Stripe could not open the payment form. Please contact Arman.");
   await updateSlot(slot.id, s => { if (s.reservation?.id !== id) throw Error("Your appointment changed. Please contact Arman before paying."); s.reservation.sessionId = session.id; });

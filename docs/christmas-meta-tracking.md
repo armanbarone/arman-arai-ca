@@ -12,3 +12,9 @@ The production confirmation route is `/christmas/confirmation`. It uses the exis
 For a Meta Sales campaign, the standard website conversion event is **Purchase**. The existing custom event can still identify this Christmas campaign separately. Do not add an unconditional Purchase snippet to the page layout or hard-code $250 for orders that contain tax or albums.
 
 Verification: the tracking tests cover payment verification, values for all album quantities, privacy, blocked tags, concurrent calls, reloads, existing custom-event receipts and preview isolation. Wedding inquiry and payment-reconciliation tests also pass. These are controlled checks; actual receipt of a new production purchase in Meta Events Manager still requires a genuine paid booking.
+
+## Owner live-payment check
+
+`/admin/christmas/payment-check` is restricted to the studio owner's signed-in admin account. It opens a real $10 CAD checkout: $9.52 plus $0.48 GST. The normal reservation, Stripe webhook, payment confirmation, receipt, email and Purchase-event flow is used. The booking is marked as an owner payment check and is excluded from public recent-booking messages.
+
+The discounted amount is available only through a server-side function that independently verifies the owner session and owner email. The public checkout API cannot select it, and public session prices and Stripe's default product price stay unchanged. A real card payment is required; opening this page or creating Checkout does not report a purchase.

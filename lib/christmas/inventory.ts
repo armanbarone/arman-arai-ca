@@ -12,7 +12,7 @@ export interface Reservation {
   createdAt: number; expiresAt: number; subtotalCents: number; status: "pending" | "paid";
   grinch?: boolean; totalCents?: number; delivery?: { letterNames: string; line1: string; line2: string; city: string; postalCode: string; province: "BC"; country: "CA" };
   albums?: number; shareActivity?: boolean; paidAt?: number; gstCents?: number; pstCents?: number;
-  testMode?: boolean;
+  testMode?: boolean; ownerPaymentCheck?: boolean;
   packageSnapshot?: { name: string; minutes: number; images: number; sets: number; santa: boolean };
   sessionId?: string; invoiceId?: string; invoiceUrl?: string; paidCents?: number; paymentIntent?: string; emailsSent?: boolean;
   welcomeSentAt?: number; questionnaireSentAt?: number; studioSentAt?: number;
@@ -94,7 +94,7 @@ export function publicSlots(rows: Slot[], now = Date.now()): PublicSlot[] {
 
 // No synthetic bookings or personal details without the buyer's separate opt-in.
 export function recentBookings(rows: Slot[], now = Date.now()): RecentBooking[] {
-  return rows.filter(s => s.reservation?.status === "paid" && s.reservation.paidAt && s.reservation.paidAt <= now && s.reservation.paidAt > now - 86400000)
+  return rows.filter(s => s.reservation?.status === "paid" && !s.reservation.ownerPaymentCheck && s.reservation.paidAt && s.reservation.paidAt <= now && s.reservation.paidAt > now - 86400000)
     .sort((a, b) => b.reservation!.paidAt! - a.reservation!.paidAt!).slice(0, 5).map(s => {
       const r = s.reservation!;
       const first = r.name.trim().split(/\s+/)[0].slice(0, 30);

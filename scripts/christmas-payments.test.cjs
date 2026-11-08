@@ -5,7 +5,7 @@ const { loader } = require('./wedding-test-loader.cjs');
 process.env.PORTAL_SECRET = 'offline-test-only-private-link-fixture';
 process.env.VERCEL_ENV = 'production';
 process.env.STRIPE_SECRET_KEY = 'rk_live_offline_fixture_not_a_credential';
-function harness({ failQuestionnaireOnce = false, failWelcomeOnce = false, failCalendarOnce = false } = {}) {
+function harness({ failQuestionnaireOnce = false, failWelcomeOnce = false, failCalendarOnce = false, owner = {role:'admin',email:'i@armanarai.com'} } = {}) {
   const rows = [{ id: '2026-12-05_1100', date: '2026-12-05', time: '11:00', santa: true, published: true }];
   let version = 0, created, emails = 0, calendarCalls = 0; const messages=[];
   class MemoryConflict extends Error {}
@@ -19,10 +19,11 @@ function harness({ failQuestionnaireOnce = false, failWelcomeOnce = false, failC
     retrieve: async () => { throw Error('Unexpected external lookup'); }, expire: async id => ({id,metadata:{service:'christmas-2026',slotId:rows[0].id,bookingId:rows[0].reservation.id},livemode:true,currency:'cad',amount_subtotal:rows[0].reservation.subtotalCents,amount_total:rows[0].reservation.totalCents,payment_status:'unpaid',status:'expired'}),
   } }, invoices: { retrieve: async () => ({ hosted_invoice_url: 'https://invoice.stripe.com/offline-fixture' }) } };
   const load = loader({
+    '@/lib/portal/auth': { requireAdmin: async()=>{if(!owner || owner.role!=='admin')throw Error('Unauthorized');return owner;} },
     '@/lib/portal/stripe': { stripeClient: () => stripe, stripeConfiguration: async () => ({ mode: 'live', webhookId:'we_offline' }), connectStripe: async () => { throw Error('Unexpected external setup'); }, paymentSetupStatus: async () => ({ connected: true }) },
     '@/lib/portal/email': { sendEmail: async opts => { if(failWelcomeOnce && opts.idempotencyKey.includes("welcome")){failWelcomeOnce=false;throw Error("Offline welcome failure");} if(failQuestionnaireOnce && opts.idempotencyKey.includes("questionnaire")){failQuestionnaireOnce=false;throw Error("Offline mail failure");} emails++;messages.push(opts); }, layout: ({ bodyHtml }) => bodyHtml, esc: String },
     '@/lib/portal/store': { readJson: async () => null, writeJson: async () => {}, ConflictError: class extends Error {} },
-    './stripe-catalog': { christmasCheckoutCatalog: async () => ({ price: 'price_base', albumPrices: ['price_first', 'price_second', 'price_third'], taxRates: ['txr_gst'], albumTaxRates: ['txr_gst', 'txr_pst'] }) },
+    './stripe-catalog': { CHRISTMAS_PRODUCT:'prod_fixture', christmasCheckoutCatalog: async () => ({ price: 'price_base', albumPrices: ['price_first', 'price_second', 'price_third'], taxRates: ['txr_gst'], albumTaxRates: ['txr_gst', 'txr_pst'] }) },
     './store': { settings: async () => cfg, allSlots: async () => structuredClone(rows), inventoryStore: store, updateSlot: async (id, change) => { for(let attempt=0;attempt<5;attempt++){const row = await store.read(id); change(row.data); try{await store.write(id, row.data, row.etag); return row.data;}catch(error){if(!(error instanceof MemoryConflict))throw error;}}throw Error('Memory write retries exceeded'); } },
     './google-calendar': { syncChristmasCalendar: async()=>{calendarCalls++;if(failCalendarOnce){failCalendarOnce=false;throw Error('Offline calendar failure');}return{status:'synced'};} },
   });
@@ -60,6 +61,24 @@ test('tampered totals and invalid quantities cannot reserve inventory', async ()
   for (const changed of [{ expectedTotal: 1 }, { expectedSubtotal: 1 }, { albums: 4 }, { albums: -1 }, { albums: 0.5 }]) {
     const h = harness(); await assert.rejects(h.payments.startCheckout({ ...h.input(1), ...changed })); assert.equal(h.rows[0].reservation, undefined); assert.equal(h.created(), undefined);
   }
+});
+
+test('the owner-only $10 payment check uses the real payment and purchase confirmation flow', async () => {
+  const h=harness(), input={...h.input(0),email:'i@armanarai.com',expectedSubtotal:952,expectedTotal:1000};
+  await h.payments.startOwnerPaymentCheck(input);
+  const c=h.created(), r=h.rows[0].reservation;
+  assert.equal(c.line_items[0].price_data.product,'prod_fixture');assert.equal(c.line_items[0].price_data.unit_amount,952);assert.deepEqual(c.line_items[0].tax_rates,['txr_gst']);
+  assert.equal(r.subtotalCents,952);assert.equal(r.gstCents,48);assert.equal(r.totalCents,1000);assert.equal(r.ownerPaymentCheck,true);assert.equal(r.testMode,false);assert.equal(c.metadata.owner_payment_check,'true');
+  await h.payments.reconcileChristmasSession(h.session());
+  const token=new URL(c.success_url).searchParams.get('token'), status=await h.payments.bookingStatus(h.rows[0].id,token);
+  assert.equal(status.purchaseTracking.paidCents,1000);assert.equal(h.emails(),3);assert.equal((await h.payments.availability()).recentBookings.length,0);
+});
+
+test('the $10 price cannot be requested by customers or through ordinary checkout inputs', async () => {
+  for(const owner of [null,{role:'client',email:'i@armanarai.com'},{role:'admin',email:'other@example.invalid'}]){
+    const h=harness({owner});await assert.rejects(h.payments.startOwnerPaymentCheck({...h.input(0),email:'i@armanarai.com',expectedSubtotal:952,expectedTotal:1000}));assert.equal(h.created(),undefined);assert.equal(h.rows[0].reservation,undefined);
+  }
+  const h=harness();await assert.rejects(h.payments.startCheckout({...h.input(0),ownerPaymentCheck:true,expectedSubtotal:952,expectedTotal:1000}),/Booking details changed/);assert.equal(h.rows[0].reservation,undefined);
 });
 test('paid reconciliation marks sold and retries cannot duplicate confirmations', async () => {
   const h = harness(); await h.payments.startCheckout(h.input(3)); assert.equal((await h.payments.availability()).slots[0].status, 'reserved');

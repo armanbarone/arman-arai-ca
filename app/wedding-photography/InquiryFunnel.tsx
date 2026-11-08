@@ -1,7 +1,9 @@
 "use client";
 
-import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from "react";
-import { listenForContactClicks, pricingThankYouPath, trackPageView, trackWeddingInquiry } from "@/lib/analytics";
+import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useRouter } from "next/navigation";
+import { listenForContactClicks, trackWeddingInquiry } from "@/lib/analytics";
+import { completeInquiry, readSentInquiry, type SentInquiry as Sent } from "@/lib/inquiry-completion";
 import { CTA_LABEL, FORM_ID, longDate, weekdayOf } from "@/lib/ads/pricing-request";
 import { PROMISE_LABEL, PROMISE_NOTE, PROMISE_OPTIONS, REFERRAL_OPTIONS } from "@/lib/contact-form";
 import { weddingToday } from "@/lib/wedding-availability";
@@ -26,45 +28,13 @@ import funnel from "./inquiry.module.css";
  *
  * A sent form moves the browser to its own URL,
  * /wedding-photography/<city>-pricing/thank-you, so Google Ads can count an
- * inquiry by URL. That page loads the Google tag only when this tab really
- * sent the form (sessionStorage, see ThankYouFromSession); a typed or shared
- * visit to it loads no tags and cannot count as a conversion.
+ * inquiry by URL. That page reports Lead only when this tab really sent the
+ * form (see ThankYouFromSession); a typed or shared visit reports PageView.
  */
 
 
 export type FunnelCollection = { slug: string; name: string; hoursLabel: string; price: number; items: string[] };
 
-type Sent = {
-  market: string;
-  sentAt: number;
-  names: string;
-  email: string;
-  phone: string;
-  date?: string;
-  location: string;
-  referral: string;
-  message: string;
-  /** True when the server has queued the auto-reply email. */
-  emailed: boolean;
-};
-
-const FunnelContext = createContext<(sent: Sent) => void>(() => {});
-
-const SENT_KEY = "aa_ca_pricing_inquiry_v1";
-const REPORTED_KEY = "aa_ca_pricing_inquiry_reported_v1";
-const SENT_LIFETIME = 2 * 60 * 60 * 1000;
-
-/** True when the sent form was stored, so the thank-you URL can show it. */
-function storeSent(sent: Sent) {
-  try { sessionStorage.setItem(SENT_KEY, JSON.stringify(sent)); return true; } catch { return false; }
-}
-function readSent(market: string): Sent | null {
-  try {
-    const sent = JSON.parse(sessionStorage.getItem(SENT_KEY) || "null") as Sent | null;
-    if (!sent || sent.market !== market || typeof sent.names !== "string" || Date.now() - sent.sentAt > SENT_LIFETIME) return null;
-    return sent;
-  } catch { return null; }
-}
 const money = (amount: number) => `C$${amount.toLocaleString("en-CA")}`;
 
 type Contact = { phone: string; phoneE164: string };
@@ -78,7 +48,7 @@ export function MessageLinks({ phone, phoneE164, city }: Contact & { city: strin
   return <><a href={whatsappHref(phoneE164, `Hi Arman, I'm asking about wedding photography in ${city}.`)} target="_blank" rel="noopener noreferrer">WhatsApp</a>, <a href={`sms:${phoneE164}`}>text</a> or <a href={`tel:${phoneE164}`}>call <span className={funnel.nowrap}>{phone}</span></a></>;
 }
 
-export default function InquiryFunnel({ children, collections, city, page, phone, phoneE164, travelNote }: {
+export default function InquiryFunnel({ children }: {
   children: ReactNode;
   collections: FunnelCollection[];
   city: string;
@@ -86,17 +56,8 @@ export default function InquiryFunnel({ children, collections, city, page, phone
   page: string;
   travelNote: string;
 } & Contact) {
-  const [sent, setSent] = useState<Sent | null>(null);
   useEffect(listenForContactClicks, []);
-  const show = (value: Sent) => { setSent(value); window.scrollTo({ top: 0 }); };
-  const edit = () => {
-    setSent(null);
-    requestAnimationFrame(() => document.getElementById(FORM_ID)?.scrollIntoView());
-  };
-  return <FunnelContext.Provider value={show}>
-    <div hidden={!!sent}>{children}</div>
-    {sent && <ThankYou sent={sent} collections={collections} city={city} page={page} phone={phone} phoneE164={phoneE164} travelNote={travelNote} onEdit={edit} />}
-  </FunnelContext.Provider>;
+  return <>{children}</>;
 }
 
 /* The nine questions every form on this site asks (lib/contact-form.ts).
@@ -108,7 +69,7 @@ export default function InquiryFunnel({ children, collections, city, page, phone
 export function InquiryForm({ city, market, page, variant = "standard", className }: {
   city: string; market: string; page: string; variant?: "standard" | "minimal"; className?: string;
 }) {
-  const send = useContext(FunnelContext);
+  const router = useRouter();
   const [status, setStatus] = useState<"idle" | "sending" | "error">("idle");
   const [error, setError] = useState("");
   const [today, setToday] = useState("");
@@ -156,23 +117,7 @@ export function InquiryForm({ city, market, page, variant = "standard", classNam
       const res = await fetch("/api/contact", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
       const data = await res.json();
       if (!res.ok || data.success !== true) throw new Error(data.error || "That did not send. Please try again or email i@armanarai.com.");
-      const sent: Sent = {
-        market,
-        sentAt: Date.now(),
-        names: [payload.firstName, payload.lastName].filter(Boolean).join(" "),
-        email: payload.email,
-        phone: payload.phone,
-        date: payload.weddingDate || undefined,
-        location: payload.location,
-        referral: payload.referral,
-        message: payload.message,
-        emailed: data.autoReply === true,
-      };
-      // Keep the conversion URL and the session gate for genuine submissions.
-      if (storeSent(sent)) { window.location.assign(pricingThankYouPath(market)); return; }
-      try { trackWeddingInquiry(page, String(sent.sentAt)); } catch { /* Analytics must never interrupt a lead. */ }
-      setStatus("idle");
-      send(sent);
+      router.push(completeInquiry(payload, data.autoReply === true, market));
     } catch (err) {
       setError(err instanceof Error ? err.message : "That did not send.");
       setStatus("error");
@@ -224,22 +169,15 @@ type ThankYouProps = {
   travelNote: string;
 } & Contact;
 
-/** The thank-you URL's content: the sent form from this tab, or a pointer
- *  back to the form. Tags start here, and only for a real submission. */
+/** Only a receipt from a successful submission can report a Lead. */
 export function ThankYouFromSession({ market, ...props }: ThankYouProps & { market: string }) {
   const [sent, setSent] = useState<Sent | null | undefined>(undefined);
   useEffect(() => {
-    const found = readSent(market);
+    const found = readSentInquiry(market);
     setSent(found);
     if (!found) return;
     const stopListening = listenForContactClicks();
-    try {
-      trackPageView();
-      if (sessionStorage.getItem(REPORTED_KEY) !== String(found.sentAt)) {
-        trackWeddingInquiry(`/${props.page}`, String(found.sentAt));
-        sessionStorage.setItem(REPORTED_KEY, String(found.sentAt));
-      }
-    } catch { /* Analytics must never interrupt a lead. */ }
+    void trackWeddingInquiry(found.page || `/${props.page}`, found.id || String(found.sentAt)).catch(() => {});
     return stopListening;
   }, [market, props.page]);
   if (sent === undefined) return null;
@@ -264,7 +202,9 @@ function ThankYou({ sent, collections, city, page, phone, phoneE164, travelNote,
   const heading = useRef<HTMLHeadingElement>(null);
   useEffect(() => { heading.current?.focus({ preventScroll: true }); }, []);
 
-  const when = sent.date ? `${weekdayOf(sent.date)}, ${longDate(sent.date)}` : "";
+  // Contact and modal inquiries also accept approximate dates in plain text.
+  const dateIsISO = sent.date && /^\d{4}-\d{2}-\d{2}$/.test(sent.date) && Number.isFinite(Date.parse(`${sent.date}T12:00:00Z`));
+  const when = dateIsISO ? `${weekdayOf(sent.date!)}, ${longDate(sent.date!)}` : sent.date || "";
   const recap: [string, string][] = [
     ["Date", when || "To be decided"],
     ["Where", sent.location || "To be decided"],

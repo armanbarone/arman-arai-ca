@@ -1,8 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
 import { useInquiry } from "./InquiryContext";
 import { leadAttribution } from "@/lib/attribution";
+import { completeInquiry } from "@/lib/inquiry-completion";
 import { PROMISE_LABEL, PROMISE_NOTE, PROMISE_OPTIONS, REFERRAL_OPTIONS } from "@/lib/contact-form";
 
 /* The quick inquiry behind every "Inquire" button.
@@ -18,6 +20,8 @@ import { PROMISE_LABEL, PROMISE_NOTE, PROMISE_OPTIONS, REFERRAL_OPTIONS } from "
  * and the same one the contact page states. If that number changes, it
  * changes in all three places at once. */
 export default function InquiryModal() {
+  const router = useRouter();
+  const sending = useRef(false);
   const { isOpen, close } = useInquiry();
   const [form, setForm] = useState({
     firstName: "",
@@ -35,7 +39,7 @@ export default function InquiryModal() {
 
   // Close on Escape key
   useEffect(() => {
-    if (!isOpen) return;
+    if (!isOpen) { sending.current = false; setStatus("idle"); return; }
     const handler = (e: KeyboardEvent) => { if (e.key === "Escape") close(); };
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
@@ -51,6 +55,8 @@ export default function InquiryModal() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (sending.current) return;
+    sending.current = true;
     setStatus("sending");
     setError("");
     try {
@@ -63,12 +69,17 @@ export default function InquiryModal() {
       if (!res.ok || data.success !== true) {
         setError(data.error || "Something went wrong. Please email me directly at i@armanarai.com");
         setStatus("error");
+        sending.current = false;
         return;
       }
       setStatus("sent");
+      const destination = completeInquiry(form, data.autoReply === true);
+      close();
+      router.push(destination);
     } catch {
       setError("Something went wrong. Please email me directly at i@armanarai.com");
       setStatus("error");
+      sending.current = false;
     }
   }
 

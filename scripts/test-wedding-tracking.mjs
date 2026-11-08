@@ -16,7 +16,7 @@ async function environment({ pathname = '/2728-cc-weddings-dark', blocked = fals
   globalThis.sessionStorage = storage();
   Object.defineProperty(globalThis, 'navigator', { value: { globalPrivacyControl: gpc }, configurable: true });
   globalThis.window = { location: { pathname, search: '?utm_source=google&gclid=test-click&email=private', origin: 'https://www.armanarai.ca', assign: (url) => redirects.push(url) }, setTimeout, clearTimeout };
-  globalThis.document = { title: 'Wedding photography', createElement: () => ({ dataset: {} }), head: { appendChild: (script) => { appended.push(script); queueMicrotask(() => blocked ? script.onerror() : script.onload()); } } };
+  globalThis.document = { title: 'Wedding photography', querySelector: () => null, createElement: () => ({ dataset: {} }), head: { appendChild: (script) => { appended.push(script); queueMicrotask(() => blocked ? script.onerror() : script.onload()); } } };
   const analytics = await import(`../lib/analytics.ts?test=${++scenario}`);
   return { analytics, appended, redirects, google: () => (window.dataLayer || []).map((args) => [...args]), meta: () => (window.fbq?.queue || []).map((args) => [...args]) };
 }
@@ -42,7 +42,7 @@ test('PublicTracking mounts start real page-view tracking without waiting for in
     if (name === '@/lib/analytics') return analytics;
     throw new Error(`Unexpected import: ${name}`);
   };
-  runInNewContext(compiled, { exports: module.exports, module, require });
+  runInNewContext(compiled, { exports: module.exports, module, require, document });
   module.exports.default();
   // Mount effects only: no pointer, scroll, keyboard, submit or booking event.
   effects.forEach((effect) => effect());
@@ -81,15 +81,15 @@ test('no tags on the private portal, the admin pages or the API routes', async (
   }
 });
 
-test('a page view configures both Ads accounts with one Google script and filters the Google page URL', async () => {
+test('a page view configures only the Weddings container and filters the Google page URL', async () => {
   const { analytics, appended, google, meta } = await environment();
   analytics.trackPageView(); analytics.trackPageView();
   assert.equal(appended.length, 2);
   const configs = google().filter((e) => e[0] === 'config');
-  assert.deepEqual(configs.map((e) => e[1]), [analytics.GA4_ID, 'AW-18464850778', 'AW-18154542346']);
+  assert.deepEqual(configs.map((e) => e[1]), [analytics.GA4_ID, analytics.WEDDINGS_TAG_ID]);
   const googleScripts = appended.filter((script) => script.src.includes('googletagmanager.com/gtag/js'));
   assert.equal(googleScripts.length, 1);
-  assert.equal(googleScripts[0].src, 'https://www.googletagmanager.com/gtag/js?id=AW-18464850778');
+  assert.equal(googleScripts[0].src, `https://www.googletagmanager.com/gtag/js?id=${analytics.WEDDINGS_TAG_ID}`);
   const pageViews = google().filter((e) => e[1] === 'page_view');
   assert.equal(pageViews.length, 1);
   assert.match(pageViews[0][2].page_location, /gclid=test-click/);
@@ -110,9 +110,9 @@ test('confirmed booking redirects immediately then reports once on thank-you, wi
   window.location.pathname = '/thank-you';
   await Promise.all([analytics.reportPendingBooking(), analytics.reportPendingBooking()]);
   await analytics.reportPendingBooking();
-  const conversion = google().filter((e) => e[1] === 'conversion');
+  const conversion = google().filter((e) => e[1] === analytics.BOOKING_EVENT);
   assert.equal(conversion.length, 1);
-  assert.equal(conversion[0][2].send_to, 'AW-18154542346/LzlaCPST9cMcEIqq4dBD');
+  assert.equal(conversion[0][2].send_to, analytics.GA4_ID);
   assert.equal(conversion[0][2].transaction_id, booking.id);
   assert.equal(google().filter((e) => e[1] === 'generate_lead').length, 1);
   const schedule = meta().filter((e) => e[1] === 'Schedule');
@@ -121,7 +121,7 @@ test('confirmed booking redirects immediately then reports once on thank-you, wi
   // Re-import simulates a refresh: in-memory flags are gone; persistent dedupe remains.
   const refreshed = await import(`../lib/analytics.ts?test=${++scenario}`);
   await refreshed.reportPendingBooking();
-  assert.equal(google().filter((e) => e[1] === 'conversion').length, 1);
+  assert.equal(google().filter((e) => e[1] === analytics.BOOKING_EVENT).length, 1);
   assert.equal(meta().filter((e) => e[1] === 'Schedule').length, 1);
 });
 
@@ -163,7 +163,7 @@ test('storage failure still navigates and sends the booking before leaving when 
   globalThis.sessionStorage = { getItem: () => { throw new Error('blocked'); }, setItem: () => { throw new Error('blocked'); } };
   await analytics.completeWeddingBooking(scheduled);
   assert.deepEqual(redirects, ['/thank-you']);
-  assert.equal(google().filter((e) => e[1] === 'conversion').length, 1);
+  assert.equal(google().filter((e) => e[1] === analytics.BOOKING_EVENT).length, 1);
   assert.equal(meta().filter((e) => e[1] === 'Schedule').length, 1);
 });
 
@@ -180,4 +180,30 @@ test('loaded tags are suspended when navigation enters the private portal', asyn
   analytics.trackPageView();
   assert.equal(window[`ga-disable-${analytics.GA4_ID}`], false);
   assert.equal(google().filter((e) => e[1] === 'page_view').length, 2);
+});
+
+test('a delivered wedding inquiry waits for tags and reports once per channel across replays and reloads', async () => {
+  const { analytics, google, meta } = await environment({ pathname: '/wedding-photography/toronto-pricing/thank-you' });
+  analytics.trackPageView();
+  assert.equal(meta().filter(e => e[1] === 'Lead').length, 0);
+  await Promise.all([analytics.trackWeddingInquiry('/contact', 'opaque-123'), analytics.trackWeddingInquiry('/contact', 'opaque-123')]);
+  await analytics.trackWeddingInquiry('/contact', 'opaque-123');
+  const refreshed = await import(`../lib/analytics.ts?test=${++scenario}`);
+  await refreshed.trackWeddingInquiry('/contact', 'opaque-123');
+  const leads = meta().filter(e => e[1] === 'Lead');
+  assert.equal(leads.length, 1);
+  assert.equal(leads[0][3].eventID, 'ca-lead-opaque-123');
+  assert.equal(leads[0][2].content_category, '/contact');
+  assert.doesNotMatch(JSON.stringify(leads), /private|email|phone|names/);
+  assert.equal(google().filter(e => e[1] === analytics.INQUIRY_EVENT).length, 1);
+  assert.equal(google().filter(e => e[1] === 'conversion').length, 1);
+  assert.equal(google().find(e => e[1] === 'conversion')[2].send_to, analytics.LEAD_FORM_CONVERSION);
+});
+
+test('blocked inquiry tags never mark the receipt sent and can retry after a reload', async () => {
+  const { analytics, google, meta } = await environment({ blocked: true });
+  await analytics.trackWeddingInquiry('/contact', 'retry-123');
+  assert.equal(meta().filter(e => e[1] === 'Lead').length, 0);
+  assert.equal(google().filter(e => e[1] === 'conversion').length, 0);
+  assert.equal(sessionStorage.getItem('aa_ca_booking_events_v1'), null);
 });

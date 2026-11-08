@@ -236,9 +236,7 @@ export function listenForContactClicks() {
   return () => document.removeEventListener("click", onClick, true);
 }
 
-/** Where a sent pricing-request form lands: its own URL, so Google Ads can
- *  count the inquiry by URL. PublicTracking leaves these pages alone; the page
- *  starts the tags itself, and only when this tab really sent the form. */
+/** All wedding inquiry forms share the existing city confirmation URLs. */
 export const pricingThankYouPath = (market: string) => `/wedding-photography/${market}-pricing/thank-you`;
 export const isPricingThankYouPath = (path: string) => /^\/wedding-photography\/[a-z]+-pricing\/thank-you\/?$/.test(path);
 
@@ -246,14 +244,31 @@ export const isPricingThankYouPath = (path: string) => /^\/wedding-photography\/
  *  form" conversion. `formId` (when the form was sent) becomes the Ads
  *  transaction_id, so a reload that slips past the once-per-form guard is
  *  still counted once. */
-export function trackWeddingInquiry(page: string, formId?: string) {
+export async function trackWeddingInquiry(page: string, formId: string) {
   if (!permitted()) return;
   startTracking();
-  const w = window as TrackingWindow;
-  // No names, emails or phone numbers: the page path is the only detail sent.
-  w.gtag?.("event", INQUIRY_EVENT, { send_to: GA4_ID, landing_page: page, currency: "CAD" });
-  w.gtag?.("event", "conversion", { send_to: LEAD_FORM_CONVERSION, ...(formId ? { transaction_id: `ca-lead-${formId}` } : {}) });
-  trackLead("wedding_inquiry");
+  const eventId = `ca-lead-${formId}`;
+  // Wait for each tag independently. Never mark a blocked script as reported,
+  // and persist deduplication across refreshes and React effect replays.
+  await Promise.all([
+    googleReady?.then((ready) => {
+      const key = `inquiry-google:${eventId}`;
+      if (!ready || !permitted() || wasSent(key)) return;
+      const w = window as TrackingWindow;
+      w.gtag?.("event", INQUIRY_EVENT, { send_to: GA4_ID, landing_page: page, currency: "CAD" });
+      w.gtag?.("event", "conversion", { send_to: LEAD_FORM_CONVERSION, transaction_id: eventId });
+      w.gtag?.("event", "generate_lead", { send_to: GA4_ID, method: "wedding_inquiry", currency: "CAD" });
+      markSent(key);
+    }),
+    metaReady?.then((ready) => {
+      const key = `inquiry-meta:${eventId}`;
+      if (!ready || !permitted() || wasSent(key)) return;
+      (window as TrackingWindow).fbq?.("track", "Lead", {
+        content_name: "Wedding photography inquiry", content_category: page,
+      }, { eventID: eventId });
+      markSent(key);
+    }),
+  ]);
 }
 
 export function bookingFromMessage(data: unknown, page: string, fallbackId: string, now = Date.now()): Booking {

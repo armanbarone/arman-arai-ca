@@ -1,13 +1,17 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import { leadAttribution } from "@/lib/attribution";
+import { completeInquiry } from "@/lib/inquiry-completion";
 import { PROMISE_LABEL, PROMISE_NOTE, PROMISE_OPTIONS, REFERRAL_OPTIONS } from "@/lib/contact-form";
 
 /* The contact page form. The same nine questions as the quick modal and the
  * landing pages (lib/contact-form.ts), so the first reply has the same facts
  * whichever button a couple happened to press. */
 export default function ContactForm() {
+  const router = useRouter();
+  const sending = useRef(false);
   const [form, setForm] = useState({
     firstName: "",
     lastName: "",
@@ -19,11 +23,13 @@ export default function ContactForm() {
     message: "",
     promise: "",
   });
-  const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
+  const [status, setStatus] = useState<"idle" | "sending" | "error">("idle");
   const [error, setError] = useState("");
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (sending.current) return;
+    sending.current = true;
     setStatus("sending");
     setError("");
     try {
@@ -36,12 +42,14 @@ export default function ContactForm() {
       if (!res.ok || data.success !== true) {
         setError(data.error || "Something went wrong. Email me directly at i@armanarai.com and I will pick it up there.");
         setStatus("error");
+        sending.current = false;
         return;
       }
-      setStatus("sent");
+      router.push(completeInquiry(form, data.autoReply === true));
     } catch {
       setError("Something went wrong. Email me directly at i@armanarai.com and I will pick it up there.");
       setStatus("error");
+      sending.current = false;
     }
   }
 
@@ -51,21 +59,6 @@ export default function ContactForm() {
       setForm((f) => ({ ...f, [field]: e.target.value }));
 
   const label = "block text-[0.68rem] tracking-[0.18em] uppercase text-blush mb-2";
-
-  if (status === "sent") {
-    return (
-      <div className="flex flex-col items-start justify-center h-full py-16">
-        <span className="font-script text-rose block mb-4" style={{ fontSize: "3rem" }}>
-          Thank you
-        </span>
-        <p className="font-serif italic text-slate text-lg leading-relaxed max-w-sm">
-          That is in. I reply personally within 60 minutes. Everything you asked for is already on
-          its way to your inbox, so check your spam and promotions folders if it is not there in a
-          few minutes.
-        </p>
-      </div>
-    );
-  }
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">

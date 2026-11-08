@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import { CART_CONSENT, CART_WINDOW_MS } from "../../lib/christmas/cart-copy";
 import { BUSINESS, BUSINESS_ADDRESS_ONE_LINE } from "../../lib/portal/business";
 
@@ -11,13 +11,15 @@ export default function ChristmasCheckoutDetails({ slotId, albums, preview, busy
   const [cart, setCart] = useState<Cart | null>(null), [now, setNow] = useState(Date.now());
   const [contact, setContact] = useState<{ name: string; email: string } | null>(null);
   const [saving, setSaving] = useState(false), [message, setMessage] = useState("");
+  const cartRequest = useRef<Promise<Cart> | null>(null);
   useEffect(() => {
     let active = true;
     if (preview) { setCart({ id: "preview", token: "preview", expiresAt: Date.now() + CART_WINDOW_MS }); return; }
-    fetch("/api/christmas/cart", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ slotId, albums }) }).then(async r => {
+    cartRequest.current ??= fetch("/api/christmas/cart", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ slotId, albums }) }).then(async r => {
       const value = await r.json(); if (!r.ok) throw Error(value.error || "Checkout could not open.");
-      if (active) setCart(value);
-    }).catch(e => { if (active) setMessage(e.message); });
+      return value as Cart;
+    });
+    cartRequest.current.then(value => { if (active) setCart(value); }).catch(e => { if (active) setMessage(e.message); });
     return () => { active = false; };
   }, [slotId, albums, preview]);
   useEffect(() => { const interval = window.setInterval(() => setNow(Date.now()), 1000); return () => clearInterval(interval); }, []);

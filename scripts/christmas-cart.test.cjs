@@ -2,8 +2,8 @@ const {test}=require('node:test');
 const assert=require('node:assert/strict');
 const {loader}=require('./wedding-test-loader.cjs');
 function harness(t){
-  const env={VERCEL_ENV:process.env.VERCEL_ENV,PORTAL_SECRET:process.env.PORTAL_SECRET,CHRISTMAS_CART_REMINDERS_ENABLED:process.env.CHRISTMAS_CART_REMINDERS_ENABLED};
-  process.env.VERCEL_ENV='production';process.env.PORTAL_SECRET='offline-cart-secret';process.env.CHRISTMAS_CART_REMINDERS_ENABLED='true';
+  const env={VERCEL_ENV:process.env.VERCEL_ENV,PORTAL_SECRET:process.env.PORTAL_SECRET,CHRISTMAS_CART_REMINDERS_ENABLED:process.env.CHRISTMAS_CART_REMINDERS_ENABLED,STRIPE_SECRET_KEY:process.env.STRIPE_SECRET_KEY};
+  process.env.STRIPE_SECRET_KEY='rk_live_offline_fixture';process.env.VERCEL_ENV='production';process.env.PORTAL_SECRET='offline-cart-secret';process.env.CHRISTMAS_CART_REMINDERS_ENABLED='true';
   t.after(()=>{for(const [key,value] of Object.entries(env))value===undefined?delete process.env[key]:process.env[key]=value;});
   class ConflictError extends Error{};
   const records=new Map(),sent=[],stripeCalls=[];let failMail=false;

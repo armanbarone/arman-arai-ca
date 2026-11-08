@@ -112,7 +112,7 @@ export default function ChristmasExperience({ preview = false, storybook = false
     e.preventDefault(); setError("");
     if (!slot || !slot.available || (pkg.santa && !slot.santa)) { setError("Please choose another available appointment."); return; }
     if (data.mode === "preview") { setStep("demo"); return; }
-    if (data.mode !== "live") { setError("Bookings are not open yet."); return; }
+    if (data.mode !== "live" && data.mode !== "test") { setError("Bookings are not open yet."); return; }
     const f = new FormData(e.currentTarget); setBusy(true);
     try {
       const response = await fetch("/api/christmas/checkout", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({
@@ -133,6 +133,7 @@ export default function ChristmasExperience({ preview = false, storybook = false
     <ChristmasAtmosphere />
     <a className="xm-skip" href="#christmas-main">Skip to content</a>
     {data.mode === "preview" && <div className="xm-preview-bar">PRIVATE DESIGN PREVIEW · Sample appointments · No payments or bookings are taken</div>}
+    {data.mode === "test" && <div className="xm-preview-bar">STRIPE TEST CHECKOUT · Test cards only · No real charges · Separate test booking records</div>}
     <div className="xm-fairy-lights" aria-hidden="true">{Array.from({ length: 24 }, (_, i) => <i key={i} style={{ animationDelay: `${i * .19}s` }} />)}</div>
     <header className="xm-header"><a className="xm-brand" href="https://www.armanarai.ca"><span className="xm-brand-star" aria-hidden="true">✦</span><span>Christmas at Arman’s<small>NORTH VANCOUVER · A LITTLE HOLIDAY MAGIC</small></span></a><nav aria-label="Christmas sessions"><a href="#experience">The magic</a><a href="#packages">Your session</a><a href="#faq">Little details</a><a className="xm-nav-cta" href="#booking">Book your visit <Arrow /></a></nav></header>
     <main id="christmas-main">

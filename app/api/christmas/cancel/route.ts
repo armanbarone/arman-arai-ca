@@ -1,8 +1,9 @@
 import { cancelCheckout } from "@/lib/christmas/payments";
+import { christmasSameOrigin } from "@/lib/christmas/environment";
 export const runtime = "nodejs";
 const headers = { "Cache-Control": "private, no-store", "Referrer-Policy": "no-referrer" };
 export async function POST(req: Request) {
-  if (req.headers.get("origin") !== new URL(req.url).origin) return Response.json({ error: "Invalid origin." }, { status: 403, headers });
+  if (!christmasSameOrigin(req)) return Response.json({ error: "Invalid origin." }, { status: 403, headers });
   if (!req.headers.get("content-type")?.includes("application/json")) return Response.json({ error: "Expected JSON." }, { status: 415, headers });
   const raw = await req.text();
   if (raw.length > 1000) return Response.json({ error: "Invalid request." }, { status: 413, headers });

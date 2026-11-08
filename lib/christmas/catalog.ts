@@ -29,7 +29,7 @@ export type SlotStatus = "available" | "sold" | "reserved" | "unavailable" | "un
 export interface PublicSlot { id: string; date: string; time: string; santa: boolean; available: boolean; status: SlotStatus }
 export interface RecentBooking { id: string; text: string }
 export interface Availability {
-  mode: "live" | "preview" | "closed"; slots: PublicSlot[]; location: string;
+  mode: "live" | "test" | "preview" | "closed"; slots: PublicSlot[]; location: string;
   cancellationPolicy: string; publishableKey: string; message?: string; recentBookings?: RecentBooking[];
 }
 export const CALENDAR_START = "2026-11-01", SEASON_START = "2026-11-09", SEASON_END = "2026-12-20";

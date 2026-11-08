@@ -37,6 +37,11 @@ export function bookingEmails(slot: Slot, { preview = false }: { preview?: boole
     html: layout({ heading: "A Christmas session was purchased", bodyHtml: `<h2 style="font-size:21px;color:#264232">${esc(when)}</h2><p><strong>${esc(r.name)}</strong><br>${esc(r.email)}<br>${esc(r.phone)}</p><p>${esc(details).replace(/\n/g, "<br>")}</p><p>This alert is sent after Stripe confirms payment. The appointment is marked sold in your booking calendar.</p>`, button: { label: "Open Christmas calendar", href: `${APP_URL}/admin/christmas?date=${slot.date}` } }),
     text: `NEW PAID CHRISTMAS BOOKING\n\n${r.name} · ${r.email} · ${r.phone}\n${details}\n\n${APP_URL}/admin/christmas?date=${slot.date}`,
   };
+  if (r.testMode) for (const message of [welcome, survey, studio]) {
+    message.subject = `[TEST BOOKING · NO REAL APPOINTMENT] ${message.subject}`;
+    message.html = message.html.replace("<body", '<body data-test-booking="true"').replace(/(<body[^>]*>)/, '$1<p style="padding:16px;text-align:center;background:#fff2cc;color:#543f17">TEST PAYMENT · NO REAL APPOINTMENT · DO NOT ATTEND</p>');
+    message.text = `TEST PAYMENT · NO REAL APPOINTMENT · DO NOT ATTEND\n\n${message.text}`;
+  }
   return { welcome, survey, studio, details, confirmation, questionnaire };
 }
 

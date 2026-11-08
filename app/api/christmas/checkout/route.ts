@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { startCheckout, checkoutRateLimit } from "@/lib/christmas/payments";
 import { validateCheckoutCart, markCartCheckout } from "@/lib/christmas/cart";
+import { christmasSameOrigin } from "@/lib/christmas/environment";
 export const runtime = "nodejs";
 const inputSchema = z.object({
   cartId: z.string().regex(/^[a-f0-9]{32}$/), cartToken: z.string().regex(/^[a-f0-9]{64}$/),
@@ -12,7 +13,7 @@ const inputSchema = z.object({
   acceptedPolicy: z.string().min(1).max(2000), expectedSubtotal: z.number().int().positive(), expectedTotal: z.number().int().positive(),
 }).refine(data => !data.albums || data.albumDeliveryConsent, { message: "Confirm the album delivery area.", path: ["albumDeliveryConsent"] });
 export async function POST(req: Request) {
-  if (req.headers.get("origin") !== new URL(req.url).origin) return Response.json({ error: "Invalid request origin." }, { status: 403 });
+  if (!christmasSameOrigin(req)) return Response.json({ error: "Invalid request origin." }, { status: 403 });
   if (!req.headers.get("content-type")?.includes("application/json")) return Response.json({ error: "Invalid request." }, { status: 415 });
   const raw = await req.text();
   if (raw.length > 10000) return Response.json({ error: "Request too large." }, { status: 413 });

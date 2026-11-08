@@ -12,6 +12,7 @@ export interface Reservation {
   createdAt: number; expiresAt: number; subtotalCents: number; status: "pending" | "paid";
   grinch?: boolean; totalCents?: number; delivery?: { letterNames: string; line1: string; line2: string; city: string; postalCode: string; province: "BC"; country: "CA" };
   albums?: number; shareActivity?: boolean; paidAt?: number; gstCents?: number; pstCents?: number;
+  testMode?: boolean;
   packageSnapshot?: { name: string; minutes: number; images: number; sets: number; santa: boolean };
   sessionId?: string; invoiceId?: string; invoiceUrl?: string; paidCents?: number; paymentIntent?: string; emailsSent?: boolean;
   welcomeSentAt?: number; questionnaireSentAt?: number; studioSentAt?: number;

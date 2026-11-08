@@ -16,7 +16,7 @@ Preview only until owner approval. Do not enable or send real reminders while re
 1. Verify `CRON_SECRET` exists as a strong secret in Vercel Production (never commit/paste it). Cron sends this as an Authorization bearer token. Requests without it fail closed.
 2. Set `CHRISTMAS_CART_REMINDERS_ENABLED=true` in Production only after review approval. Existing `PORTAL_SECRET` signs cart links and `RESEND_API_KEY` sends reminders.
 3. Confirm the Vercel plan supports a 15-minute schedule; `vercel.json` configures it. Preview deployments never run the mail job.
-4. Exercise real Stripe sandbox payments and a controlled recipient mailbox before claiming inbox delivery. Existing payment helpers require live production keys, so automated tests replace only external service boundaries and perform no charges.
+4. Real Stripe sandbox payment and the controlled studio inbox were verified on November 7; see `christmas-payment-verification.md`. The local test mode requires an explicit opt-in, loopback URL, test Stripe key and unique private-storage prefix. It cannot run in Production or on a public preview. Automated regression tests replace external service boundaries and perform no charges.
 5. Review `/christmas/operations/preview` for the exact two message layouts and `/christmas/preview` for the client timer/contact flow.
 
 Canada Post AddressComplete was explicitly cancelled by the owner. Keep ordinary manual address fields; no provider scripts, lookup requests or keys are present.

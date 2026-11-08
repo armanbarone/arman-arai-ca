@@ -11,11 +11,13 @@ import { allSlots, settings, inventoryStore, updateSlot } from "./store";
 import { authorized, bookingLink } from "./access";
 import { sendBookingNotifications } from "./notifications";
 import { syncChristmasCalendar } from "./google-calendar";
+import { christmasPaymentMode } from "./environment";
 const hash = (s: string) => createHash("sha256").update(s).digest("hex");
 let webhookReady = false;
 export async function paymentReady() {
-  const key = process.env.STRIPE_SECRET_KEY || "";
-  if (process.env.VERCEL_ENV !== "production" || !/^(sk|rk)_live_/.test(key)) return false;
+  const mode = christmasPaymentMode();
+  if (!mode) return false;
+  if (mode === "test") return (await stripeConfiguration())?.mode === "test";
   if (!(await stripeConfiguration())) await connectStripe("Christmas launch authorized by owner");
   const ready = (await paymentSetupStatus()).connected;
   if (ready && !webhookReady) {
@@ -39,7 +41,8 @@ export async function reconcileChristmasSession(s: Stripe.Checkout.Session) {
       throw Error("Christmas payment has no matching reservation.");
     }
     if (r.sessionId && r.sessionId !== s.id) throw Error("Checkout session mismatch.");
-    if (!s.livemode || s.currency !== "cad" || s.amount_subtotal !== r.subtotalCents || (s.payment_status === "paid" && s.amount_total !== (r.totalCents ?? r.subtotalCents + gstCents(r.subtotalCents)))) throw Error("Christmas payment amount or mode mismatch.");
+    const mode = christmasPaymentMode();
+    if (!mode || s.livemode !== (mode === "live") || s.currency !== "cad" || s.amount_subtotal !== r.subtotalCents || (s.payment_status === "paid" && s.amount_total !== (r.totalCents ?? r.subtotalCents + gstCents(r.subtotalCents)))) throw Error("Christmas payment amount or mode mismatch.");
     if (s.payment_status === "paid") {
       r.sessionId = s.id; r.status = "paid"; r.paidCents = s.amount_total ?? r.subtotalCents; r.paidAt ??= Date.now();
       r.invoiceId = typeof s.invoice === "string" ? s.invoice : s.invoice?.id;
@@ -82,7 +85,7 @@ export async function availability(): Promise<Availability> {
   await Promise.all(rows.filter(s => s.reservation?.status === "pending" && s.reservation.expiresAt + 120000 < Date.now()).map(reconcileStale));
   rows = await allSlots();
   return {
-    mode: "live", location: `${cfg.studioAddress}, ${cfg.postalCode}`, cancellationPolicy: cfg.cancellationPolicy, publishableKey,
+    mode: christmasPaymentMode() === "test" ? "test" : "live", location: `${cfg.studioAddress}, ${cfg.postalCode}`, cancellationPolicy: cfg.cancellationPolicy, publishableKey,
     slots: publicSlots(rows), recentBookings: recentBookings(rows),
   };
 }
@@ -97,6 +100,7 @@ export async function checkoutRateLimit(ip: string) {
 export async function startCheckout(input: { slotId: string; packageId: PackageId; name: string; email: string; phone: string; acceptedPolicy: string; expectedSubtotal: number; expectedTotal: number; albums: number; shareActivity: boolean; delivery: NonNullable<Reservation["delivery"]> }) {
   const cfg = await settings(), pkg = packageById(input.packageId);
   if (!cfg.enabled || !cfg.studioAddress || !cfg.postalCode || !cfg.cancellationPolicy || !(await paymentReady())) throw Error("Bookings are not open yet.");
+  if (christmasPaymentMode() === "test" && input.email !== BUSINESS.email) throw Error("Local test bookings use the studio email only.");
   if (!pkg) throw Error("Choose a valid package.");
   if (!validAlbumCount(input.albums)) throw Error("Choose a valid album quantity.");
   const quote = sessionQuote(input.albums), subtotal = quote.subtotal, expectedTotal = quote.total;
@@ -109,7 +113,7 @@ export async function startCheckout(input: { slotId: string; packageId: PackageI
   const expiresAt = Math.floor(Date.now() / 1000) * 1000 + 35 * 60000;
   const slot = await claimSlot(inventoryStore, input.slotId, {
     id, tokenHash: hash(token), packageId: pkg.id, name: input.name, email: input.email, phone: input.phone,
-    albums: input.albums, shareActivity: input.shareActivity, gstCents: quote.gst, pstCents: quote.pst, delivery: input.delivery, totalCents: expectedTotal, packageSnapshot: { name: pkg.name, minutes: pkg.minutes, images: input.albums ? 20 : pkg.images, sets: pkg.sets, santa: pkg.santa },
+    albums: input.albums, shareActivity: input.shareActivity, testMode: christmasPaymentMode() === "test", gstCents: quote.gst, pstCents: quote.pst, delivery: input.delivery, totalCents: expectedTotal, packageSnapshot: { name: pkg.name, minutes: pkg.minutes, images: input.albums ? 20 : pkg.images, sets: pkg.sets, santa: pkg.santa },
     subtotalCents: subtotal, status: "pending", createdAt: Date.now(), expiresAt,
     bookingDetails: { studioAddress: cfg.studioAddress, postalCode: cfg.postalCode, arrivalNotes: cfg.arrivalNotes, cancellationPolicy: cfg.cancellationPolicy },
   }, pkg.santa);
@@ -151,8 +155,8 @@ export async function bookingStatus(slotId: string, token: string) {
   }
   if (!r) return { status: "expired" };
   const cfg = r.bookingDetails, pkg = r.packageSnapshot ?? PACKAGES.find(p => p.id === r!.packageId)!;
-  return { status: r.status, reference: r.id, date: row!.data.date, time: row!.data.time, package: pkg.name, minutes: pkg.minutes, images: pkg.images, sets: pkg.sets, santa: pkg.santa, albums: r.albums, grinch: r.grinch, delivery: r.delivery,
-    purchaseTracking: r.status === "paid" && r.paidCents ? { eventId: hash(`christmas-2026:meta:${r.id}`), paidCents: r.paidCents, albums: r.albums ?? 0 } : undefined,
+  return { status: r.status, testMode: r.testMode, reference: r.id, date: row!.data.date, time: row!.data.time, package: pkg.name, minutes: pkg.minutes, images: pkg.images, sets: pkg.sets, santa: pkg.santa, albums: r.albums, grinch: r.grinch, delivery: r.delivery,
+    purchaseTracking: r.status === "paid" && r.paidCents && !r.testMode && christmasPaymentMode() === "live" ? { eventId: hash(`christmas-2026:meta:${r.id}`), paidCents: r.paidCents, albums: r.albums ?? 0 } : undefined,
     questionnaireUrl: r.status === "paid" ? bookingLink(slotId, r, "questionnaire") : undefined, questionnaireComplete: !!r.questionnaire, welcomeSent: !!r.welcomeSentAt || !!r.emailsSent, questionnaireSent: !!r.questionnaireSentAt, paidCents: r.paidCents, invoiceUrl: r.invoiceUrl, address: cfg.studioAddress, postalCode: cfg.postalCode, arrivalNotes: cfg.arrivalNotes, email: r.email, cancellationPolicy: cfg.cancellationPolicy };
 }
 
@@ -173,7 +177,8 @@ export async function cancelCheckout(slotId: string, token: string) {
 export async function reconcileChristmasInvoice(invoice: Stripe.Invoice) {
   if (invoice.metadata?.service !== "christmas-2026") return;
   const slotId = invoice.metadata.slotId, bookingId = invoice.metadata.bookingId;
-  if (!slotId || !SLOT_PATTERN.test(slotId) || !bookingId || !invoice.livemode || invoice.currency !== "cad" || invoice.status !== "paid") throw Error("Invalid Christmas invoice.");
+  const mode = christmasPaymentMode();
+  if (!slotId || !SLOT_PATTERN.test(slotId) || !bookingId || !mode || invoice.livemode !== (mode === "live") || invoice.currency !== "cad" || invoice.status !== "paid") throw Error("Invalid Christmas invoice.");
   await updateSlot(slotId, slot => {
     const r = slot.reservation;
     if (!r || r.id !== bookingId || r.status !== "paid" || invoice.amount_paid !== r.paidCents) throw Error("Christmas invoice does not match its payment.");

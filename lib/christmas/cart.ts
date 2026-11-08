@@ -9,6 +9,7 @@ import { esc, sendEmail } from "@/lib/portal/email";
 import { stripeClient } from "@/lib/portal/stripe";
 
 import { CART_WINDOW_MS, CART_CONSENT } from "./cart-copy";
+import { christmasPaymentMode } from "./environment";
 export interface ChristmasCart {
   id: string; slotId: string; albums: number; createdAt: number; expiresAt: number;
   name?: string; email?: string; contactAt?: number; consentAt?: number; consentText?: string;
@@ -40,7 +41,7 @@ async function changeCart(id: string, change: (cart: ChristmasCart) => void) {
   throw Error("Your checkout is updating. Please retry.");
 }
 export async function createCart(slotId: string, albums: number) {
-  if (process.env.VERCEL_ENV !== "production") throw Error("Test pages do not save carts.");
+  if (!christmasPaymentMode()) throw Error("Test pages do not save carts.");
   const slot = (await inventoryStore.read(slotId))?.data;
   if (!slot || !validSlot(slot.date, slot.time) || !slot.published || slot.reservation || !validAlbumCount(albums) || new Date(`${slot.date}T${slot.time}:00-08:00`).getTime() <= Date.now()) throw Error("Choose an available appointment.");
   const id = randomBytes(16).toString("hex"), token = cartToken(id), now = Date.now();
@@ -49,6 +50,7 @@ export async function createCart(slotId: string, albums: number) {
   return { id, token, expiresAt: cart.expiresAt };
 }
 export async function saveCartContact(id: string, token: string, name: string, email: string, reminders: boolean) {
+  if (christmasPaymentMode() === "test" && email !== BUSINESS.email) throw Error("Local test bookings use the studio email only.");
   const cart = await getCart(id, token);
   if (!cart || cart.expiresAt <= Date.now()) throw Error("Your checkout window ended. Please choose an appointment again.");
   return changeCart(id, c => {

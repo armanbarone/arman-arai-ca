@@ -1,14 +1,11 @@
 "use client";
-import { useState } from "react";
 import "./christmas-storybook.css";
 
 const characters = [
-  { id: "nutcracker", name: "The Nutcracker", title: "Keeper of the Christmas wishes", line: "Standing tall. Guarding the good biscuits. Taking Christmas very, very seriously." },
-  { id: "grinch", name: "The Grinch", title: "A little mischief is welcome", line: "“I only came for the cookies.” Of course you did. There’s a place by the tree for you, too." },
-  { id: "elf", name: "The Elf", title: "Small hands. Big Christmas energy.", line: "Busy tying bows, hiding surprises, and making sure the little details feel a little magical." },
-  { id: "gnome", name: "The Gnome", title: "A quiet little keeper of wonder", line: "Tucked between the presents, keeping the lantern warm and the Christmas wishes safe." },
-  { id: "snowman", name: "The Snowman", title: "Cool company. Warm memories.", line: "A carrot nose, a borrowed scarf, and a very good reason to gather everyone close." },
+  { id: "nutcracker", name: "The Nutcracker" }, { id: "grinch", name: "The Grinch" },
+  { id: "elf", name: "The Elf" }, { id: "gnome", name: "The Gnome" }, { id: "snowman", name: "The Snowman" },
 ] as const;
+
 type Character = typeof characters[number]["id"];
 
 export function ChristmasCharacter({ character, className = "" }: { character: Character; className?: string }) {
@@ -57,19 +54,12 @@ export function ChristmasCharacter({ character, className = "" }: { character: C
   </svg>;
 }
 
-export default function ChristmasStorybook() {
-  const [selected, setSelected] = useState<Character>("grinch");
-  const current = characters.find(c => c.id === selected)!;
-  return <section className="xl-storybook xm-wrap" aria-labelledby="xl-title">
-    <div className="xl-stage">
-      <div className="xl-stage-stars" aria-hidden="true">✦ <span>✧</span> ✦ <span>✧</span> ✦</div>
-      <div className="xl-heading"><p className="xm-eyebrow">A LITTLE STORYBOOK CHRISTMAS</p><h2 id="xl-title">Even the Grinch<br /><em>gets a warm welcome.</em></h2><p>A little mischief. A little wonder. Plenty of room for your family’s own Christmas story.</p></div>
-      <p className="xl-swipe">Swipe to meet the Christmas crew →</p>
-      <div className="xl-cast" role="group" aria-label="Meet the Christmas characters">{characters.map(c => <button key={c.id} type="button" className={`xl-cast-member ${selected === c.id ? "xl-selected" : ""}`} aria-pressed={selected === c.id} onClick={() => setSelected(c.id)}>
-        <ChristmasCharacter character={c.id} /><span className="xl-character-name">{c.name}</span><span className="xl-character-star" aria-hidden="true">✦</span>
-      </button>)}</div>
-      <div className="xl-tale" aria-live="polite" aria-atomic="true"><span className="xl-tale-rule" aria-hidden="true">✧</span><div><h3>{current.title}</h3><p>{current.line}</p></div><span className="xl-tale-rule" aria-hidden="true">✧</span></div>
-      <p className="xl-invitation">Choose a character. There’s a little story behind every one.</p>
+export default function ChristmasBookingStrip() {
+  return <section className="xl-booking-strip xm-wrap" aria-label="Book your Christmas session">
+    <div className="xl-booking-panel">
+      <div className="xl-decoration" aria-hidden="true">{characters.map(c => <ChristmasCharacter key={c.id} character={c.id} />)}</div>
+      <div className="xl-booking-copy"><p className="xm-eyebrow">SANTA INCLUDED · NORTH VANCOUVER</p><h2>30 minutes. Three Christmas sets.</h2><p>10 edited digital photographs · $250 + GST</p></div>
+      <a className="xm-button" href="#booking">Choose your time <span aria-hidden="true">↗</span></a>
     </div>
   </section>;
 }

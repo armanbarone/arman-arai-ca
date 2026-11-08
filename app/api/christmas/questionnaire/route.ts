@@ -1,4 +1,5 @@
 import { questionnaireStatus, saveQuestionnaire } from "@/lib/christmas/questionnaire";
+import { christmasSameOrigin } from "@/lib/christmas/environment";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 const headers = { "Cache-Control": "private, no-store", "Referrer-Policy": "no-referrer", "X-Robots-Tag": "noindex, nofollow" };
@@ -8,7 +9,7 @@ export async function GET(req: Request) {
   return Response.json(result ?? { error: "This private questionnaire link is invalid or the booking is not paid." }, { status: result ? 200 : 404, headers });
 }
 export async function POST(req: Request) {
-  if (req.headers.get("origin") !== new URL(req.url).origin) return Response.json({ error: "Invalid request origin." }, { status: 403, headers });
+  if (!christmasSameOrigin(req)) return Response.json({ error: "Invalid request origin." }, { status: 403, headers });
   if (!req.headers.get("content-type")?.includes("application/json")) return Response.json({ error: "Expected JSON." }, { status: 415, headers });
   const raw = await req.text();
   if (raw.length > 20000) return Response.json({ error: "Please shorten your answers." }, { status: 413, headers });

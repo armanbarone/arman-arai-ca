@@ -2,7 +2,6 @@ import localFont from "next/font/local";
 import type { Metadata } from "next";
 import {
   Cormorant_Garamond,
-  Cormorant,
   Great_Vibes,
   UnifrakturMaguntia,
 } from "next/font/google";
@@ -27,8 +26,12 @@ const greatVibes = Great_Vibes({
 });
 // The Gazette blog-post design: plain Cormorant for the body, blackletter for
 // the nameplate. The ported gz- CSS asks for both by variable name.
-const cormorantGz = Cormorant({
-  subsets: ["latin"], weight: ["300", "400", "500", "600"], style: ["normal", "italic"],
+const cormorantGz = localFont({
+  // Keep the same family without depending on Google's build-time font URL format.
+  src: [
+    { path: "../public/fonts/cormorant/Cormorant-Variable.ttf", weight: "300 600", style: "normal" },
+    { path: "../public/fonts/cormorant/Cormorant-Variable-Italic.ttf", weight: "300 600", style: "italic" },
+  ],
   variable: "--font-cormorant-gz", display: "swap", preload: false,
 });
 const unifraktur = UnifrakturMaguntia({

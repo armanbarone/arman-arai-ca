@@ -1,0 +1,6 @@
+Cormorant variable fonts, normal and italic, from the official Google Fonts repository:
+https://github.com/google/fonts/tree/main/ofl/cormorant
+Retrieved 2026-11-07. Distributed under the bundled SIL Open Font License.
+
+Self-hosted to avoid next/font/google build failures when the upstream API emits
+font download URLs without a filename extension. Same family and weight range.

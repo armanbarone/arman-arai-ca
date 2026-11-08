@@ -25,6 +25,9 @@ function withHeaders(res: NextResponse) {
 export async function middleware(req: NextRequest) {
   const { pathname, search } = req.nextUrl;
 
+  // Cart links use their own purpose-specific token, with no ad/cache leakage.
+  if (pathname.startsWith("/christmas/cart/") || pathname.startsWith("/api/christmas/cart")) return withHeaders(NextResponse.next());
+
   // This route renders synthetic fixtures only and never grants access to a booking.
   if (
     (pathname === "/portal/preview" ||
@@ -71,6 +74,9 @@ export async function middleware(req: NextRequest) {
 
 export const config = {
   matcher: [
+    "/christmas/cart/:path*",
+    "/api/christmas/cart/:path*",
+    "/api/christmas/cart",
     "/portal/:path*",
     "/portal",
     "/admin/:path*",

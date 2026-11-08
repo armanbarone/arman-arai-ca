@@ -12,10 +12,10 @@ function browser({ path = '/christmas/confirmation', query = '', blocked = false
   const load = file => { const mod = { exports: {} }; context.module = mod; const compiled = ts.transpileModule(fs.readFileSync(require('node:path').join(__dirname, '..', file), 'utf8'), { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 } }).outputText; vm.runInContext(`(function(module,exports){${compiled}\n})(module,module.exports)`, context); return mod.exports; };
   return { window, appended, local, session, load, meta: () => (window.fbq?.queue || []).map(args => [...args]) };
 }
-const paid = { eventId: 'a'.repeat(64), paidCents: 39004, albums: 1 };
+const paid = { eventId: 'a'.repeat(64), paidCents: 33754, albums: 1 };
 
 test('private and preview pages never load general advertising tags or report a sample purchase', async () => {
-  for (const path of ['/christmas/confirmation', '/christmas/confirmation/preview', '/christmas/questionnaire', '/christmas/questionnaire/preview']) {
+  for (const path of ['/christmas/confirmation', '/christmas/confirmation/preview', '/christmas/questionnaire', '/christmas/questionnaire/preview', '/christmas/operations/preview', '/christmas/cart/return', '/christmas/cart/unsubscribe']) {
     const b = browser({ path }); const a = b.load('lib/analytics.ts');
     a.trackPageView();
     if (path !== '/christmas/confirmation') await a.trackChristmasPurchase(paid);
@@ -37,7 +37,7 @@ test('private access is removed before Meta starts; a verified purchase reports 
   assert.equal(b.appended.length, 1); assert.match(b.appended[0].src, /connect.facebook.net/);
   const events = b.meta().filter(e => e[0] === 'trackCustom');
   assert.equal(events.length, 1); assert.equal(events[0][1], 'ChristmasSessionPurchase');
-  assert.equal(events[0][2].value, 390.04); assert.equal(events[0][2].currency, 'CAD');
+  assert.equal(events[0][2].value, 337.54); assert.equal(events[0][2].currency, 'CAD');
   assert.equal(events[0][3].eventID, paid.eventId);
   assert.doesNotMatch(JSON.stringify(events), /token|private|2026-12-05|email|questionnaire|reference/);
   assert.equal(b.meta().filter(e => e[1] === 'PageView' || e[1] === 'Schedule' || e[1] === 'Purchase').length, 0);

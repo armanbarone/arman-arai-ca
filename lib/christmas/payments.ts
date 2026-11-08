@@ -10,6 +10,7 @@ import { claimSlot, validSlot, SLOT_PATTERN, publicSlots, recentBookings, type S
 import { allSlots, settings, inventoryStore, updateSlot } from "./store";
 import { authorized, bookingLink } from "./access";
 import { sendBookingNotifications } from "./notifications";
+import { syncChristmasCalendar } from "./google-calendar";
 const hash = (s: string) => createHash("sha256").update(s).digest("hex");
 let webhookReady = false;
 export async function paymentReady() {
@@ -46,7 +47,10 @@ export async function reconcileChristmasSession(s: Stripe.Checkout.Session) {
     } else if (s.status === "expired" && r.status !== "paid") delete slot.reservation;
   });
   const current = await inventoryStore.read(slotId), r = current?.data.reservation;
-  if (r?.id !== bookingId || r.status !== "paid" || r.emailsSent) return;
+  if (r?.id !== bookingId || r.status !== "paid") return;
+  // Independent effects: a client-email failure must not suppress the studio
+  // alert or calendar event. Stripe retries any failed effect with stable keys.
+  const effects = await Promise.allSettled([sendBookingNotifications(slotId), syncChristmasCalendar(slotId)]);
   if (r.invoiceId && !r.invoiceUrl) {
     const invoice = await stripeClient().invoices.retrieve(r.invoiceId);
     if (invoice.hosted_invoice_url) {
@@ -54,7 +58,8 @@ export async function reconcileChristmasSession(s: Stripe.Checkout.Session) {
       await updateSlot(slotId, s => { if (s.reservation?.id === r.id) s.reservation.invoiceUrl = r.invoiceUrl; });
     }
   }
-  await sendBookingNotifications(slotId);
+  const failed = effects.find(result => result.status === "rejected");
+  if (failed?.status === "rejected") throw failed.reason;
 }
 async function reconcileStale(slot: Slot) {
   const r = slot.reservation;
@@ -116,6 +121,7 @@ export async function startCheckout(input: { slotId: string; packageId: PackageI
     integration_identifier: "christmas-northvan-rqvkmsaz", customer_email: input.email,
     client_reference_id: id, metadata: { service: "christmas-2026", slotId: slot.id, bookingId: id, albums: String(input.albums) },
     billing_address_collection: "required", customer_creation: "always", expires_at: Math.floor(expiresAt / 1000),
+    custom_text: { submit: { message: `Your payment window ends at ${new Intl.DateTimeFormat("en-CA", { hour: "numeric", minute: "2-digit", timeZone: "America/Vancouver" }).format(new Date(expiresAt))} Vancouver time. Your appointment is confirmed after payment.` } },
     payment_intent_data: { receipt_email: input.email, shipping: { name: input.name, address: { line1: input.delivery.line1, line2: input.delivery.line2 || undefined, city: input.delivery.city, state: "BC", postal_code: input.delivery.postalCode, country: "CA" } } },
     invoice_creation: { enabled: true, invoice_data: {
       description: `${pkg.name} · North Vancouver · ${dateLabel(slot.date)} at ${timeLabel(slot.time)} Pacific · ${pkg.minutes} minutes · ${input.albums ? 20 : pkg.images} digital photographs · ${pkg.sets} sets · Santa letter and complimentary print${input.albums ? ` · ${input.albums} ten-page album(s), 20 photos each, hand-delivered` : ""}`,

@@ -71,7 +71,7 @@ const sentInMemory = new Set<string>();
 
 export function isPublicTrackingPath(path: string) {
   // Confirmation links carry a private booking token; never send them to ads.
-  if (/^\/christmas\/(confirmation|questionnaire|preview)(?:\/|$)/.test(path)) return false;
+  if (/^\/christmas\/(confirmation|questionnaire|preview|operations|cart)(?:\/|$)/.test(path)) return false;
   // /guide/<id> shows one couple's names and venue: no advertising tags on it.
   return !/^\/(portal|admin|api|guide)(?:\/|$)/.test(path);
 }

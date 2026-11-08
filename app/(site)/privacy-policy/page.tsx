@@ -30,7 +30,7 @@ export default function PrivacyPolicy() {
           Privacy Policy
         </h1>
         <p style={{ color: "var(--label)", fontSize: "0.78rem", letterSpacing: ".1em", fontFamily: "var(--font-jost)", marginBottom: 48 }}>
-          Last updated: September 2026
+          Last updated: November 2026
         </p>
 
         <div style={{ height: "0.5px", background: "var(--hairline)", marginBottom: 48 }} />
@@ -62,6 +62,11 @@ export default function PrivacyPolicy() {
             <li>Deliver your gallery and related correspondence</li>
           </ul>
           <p style={{ marginTop: 12 }}>I do not sell or rent your inquiry details. Google and Meta receive website activity and advertising identifiers to measure advertising performance. I do not send unsolicited emails or add you to mailing lists without your consent.</p>
+        </Section>
+
+        <Section title="Christmas Session Bookings and Checkout Reminders">
+          <p>Christmas sessions are offered by Arasaka Inc., operating as Arman Arai. When you submit the first checkout step, your name, email, selected appointment and album quantity are saved in private storage to continue that checkout. Details are not captured as you type. You may separately choose an optional, unchecked box to receive up to two emails if you do not finish payment. You can unsubscribe using either email; reminders also stop after payment or when the appointment or season has passed. Abandoned checkout records are removed after 30 days, while a hashed email suppression record is retained to honour unsubscribe requests.</p>
+          <p style={{ marginTop: 12 }}>When you proceed, your contact and mailing details are used for the session, Santa letter, complimentary keepsake and any albums. Stripe processes payments and sends receipts. Resend delivers booking, questionnaire and opted-in checkout emails. Vercel privately stores booking details and consent records. Google Calendar receives the appointment, contact and package details so Arman can manage the studio schedule; questionnaire answers are not included in calendar entries. Private booking, questionnaire, checkout recovery and unsubscribe pages do not load advertising tags. The public landing page uses the measurement tools described below; a verified paid confirmation reports only the campaign, payment value, currency and a duplicate-prevention identifier to Meta.</p>
         </Section>
 
         <Section title="Third Party Services">

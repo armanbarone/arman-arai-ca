@@ -1,14 +1,14 @@
 import "server-only";
 import { ConflictError, readJson, writeJson } from "@/lib/portal/store";
 import { seasonalSlots, BOOKING_POLICY } from "./catalog";
-import { mergeSeasonalInventory, overlaps, type ChristmasSettings, type Slot, type InventoryStore } from "./inventory";
+import { mergeSeasonalInventory, recalculateReservationBlocks, overlaps, type ChristmasSettings, type Slot, type InventoryStore } from "./inventory";
 export const SETTINGS_PATH = "christmas/2026/settings.json";
 const INVENTORY_PATH = "christmas/2026/inventory.json";
 const CALENDAR_PATH = "christmas/2026/calendar.json";
 export const slotPath = (id: string) => `christmas/2026/slots/${id}.json`;
 type Calendar = { season?: string; slots: Slot[] };
 const SEASON_VERSION = "nov09-dec20-hourly-albums-v3";
-const CALENDAR_VERSION = "nov09-dec20-all-offered-v4";
+const CALENDAR_VERSION = "nov09-dec20-half-hour-v5";
 const defaults: ChristmasSettings = { enabled: true, studioAddress: "583 E Kings Rd, North Vancouver, BC", postalCode: "V7N 1J2", arrivalNotes: "Plenty of street parking. Please arrive dressed and ready for your appointment.", cancellationPolicy: BOOKING_POLICY, publishableKey: "", launchVersion: SEASON_VERSION };
 export async function settings() {
   for (let attempt = 0; attempt < 5; attempt++) {
@@ -50,6 +50,7 @@ export const inventoryStore: InventoryStore = {
     if (at < 0) throw Error("Appointment not found.");
     if (data.reservation && !row.data.slots[at].reservation && row.data.slots.some(s => s.id !== id && s.reservation && overlaps(s, data))) throw Error("That appointment overlaps an existing booking. Choose another time.");
     row.data.slots[at] = data;
+    recalculateReservationBlocks(row.data.slots);
     await writeJson(CALENDAR_PATH, row.data, { etag });
   },
   conflict: error => error instanceof ConflictError,
@@ -69,7 +70,7 @@ export async function addSlot(slot: Slot) {
     const row = await calendar();
     const existing = row.data.slots.find(s => s.id === slot.id);
     if (existing?.reservation) throw Error("A reserved appointment cannot be changed.");
-    if (row.data.slots.some(s => s.id !== slot.id && overlaps(s, slot))) throw Error("Appointments must be at least 60 minutes apart.");
+    if (row.data.slots.some(s => s.id !== slot.id && overlaps(s, slot))) throw Error("Appointments must be at least 30 minutes apart and cannot overlap existing bookings.");
     if (existing) Object.assign(existing, slot); else row.data.slots.push(slot);
     row.data.slots.sort((a, b) => a.id.localeCompare(b.id));
     try { await writeJson(CALENDAR_PATH, row.data, { etag: row.etag }); return; }

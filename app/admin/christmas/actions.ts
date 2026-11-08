@@ -6,6 +6,20 @@ import { settings, SETTINGS_PATH, allSlots, addSlot, updateSlot } from "@/lib/ch
 import { validSlot, SLOT_PATTERN } from "@/lib/christmas/inventory";
 import { paymentReady } from "@/lib/christmas/payments";
 import { christmasCheckoutCatalog } from "@/lib/christmas/stripe-catalog";
+import { calendarAuthorizationUrl, calendarConnectionState, syncChristmasCalendar } from "@/lib/christmas/google-calendar";
+import { redirect } from "next/navigation";
+export async function connectChristmasGoogleCalendar() {
+  await requireAdmin();
+  redirect(await calendarAuthorizationUrl());
+}
+export async function syncChristmasGoogleCalendar() {
+  await requireAdmin();
+  const state = calendarConnectionState();
+  if (!state.activeEnvironment || !state.configured) throw Error("Authorize the website’s Google Calendar connection after launch before syncing bookings.");
+  const rows = await allSlots();
+  for (const slot of rows.filter(s => s.reservation?.status === "paid")) await syncChristmasCalendar(slot.id);
+  revalidatePath("/admin/christmas");
+}
 export async function saveChristmasSettings(form: FormData) {
   await requireAdmin();
   const text = (k: string, max = 2000) => String(form.get(k) || "").trim().slice(0, max);
@@ -21,7 +35,7 @@ export async function saveChristmasSettings(form: FormData) {
 export async function releaseChristmasSlot(form: FormData) {
   await requireAdmin();
   const date = String(form.get("date") || ""), time = String(form.get("time") || "");
-  if (!validSlot(date, time)) throw Error("Choose an hourly appointment from November 9 through December 20 within the weekday/weekend hours, excluding December 10–12.");
+  if (!validSlot(date, time)) throw Error("Choose an on-the-hour or half-hour appointment from November 9 through December 20 within the weekday/weekend hours, excluding December 10–12.");
   const rows = await allSlots();
   if (rows.length >= 1000) throw Error("The calendar already contains 1,000 appointments.");
   await addSlot({ id: `${date}_${time.replace(":", "")}`, date, time, santa: true, published: true });

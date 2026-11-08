@@ -14,7 +14,7 @@ function addToCalendar(c: Confirmation) {
   const a = document.createElement("a"); a.href = url; a.download = "Christmas-session.ics"; a.click(); setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 export default function ChristmasConfirmation({ preview = false }: { preview?: boolean }) {
-  const sample: Confirmation = { status: "paid", reference: "SAMPLE-NOT-A-BOOKING", date: "2026-11-21", time: "10:00", package: "Christmas with Santa", minutes: 45, images: 20, sets: 3, albums: 1, santa: true, paidCents: 39004, address: "583 E Kings Rd, North Vancouver, BC", postalCode: "V7N 1J2", arrivalNotes: "Plenty of street parking. Please arrive dressed and ready.", email: "alex@example.invalid", questionnaireUrl: "/christmas/questionnaire/preview", cancellationPolicy: "Cancel at least 48 hours before your appointment for a full refund. One free reschedule, subject to availability through December 20." };
+  const sample: Confirmation = { status: "paid", reference: "SAMPLE-NOT-A-BOOKING", date: "2026-11-21", time: "10:00", package: "Christmas with Santa", minutes: 30, images: 20, sets: 3, albums: 1, santa: true, paidCents: 33754, address: "583 E Kings Rd, North Vancouver, BC", postalCode: "V7N 1J2", arrivalNotes: "Plenty of street parking. Please arrive dressed and ready.", email: "alex@example.invalid", questionnaireUrl: "/christmas/questionnaire/preview", cancellationPolicy: "Cancel at least 48 hours before your appointment for a full refund. One free reschedule, subject to availability through December 20." };
   const [booking, setBooking] = useState<Confirmation | null>(preview ? sample : null), [error, setError] = useState("");
   useEffect(() => {
     if (preview) return;

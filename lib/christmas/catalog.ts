@@ -1,8 +1,8 @@
 // Prices and taxes are integer Canadian cents, including per-line rounding.
 export const PACKAGES = [{
-  id: "santa", name: "Christmas with Santa", tag: "YOUR FAMILY. A LITTLE SANTA MAGIC.", price: 30000, minutes: 45, images: 10, sets: 3, santa: true,
+  id: "santa", name: "Christmas with Santa", tag: "YOUR FAMILY. A LITTLE SANTA MAGIC.", price: 25000, minutes: 30, images: 10, sets: 3, santa: true,
   description: "A private Christmas visit, a story to share, and photographs of your favourite people.",
-  features: ["Approximately 45 minutes with Santa", "10 edited, full-resolution digital photographs", "Photographs across all three Christmas sets", "Santa letter mailed to the kids", "A complimentary printed keepsake as a thank-you gift", "Cookies and warm milk for a cozy Christmas visit", "Private online gallery + personal print rights"],
+  features: ["A 30-minute session with Santa", "10 edited, full-resolution digital photographs", "Photographs across all three Christmas sets", "Santa letter mailed to the kids", "A complimentary printed keepsake as a thank-you gift", "Cookies and warm milk for a cozy Christmas visit", "Private online gallery + personal print rights"],
 }] as const;
 export const ALBUM_ADDON = { name: "Christmas keepsake album", pages: 10, images: 20, prices: [6700, 5500, 4500], description: "A 10-page printed album with 20 photographs, hand-delivered across Greater Vancouver, as far as Surrey." } as const;
 export const GST_PERCENT = 5, PST_PERCENT = 7;
@@ -35,14 +35,14 @@ export interface Availability {
 export const CALENDAR_START = "2026-11-01", SEASON_START = "2026-11-09", SEASON_END = "2026-12-20";
 export const BLOCKED_DATES = new Set(["2026-12-10", "2026-12-11", "2026-12-12"]);
 export const BOOKING_POLICY = "Cancel at least 48 hours before your appointment for a full refund. Cancellations within 48 hours are non-refundable. One reschedule is free, subject to an available appointment on or before December 20, 2026. Contact i@armanarai.com to cancel or reschedule.";
-// One-hour allocations leave 15 minutes after each approximately 45-minute visit.
+// Thirty-minute appointments start on the hour and half-hour.
 export function dayHours(date: string): [number, number] {
   const weekday = new Date(date + "T12:00:00Z").getUTCDay();
   return weekday === 0 ? [12, 15] : weekday === 6 ? [10, 16] : [9, 17];
 }
 export function isSeasonDate(date: string) { return date >= SEASON_START && date <= SEASON_END && !BLOCKED_DATES.has(date); }
 export function scheduledTime(date: string, time: string) {
-  if (!/^2026-(11|12)-\d{2}$/.test(date) || !/^\d{2}:00$/.test(time)) return false;
+  if (!/^2026-(11|12)-\d{2}$/.test(date) || !/^\d{2}:(00|30)$/.test(time)) return false;
   const d = new Date(date + "T12:00:00Z");
   if (!Number.isFinite(d.getTime()) || d.toISOString().slice(0, 10) !== date) return false;
   const [start, end] = dayHours(date), hour = Number(time.slice(0, 2));
@@ -52,8 +52,8 @@ export function seasonalSlots(): PublicSlot[] {
   const result: PublicSlot[] = [];
   for (let day = new Date(CALENDAR_START + "T12:00:00Z"); day.toISOString().slice(0, 10) <= SEASON_END; day.setUTCDate(day.getUTCDate() + 1)) {
     const date = day.toISOString().slice(0, 10), [start, end] = dayHours(date);
-    for (let hour = start; hour < end; hour++) {
-      const time = `${String(hour).padStart(2, "0")}:00`;
+    for (let minute = start * 60; minute < end * 60; minute += 30) {
+      const time = `${String(Math.floor(minute / 60)).padStart(2, "0")}:${String(minute % 60).padStart(2, "0")}`;
       const status: SlotStatus = !isSeasonDate(date) ? "unavailable" : "available";
       result.push({ id: `${date}_${time.replace(":", "")}`, date, time, santa: true, available: status === "available", status });
     }

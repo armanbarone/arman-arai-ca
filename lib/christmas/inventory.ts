@@ -15,12 +15,14 @@ export interface Reservation {
   packageSnapshot?: { name: string; minutes: number; images: number; sets: number; santa: boolean };
   sessionId?: string; invoiceId?: string; invoiceUrl?: string; paidCents?: number; paymentIntent?: string; emailsSent?: boolean;
   welcomeSentAt?: number; questionnaireSentAt?: number; studioSentAt?: number;
+  googleCalendarEventId?: string; googleCalendarFingerprint?: string; googleCalendarSyncedAt?: number; googleCalendarEventUrl?: string; googleCalendarLastError?: string;
   questionnaire?: { answers: FamilyQuestionnaire; submittedAt: number; updatedAt: number };
   bookingDetails: { studioAddress: string; postalCode: string; arrivalNotes: string; cancellationPolicy: string };
 }
 export interface Slot {
   id: string; date: string; time: string; santa: boolean; published: boolean; reservation?: Reservation;
   manuallyBlocked?: boolean;
+  reservationBlocked?: boolean;
 }
 export interface Versioned<T> { data: T; etag: string }
 export interface InventoryStore {
@@ -32,9 +34,15 @@ export const SLOT_PATTERN = /^2026-(?:11|12)-\d{2}_\d{4}$/;
 export function validSlot(date: string, time: string) {
   return isSeasonDate(date) && scheduledTime(date, time);
 }
+export function allocatedMinutes(reservation?: Pick<Reservation, "packageSnapshot">) {
+  if (!reservation) return 30;
+  const minutes = reservation.packageSnapshot?.minutes ?? 20;
+  // Honour the time already promised to legacy 20/45-minute bookings.
+  return minutes === 30 ? 30 : minutes + (minutes <= 20 ? 10 : 15);
+}
 export function overlaps(a: Pick<Slot, "date" | "time" | "reservation">, b: Pick<Slot, "date" | "time" | "reservation">) {
   const minutes = (t: string) => { const [h, m] = t.split(":").map(Number); return h * 60 + m; };
-  const duration = (s: typeof a) => s.reservation ? (s.reservation.packageSnapshot?.minutes ?? 20) + ((s.reservation.packageSnapshot?.minutes ?? 20) <= 20 ? 10 : 15) : 60;
+  const duration = (s: typeof a) => allocatedMinutes(s.reservation);
   return a.date === b.date && minutes(a.time) < minutes(b.time) + duration(b) && minutes(b.time) < minutes(a.time) + duration(a);
 }
 export async function claimSlot(store: InventoryStore, id: string, booking: Reservation, needsSanta: boolean): Promise<Slot> {
@@ -52,6 +60,17 @@ export async function claimSlot(store: InventoryStore, id: string, booking: Rese
   throw Error("The calendar is updating. Please try again.");
 }
 
+export function recalculateReservationBlocks(rows: Slot[]) {
+  for (const s of rows) if (s.reservationBlocked) {
+    s.published = !s.manuallyBlocked && validSlot(s.date, s.time);
+    delete s.reservationBlocked;
+  }
+  for (const reserved of rows.filter(s => s.reservation)) for (const s of rows) {
+    if (s.id !== reserved.id && !s.reservation && s.published && overlaps(s, reserved)) { s.published = false; s.reservationBlocked = true; }
+  }
+  return rows;
+}
+
 // Retain every purchased/held appointment and release decision when the season changes.
 export function mergeSeasonalInventory(existing: Slot[], generated: Slot[]): Slot[] {
   const byId = new Map(existing.map(s => [s.id, structuredClone(s)]));
@@ -61,9 +80,7 @@ export function mergeSeasonalInventory(existing: Slot[], generated: Slot[]): Slo
   });
   const ids = new Set(rows.map(s => s.id));
   for (const old of existing) if (!ids.has(old.id)) rows.push({ ...old, published: false });
-  for (const reserved of existing.filter(s => s.reservation))
-    for (const s of rows) if (s.id !== reserved.id && overlaps(s, reserved)) s.published = false;
-  return rows.sort((a, b) => a.id.localeCompare(b.id));
+  return recalculateReservationBlocks(rows).sort((a, b) => a.id.localeCompare(b.id));
 }
 
 export function publicSlots(rows: Slot[], now = Date.now()): PublicSlot[] {

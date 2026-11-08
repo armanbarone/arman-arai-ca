@@ -2,6 +2,8 @@
 import { useEffect, useRef, useState, type FormEvent, type ImgHTMLAttributes } from "react";
 import { PACKAGES, ALBUM_ADDON, PREVIEW_AVAILABILITY, dateLabel, timeLabel, money, sessionQuote, type Availability, type PackageId } from "../../lib/christmas/catalog";
 import ChristmasAtmosphere from "./ChristmasAtmosphere";
+import ChristmasStorybook from "./ChristmasStorybook";
+import ChristmasCheckoutDetails from "./ChristmasCheckoutDetails";
 import "./christmas.css";
 
 const Arrow = () => <span aria-hidden="true">↗</span>;
@@ -14,7 +16,7 @@ function ProtectedPhoto(props: ImgHTMLAttributes<HTMLImageElement>) {
   </span>;
 }
 
-export default function ChristmasExperience({ preview = false }: { preview?: boolean }) {
+export default function ChristmasExperience({ preview = false, storybook = false }: { preview?: boolean; storybook?: boolean }) {
   const [data, setData] = useState<Availability>(preview ? PREVIEW_AVAILABILITY : { mode: "closed", slots: [], location: "North Vancouver, BC", cancellationPolicy: "", publishableKey: "" });
   const [notice, setNotice] = useState("");
   const [loading, setLoading] = useState(!preview);
@@ -93,6 +95,13 @@ export default function ChristmasExperience({ preview = false }: { preview?: boo
     else modalRef.current?.close();
   }, [step]);
 
+  useEffect(() => {
+    if (preview) return;
+    const params = new URLSearchParams(location.search), date = params.get("date"), quantity = Number(params.get("albums"));
+    if (date && /^2026-(11|12)-\d{2}$/.test(date)) { setSelectedDate(date); setMonth(Number(date.slice(5, 7))); }
+    if (params.has("albums") && Number.isInteger(quantity) && quantity >= 0 && quantity <= 3) setAlbums(quantity);
+  }, [preview]);
+
   function choosePackage(_id: PackageId) {
     setSelectedSlot(""); setSelectedDate(""); setError("");
     document.getElementById("booking")?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -107,7 +116,7 @@ export default function ChristmasExperience({ preview = false }: { preview?: boo
     const f = new FormData(e.currentTarget); setBusy(true);
     try {
       const response = await fetch("/api/christmas/checkout", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({
-        slotId: slot.id, packageId: pkg.id, name: f.get("name"), email: f.get("email"), phone: f.get("phone"), consent: f.get("consent") === "on", website: f.get("website") || "", acceptedPolicy: data.cancellationPolicy, expectedSubtotal: subtotal, expectedTotal: quote.total, albums, shareActivity: f.get("shareActivity") === "on", albumDeliveryConsent: f.get("albumDeliveryConsent") === "on",
+        cartId: f.get("cartId"), cartToken: f.get("cartToken"), slotId: slot.id, packageId: pkg.id, name: f.get("name"), email: f.get("email"), phone: f.get("phone"), consent: f.get("consent") === "on", website: f.get("website") || "", acceptedPolicy: data.cancellationPolicy, expectedSubtotal: subtotal, expectedTotal: quote.total, albums, shareActivity: f.get("shareActivity") === "on", albumDeliveryConsent: f.get("albumDeliveryConsent") === "on",
         delivery: { letterNames: f.get("letterNames"), line1: f.get("mailLine1"), line2: f.get("mailLine2") || "", city: f.get("mailCity"), postalCode: f.get("mailPostalCode"), province: "BC", country: "CA" },
       }) });
       const result = await response.json();
@@ -136,7 +145,8 @@ export default function ChristmasExperience({ preview = false }: { preview?: boo
           <figure className="xm-photo xm-photo-right"><ProtectedPhoto src="/christmas/family-window-2026.webp?v=clean-1" alt="A family together on a Christmas sofa beside a snowy forest window" width="1200" height="900" loading="eager" /><figcaption>A Christmas moment, together <span>✧</span></figcaption></figure>
         </div>
       </section>
-      <div className="xm-ribbon"><span>PRIVATE FAMILY SESSIONS</span><Star /><span>$300 WITH SANTA · THREE CHRISTMAS SETS</span><Star /><span>PHOTOGRAPHS BY ARMAN ARAI</span></div>
+      <div className="xm-ribbon"><span>PRIVATE FAMILY SESSIONS</span><Star /><span>$250 WITH SANTA · THREE CHRISTMAS SETS</span><Star /><span>PHOTOGRAPHS BY ARMAN ARAI</span></div>
+      {storybook && <ChristmasStorybook />}
 
       <section id="experience" className="xm-experience xm-wrap">
         <div className="xm-story-image"><ProtectedPhoto src="/christmas/santa-portrait-2026.webp?v=clean-1" alt="Santa and a little boy laughing together in the Christmas studio" width="1200" height="1789" loading="lazy" /><div className="xm-story-caption">Psst… he’s making<br /><em>a little time for you.</em></div></div>
@@ -151,12 +161,12 @@ export default function ChristmasExperience({ preview = false }: { preview?: boo
       <section id="packages" className="xm-packages"><div className="xm-wrap"><div className="xm-section-heading"><p className="xm-eyebrow">A LITTLE SOMETHING FOR YOUR FAMILY</p><h2>One session.<br /><em>All the magic.</em></h2><p>Family photographs, a private Santa visit, and memories to bring home.</p></div>
         <div className="xm-package-grid">{PACKAGES.map(p => <article key={p.id} className={`xm-package ${p.id === "santa" ? "xm-package-featured" : ""}`}>
           <div className="xm-package-ornament" aria-hidden="true">{p.santa ? "✦" : "❄"}</div><div className="xm-package-top"><span className="xm-eyebrow">{p.tag}</span>{p.santa && <span className="xm-santa-label">Santa’s on the guest list</span>}</div>
-          <h3>{p.name}</h3><p className="xm-package-description">{p.description}</p><div className="xm-price">{money(p.price)}<span>CAD + GST · $315 total</span></div>
+          <h3>{p.name}</h3><p className="xm-package-description">{p.description}</p><div className="xm-price">{money(p.price)}<span>CAD + GST · $262.50 total</span></div>
           <ul>{p.features.map(f => <li key={f}><Check />{f}</li>)}</ul>
           {!p.santa && <p className="xm-no-santa">Family portraits · Santa is not included</p>}
           <button onClick={() => choosePackage(p.id)} className="xm-button">{p.santa ? "Book a visit with Santa" : "Book our family session"} <Arrow /></button>
         </article>)}</div>
-        <p className="xm-package-foot">One household, up to five people. One $300 CAD package, plus 5% GST ($315 total). Full payment reserves your appointment.</p>
+        <p className="xm-package-foot">One household, up to five people. One $250 CAD package, plus 5% GST ($262.50 total). Full payment reserves your appointment.</p>
       </div></section>
 
       <section className="xm-album-banner" aria-labelledby="xm-album-banner-title"><div className="xm-album-banner-panel">
@@ -171,7 +181,7 @@ export default function ChristmasExperience({ preview = false }: { preview?: boo
         {data.mode === "live" && remaining > 0 && remaining <= 3 && <p className="xm-availability-note" role="status">{remaining === 1 ? "One appointment remains" : `${remaining} appointments remain`} for this collection in the current release.</p>}
         {data.mode === "preview" && <p className="xm-availability-note">Try the booking experience below. November 9–December 20. Sample availability only; preview appointments are not reserved.</p>}
         {data.mode === "closed" && !loading ? <div className="xm-closed"><Star /><h3>A little Christmas is on its way.</h3><p>{data.message || "Bookings are not open yet."}</p><a className="xm-button" href="mailto:i@armanarai.com?subject=Christmas%20sessions%202026">Ask about Christmas sessions <Arrow /></a></div> : <div className="xm-booking-grid">
-          <div className="xm-calendar-panel"><p className="xm-eyebrow">CHRISTMAS WITH SANTA · $300 + GST</p><p className="xm-calendar-hours">Mon–Fri 9am–5pm · Sat 10am–4pm · Sun 12–3pm<br />November 9–December 20 · Pacific time<br />December 10–12 unavailable</p><p className="xm-eyebrow xm-calendar-step">01 · YOUR DATE</p><div className="xm-calendar-heading"><h3>{month === 11 ? "November" : "December"} <span>2026</span></h3><div><button disabled={month === 11} onClick={() => setMonth(11)} aria-label="Show November">←</button><button disabled={month === 12} onClick={() => setMonth(12)} aria-label="Show December">→</button></div></div>
+          <div className="xm-calendar-panel"><p className="xm-eyebrow">CHRISTMAS WITH SANTA · $250 + GST</p><p className="xm-calendar-hours">Mon–Fri 9am–5pm · Sat 10am–4pm · Sun 12–3pm<br />November 9–December 20 · Pacific time<br />December 10–12 unavailable</p><p className="xm-eyebrow xm-calendar-step">01 · YOUR DATE</p><div className="xm-calendar-heading"><h3>{month === 11 ? "November" : "December"} <span>2026</span></h3><div><button disabled={month === 11} onClick={() => setMonth(11)} aria-label="Show November">←</button><button disabled={month === 12} onClick={() => setMonth(12)} aria-label="Show December">→</button></div></div>
             <div className="xm-calendar" aria-label={`${month === 11 ? "November" : "December"} 2026 appointments`}><div className="xm-weekdays">{["S", "M", "T", "W", "T", "F", "S"].map((d, i) => <span key={i}>{d}</span>)}</div><div className="xm-days">{Array.from({ length: firstWeekday }, (_, i) => <span key={`empty-${i}`} />)}{Array.from({ length: dayCount }, (_, i) => {
               const day = i + 1, date = `2026-${month}-${String(day).padStart(2, "0")}`;
               const open = eligible.filter(s => s.date === date && s.available).length;
@@ -191,8 +201,8 @@ export default function ChristmasExperience({ preview = false }: { preview?: boo
       </div></section>
 
       <section id="faq" className="xm-faq xm-wrap"><div><p className="xm-eyebrow">BEFORE YOU COME BY</p><h2>The little<br /><em>details.</em></h2><p>Something else on your mind?<br /><a href="mailto:i@armanarai.com">Ask Arman ↗</a></p></div><div className="xm-faq-list">{[
-        ["Is Santa included?", "Yes. There is one $300 CAD package with Santa, three styled sets and 10 edited digital photographs in an approximately 45-minute session. Arman is Santa. A mailed Santa letter, a complimentary printed keepsake gift, cookies and warm milk are included. With 5% GST, the base total is $315 CAD."],
-        ["When can we book?", "Sessions run November 9–December 20, 2026. Monday–Friday 9am–5pm, Saturday 10am–4pm, Sunday noon–3pm. December 10–12 is unavailable. Appointments start hourly to allow approximately 45 minutes plus changeover. All times are Pacific. All available appointment times are shown in the calendar."],
+        ["Is Santa included?", "Yes. There is one $250 CAD package with Santa, three styled sets and 10 edited digital photographs in an 30-minute session. Arman is Santa. A mailed Santa letter, a complimentary printed keepsake gift, cookies and warm milk are included. With 5% GST, the base total is $262.50 CAD."],
+        ["When can we book?", "Sessions run November 9–December 20, 2026. Monday–Friday 9am–5pm, Saturday 10am–4pm, Sunday noon–3pm. December 10–12 is unavailable. Appointments start on the hour and half-hour for 30-minute sessions. All times are Pacific. All available appointment times are shown in the calendar."],
         ["Can we add printed albums?", "Yes. A 10-page album with 20 photos is $67. Add a second copy for $55 and a third for $45. Plus tax. Adding an album also gives you 20 edited digital photos. Hand delivery is included across Greater Vancouver, through Surrey. Delivery is arranged after your photo selections; pre-Christmas delivery is not guaranteed."],
         ["What arrives in the mail?", "A Santa letter for the kids with one special printed keepsake from your session enclosed. Enter the names for the letter and your BC mailing address at checkout. Postage is included. Postal arrival dates vary, so a pre-Christmas arrival is not guaranteed."],
         ["Are cookies and warm milk provided?", "Yes, cookies and warm milk are included. Please contact us about food allergies or dietary needs before your visit."],
@@ -207,10 +217,10 @@ export default function ChristmasExperience({ preview = false }: { preview?: boo
     </main>
     <footer className="xm-footer"><a className="xm-brand" href="https://www.armanarai.ca"><span className="xm-brand-star" aria-hidden="true">✦</span><span>Christmas at Arman’s<small>PHOTOGRAPHS BY ARMAN ARAI · NORTH VANCOUVER</small></span></a><div><a href="mailto:i@armanarai.com">i@armanarai.com</a><a href="https://www.armanarai.ca">Wedding photography ↗</a></div><div className="xm-footer-bottom"><span>© 2026 Arasaka Inc., operating as Arman Arai.</span><span><a href="https://www.armanarai.ca/privacy-policy">Privacy</a> · <a href="https://www.armanarai.ca/terms-of-service">Terms</a></span></div></footer>
     {activity && <div className="xm-activity" role="status"><span aria-hidden="true">✓</span><div><strong>{activity}</strong><small>Recent confirmed booking</small></div><button type="button" aria-label="Dismiss recent booking" onClick={()=>setActivity("")}>×</button></div>}
-    <div className="xm-mobile-cta"><span>Your little Christmas<small>$300 with Santa · 3 sets + keepsake</small></span><a className="xm-button" href="#booking">Find a time <Arrow /></a></div>
+    <div className="xm-mobile-cta"><span>Your little Christmas<small>$250 with Santa · 3 sets + keepsake</small></span><a className="xm-button" href="#booking">Find a time <Arrow /></a></div>
     <dialog ref={modalRef} aria-label="Book your Christmas session" className="xm-dialog" onCancel={e => { e.preventDefault(); if (!busy) closeModal(); }} onClick={e => { if (e.target === e.currentTarget && !busy) closeModal(); }}><div className="xm-dialog-inner"><button className="xm-dialog-close" aria-label="Close booking" onClick={closeModal} disabled={busy}>×</button>
       {step === "demo" ? <div className="xm-demo-complete"><Star /><p className="xm-eyebrow">YOUR BOOKING PREVIEW</p><h2>A little Christmas,<br /><em>ready to book.</em></h2><p>{pkg.name}<br />{slot && `${dateLabel(slot.date)} · ${timeLabel(slot.time)}`}<br />{money(subtotal)} + applicable taxes · {money(quote.total)} CAD total{albums ? ` · ${albums} album(s) included` : ""}</p><p className="xm-demo-notice">This is a design preview. No payment has been taken, no contact details have been sent, and no appointment has been reserved.</p><button className="xm-button" onClick={closeModal}>Back to the Christmas page <Arrow /></button></div>
-      : <><p className="xm-eyebrow">YOUR APPOINTMENT · YOUR DETAILS</p><h2>Let’s make<br /><em>it yours.</em></h2><div className="xm-dialog-summary"><strong>{pkg.name}</strong><span>{slot && `${dateLabel(slot.date)} · ${timeLabel(slot.time)}`} · Approximately {pkg.minutes} minutes</span><span>{money(subtotal)} + applicable taxes · {money(quote.total)} CAD total{albums ? ` · ${albums} album(s) included` : ""}</span></div><form onSubmit={beginPayment} className="xm-contact-form"><label>Your name<input name="name" autoComplete="name" minLength={2} maxLength={100} required placeholder="First and last name" /></label><label>Email address<input name="email" type="email" autoComplete="email" required placeholder="you@example.com" /></label><label>Phone number<input name="phone" type="tel" autoComplete="tel" minLength={7} maxLength={35} required placeholder="For your appointment" /></label><fieldset><legend>Santa’s special delivery</legend><p className="xm-small">For your mailed Santa letter and printed keepsake. BC postage is included.</p><label>Names for Santa’s letter<input name="letterNames" maxLength={160} required placeholder="Children’s first names or your family name" /></label><label>Mailing street address<input name="mailLine1" autoComplete="shipping address-line1" minLength={3} maxLength={150} required /></label><label>Apartment / unit (if applicable)<input name="mailLine2" autoComplete="shipping address-line2" maxLength={100} /></label><label>City<input name="mailCity" autoComplete="shipping address-level2" minLength={2} maxLength={100} required /></label><label>BC postal code<input name="mailPostalCode" autoComplete="shipping postal-code" maxLength={7} pattern="[Vv][0-9][A-Za-z] ?[0-9][A-Za-z][0-9]" required placeholder="V7L 1A1" /></label><p className="xm-small">British Columbia, Canada. Contact Arman before booking if your letter needs to be sent elsewhere.</p></fieldset>{albums > 0 && <label className="xm-activity-consent"><input type="checkbox" name="albumDeliveryConsent" required /><span>My album delivery address is in Greater Vancouver, as far as Surrey. Delivery will be arranged after my photo selections; pre-Christmas delivery is not guaranteed.</span></label>}<label className="xm-activity-consent"><input type="checkbox" name="shareActivity" /><span>Optional: show my first name and city in a recent-booking message on this page. My contact details and appointment time stay private.</span></label><label className="xm-honeypot" aria-hidden="true">Website<input name="website" tabIndex={-1} autoComplete="off" /></label><div className="xm-policy"><p>{data.cancellationPolicy}</p><label><input type="checkbox" name="consent" required /><span>I agree to the booking policy above and the <a href="https://www.armanarai.ca/terms-of-service" target="_blank" rel="noreferrer">terms</a>. I understand the selected collection’s inclusions and appointment time.</span></label></div>{error && <p role="alert" className="xm-error">{error}</p>}<button className="xm-button" disabled={busy}>{busy ? "Opening secure payment…" : data.mode === "preview" ? "Preview checkout" : "Continue to secure payment"} <Arrow /></button><p className="xm-small">{data.mode === "preview" ? "Preview only. These details are not sent or saved." : "Your appointment is confirmed only after successful payment. Your contact details are used for your booking."}</p></form></>}
+      : <><p className="xm-eyebrow">YOUR APPOINTMENT · YOUR DETAILS</p><h2>Let’s make<br /><em>it yours.</em></h2><div className="xm-dialog-summary"><strong>{pkg.name}</strong><span>{slot && `${dateLabel(slot.date)} · ${timeLabel(slot.time)}`} · Approximately {pkg.minutes} minutes</span><span>{money(subtotal)} + applicable taxes · {money(quote.total)} CAD total{albums ? ` · ${albums} album(s) included` : ""}</span></div>{step === "details" && slot && <ChristmasCheckoutDetails slotId={slot.id} albums={albums} preview={preview} busy={busy} error={error} policy={data.cancellationPolicy} onPayment={beginPayment} onExpired={() => { closeModal(); setSelectedSlot(""); }} />}</>}
     </div></dialog>
   </div>;
 }

@@ -23,6 +23,24 @@ export async function calendarAuthorizationUrl() {
   return result.url;
 }
 
+/** Verify the website's grant against the intended calendar. The field mask
+ * returns only the access role; personal event contents are never requested. */
+export async function calendarConnectionHealth() {
+  const state = calendarConnectionState();
+  if (!state.activeEnvironment) return { status: "preview" as const };
+  if (!state.configured) return { status: "setup_required" as const };
+  try {
+    const token = await getToken(state.connector, tokenParams, { forceRefresh: true });
+    const url = `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(BUSINESS.email)}/events?maxResults=1&fields=accessRole`;
+    const response = await request(token, url, "GET");
+    if (!response.ok) return { status: "not_connected" as const };
+    const calendar = await response.json() as { accessRole?: string };
+    return { status: calendar.accessRole === "owner" ? "connected" as const : "not_connected" as const };
+  } catch {
+    return { status: "not_connected" as const };
+  }
+}
+
 export function christmasCalendarEvent(slot: Slot) {
   const r = slot.reservation;
   if (!r || r.status !== "paid") throw Error("Only paid Christmas bookings can enter Google Calendar.");

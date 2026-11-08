@@ -1,7 +1,7 @@
 const { test } = require('node:test');
 const assert = require('node:assert/strict');
 const { loader } = require('./wedding-test-loader.cjs');
-function harness(t, { mode='production', configured=true, failOnce=false, wrongExisting=false }={}) {
+function harness(t, { mode='production', configured=true, failOnce=false, wrongExisting=false, calendarRole='owner' }={}) {
   const priorFetch=global.fetch, priorEnv=process.env.VERCEL_ENV, priorUid=process.env.CHRISTMAS_GOOGLE_CONNECTOR_UID;
   process.env.VERCEL_ENV=mode; configured ? process.env.CHRISTMAS_GOOGLE_CONNECTOR_UID='oauth/christmas-bookings' : delete process.env.CHRISTMAS_GOOGLE_CONNECTOR_UID;
   t.after(()=>{global.fetch=priorFetch;priorEnv===undefined?delete process.env.VERCEL_ENV:process.env.VERCEL_ENV=priorEnv;priorUid===undefined?delete process.env.CHRISTMAS_GOOGLE_CONNECTOR_UID:process.env.CHRISTMAS_GOOGLE_CONNECTOR_UID=priorUid;});
@@ -16,6 +16,10 @@ function harness(t, { mode='production', configured=true, failOnce=false, wrongE
     const body=opts.body?JSON.parse(opts.body):null;calls.push({url,method:opts.method,body});
     assert.ok(url.startsWith('https://www.googleapis.com/calendar/v3/calendars/i%40armanarai.com/events'));
     if(failOnce){failOnce=false;return new Response('{}',{status:503});}
+    if(opts.method==='GET' && new URL(url).searchParams.get('fields')==='accessRole') {
+      assert.equal(new URL(url).searchParams.get('maxResults'),'1');
+      return Response.json({accessRole:calendarRole});
+    }
     if(opts.method==='POST'){
       if(events.has(body.id)||wrongExisting)return new Response('{}',{status:409});
       const value={...body,htmlLink:'https://www.google.com/calendar/event?eid=offline'};events.set(body.id,value);return Response.json(value);
@@ -56,4 +60,15 @@ test('changed booking updates its existing Google event after verifying ownershi
 });
 test('an unrelated event cannot be overwritten on a duplicate identifier response',async t=>{
   const h=harness(t,{wrongExisting:true});await assert.rejects(h.api.syncChristmasCalendar(h.row.id),/unrelated/);assert.equal(h.calls.some(c=>c.method==='PATCH'),false);assert.equal(h.row.reservation.status,'paid');
+});
+
+test('connection health requires a live grant for the intended calendar without reading event contents',async t=>{
+  let h=harness(t,{mode:'preview'});assert.equal((await h.api.calendarConnectionHealth()).status,'preview');assert.equal(h.tokenCalls(),0);
+  h=harness(t,{configured:false});assert.equal((await h.api.calendarConnectionHealth()).status,'setup_required');assert.equal(h.tokenCalls(),0);
+  h=harness(t);assert.equal((await h.api.calendarConnectionHealth()).status,'connected');assert.equal(h.calls.length,1);assert.equal(h.calls[0].method,'GET');assert.equal(h.events.size,0);assert.equal(h.row.reservation.googleCalendarSyncedAt,undefined);
+});
+
+test('read-only access and provider failures never report a connected calendar',async t=>{
+  let h=harness(t,{calendarRole:'reader'});assert.equal((await h.api.calendarConnectionHealth()).status,'not_connected');
+  h=harness(t,{failOnce:true});assert.equal((await h.api.calendarConnectionHealth()).status,'not_connected');assert.equal((await h.api.calendarConnectionHealth()).status,'connected');assert.equal(h.events.size,0);
 });

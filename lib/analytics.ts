@@ -156,26 +156,44 @@ export function suspendTracking() {
 export type ChristmasPurchase = { eventId: string; paidCents: number; albums: number };
 const christmasInFlight = new Set<string>();
 /** The paid status response supplies this payload. Remove private access
- * details from the URL before any Meta script can run. */
+ * details from the URL before any Meta script can run. Standard Purchase and
+ * the existing Christmas campaign event each have their own receipt, so
+ * introducing Purchase does not replay an already-reported custom event. */
 export async function trackChristmasPurchase(purchase: ChristmasPurchase) {
   const safePage = () => typeof window !== "undefined" && window.location.hostname === "www.armanarai.ca" &&
     window.location.pathname === "/christmas/confirmation" && !window.location.search && !window.location.hash;
   if (!safePage() || !/^[a-f0-9]{64}$/.test(purchase.eventId) || !Number.isSafeInteger(purchase.paidCents) || purchase.paidCents <= 0 ||
     !Number.isInteger(purchase.albums) || purchase.albums < 0 || purchase.albums > 3) return;
-  const key = `aa_christmas_purchase_v1:${purchase.eventId}`;
-  if (sentInMemory.has(key) || christmasInFlight.has(key)) return;
-  try { if (localStorage.getItem(key)) return; } catch { /* Memory still prevents repeats in this view. */ }
-  christmasInFlight.add(key);
+  const customKey = `aa_christmas_purchase_v1:${purchase.eventId}`;
+  const purchaseKey = `aa_christmas_standard_purchase_v1:${purchase.eventId}`;
+  const wasReported = (key: string) => {
+    if (sentInMemory.has(key)) return true;
+    try { return !!localStorage.getItem(key); } catch { return false; }
+  };
+  const markReported = (key: string) => {
+    sentInMemory.add(key);
+    try { localStorage.setItem(key, "sent"); } catch { /* Memory deduplication remains active. */ }
+  };
+  if (christmasInFlight.has(purchase.eventId) || wasReported(purchaseKey) && wasReported(customKey)) return;
+  christmasInFlight.add(purchase.eventId);
   try {
     startMetaPixel();
     (window as TrackingWindow).fbq?.("consent", "grant");
     if (!await metaReady || !safePage()) return;
-    (window as TrackingWindow).fbq?.("trackCustom", CHRISTMAS_PURCHASE_EVENT, {
+    const data = {
       value: purchase.paidCents / 100, currency: "CAD", content_name: "Christmas with Santa 2026", content_category: "christmas_sessions", num_albums: purchase.albums,
-    }, { eventID: purchase.eventId });
-    sentInMemory.add(key);
-    try { localStorage.setItem(key, "sent"); } catch { /* Memory deduplication remains active. */ }
-  } finally { christmasInFlight.delete(key); }
+    };
+    const fbq = (window as TrackingWindow).fbq;
+    if (!fbq) return;
+    if (!wasReported(purchaseKey)) {
+      fbq("track", "Purchase", data, { eventID: purchase.eventId });
+      markReported(purchaseKey);
+    }
+    if (!wasReported(customKey)) {
+      fbq("trackCustom", CHRISTMAS_PURCHASE_EVENT, data, { eventID: purchase.eventId });
+      markReported(customKey);
+    }
+  } finally { christmasInFlight.delete(purchase.eventId); }
 }
 
 export function trackPageView() {

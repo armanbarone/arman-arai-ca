@@ -36,7 +36,6 @@ export default function ChristmasBooking({ data, loading, selectedDate, selected
   function changeMonth(next: number) { setMonth(next); onDate(""); }
 
   return <div className={`xm-booking-card${selectedDate ? " xm-booking-has-date" : ""}`}>
-    <p className="xm-booking-hours">Mon–Fri 9am–5pm · Sat 10am–4pm · Sun 12–3pm <span>All times Pacific</span></p>
     <div className="xm-booking-columns">
       <div className="xm-date-step">
         <p className="xm-booking-step">1 <span>Choose a date</span></p>
@@ -71,16 +70,17 @@ export default function ChristmasBooking({ data, loading, selectedDate, selected
         {!daySlots.some(s => s.available) && <p className="xm-booking-note" role="status">{daySlots.some(s => s.status === "sold") ? "This date is sold out. Please choose another date." : "No appointments on this date. Please choose another date."}</p>}
         {selected && <div className="xm-booking-ready" ref={bookingRef}>
           <p className="xm-booking-selection">{timeLabel(selected.time)} · 30 minutes with Santa</p>
-          <p className="xm-booking-total"><span>Total <small>CAD, including tax</small></span><strong>{money(quote.total)}</strong></p>
-          <button type="button" className="xm-button" disabled={busy} onClick={onBook}>Book &amp; pay {money(quote.total)} <span aria-hidden="true">↗</span></button>
-          <details className="xm-booking-albums">
-            <summary>{albums ? `${albums} printed album${albums > 1 ? "s" : ""} added · ${money(quote.albumCents)} + tax` : "Add a printed album · from $67 + tax"}</summary>
-            <p>10 pages · 20 photos. Hand-delivered across Greater Vancouver through Surrey. Album buyers receive 20 edited digital photos.</p>
+          <section className="xm-booking-albums" aria-labelledby="xm-album-title">
+            <p className="xm-album-optional">OPTIONAL EXTRA</p>
+            <h4 id="xm-album-title">Add a printed album</h4>
+            <p>10 pages · 20 photos. Hand-delivered across Greater Vancouver through Surrey.</p>
             <label htmlFor="xm-album-count">Number of printed albums</label><select id="xm-album-count" value={albums} onChange={event => onAlbums(Number(event.target.value))}>
               <option value={0}>No albums</option><option value={1}>1 album · $67 + tax</option><option value={2}>2 albums · $122 + tax</option><option value={3}>3 albums · $167 + tax</option>
             </select>
-            <p>First $67 · Second $55 · Third $45. Plus tax.</p>
-          </details>
+            <p>First $67 · Second $55 · Third $45. Plus tax.<br />Album buyers receive 20 edited digital photos.</p>
+          </section>
+          <p className="xm-booking-total"><span>Total <small>CAD, including tax</small></span><strong>{money(quote.total)}</strong></p>
+          <button type="button" className="xm-button" disabled={busy} onClick={onBook}>Book &amp; pay {money(quote.total)} <span aria-hidden="true">↗</span></button>
           <p className="xm-booking-reassurance">{data.mode === "preview" ? "Preview only · No payment or booking" : "Secure payment with Stripe · Your session guide follows by email"}</p>
         </div>}
       </div>}

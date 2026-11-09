@@ -8,6 +8,5 @@ export function ChristmasSimpleIncludes() {
       <li><strong>10 edited digital photos</strong><span>A private gallery, ready to download and print.</span></li>
       <li><strong>A few Christmas extras</strong><span>Cookies, warm milk, and a Santa letter mailed to the kids with a complimentary keepsake.</span></li>
     </ul>
-    <p className="xm-simple-family-note">For families with children · One household, up to five people · Parents welcome in the photos</p>
   </section>;
 }

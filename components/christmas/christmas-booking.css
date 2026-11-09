@@ -1,7 +1,5 @@
 .xm-simple .xm-sky-effects{z-index:1}
 .xm-booking-card{max-width:860px;margin:0 auto;background:#fff4d9;color:#33432e;border:1px solid #d6bf8d;border-top:4px solid #a53b3e;border-radius:10px;box-shadow:0 12px 45px #0003;padding:27px 30px 30px}
-.xm-booking-hours{text-align:center;font-size:11px;line-height:1.8;margin:0 0 25px!important;padding-bottom:18px;border-bottom:1px solid #d8c69f;color:#6d6244}
-.xm-booking-hours span{display:block;font-size:10px}
 .xm-booking-columns{display:grid;grid-template-columns:minmax(0,1fr);gap:30px}
 .xm-date-step{width:100%;max-width:420px;margin:0 auto;min-width:0}
 .xm-booking-has-date .xm-booking-columns{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
@@ -20,12 +18,17 @@
 .xm-booking-total small{display:block;font-size:9px;font-weight:400;color:#776c51;margin-top:3px}
 .xm-booking-total>strong{font-family:var(--font-christmas,Georgia,serif);font-size:31px;font-weight:500;letter-spacing:-.02em;white-space:nowrap}
 .xm-booking-ready>.xm-button{width:100%;justify-content:center;min-height:50px;font-size:12px}
-.xm-booking-albums{border-top:1px solid #d8c69f;margin-top:20px;padding-top:15px;font-size:11px;line-height:1.7}
-.xm-booking-albums summary{cursor:pointer;font-size:11px;font-weight:600;color:#76562d;min-height:26px}
-.xm-booking-albums p{font-size:11px;line-height:1.7;margin:12px 0!important}
+.xm-booking-albums{border:1px solid #bdc99c;border-radius:6px;background:#e9edd9;margin:16px 0 20px;padding:15px;font-size:11px;line-height:1.7}
+.xm-booking-albums h4{font-family:var(--font-christmas,Georgia,serif);font-size:24px;line-height:1.25;font-weight:500;margin:6px 0 10px;color:#31482f}
+.xm-booking-albums p{font-size:11px;line-height:1.7;margin:10px 0!important}
+.xm-booking-albums .xm-album-optional{font-size:8px;font-weight:700;letter-spacing:.14em;color:#607047;margin:0!important}
+.xm-booking-albums p:last-child{margin-bottom:0!important}
 .xm-booking-albums label{display:block;font-weight:600;margin-bottom:6px}
 .xm-booking-albums select{width:100%;min-height:45px;border:1px solid #bba778;border-radius:4px;padding:9px;background:#fffaf0;color:#34432e;font-size:12px}
 .xm-booking-reassurance{font-size:10px;line-height:1.7;text-align:center;color:#7d7050;margin:12px 0 0!important}
-.xm-booking-card button:focus-visible,.xm-booking-albums summary:focus-visible,.xm-booking-albums select:focus-visible{outline:2px solid #98343b;outline-offset:3px}
+.xm-booking-card button:focus-visible,.xm-booking-albums select:focus-visible{outline:2px solid #98343b;outline-offset:3px}
+.xm-simple .xm-simple-price{margin-bottom:23px}
+.xm-footer-minimal{font-size:10px;color:#b9ba9f}
+.xm-footer-minimal nav{display:flex;gap:20px;font-size:10px}
 @media(max-width:700px){.xm-time-step,.xm-booking-ready{scroll-margin-bottom:90px}}
 @media(max-width:700px){.xm-booking-card{padding:21px 20px 25px;max-width:500px}.xm-booking-has-date .xm-booking-columns{grid-template-columns:minmax(0,1fr);gap:24px}.xm-time-step{border-left:0;border-top:1px solid #d8c69f;padding:23px 0 0}.xm-booking-hours{font-size:10px;margin-bottom:20px!important}.xm-booking-card .xm-days button{min-height:43px}.xm-booking-card .xm-calendar-heading h3{font-size:26px}.xm-selected-date{font-size:23px!important}.xm-booking-card .xm-times button{min-height:46px;font-size:12px}.xm-booking-albums select{font-size:16px}.xm-booking-ready>.xm-button{font-size:13px}.xm-booking-total>strong{font-size:33px}}

@@ -10,6 +10,8 @@
 .xm-simple .xm-photo-left img,.xm-simple .xm-photo-right img{height:225px}
 .xm-simple .xm-photo-main img{height:280px}
 .xm-simple .xm-photo-seal{display:none}
+.xm-character-finale{display:flex;align-items:flex-end;justify-content:center;gap:clamp(6px,3vw,24px);padding-top:35px;padding-bottom:35px;max-width:800px}
+.xm-character-finale .xl-character{width:clamp(48px,12vw,100px);height:auto;flex:0 1 100px;min-width:0}
 .xm-simple-includes{padding-top:25px;padding-bottom:43px;text-align:center}
 .xm-simple-includes-title{display:flex;align-items:center;justify-content:center;gap:25px;margin-bottom:25px}
 .xm-simple-includes-title>svg{width:53px;height:80px;flex:none}

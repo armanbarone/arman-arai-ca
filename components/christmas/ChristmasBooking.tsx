@@ -56,7 +56,6 @@ export default function ChristmasBooking({ data, loading, selectedDate, selected
             })}
           </div>
         </div>
-        <p className="xm-calendar-key"><span /> Available dates · November 9–December 20</p>
         {loading && <p className="xm-booking-note" role="status">Loading the booking calendar…</p>}
       </div>
       {selectedDate && <div id="xm-date-times" className="xm-time-step" ref={timesRef}>
@@ -77,7 +76,7 @@ export default function ChristmasBooking({ data, loading, selectedDate, selected
             <label htmlFor="xm-album-count">Number of printed albums</label><select id="xm-album-count" value={albums} onChange={event => onAlbums(Number(event.target.value))}>
               <option value={0}>No albums</option><option value={1}>1 album · $67 + tax</option><option value={2}>2 albums · $122 + tax</option><option value={3}>3 albums · $167 + tax</option>
             </select>
-            <p>First $67 · Second $55 · Third $45. Plus tax.<br />Album buyers receive 20 edited digital photos.</p>
+            <p>Album buyers receive 20 edited digital photos.</p>
           </section>
           <p className="xm-booking-total"><span>Total <small>CAD, including tax</small></span><strong>{money(quote.total)}</strong></p>
           <button type="button" className="xm-button" disabled={busy} onClick={onBook}>Book &amp; pay {money(quote.total)} <span aria-hidden="true">↗</span></button>

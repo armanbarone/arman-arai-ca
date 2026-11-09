@@ -1,14 +1,14 @@
 import "server-only";
 import { ConflictError, readJson, writeJson } from "@/lib/portal/store";
 import { seasonalSlots, BOOKING_POLICY } from "./catalog";
-import { mergeSeasonalInventory, recalculateReservationBlocks, overlaps, type ChristmasSettings, type Slot, type InventoryStore } from "./inventory";
+import { mergeSeasonalInventory, markOwnerSoldOutSlots, recalculateReservationBlocks, overlaps, type ChristmasSettings, type Slot, type InventoryStore } from "./inventory";
 export const SETTINGS_PATH = "christmas/2026/settings.json";
 const INVENTORY_PATH = "christmas/2026/inventory.json";
 const CALENDAR_PATH = "christmas/2026/calendar.json";
 export const slotPath = (id: string) => `christmas/2026/slots/${id}.json`;
 type Calendar = { season?: string; slots: Slot[] };
 const SEASON_VERSION = "nov09-dec20-hourly-albums-v3";
-const CALENDAR_VERSION = "nov09-dec20-half-hour-v5";
+const CALENDAR_VERSION = "nov09-dec20-half-hour-owner-blocks-v6";
 const defaults: ChristmasSettings = { enabled: true, studioAddress: "583 E Kings Rd, North Vancouver, BC", postalCode: "V7N 1J2", arrivalNotes: "Plenty of street parking. Please arrive dressed and ready for your appointment.", cancellationPolicy: BOOKING_POLICY, publishableKey: "", launchVersion: SEASON_VERSION };
 export async function settings() {
   for (let attempt = 0; attempt < 5; attempt++) {
@@ -31,7 +31,7 @@ async function calendar() {
     // The owner has opened all scheduled times. Preserve paid/held appointments
     // and explicit manual blocks; remove only the former automatic release limits.
     const prior = legacy.map(s => ({ ...s, published: s.manuallyBlocked ? false : true }));
-    const slots = mergeSeasonalInventory(prior, generated);
+    const slots = markOwnerSoldOutSlots(mergeSeasonalInventory(prior, generated));
     try { await writeJson(CALENDAR_PATH, { season: CALENDAR_VERSION, slots }, saved ? { etag: saved.etag } : { createOnly: true }); }
     catch (error) { if (error instanceof ConflictError) continue; throw error; }
     const result = await readJson<Calendar>(CALENDAR_PATH);

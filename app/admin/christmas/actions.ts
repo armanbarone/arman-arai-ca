@@ -38,13 +38,13 @@ export async function releaseChristmasSlot(form: FormData) {
   if (!validSlot(date, time)) throw Error("Choose an on-the-hour or half-hour appointment from November 9 through December 20 within the weekday/weekend hours, excluding December 10–12.");
   const rows = await allSlots();
   if (rows.length >= 1000) throw Error("The calendar already contains 1,000 appointments.");
-  await addSlot({ id: `${date}_${time.replace(":", "")}`, date, time, santa: true, published: true });
+  await addSlot({ id: `${date}_${time.replace(":", "")}`, date, time, santa: true, published: true, manuallyBlocked: false, manuallySoldOut: false });
   revalidatePath("/admin/christmas"); revalidatePath("/christmas");
 }
 export async function toggleChristmasSlot(form: FormData) {
   await requireAdmin();
   const id = String(form.get("id") || "");
   if (!SLOT_PATTERN.test(id)) throw Error("Invalid appointment.");
-  await updateSlot(id, s => { if (s.reservation) throw Error("Reserved or purchased appointments cannot be changed here. Contact the family first."); if (!validSlot(s.date, s.time)) throw Error("That date or time is outside the booking schedule."); s.published = !s.published; s.manuallyBlocked = !s.published; });
+  await updateSlot(id, s => { if (s.reservation) throw Error("Reserved or purchased appointments cannot be changed here. Contact the family first."); if (!validSlot(s.date, s.time)) throw Error("That date or time is outside the booking schedule."); s.published = !s.published; s.manuallyBlocked = !s.published; if (s.published) delete s.manuallySoldOut; });
   revalidatePath("/admin/christmas"); revalidatePath("/christmas");
 }

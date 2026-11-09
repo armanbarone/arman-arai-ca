@@ -25,6 +25,7 @@ export interface Reservation {
 export interface Slot {
   id: string; date: string; time: string; santa: boolean; published: boolean; reservation?: Reservation;
   manuallyBlocked?: boolean;
+  manuallySoldOut?: boolean;
   reservationBlocked?: boolean;
 }
 export interface Versioned<T> { data: T; etag: string }
@@ -53,7 +54,7 @@ export async function claimSlot(store: InventoryStore, id: string, booking: Rese
   for (let attempt = 0; attempt < 5; attempt++) {
     const current = await store.read(id);
     if (!current || current.data.id !== id || !validSlot(current.data.date, current.data.time)) throw Error("Choose a valid appointment.");
-    if (!current?.data.published || current.data.reservation) throw Error("That appointment is no longer available. Please choose another time.");
+    if (!current?.data.published || current.data.manuallySoldOut || current.data.reservation) throw Error("That appointment is no longer available. Please choose another time.");
     if (needsSanta && !current.data.santa) throw Error("Santa is not available for this appointment.");
     if (new Date(`${current.data.date}T${current.data.time}:00-08:00`).getTime() <= Date.now()) throw Error("That appointment has passed.");
     const next = { ...current.data, reservation: booking };
@@ -86,10 +87,27 @@ export function mergeSeasonalInventory(existing: Slot[], generated: Slot[]): Slo
   return recalculateReservationBlocks(rows).sort((a, b) => a.id.localeCompare(b.id));
 }
 
+// Owner-requested sold-out windows. Do not create payment records or
+// recent-purchase messages for these inventory blocks.
+export function markOwnerSoldOutSlots(rows: Slot[]) {
+  const windows = [
+    { date: "2026-11-21", from: "00:00", until: "24:00" },
+    { date: "2026-11-22", from: "00:00", until: "24:00" },
+    { date: "2026-12-02", from: "09:00", until: "14:00" },
+    { date: "2026-12-03", from: "11:00", until: "16:00" },
+  ];
+  for (const slot of rows) if (windows.some(w => slot.date === w.date && slot.time >= w.from && slot.time < w.until)) {
+    slot.published = false;
+    slot.manuallyBlocked = true;
+    slot.manuallySoldOut = true;
+  }
+  return rows;
+}
+
 export function publicSlots(rows: Slot[], now = Date.now()): PublicSlot[] {
   return rows.filter(s => (scheduledTime(s.date, s.time) || s.reservation) && s.date >= "2026-11-01" && s.date <= "2026-12-20").map(s => {
     const past = new Date(`${s.date}T${s.time}:00-08:00`).getTime() <= now;
-    const status = s.reservation?.status === "paid" ? "sold" : s.reservation ? "reserved" : !validSlot(s.date, s.time) || past ? "unavailable" : !s.published ? "unreleased" : "available";
+    const status = s.reservation?.status === "paid" || s.manuallySoldOut ? "sold" : s.reservation ? "reserved" : !validSlot(s.date, s.time) || past ? "unavailable" : !s.published ? "unreleased" : "available";
     return { id: s.id, date: s.date, time: s.time, santa: s.santa, available: status === "available", status };
   });
 }

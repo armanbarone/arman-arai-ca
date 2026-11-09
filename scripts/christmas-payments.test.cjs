@@ -91,6 +91,18 @@ test('welcome precedes questionnaire; questionnaire failure retries without rese
  assert.equal(welcome.attachments[0].filename,'Christmas-session.ics');assert.match(welcome.html,/Plenty|Street parking/);assert.match(survey.html,/medical diagnoses are not needed/i);assert.equal(studio.to,'i@armanarai.com');assert.match(studio.subject,/11:00 am/);
 });
 
+test('the post-payment guide includes the former FAQ details in both HTML and plain text',async()=>{
+ for(const albums of [0,1]){
+  const h=harness();await h.payments.startCheckout(h.input(albums));await h.payments.reconcileChristmasSession(h.session());
+  const guide=h.messages().find(m=>/session guide/.test(m.subject));assert.ok(guide);
+  for(const content of [guide.html,guide.text]){
+   for(const detail of ['Studio','V7N 1J2','Street parking','cream','Santa','five days','48-hour','December 18','BC postage','before Christmas','Surrey','first costs $67','second $55','third $45','48 hours full refund; one free reschedule','questionnaire'])assert.ok(content.toLowerCase().includes(detail.toLowerCase()),detail);
+   assert.match(content,new RegExp(`${albums?20:10} edited digital photographs`));
+  }
+  assert.equal(h.messages().length,3);
+ }
+});
+
 test('studio alert is delivered even when the client welcome fails, and retries do not duplicate it',async()=>{
  const h=harness({failWelcomeOnce:true});await h.payments.startCheckout(h.input(0));
  await assert.rejects(h.payments.reconcileChristmasSession(h.session()),/Offline welcome failure/);

@@ -30,5 +30,16 @@
 .xm-simple .xm-simple-price{margin-bottom:23px}
 .xm-footer-minimal{font-size:10px;color:#b9ba9f}
 .xm-footer-minimal nav{display:flex;gap:20px;font-size:10px}
+.xm-checkout-contact-actions{display:grid;gap:6px}
+.xm-checkout-contact-actions>.xm-button{width:100%;justify-content:center}
+.xm-checkout-skip-reminders{justify-self:center;padding:5px 0;min-height:36px;border:0;background:transparent;color:#6d6046;font:inherit;font-size:12px;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.xm-checkout-skip-reminders:disabled{cursor:wait;opacity:.6}
+.xm-checkout-skip-reminders:focus-visible,.xm-checkout-reminder-details summary:focus-visible{outline:2px solid #98343b;outline-offset:3px}
+.xm-checkout-reminder-details{font-size:10px;line-height:1.7;color:#76684d}
+.xm-checkout-reminder-details summary{cursor:pointer;width:fit-content;padding:5px 0}
+.xm-checkout-reminder-details>div{padding:8px 0 0}
+.xm-checkout-reminder-details p{font-size:11px;margin:0 0 10px!important}
+.xm-checkout-reminder-details address{font-style:normal;margin-bottom:8px}
+.xm-checkout-reminder-details a{text-decoration:underline}
 @media(max-width:700px){.xm-time-step,.xm-booking-ready{scroll-margin-bottom:90px}}
 @media(max-width:700px){.xm-booking-card{padding:21px 20px 25px;max-width:500px}.xm-booking-has-date .xm-booking-columns{grid-template-columns:minmax(0,1fr);gap:24px}.xm-time-step{border-left:0;border-top:1px solid #d8c69f;padding:23px 0 0}.xm-booking-hours{font-size:10px;margin-bottom:20px!important}.xm-booking-card .xm-days button{min-height:43px}.xm-booking-card .xm-calendar-heading h3{font-size:26px}.xm-selected-date{font-size:23px!important}.xm-booking-card .xm-times button{min-height:46px;font-size:12px}.xm-booking-albums select{font-size:16px}.xm-booking-ready>.xm-button{font-size:13px}.xm-booking-total>strong{font-size:33px}}

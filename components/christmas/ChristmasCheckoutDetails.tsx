@@ -28,10 +28,12 @@ export default function ChristmasCheckoutDetails({ slotId, albums, preview, busy
   async function saveContact(event: FormEvent<HTMLFormElement>) {
     event.preventDefault(); if (!cart || expired) return;
     const data = new FormData(event.currentTarget), name = String(data.get("name")).trim(), email = String(data.get("email")).trim().toLowerCase();
+    const submitter = (event.nativeEvent as SubmitEvent).submitter;
+    const reminders = submitter?.getAttribute("name") === "reminders" && submitter.getAttribute("value") === "yes";
     setSaving(true); setMessage("");
     try {
       if (!preview) {
-        const r = await fetch("/api/christmas/cart", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id: cart.id, token: cart.token, name, email, reminders: data.get("reminders") === "on" }) });
+        const r = await fetch("/api/christmas/cart", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id: cart.id, token: cart.token, name, email, reminders }) });
         const value = await r.json(); if (!r.ok) throw Error(value.error || "Your details could not be saved.");
       }
       setContact({ name, email });
@@ -44,11 +46,12 @@ export default function ChristmasCheckoutDetails({ slotId, albums, preview, busy
       <p className="xm-eyebrow">01 · WHERE CAN WE REACH YOU?</p>
       <label>Your name<input name="name" autoComplete="name" minLength={2} maxLength={100} required placeholder="First and last name" /></label>
       <label>Email address<input name="email" type="email" autoComplete="email" maxLength={254} required placeholder="you@example.com" /></label>
-      <label className="xm-activity-consent"><input type="checkbox" name="reminders" /><span>Optional: {CART_CONSENT}</span></label>
-      <p className="xm-small">Reminders from {BUSINESS.tradeName} ({BUSINESS.legalName}), {BUSINESS_ADDRESS_ONE_LINE}. <a href={`mailto:${BUSINESS.email}`}>{BUSINESS.email}</a> · {BUSINESS.phone}.</p>
-      <p className="xm-small">By continuing, your name and email are saved for this checkout. Reminders are sent only if you tick the box. <a href="https://www.armanarai.ca/privacy-policy" target="_blank" rel="noreferrer">Privacy policy</a></p>
       {message && <p className="xm-error" role="alert">{message}</p>}
-      <button className="xm-button" disabled={!cart || saving}>{saving ? "Saving…" : "Continue with these details"} ↗</button>
+      <div className="xm-checkout-contact-actions">
+        <button type="submit" name="reminders" value="yes" className="xm-button" disabled={!cart || saving}>{saving ? "Saving…" : "Continue with reminders"} ↗</button>
+        <button type="submit" name="reminders" value="no" className="xm-checkout-skip-reminders" disabled={!cart || saving}>Continue without reminders</button>
+      </div>
+      <details className="xm-checkout-reminder-details"><summary>Reminder details &amp; privacy</summary><div><p>{CART_CONSENT}</p><address>{BUSINESS.tradeName} ({BUSINESS.legalName})<br />{BUSINESS_ADDRESS_ONE_LINE}<br /><a href={`mailto:${BUSINESS.email}`}>{BUSINESS.email}</a> · {BUSINESS.phone}</address><a href="https://www.armanarai.ca/privacy-policy" target="_blank" rel="noreferrer">Privacy policy</a></div></details>
       {preview && <p className="xm-small">Preview only. Nothing is sent or saved.</p>}
     </form> : <form className="xm-contact-form" onSubmit={onPayment}>
       <p className="xm-eyebrow">02 · THE LITTLE DETAILS</p>

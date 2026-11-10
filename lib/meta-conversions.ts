@@ -52,6 +52,7 @@ export function weddingLeadEvent(input: InquiryConversion, now = Date.now()) {
  * the auto-reply. Retries keep the same event ID for Meta deduplication.
  * Credentials, contact details and Meta's response text must never be logged. */
 export async function reportWeddingLead(input: InquiryConversion) {
+  if (input.headers.get("sec-gpc") === "1" || input.headers.get("dnt") === "1") return;
   const token = process.env.META_CONVERSIONS_ACCESS_TOKEN;
   if (process.env.VERCEL_ENV !== "production" || !token) return;
   const payload = { data: [weddingLeadEvent(input)], access_token: token };

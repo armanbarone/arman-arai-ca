@@ -1,4 +1,6 @@
 import { z } from "zod";
+import { after } from "next/server";
+import { christmasMetaAttribution, reportChristmasMeta } from "@/lib/christmas/meta";
 import { startCheckout, checkoutRateLimit } from "@/lib/christmas/payments";
 import { validateCheckoutCart, markCartCheckout } from "@/lib/christmas/cart";
 import { christmasSameOrigin } from "@/lib/christmas/environment";
@@ -12,6 +14,7 @@ const inputSchema = z.object({
   phone: z.string().trim().min(7).max(35), consent: z.literal(true), website: z.string().max(0).optional(),
   acceptedPolicy: z.string().min(1).max(2000), expectedSubtotal: z.number().int().positive(), expectedTotal: z.number().int().positive(),
   paymentPlan: z.literal("deposit-50-v1"), expectedDueNow: z.literal(5000),
+  analyticsOptOut: z.boolean().default(false), fbclid: z.string().max(2048).optional(),
 }).refine(data => !data.albums || data.albumDeliveryConsent, { message: "Confirm the album delivery area.", path: ["albumDeliveryConsent"] });
 export async function POST(req: Request) {
   if (!christmasSameOrigin(req)) return Response.json({ error: "Invalid request origin." }, { status: 403 });
@@ -25,7 +28,10 @@ export async function POST(req: Request) {
     await checkoutRateLimit((req.headers.get("x-forwarded-for") || "unknown").split(",")[0].trim());
     await validateCheckoutCart(parsed.data.cartId, parsed.data.cartToken, parsed.data);
     await markCartCheckout(parsed.data.cartId);
-    return Response.json(await startCheckout(parsed.data), { headers: { "Cache-Control": "no-store" } });
+    const result = await startCheckout(parsed.data, christmasMetaAttribution(req, parsed.data.analyticsOptOut, parsed.data.fbclid));
+    after(async () => { await reportChristmasMeta(result.slotId, "InitiateCheckout"); });
+    const { slotId: _slotId, ...response } = result;
+    return Response.json(response, { headers: { "Cache-Control": "no-store" } });
   } catch (e) {
     const message = e instanceof Error ? e.message : "";
     const safe = /^(That appointment|Choose a valid|Santa is not|The calendar|Bookings are not|Booking details changed|Too many|Please try checkout|Your checkout|This checkout)/.test(message);

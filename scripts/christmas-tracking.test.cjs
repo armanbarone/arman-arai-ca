@@ -4,20 +4,21 @@ const fs = require('node:fs');
 const vm = require('node:vm');
 const ts = require('typescript');
 const storage = () => { const values = new Map(); return { getItem: k => values.get(k) ?? null, setItem: (k,v) => values.set(k,v) }; };
-function browser({ path = '/christmas/confirmation', query = '', blocked = false, local = storage(), session = storage() } = {}) {
-  const appended = [];
+function browser({ path = '/christmas/confirmation', query = '', blocked = false, noRuntime = false, local = storage(), session = storage() } = {}) {
+  const appended = []; let offset=0;
+  class BrowserDate extends Date { static now(){return Date.now()+offset;} }
   const location = { hostname: 'www.armanarai.ca', pathname: path, search: query, hash: '', origin: 'https://www.armanarai.ca' };
   const window = { location, setTimeout, clearTimeout, history: { state: { next: true }, replaceState: (_state, _unused, url) => { const u = new URL(url, location.origin); location.pathname = u.pathname; location.search = u.search; location.hash = u.hash; } } };
-  const context = vm.createContext({ window, document: { title: 'Christmas', createElement: () => ({ dataset: {} }), head: { appendChild: script => { appended.push(script); queueMicrotask(() => blocked ? script.onerror() : script.onload()); } } }, localStorage: local, sessionStorage: session, URL, URLSearchParams, setTimeout, clearTimeout });
+  const context = vm.createContext({ window, Date:BrowserDate, require:n=>{if(n.includes('advertising-preferences'))return load('lib/advertising-preferences.ts');throw Error(n);}, document: { title: 'Christmas', getElementById:()=>null, createElement: () => ({ dataset: {} }), head: { appendChild: script => { appended.push(script); queueMicrotask(() => { if(blocked)return script.onerror();if(script.id==='aa-meta-pixel'&&!noRuntime)window.fbq.callMethod=(...args)=>window.fbq.queue.push(args);script.onload(); }); } } }, localStorage: local, sessionStorage: session, URL, URLSearchParams, setTimeout, clearTimeout });
   const load = file => { const mod = { exports: {} }; context.module = mod; const compiled = ts.transpileModule(fs.readFileSync(require('node:path').join(__dirname, '..', file), 'utf8'), { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 } }).outputText; vm.runInContext(`(function(module,exports){${compiled}\n})(module,module.exports)`, context); return mod.exports; };
-  return { window, appended, local, session, load, meta: () => (window.fbq?.queue || []).map(args => [...args]) };
+  return { window, appended, local, session, load, recover:()=>{blocked=false;noRuntime=false;offset+=11000;}, meta: () => (window.fbq?.queue || []).map(args => [...args]) };
 }
 const paid = { eventId: 'a'.repeat(64), paidCents: 33754, albums: 1 };
 
 test('private and preview pages never load general advertising tags or report a sample purchase', async () => {
   for (const path of ['/christmas/confirmation', '/christmas/confirmation/preview', '/christmas/questionnaire', '/christmas/questionnaire/preview', '/christmas/operations/preview', '/christmas/cart/return', '/christmas/cart/unsubscribe']) {
     const b = browser({ path }); const a = b.load('lib/analytics.ts');
-    a.trackPageView();
+    await a.trackPageView();
     if (path !== '/christmas/confirmation') await a.trackChristmasPurchase(paid);
     assert.equal(b.appended.length, 0);
   }
@@ -68,7 +69,7 @@ test('blocked tags and invalid payloads do not mark a purchase as sent', async (
 
 test('landing and paid confirmation reuse one pixel; later private navigation revokes it', async () => {
   const b = browser({ path: '/christmas' }); const a = b.load('lib/analytics.ts');
-  a.trackPageView(); b.window.location.pathname = '/christmas/confirmation'; a.suspendTracking();
+  await a.trackPageView(); b.window.location.pathname = '/christmas/confirmation'; a.suspendTracking();
   await a.trackChristmasPurchase(paid);
   assert.equal(b.meta().filter(e => e[0] === 'init').length, 1);
   assert.equal(b.meta().filter(e => e[0] === 'trackCustom').length, 1);
@@ -121,8 +122,31 @@ test('a pixel first loaded by paid confirmation can resume on the public landing
   const b = browser(); const a = b.load('lib/analytics.ts');
   await a.trackChristmasPurchase(paid);
   b.window.location.pathname = '/christmas/questionnaire'; a.suspendTracking();
-  b.window.location.pathname = '/christmas'; a.trackPageView();
+  b.window.location.pathname = '/christmas'; await a.trackPageView();
   assert.equal(b.meta().filter(e => e[0] === 'init').length, 1);
   assert.equal(b.meta().filter(e => e[0] === 'consent').at(-1)[1], 'grant');
   assert.equal(b.window[`ga-disable-${a.GA4_ID}`], false);
+});
+
+test('landing PageView waits for the working SDK and Strict Mode does not duplicate it',async()=>{
+ const b=browser({path:'/christmas'}),a=b.load('lib/analytics.ts');
+ await Promise.all([a.trackPageView(),a.trackPageView()]);assert.equal(b.meta().filter(e=>e[1]==='PageView').length,1);assert.equal(b.meta().filter(e=>e[0]==='init').length,1);
+});
+test('the checkout event uses the verified amount, deduplicates and does not fire for calendar selection',async()=>{
+ const b=browser({path:'/christmas'}),a=b.load('lib/analytics.ts');await a.trackPageView();
+ assert.equal(b.meta().filter(e=>e[1]==='InitiateCheckout').length,0);
+ await Promise.all([a.trackChristmasCheckout({...paid,paidCents:5000}),a.trackChristmasCheckout({...paid,paidCents:5000})]);
+ await a.trackChristmasCheckout({...paid,paidCents:5000});const events=b.meta().filter(e=>e[1]==='InitiateCheckout');assert.equal(events.length,1);assert.equal(events[0][2].value,50);assert.equal(events[0][3].eventID,paid.eventId);
+ assert.equal(b.meta().filter(e=>e[1]==='Purchase').length,0);
+});
+test('blocked checkout measurement never prevents checkout and explicit browser opt-outs suppress all events',async()=>{
+ const b=browser({path:'/christmas',blocked:true}),a=b.load('lib/analytics.ts');await a.trackPageView();await a.trackChristmasCheckout(paid);assert.equal(b.meta().filter(e=>['PageView','InitiateCheckout','Purchase'].includes(e[1])).length,0);
+ const denied=browser({path:'/christmas'});denied.window.navigator={globalPrivacyControl:true};const d=denied.load('lib/analytics.ts');await d.trackPageView();await d.trackChristmasCheckout(paid);denied.window.location.pathname='/christmas/confirmation';await d.trackChristmasPurchase(paid);assert.equal(denied.appended.length,0);
+});
+
+test('a detected stub or loaded script without a runtime is not mistaken for a sent event, and a later event can recover',async()=>{
+ for(const opts of [{blocked:true},{noRuntime:true}]){
+  const b=browser({path:'/christmas',...opts}),a=b.load('lib/analytics.ts');await a.trackPageView();assert.equal(b.meta().filter(e=>e[1]==='PageView').length,0);
+  b.recover();await a.trackPageView();assert.equal(b.meta().filter(e=>e[1]==='PageView').length,1);assert.equal(b.meta().filter(e=>e[0]==='init').length,1);
+ }
 });

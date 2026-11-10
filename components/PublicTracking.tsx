@@ -14,7 +14,7 @@ export default function PublicTracking() {
     if (!isPublicTrackingPath(pathname)) { suspendTracking(); return; }
     // Page views include inquiry confirmations. A Lead still requires a
     // successful submission receipt, handled by ThankYouFromSession.
-    trackPageView();
+    void trackPageView().catch(() => { /* Measurement never interrupts a visit. */ });
     void reportPendingBooking();
   }, [pathname]);
   return null;

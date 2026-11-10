@@ -15,7 +15,7 @@ function harness({ failQuestionnaireOnce = false, failWelcomeOnce = false, failC
     write: async (id, data, etag) => { if(etag!==String(version))throw new MemoryConflict(); rows[rows.findIndex(s => s.id === id)] = structuredClone(data); version++; }, conflict: error => error instanceof MemoryConflict,
   };
   const stripe = { webhookEndpoints: { retrieve: async()=>({id:'we_offline',enabled_events:['invoice.paid']}), update:async()=>({}) }, checkout: { sessions: {
-    create: async input => { created = input; return { id: 'cs_offline_fixture', url: 'https://checkout.stripe.com/c/pay/offline-fixture' }; },
+    create: async input => { created = input; return { id: 'cs_offline_fixture', currency:'cad', amount_total:5000, livemode:true, url: 'https://checkout.stripe.com/c/pay/offline-fixture' }; },
     retrieve: async () => { throw Error('Unexpected external lookup'); }, expire: async id => ({id,metadata:{service:'christmas-2026',slotId:rows[0].id,bookingId:rows[0].reservation.id,payment_kind:rows[0].reservation.paymentPlan?'deposit':undefined},livemode:true,currency:'cad',amount_subtotal:rows[0].reservation.paymentPlan?.depositSubtotalCents??rows[0].reservation.subtotalCents,amount_total:rows[0].reservation.paymentPlan?.depositCents??rows[0].reservation.totalCents,payment_status:'unpaid',status:'expired'}),
   } }, invoices: {
     list: async()=>({data:[...invoices.values()].map(structuredClone)}),

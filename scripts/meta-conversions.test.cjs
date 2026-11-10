@@ -117,3 +117,10 @@ test('only delivered inquiries queue a server Lead, and share the ID returned to
     if (before === undefined) delete process.env.RESEND_API_KEY; else process.env.RESEND_API_KEY = before;
   }
 });
+
+test('explicit browser opt-outs suppress the existing server-side wedding event too',async()=>{
+ const {reportWeddingLead}=loader()('@/lib/meta-conversions');
+ const old={fetch:global.fetch,env:process.env.VERCEL_ENV,token:process.env.META_CONVERSIONS_ACCESS_TOKEN};let calls=0;
+ try{process.env.VERCEL_ENV='production';process.env.META_CONVERSIONS_ACCESS_TOKEN='offline';global.fetch=async()=>{calls++;throw Error('must not transmit');};for(const key of ['sec-gpc','dnt'])await reportWeddingLead(input({headers:new Headers({[key]:'1'})}));assert.equal(calls,0);}
+ finally{global.fetch=old.fetch;for(const [k,v]of [['VERCEL_ENV',old.env],['META_CONVERSIONS_ACCESS_TOKEN',old.token]])v===undefined?delete process.env[k]:process.env[k]=v;}
+});

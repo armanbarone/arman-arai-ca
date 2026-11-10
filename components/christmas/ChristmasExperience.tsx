@@ -2,6 +2,8 @@
 import { useEffect, useRef, useState, type FormEvent, type ImgHTMLAttributes } from "react";
 import { PACKAGES, PREVIEW_AVAILABILITY, dateLabel, timeLabel, money, type Availability, type PackageId } from "../../lib/christmas/catalog";
 import { DEPOSIT_PLAN, depositQuote, balanceDeadline } from "../../lib/christmas/payment-plan";
+import { trackChristmasCheckout } from "../../lib/analytics";
+import { advertisingOptOut } from "../../lib/advertising-preferences";
 import ChristmasAtmosphere from "./ChristmasAtmosphere";
 import ChristmasStorybook, { ChristmasCharacter } from "./ChristmasStorybook";
 import ChristmasCheckoutDetails from "./ChristmasCheckoutDetails";
@@ -35,6 +37,7 @@ export default function ChristmasExperience({ preview = false, storybook = false
   const [step, setStep] = useState<"booking" | "details" | "demo">("booking");
   const [busy, setBusy] = useState(false), [error, setError] = useState("");
   const modalRef = useRef<HTMLDialogElement>(null);
+  const paymentPending = useRef(false);
   const pkg = PACKAGES.find(p => p.id === selectedPackage)!;
   const eligible = data.slots.filter(s => !pkg.santa || s.santa);
   const remaining = eligible.filter(s => s.available).length;
@@ -108,21 +111,26 @@ export default function ChristmasExperience({ preview = false, storybook = false
 
   async function beginPayment(e: FormEvent<HTMLFormElement>) {
     e.preventDefault(); setError("");
+    if (paymentPending.current) return;
     if (!slot || !slot.available || (pkg.santa && !slot.santa)) { setError("Please choose another available appointment."); return; }
     if (data.mode === "preview") { setStep("demo"); return; }
     if (data.mode !== "live" && data.mode !== "test") { setError("Bookings are not open yet."); return; }
-    const f = new FormData(e.currentTarget); setBusy(true);
+    const f = new FormData(e.currentTarget); paymentPending.current = true; setBusy(true);
+    let handedOff = false;
     try {
       const response = await fetch("/api/christmas/checkout", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({
         cartId: f.get("cartId"), cartToken: f.get("cartToken"), slotId: slot.id, packageId: pkg.id, name: f.get("name"), email: f.get("email"), phone: f.get("phone"), consent: f.get("consent") === "on", website: f.get("website") || "", acceptedPolicy: data.cancellationPolicy, expectedSubtotal: subtotal, expectedTotal: quote.total, paymentPlan: DEPOSIT_PLAN, expectedDueNow: quote.dueNow, albums, shareActivity: f.get("shareActivity") === "on", albumDeliveryConsent: f.get("albumDeliveryConsent") === "on",
         delivery: { letterNames: f.get("letterNames"), line1: f.get("mailLine1"), line2: f.get("mailLine2") || "", city: f.get("mailCity"), postalCode: f.get("mailPostalCode"), province: "BC", country: "CA" },
+        analyticsOptOut: advertisingOptOut(), fbclid: new URLSearchParams(window.location.search).get("fbclid") || undefined,
       }) });
       const result = await response.json();
       if (!response.ok) throw Error(result.error || "Could not open payment.");
       if (!result.checkoutUrl || new URL(result.checkoutUrl).origin !== "https://checkout.stripe.com") throw Error("Payment could not open. Please contact Arman.");
+      if (result.checkoutTracking) await trackChristmasCheckout(result.checkoutTracking).catch(() => { /* Keep payment available when measurement is blocked. */ });
+      handedOff = true;
       window.location.assign(result.checkoutUrl);
     } catch (e) { setError(e instanceof Error ? e.message : "Something went wrong. Please try again."); }
-    finally { setBusy(false); }
+    finally { if (!handedOff) { paymentPending.current = false; setBusy(false); } }
   }
 
   return <div className={`xm${simple ? " xm-simple" : ""}`} data-christmas-preview={preview ? "true" : undefined}>

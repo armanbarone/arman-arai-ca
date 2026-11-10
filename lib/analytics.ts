@@ -1,3 +1,4 @@
+import { advertisingOptOut } from "./advertising-preferences.ts";
 /** Public marketing measurement. No names, emails or Calendly payloads are sent.
  *  Google and Meta load on the first view of any public page. The private client
  *  portal, the admin pages and the API routes carry no advertising tags. */
@@ -65,7 +66,10 @@ let initialized = false;
 let suspended = false;
 let googleReady: Promise<boolean> | undefined;
 let metaReady: Promise<boolean> | undefined;
-let lastPage = "";
+let metaInitialized = false;
+let metaFailedAt = 0;
+let lastGooglePage = "", lastMetaPage = "";
+const pageViewsInFlight = new Set<string>();
 let reporting: Promise<void> | undefined;
 const sentInMemory = new Set<string>();
 
@@ -78,7 +82,7 @@ export function isPublicTrackingPath(path: string) {
 
 function permitted() {
   return typeof window !== "undefined" &&
-    !["localhost", "127.0.0.1", "[::1]"].includes(window.location.hostname) &&
+    ["www.armanarai.ca", "armanarai.ca"].includes(window.location.hostname) && !advertisingOptOut() &&
     isPublicTrackingPath(window.location.pathname);
 }
 
@@ -105,16 +109,34 @@ function loadTag(id: string, src: string): Promise<boolean> {
 }
 
 function startMetaPixel() {
-  if (metaReady) return;
+  if (metaReady) return metaReady;
+  if (advertisingOptOut()) return Promise.resolve(false);
   const w = window as TrackingWindow;
+  if (metaInitialized && typeof w.fbq?.callMethod === "function") return metaReady = Promise.resolve(true);
+  if (Date.now() - metaFailedAt < 10000) return Promise.resolve(false);
   if (!w.fbq) {
     const fbq = function () { fbq.callMethod ? fbq.callMethod.apply(fbq, arguments as unknown as unknown[]) : fbq.queue.push(arguments); } as MetaTag;
     fbq.queue = []; fbq.push = fbq; fbq.loaded = true; fbq.version = "2.0";
     w.fbq = fbq; w._fbq = fbq;
   }
-  w.fbq("set", "autoConfig", false, META_PIXEL_ID);
-  w.fbq("init", META_PIXEL_ID);
-  metaReady = loadTag("aa-meta-pixel", "https://connect.facebook.net/en_US/fbevents.js");
+  if (!metaInitialized) {
+    w.fbq("set", "autoConfig", false, META_PIXEL_ID);
+    w.fbq("init", META_PIXEL_ID);
+    metaInitialized = true;
+  }
+  if (typeof w.fbq.callMethod === "function") return metaReady = Promise.resolve(true);
+  const loading = loadTag("aa-meta-pixel", "https://connect.facebook.net/en_US/fbevents.js").then(loaded => {
+    // A stub or a script element is not evidence that Meta's runtime started.
+    const ready = loaded && typeof w.fbq?.callMethod === "function";
+    if (!ready) {
+      metaFailedAt = Date.now();
+      if (metaReady === loading) metaReady = undefined;
+      document.getElementById("aa-meta-pixel")?.remove();
+    }
+    return ready;
+  });
+  metaReady = loading;
+  return loading;
 }
 
 export function startTracking() {
@@ -125,6 +147,7 @@ export function startTracking() {
       (window as unknown as Record<string, unknown>)[`ga-disable-${GA4_ID}`] = false;
       setTagState(true);
     }
+    startMetaPixel();
     return;
   }
   initialized = true;
@@ -149,6 +172,7 @@ export function startTracking() {
 export function suspendTracking() {
   if (!initialized && !metaReady) return;
   suspended = true;
+  lastGooglePage = ""; lastMetaPage = "";
   (window as unknown as Record<string, unknown>)[`ga-disable-${GA4_ID}`] = true;
   setTagState(false);
 }
@@ -162,7 +186,7 @@ const christmasInFlight = new Set<string>();
 export async function trackChristmasPurchase(purchase: ChristmasPurchase) {
   const safePage = () => typeof window !== "undefined" && window.location.hostname === "www.armanarai.ca" &&
     window.location.pathname === "/christmas/confirmation" && !window.location.search && !window.location.hash;
-  if (!safePage() || !/^[a-f0-9]{64}$/.test(purchase.eventId) || !Number.isSafeInteger(purchase.paidCents) || purchase.paidCents <= 0 ||
+  if (advertisingOptOut() || !safePage() || !/^[a-f0-9]{64}$/.test(purchase.eventId) || !Number.isSafeInteger(purchase.paidCents) || purchase.paidCents <= 0 ||
     !Number.isInteger(purchase.albums) || purchase.albums < 0 || purchase.albums > 3) return;
   const customKey = `aa_christmas_purchase_v1:${purchase.eventId}`;
   const purchaseKey = `aa_christmas_standard_purchase_v1:${purchase.eventId}`;
@@ -177,9 +201,9 @@ export async function trackChristmasPurchase(purchase: ChristmasPurchase) {
   if (christmasInFlight.has(purchase.eventId) || wasReported(purchaseKey) && wasReported(customKey)) return;
   christmasInFlight.add(purchase.eventId);
   try {
-    startMetaPixel();
+    const ready = startMetaPixel();
     (window as TrackingWindow).fbq?.("consent", "grant");
-    if (!await metaReady || !safePage()) return;
+    if (!await ready || advertisingOptOut() || !safePage()) return;
     const data = {
       value: purchase.paidCents / 100, currency: "CAD", content_name: "Christmas with Santa 2026", content_category: "christmas_sessions", num_albums: purchase.albums,
     };
@@ -196,8 +220,8 @@ export async function trackChristmasPurchase(purchase: ChristmasPurchase) {
   } finally { christmasInFlight.delete(purchase.eventId); }
 }
 
-export function trackPageView() {
-  if (!permitted()) return;
+export async function trackPageView() {
+  if (!permitted()) { if (typeof window !== "undefined") suspendTracking(); return; }
   startTracking();
   // Never forward arbitrary query parameters (for example a form email).
   const location = new URL(window.location.pathname, window.location.origin);
@@ -206,11 +230,40 @@ export function trackPageView() {
     const value = incoming.get(key);
     if (value) location.searchParams.set(key, value);
   }
-  if (lastPage === location.href) return;
-  lastPage = location.href;
   const w = window as TrackingWindow;
-  w.gtag?.("event", "page_view", { send_to: GA4_ID, page_location: location.href, page_title: document.title });
-  w.fbq?.("track", "PageView");
+  if (lastGooglePage !== location.href) {
+    w.gtag?.("event", "page_view", { send_to: GA4_ID, page_location: location.href, page_title: document.title });
+    lastGooglePage = location.href;
+  }
+  if (lastMetaPage === location.href || pageViewsInFlight.has(location.href)) return;
+  pageViewsInFlight.add(location.href);
+  try {
+    if (!await startMetaPixel() || !permitted() || window.location.pathname !== location.pathname) return;
+    w.fbq?.("track", "PageView");
+    lastMetaPage = location.href;
+  } finally { pageViewsInFlight.delete(location.href); }
+}
+
+const christmasCheckoutsInFlight = new Set<string>();
+/** Called only with the server's successful Stripe-session response. The
+ * deadline keeps a blocked/slow advertiser from delaying a customer's payment. */
+export async function trackChristmasCheckout(checkout: ChristmasPurchase) {
+  if (!permitted() || window.location.pathname !== "/christmas" || !/^[a-f0-9]{64}$/.test(checkout.eventId) ||
+    !Number.isSafeInteger(checkout.paidCents) || checkout.paidCents <= 0 || !Number.isInteger(checkout.albums) || checkout.albums < 0 || checkout.albums > 3) return;
+  const key = `aa_christmas_checkout_v1:${checkout.eventId}`;
+  try { if (sessionStorage.getItem(key)) return; } catch { /* Memory still prevents repeats. */ }
+  if (sentInMemory.has(key) || christmasCheckoutsInFlight.has(key)) return;
+  christmasCheckoutsInFlight.add(key);
+  let timeout: ReturnType<typeof setTimeout> | undefined;
+  try {
+    startTracking();
+    const ready = await Promise.race([startMetaPixel(), new Promise<boolean>(resolve => { timeout = setTimeout(() => resolve(false), 600); })]);
+    if (!ready || !permitted() || window.location.pathname !== "/christmas") return;
+    (window as TrackingWindow).fbq?.("track", "InitiateCheckout", { value: checkout.paidCents / 100, currency: "CAD", content_name: "Christmas with Santa 2026", content_category: "christmas_sessions", num_items: 1, num_albums: checkout.albums }, { eventID: checkout.eventId });
+    sentInMemory.add(key);
+    try { sessionStorage.setItem(key, "sent"); } catch { /* In-memory receipt remains. */ }
+    await new Promise(resolve => setTimeout(resolve, 150));
+  } finally { if (timeout) clearTimeout(timeout); christmasCheckoutsInFlight.delete(key); }
 }
 
 export function trackLead(method: string) {

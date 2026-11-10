@@ -14,6 +14,7 @@ import { ensureBalanceInvoice } from "./balance";
 import { DEPOSIT, DEPOSIT_PLAN, depositQuote, balanceDeadline, bookingPaymentSummary } from "./payment-plan";
 import { syncChristmasCalendar } from "./google-calendar";
 import { christmasPaymentMode } from "./environment";
+import { christmasMetaEventId, reportChristmasMeta, type ChristmasMetaAttribution } from "./meta";
 const hash = (s: string) => createHash("sha256").update(s).digest("hex");
 let webhookReady = false;
 export async function paymentReady() {
@@ -69,7 +70,7 @@ export async function reconcileChristmasSession(s: Stripe.Checkout.Session) {
       await updateSlot(slotId, s => { if (s.reservation?.id === r.id) s.reservation.invoiceUrl = r.invoiceUrl; });
     }
   } })()]);
-  const effects = [...invoiceEffects, ...await Promise.allSettled([sendBookingNotifications(slotId), syncChristmasCalendar(slotId)])];
+  const effects = [...invoiceEffects, ...await Promise.allSettled([sendBookingNotifications(slotId), syncChristmasCalendar(slotId), reportChristmasMeta(slotId, "Purchase")])];
   const failed = effects.find(result => result.status === "rejected");
   if (failed?.status === "rejected") throw failed.reason;
 }
@@ -107,7 +108,7 @@ export async function checkoutRateLimit(ip: string) {
   catch (e) { if (e instanceof ConflictError) throw Error("Please try checkout again in a moment."); throw e; }
 }
 type CheckoutInput = { slotId: string; packageId: PackageId; name: string; email: string; phone: string; acceptedPolicy: string; expectedSubtotal: number; expectedTotal: number; paymentPlan: typeof DEPOSIT_PLAN; expectedDueNow: number; albums: number; shareActivity: boolean; delivery: NonNullable<Reservation["delivery"]> };
-export async function startCheckout(input: CheckoutInput) {
+export async function startCheckout(input: CheckoutInput, metaAttribution?: ChristmasMetaAttribution) {
   const cfg = await settings(), pkg = packageById(input.packageId);
   if (!cfg.enabled || !cfg.studioAddress || !cfg.postalCode || !cfg.cancellationPolicy || !(await paymentReady())) throw Error("Bookings are not open yet.");
   if (christmasPaymentMode() === "test" && input.email !== BUSINESS.email) throw Error("Local test bookings use the studio email only.");
@@ -125,6 +126,7 @@ export async function startCheckout(input: CheckoutInput) {
     id, tokenHash: hash(token), packageId: pkg.id, name: input.name, email: input.email, phone: input.phone,
     albums: input.albums, shareActivity: input.shareActivity, testMode: christmasPaymentMode() === "test", gstCents: quote.gst, pstCents: quote.pst, delivery: input.delivery, totalCents: expectedTotal, packageSnapshot: { name: pkg.name, minutes: pkg.minutes, images: input.albums ? 20 : pkg.images, sets: pkg.sets, santa: pkg.santa },
     subtotalCents: subtotal, status: "pending", createdAt: Date.now(), expiresAt,
+    metaAttribution,
     paymentPlan: { kind: DEPOSIT_PLAN, depositSubtotalCents: DEPOSIT.subtotal, depositGstCents: DEPOSIT.gst, depositCents: DEPOSIT.total, balanceDueAt: new Date(`${current.data.date}T${current.data.time}:00-08:00`).getTime() },
     bookingDetails: { studioAddress: cfg.studioAddress, postalCode: cfg.postalCode, arrivalNotes: cfg.arrivalNotes, cancellationPolicy: cfg.cancellationPolicy },
   }, pkg.santa);
@@ -146,9 +148,10 @@ export async function startCheckout(input: CheckoutInput) {
     } },
     line_items: [{ quantity: 1, price: catalog.depositPrice, tax_rates: catalog.taxRates }],
   }, { idempotencyKey: `christmas-${id}` });
-  if (!session.url) throw Error("Stripe could not open the payment form. Please contact Arman.");
+  if (!session.url || new URL(session.url).origin !== "https://checkout.stripe.com") throw Error("Stripe could not open the payment form. Please contact Arman.");
+  if (session.currency !== "cad" || session.amount_total !== quote.dueNow || session.livemode !== (christmasPaymentMode() === "live")) throw Error("Stripe checkout amount or mode did not match the deposit.");
   await updateSlot(slot.id, s => { if (s.reservation?.id !== id) throw Error("Your appointment changed. Please contact Arman before paying."); s.reservation.sessionId = session.id; });
-  return { checkoutUrl: session.url, returnUrl, expiresAt };
+  return { checkoutUrl: session.url, returnUrl, expiresAt, checkoutTracking: christmasPaymentMode() === "live" ? { eventId: christmasMetaEventId(id, "InitiateCheckout"), paidCents: session.amount_total, albums: input.albums } : undefined, slotId: slot.id };
 }
 export async function bookingStatus(slotId: string, token: string) {
   if (!SLOT_PATTERN.test(slotId) || !/^[a-f0-9]{64}$/.test(token)) return null;
@@ -172,7 +175,7 @@ export async function bookingStatus(slotId: string, token: string) {
   if (!r) return { status: "expired" };
   const cfg = r.bookingDetails, pkg = r.packageSnapshot ?? PACKAGES.find(p => p.id === r!.packageId)!;
   return { status: r.status, testMode: r.testMode, reference: r.id, date: row!.data.date, time: row!.data.time, package: pkg.name, minutes: pkg.minutes, images: pkg.images, sets: pkg.sets, santa: pkg.santa, albums: r.albums, grinch: r.grinch, delivery: r.delivery,
-    purchaseTracking: r.status === "paid" && r.paidCents && !r.testMode && christmasPaymentMode() === "live" ? { eventId: hash(`christmas-2026:meta:${r.id}`), paidCents: r.paymentPlan?.depositPaidCents ?? r.paidCents, albums: r.albums ?? 0 } : undefined,
+    purchaseTracking: r.status === "paid" && r.paidCents && !r.testMode && r.metaAttribution?.allowed !== false && christmasPaymentMode() === "live" ? { eventId: christmasMetaEventId(r.id, "Purchase"), paidCents: r.paymentPlan?.depositPaidCents ?? r.paidCents, albums: r.albums ?? 0 } : undefined,
     totalCents: bookingPaymentSummary(r).total, balanceCents: bookingPaymentSummary(r).balance, depositCents: r.paymentPlan?.depositPaidCents, balanceDueAt: r.paymentPlan?.balanceDueAt, balanceInvoiceUrl: r.paymentPlan?.balanceInvoiceUrl,
     questionnaireUrl: r.status === "paid" ? bookingLink(slotId, r, "questionnaire") : undefined, questionnaireComplete: !!r.questionnaire, welcomeSent: !!r.welcomeSentAt || !!r.emailsSent, questionnaireSent: !!r.questionnaireSentAt, paidCents: r.paidCents, invoiceUrl: r.invoiceUrl, address: cfg.studioAddress, postalCode: cfg.postalCode, arrivalNotes: cfg.arrivalNotes, email: r.email, cancellationPolicy: cfg.cancellationPolicy };
 }

@@ -15,18 +15,18 @@ async function environment({ pathname = '/2728-cc-weddings-dark', blocked = fals
   globalThis.localStorage = storage();
   globalThis.sessionStorage = storage();
   Object.defineProperty(globalThis, 'navigator', { value: { globalPrivacyControl: gpc }, configurable: true });
-  globalThis.window = { location: { pathname, search: '?utm_source=google&gclid=test-click&email=private', origin: 'https://www.armanarai.ca', assign: (url) => redirects.push(url) }, setTimeout, clearTimeout };
-  globalThis.document = { title: 'Wedding photography', querySelector: () => null, createElement: () => ({ dataset: {} }), head: { appendChild: (script) => { appended.push(script); queueMicrotask(() => blocked ? script.onerror() : script.onload()); } } };
+  globalThis.window = { navigator:{globalPrivacyControl:gpc}, location: { pathname, search: '?utm_source=google&gclid=test-click&email=private', hostname:'www.armanarai.ca', origin: 'https://www.armanarai.ca', assign: (url) => redirects.push(url) }, setTimeout, clearTimeout };
+  globalThis.document = { title: 'Wedding photography', getElementById:()=>null, querySelector: () => null, createElement: () => ({ dataset: {} }), head: { appendChild: (script) => { appended.push(script); queueMicrotask(() => {if(blocked)return script.onerror();if(script.id==='aa-meta-pixel')window.fbq.callMethod=(...args)=>window.fbq.queue.push(args);script.onload();}); } } };
   const analytics = await import(`../lib/analytics.ts?test=${++scenario}`);
   return { analytics, appended, redirects, google: () => (window.dataLayer || []).map((args) => [...args]), meta: () => (window.fbq?.queue || []).map((args) => [...args]) };
 }
 const scheduled = { event: 'calendly.event_scheduled', payload: { invitee: { uri: 'https://api.calendly.com/scheduled_events/event-123/invitees/invitee-456' }, name: 'Do not transmit', email: 'private@example.com' } };
 
-test('the tags load on the first view of a public page, with no interaction and whatever the browser signals', async () => {
+test('tags load on public visits and respect explicit browser opt-outs', async () => {
   for (const options of [{}, { gpc: true }]) {
     const { analytics, appended } = await environment(options);
-    analytics.trackPageView();
-    assert.equal(appended.length, 2);
+    await analytics.trackPageView();
+    assert.equal(appended.length, options.gpc ? 0 : 2);
   }
 });
 
@@ -45,19 +45,19 @@ test('PublicTracking mounts start real page-view tracking without waiting for in
   runInNewContext(compiled, { exports: module.exports, module, require, document });
   module.exports.default();
   // Mount effects only: no pointer, scroll, keyboard, submit or booking event.
-  effects.forEach((effect) => effect());
+  effects.forEach((effect) => effect()); await new Promise(resolve=>setTimeout(resolve,0));
   assert.equal(appended.length, 2);
   assert.equal(google().filter((e) => e[1] === 'page_view').length, 1);
   assert.equal(meta().filter((e) => e[1] === 'PageView').length, 1);
   assert.equal(meta().filter((e) => ['Lead', 'Schedule'].includes(e[1])).length, 0);
   // React Strict Mode replay must not duplicate the page view.
-  effects.forEach((effect) => effect());
+  effects.forEach((effect) => effect()); await new Promise(resolve=>setTimeout(resolve,0));
   assert.equal(meta().filter((e) => e[1] === 'PageView').length, 1);
 });
 
 test('a successful inquiry sends Lead separately from PageView and Schedule', async () => {
   const { analytics, google, meta } = await environment();
-  analytics.trackPageView();
+  await analytics.trackPageView();
   analytics.trackLead('wedding_date_check');
   assert.equal(meta().filter((e) => e[1] === 'PageView').length, 1);
   assert.equal(meta().filter((e) => e[1] === 'Lead').length, 1);
@@ -68,7 +68,7 @@ test('a successful inquiry sends Lead separately from PageView and Schedule', as
 test('local development never sends test inquiries to advertising accounts', async () => {
   const { analytics, appended } = await environment();
   window.location.hostname = 'localhost';
-  analytics.trackPageView();
+  await analytics.trackPageView();
   analytics.trackLead('wedding_date_check');
   assert.equal(appended.length, 0);
 });
@@ -76,14 +76,14 @@ test('local development never sends test inquiries to advertising accounts', asy
 test('no tags on the private portal, the admin pages or the API routes', async () => {
   for (const pathname of ['/portal/client-123', '/admin', '/api/inquiry']) {
     const { analytics, appended } = await environment({ pathname });
-    analytics.trackPageView();
+    await analytics.trackPageView();
     assert.equal(appended.length, 0);
   }
 });
 
 test('a page view configures only the Weddings container and filters the Google page URL', async () => {
   const { analytics, appended, google, meta } = await environment();
-  analytics.trackPageView(); analytics.trackPageView();
+  await analytics.trackPageView(); await analytics.trackPageView();
   assert.equal(appended.length, 2);
   const configs = google().filter((e) => e[0] === 'config');
   assert.deepEqual(configs.map((e) => e[1]), [analytics.GA4_ID, analytics.WEDDINGS_TAG_ID]);
@@ -100,7 +100,7 @@ test('a page view configures only the Weddings container and filters the Google 
 
 test('confirmed booking redirects immediately then reports once on thank-you, without personal information', async () => {
   const { analytics, redirects, google, meta } = await environment();
-  analytics.trackPageView();
+  await analytics.trackPageView();
   await analytics.completeWeddingBooking(scheduled);
   assert.deepEqual(redirects, ['/thank-you']);
   assert.equal(google().filter((e) => e[1] === 'conversion').length, 0);
@@ -148,7 +148,7 @@ test('missing invitee metadata still creates a valid opaque booking id', async (
 
 test('blocked tags do not stop the redirect or falsely mark a conversion as sent', async () => {
   const { analytics, redirects, google, meta } = await environment({ blocked: true });
-  analytics.trackPageView();
+  await analytics.trackPageView();
   await analytics.completeWeddingBooking(scheduled);
   window.location.pathname = '/thank-you';
   await analytics.reportPendingBooking();
@@ -159,7 +159,7 @@ test('blocked tags do not stop the redirect or falsely mark a conversion as sent
 
 test('storage failure still navigates and sends the booking before leaving when tags work', async () => {
   const { analytics, redirects, google, meta } = await environment();
-  analytics.trackPageView();
+  await analytics.trackPageView();
   globalThis.sessionStorage = { getItem: () => { throw new Error('blocked'); }, setItem: () => { throw new Error('blocked'); } };
   await analytics.completeWeddingBooking(scheduled);
   assert.deepEqual(redirects, ['/thank-you']);
@@ -169,22 +169,22 @@ test('storage failure still navigates and sends the booking before leaving when 
 
 test('loaded tags are suspended when navigation enters the private portal', async () => {
   const { analytics, google, meta } = await environment();
-  analytics.trackPageView();
+  await analytics.trackPageView();
   window.location.pathname = '/portal/client-123';
   analytics.suspendTracking();
-  analytics.trackPageView();
+  await analytics.trackPageView();
   assert.equal(window[`ga-disable-${analytics.GA4_ID}`], true);
   assert.equal(meta().at(-1)[1], 'revoke');
   assert.equal(google().filter((e) => e[1] === 'page_view').length, 1);
   window.location.pathname = '/portfolio';
-  analytics.trackPageView();
+  await analytics.trackPageView();
   assert.equal(window[`ga-disable-${analytics.GA4_ID}`], false);
   assert.equal(google().filter((e) => e[1] === 'page_view').length, 2);
 });
 
 test('a delivered wedding inquiry waits for tags and reports once per channel across replays and reloads', async () => {
   const { analytics, google, meta } = await environment({ pathname: '/wedding-photography/toronto-pricing/thank-you' });
-  analytics.trackPageView();
+  await analytics.trackPageView();
   assert.equal(meta().filter(e => e[1] === 'Lead').length, 0);
   await Promise.all([analytics.trackWeddingInquiry('/contact', 'opaque-123'), analytics.trackWeddingInquiry('/contact', 'opaque-123')]);
   await analytics.trackWeddingInquiry('/contact', 'opaque-123');

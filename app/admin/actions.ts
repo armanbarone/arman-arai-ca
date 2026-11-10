@@ -410,6 +410,65 @@ export async function saveBookingAction(
   return { ok: true, ref };
 }
 
+/**
+ * Email a couple the commercial half of their contract before anything is
+ * issued, so they can read what they are being offered and ask for changes.
+ *
+ * Deliberately separate from issuing: a proposal cannot be published until
+ * their own details are approved, which they cannot do before they have seen
+ * what they are agreeing to. It sends only to the parties who have an address,
+ * and it is rendered from the booking so it cannot drift from it.
+ */
+export async function emailDraftScopeAction(
+  ref: string,
+): Promise<{ ok: boolean; message?: string; error?: string }> {
+  const admin = await requireAdmin();
+  try {
+    const booking = await getBooking(ref);
+    if (!booking) throw Error("Booking not found.");
+    if (booking.archivedAt || booking.status === "cancelled")
+      throw Error("Restore this wedding before sending anything.");
+    const recipients = booking.clients.filter((c) => c.email.trim());
+    if (!recipients.length)
+      throw Error("Nobody on this booking has an email address.");
+    const { draftScopeEmail } = await import("@/lib/portal/draft-scope");
+    const { sendEmail } = await import("@/lib/portal/email");
+    const sent: string[] = [];
+    for (const c of recipients) {
+      const mail = draftScopeEmail(
+        booking,
+        c.preferredName || c.legalName.split(" ")[0],
+      );
+      await sendEmail({
+        to: c.email,
+        subject: mail.subject,
+        html: mail.html,
+        text: mail.text,
+        idempotencyKey: `draft-scope/${ref}/${booking.updatedAt}/${c.email}`,
+      });
+      sent.push(c.email);
+    }
+    await updateBooking(ref, (b) => {
+      b.events.push({
+        at: new Date().toISOString(),
+        type: "draft_scope_emailed",
+        actor: admin.email,
+        detail: { to: sent },
+      });
+    });
+    revalidatePath(`/admin/bookings/${ref}`, "layout");
+    return {
+      ok: true,
+      message: `The draft was emailed to ${sent.join(" and ")}.`,
+    };
+  } catch (err) {
+    return {
+      ok: false,
+      error: err instanceof Error ? err.message : "Could not send the draft.",
+    };
+  }
+}
+
 export async function sendInviteAction(
   ref: string,
   email: string,

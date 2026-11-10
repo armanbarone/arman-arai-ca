@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import { dateLabel, money, sessionQuote, timeLabel, type Availability } from "../../lib/christmas/catalog";
+import { dateLabel, money, timeLabel, type Availability } from "../../lib/christmas/catalog";
+import { depositQuote } from "../../lib/christmas/payment-plan";
 
 interface Props {
   data: Availability;
@@ -20,7 +21,7 @@ export default function ChristmasBooking({ data, loading, selectedDate, selected
   const timesRef = useRef<HTMLDivElement>(null), bookingRef = useRef<HTMLDivElement>(null);
   const slots = data.slots.filter(s => s.santa), daySlots = slots.filter(s => s.date === selectedDate);
   const selected = daySlots.find(s => s.id === selectedSlot && s.available);
-  const quote = sessionQuote(albums);
+  const quote = depositQuote(albums);
   const firstWeekday = new Date(Date.UTC(2026, month - 1, 1)).getUTCDay();
   const dayCount = new Date(Date.UTC(2026, month, 0)).getUTCDate();
 
@@ -79,7 +80,8 @@ export default function ChristmasBooking({ data, loading, selectedDate, selected
             <p>Album buyers receive 20 edited digital photos.</p>
           </section>
           <p className="xm-booking-total"><span>Total <small>CAD, including tax</small></span><strong>{money(quote.total)}</strong></p>
-          <button type="button" className="xm-button" disabled={busy} onClick={onBook}>Book &amp; pay {money(quote.total)} <span aria-hidden="true">↗</span></button>
+          <p className="xm-booking-payment">Pay <strong>$50 today</strong>. Remaining <strong>{money(quote.balance)}</strong> due on arrival, before your session starts. All amounts include tax.</p>
+          <button type="button" className="xm-button" disabled={busy} onClick={onBook}>Reserve with $50 <span aria-hidden="true">↗</span></button>
           <p className="xm-booking-reassurance">{data.mode === "preview" ? "Preview only · No payment or booking" : "Secure payment with Stripe · Your session guide follows by email"}</p>
         </div>}
       </div>}

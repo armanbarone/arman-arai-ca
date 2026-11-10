@@ -26,6 +26,7 @@
 .xm-booking-albums label{display:block;font-weight:600;margin-bottom:6px}
 .xm-booking-albums select{width:100%;min-height:45px;border:1px solid #bba778;border-radius:4px;padding:9px;background:#fffaf0;color:#34432e;font-size:12px}
 .xm-booking-reassurance{font-size:10px;line-height:1.7;text-align:center;color:#7d7050;margin:12px 0 0!important}
+.xm-booking-payment{font-size:12px;line-height:1.8;margin:0 0 18px!important;color:#514830}
 .xm-booking-card button:focus-visible,.xm-booking-albums select:focus-visible{outline:2px solid #98343b;outline-offset:3px}
 .xm-simple .xm-simple-price{margin-bottom:23px}
 .xm-footer-minimal{font-size:10px;color:#b9ba9f}

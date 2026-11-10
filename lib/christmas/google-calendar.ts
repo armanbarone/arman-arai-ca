@@ -2,7 +2,7 @@ import "server-only";
 import { createHash } from "node:crypto";
 import { getToken, startAuthorization } from "@vercel/connect";
 import { APP_URL, BUSINESS } from "@/lib/portal/business";
-import { money } from "./catalog";
+import { bookingPaymentText } from "./payment-plan";
 import { allocatedMinutes, type Slot } from "./inventory";
 import { inventoryStore, updateSlot } from "./store";
 
@@ -57,7 +57,7 @@ export function christmasCalendarEvent(slot: Slot) {
       `Family: ${r.name}`, `Email: ${r.email}`, `Phone: ${r.phone}`,
       `Package: ${r.packageSnapshot?.name ?? "Christmas with Santa"}`,
       `Digital photos: ${r.packageSnapshot?.images ?? 10} · Printed albums: ${r.albums ?? 0}`,
-      `Paid: ${money(r.paidCents ?? r.totalCents ?? r.subtotalCents)} CAD`,
+      bookingPaymentText(r, slot.date, slot.time),
       `Booking reference: ${r.id}`, `${APP_URL}/admin/christmas?date=${slot.date}`,
     ].join("\n"),
     start: { dateTime: start.toISOString(), timeZone: "America/Vancouver" },

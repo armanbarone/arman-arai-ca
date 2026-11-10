@@ -4,7 +4,9 @@ import { requireAdmin } from "@/lib/portal/auth";
 import { writeJson } from "@/lib/portal/store";
 import { settings, SETTINGS_PATH, allSlots, addSlot, updateSlot } from "@/lib/christmas/store";
 import { validSlot, SLOT_PATTERN } from "@/lib/christmas/inventory";
-import { paymentReady } from "@/lib/christmas/payments";
+import { paymentReady, reconcileChristmasInvoice } from "@/lib/christmas/payments";
+import { ensureBalanceInvoice } from "@/lib/christmas/balance";
+import { stripeClient } from "@/lib/portal/stripe";
 import { christmasCheckoutCatalog } from "@/lib/christmas/stripe-catalog";
 import { calendarAuthorizationUrl, calendarConnectionState, syncChristmasCalendar } from "@/lib/christmas/google-calendar";
 import { redirect } from "next/navigation";
@@ -47,4 +49,15 @@ export async function toggleChristmasSlot(form: FormData) {
   if (!SLOT_PATTERN.test(id)) throw Error("Invalid appointment.");
   await updateSlot(id, s => { if (s.reservation) throw Error("Reserved or purchased appointments cannot be changed here. Contact the family first."); if (!validSlot(s.date, s.time)) throw Error("That date or time is outside the booking schedule."); s.published = !s.published; s.manuallyBlocked = !s.published; if (s.published) delete s.manuallySoldOut; });
   revalidatePath("/admin/christmas"); revalidatePath("/christmas");
+}
+export async function recordChristmasBalancePayment(form: FormData) {
+  await requireAdmin();
+  const slotId = String(form.get("id") || "");
+  if (!SLOT_PATTERN.test(slotId) || form.get("received") !== "on") throw Error("Confirm that you have actually received the remaining balance before recording payment.");
+  const invoice = await ensureBalanceInvoice(slotId);
+  if (!invoice) throw Error("This booking has no deposit balance invoice.");
+  if (invoice.status !== "paid" && invoice.status !== "open") throw Error("The balance invoice is not ready.");
+  const paid = invoice.status === "paid" ? invoice : await stripeClient().invoices.pay(invoice.id, { paid_out_of_band: true }, { idempotencyKey: `christmas-balance-received-${invoice.id}` });
+  await reconcileChristmasInvoice(paid);
+  revalidatePath("/admin/christmas");
 }

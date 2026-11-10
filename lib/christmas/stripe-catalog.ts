@@ -2,6 +2,7 @@ import "server-only";
 import { stripeClient } from "@/lib/portal/stripe";
 import { GST_PERCENT, PST_PERCENT, ALBUM_ADDON, PACKAGES } from "./catalog";
 import { christmasPaymentMode } from "./environment";
+import { DEPOSIT } from "./payment-plan";
 export const CHRISTMAS_PRODUCT = "prod_VRv3xk15KZIIXJ";
 export const CHRISTMAS_PRICE = "price_1UR1DrJ13FhTkCj17wPfWMTM";
 const sessionLookup = "aa_ca_xmas_session_250_30min_2026";
@@ -30,6 +31,22 @@ async function provision() {
   base ??= await stripe.prices.create({ product: productId, currency: "cad", unit_amount: PACKAGES[0].price, tax_behavior: "exclusive", lookup_key: sessionLookup, nickname: "30-minute Christmas session · $250", metadata: { service: "christmas-2026", minutes: "30" } }, { idempotencyKey: "aa-ca-xmas-session-250-30min-2026-v1" });
   if (!base.active || base.livemode !== live || base.currency !== "cad" || base.unit_amount !== PACKAGES[0].price || base.tax_behavior !== "exclusive" || base.product !== productId) throw Error("The Christmas Stripe price does not match the advertised package.");
   await stripe.products.update(productId, { default_price: base.id, description: "30 minutes with Santa across three Christmas sets. Includes 10 edited digital photographs, a mailed Santa letter, a complimentary printed keepsake, cookies and warm milk. November 9–December 20, 2026." });
+  const depositProduct = `aa_ca_christmas_deposit_2026${live ? "" : "_test"}`;
+  try { await stripe.products.retrieve(depositProduct); }
+  catch (error) {
+    if (!(error instanceof Error) || !("code" in error) || error.code !== "resource_missing") throw error;
+    await stripe.products.create({ id: depositProduct, name: "Christmas session reservation deposit", description: "$50 CAD including GST, credited toward your Christmas session. Remaining balance due on arrival before your session starts.", metadata: { service: "christmas-2026", payment_kind: "deposit" } }, { idempotencyKey: `aa-ca-xmas-deposit-product-${live}-v1` });
+  }
+  const stagedPrices: string[] = [];
+  for (const [key, product, amount, name] of [
+    ["aa_ca_xmas_deposit_50_2026", depositProduct, DEPOSIT.subtotal, "$50 reservation deposit, including GST"],
+    ["aa_ca_xmas_balance_after_50_2026", productId, PACKAGES[0].price - DEPOSIT.subtotal, "Session balance after $50 deposit"],
+  ] as const) {
+    let p = (await stripe.prices.list({ active: true, lookup_keys: [key], limit: 10 })).data.find(p => p.lookup_key === key);
+    p ??= await stripe.prices.create({ product, currency: "cad", unit_amount: amount, tax_behavior: "exclusive", lookup_key: key, nickname: name, metadata: { service: "christmas-2026" } }, { idempotencyKey: `${key}-v1` });
+    if (!p.active || p.livemode !== live || p.currency !== "cad" || p.unit_amount !== amount || p.tax_behavior !== "exclusive" || p.product !== product) throw Error("The Christmas deposit or balance price does not match the booking terms.");
+    stagedPrices.push(p.id);
+  }
   try { await stripe.products.retrieve(ALBUM_PRODUCT); }
   catch (e) {
     if (!(e instanceof Error) || !("code" in e) || e.code !== "resource_missing") throw e;
@@ -49,7 +66,7 @@ async function provision() {
   let pst = rates.find(r => r.percentage === PST_PERCENT && r.country === "CA" && r.state === "BC" && r.display_name === "PST" && r.tax_type === "pst");
   if (!pst) pst = await stripe.taxRates.create({ display_name: "PST", description: "7% BC PST — optional printed albums", jurisdiction: "British Columbia", country: "CA", state: "BC", percentage: PST_PERCENT, inclusive: false, tax_type: "pst" }, { idempotencyKey: "aa-ca-xmas-pst-2026-v1" });
   if (gst.livemode !== live || pst.livemode !== live) throw Error("Christmas tax rates do not match the payment environment.");
-  return { price: base.id, albumPrices, taxRates: [gst.id], albumTaxRates: [gst.id, pst.id] };
+  return { price: base.id, depositPrice: stagedPrices[0], balancePrice: stagedPrices[1], albumPrices, taxRates: [gst.id], albumTaxRates: [gst.id, pst.id] };
 }
 export async function christmasCheckoutCatalog() {
   if (cached && Date.now() - cached.at < 300000) return cached.value;

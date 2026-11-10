@@ -4,8 +4,8 @@ import { CART_CONSENT, CART_WINDOW_MS } from "../../lib/christmas/cart-copy";
 import { BUSINESS, BUSINESS_ADDRESS_ONE_LINE } from "../../lib/portal/business";
 
 interface Cart { id: string; token: string; expiresAt: number }
-export default function ChristmasCheckoutDetails({ slotId, albums, preview, busy, error, policy, onPayment, onExpired }: {
-  slotId: string; albums: number; preview: boolean; busy: boolean; error: string; policy: string;
+export default function ChristmasCheckoutDetails({ slotId, albums, preview, busy, error, policy, paymentTerms, onPayment, onExpired }: {
+  slotId: string; albums: number; preview: boolean; busy: boolean; error: string; policy: string; paymentTerms: string;
   onPayment: (event: FormEvent<HTMLFormElement>) => void; onExpired: () => void;
 }) {
   const [cart, setCart] = useState<Cart | null>(null), [now, setNow] = useState(Date.now());
@@ -70,9 +70,9 @@ export default function ChristmasCheckoutDetails({ slotId, albums, preview, busy
       {albums > 0 && <label className="xm-activity-consent"><input type="checkbox" name="albumDeliveryConsent" required /><span>My album delivery address is in Greater Vancouver, as far as Surrey. Delivery will be arranged after my photo selections; pre-Christmas delivery is not guaranteed.</span></label>}
       <label className="xm-activity-consent"><input type="checkbox" name="shareActivity" /><span>Optional: show my first name and city in a recent-booking message on this page. My contact details and appointment time stay private.</span></label>
       <label className="xm-honeypot" aria-hidden="true">Website<input name="website" tabIndex={-1} autoComplete="off" /></label>
-      <div className="xm-policy"><p>{policy}</p><label><input type="checkbox" name="consent" required /><span>I agree to the booking policy above and the <a href="https://www.armanarai.ca/terms-of-service" target="_blank" rel="noreferrer">terms</a>. I understand the selected collection’s inclusions and appointment time.</span></label></div>
+      <div className="xm-policy"><p>{policy}</p><p>{paymentTerms}</p><label><input type="checkbox" name="consent" required /><span>I agree to the booking and payment policy above and the <a href="https://www.armanarai.ca/terms-of-service" target="_blank" rel="noreferrer">terms</a>. I understand the selected collection’s inclusions and appointment time.</span></label></div>
       {error && <p role="alert" className="xm-error">{error}</p>}
-      <button className="xm-button" disabled={busy || !cart}>{busy ? "Opening secure payment…" : preview ? "Preview checkout" : "Continue to secure payment"} ↗</button>
+      <button className="xm-button" disabled={busy || !cart}>{busy ? "Opening secure payment…" : preview ? "Preview $50 deposit checkout" : "Pay $50 deposit with Stripe"} ↗</button>
       <p className="xm-small">{preview ? "Preview only. These details are not sent or saved." : "Stripe gives you a separate 35-minute payment window. Your appointment is confirmed only after successful payment."}</p>
     </form>}
   </div>;

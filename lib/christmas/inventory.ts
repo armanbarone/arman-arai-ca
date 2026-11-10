@@ -2,6 +2,7 @@ import type { PackageId } from "./catalog";
 import { createHash } from "node:crypto";
 import { isSeasonDate, scheduledTime, type PublicSlot, type RecentBooking } from "./catalog.ts";
 import type { FamilyQuestionnaire } from "./questionnaire-schema";
+import type { DepositPlan } from "./payment-plan";
 export interface ChristmasSettings {
   enabled: boolean; studioAddress: string; postalCode: string; arrivalNotes: string;
   cancellationPolicy: string; publishableKey: string;
@@ -17,6 +18,7 @@ export interface Reservation {
   ownerPaymentCheck?: boolean;
   packageSnapshot?: { name: string; minutes: number; images: number; sets: number; santa: boolean };
   sessionId?: string; invoiceId?: string; invoiceUrl?: string; paidCents?: number; paymentIntent?: string; emailsSent?: boolean;
+  paymentPlan?: DepositPlan;
   welcomeSentAt?: number; questionnaireSentAt?: number; studioSentAt?: number;
   googleCalendarEventId?: string; googleCalendarFingerprint?: string; googleCalendarSyncedAt?: number; googleCalendarEventUrl?: string; googleCalendarLastError?: string;
   questionnaire?: { answers: FamilyQuestionnaire; submittedAt: number; updatedAt: number };

@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useRef, useState, type FormEvent, type ImgHTMLAttributes } from "react";
-import { PACKAGES, PREVIEW_AVAILABILITY, dateLabel, timeLabel, money, sessionQuote, type Availability, type PackageId } from "../../lib/christmas/catalog";
+import { PACKAGES, PREVIEW_AVAILABILITY, dateLabel, timeLabel, money, type Availability, type PackageId } from "../../lib/christmas/catalog";
+import { DEPOSIT_PLAN, depositQuote, balanceDeadline } from "../../lib/christmas/payment-plan";
 import ChristmasAtmosphere from "./ChristmasAtmosphere";
 import ChristmasStorybook, { ChristmasCharacter } from "./ChristmasStorybook";
 import ChristmasCheckoutDetails from "./ChristmasCheckoutDetails";
@@ -26,7 +27,7 @@ export default function ChristmasExperience({ preview = false, storybook = false
   const [loading, setLoading] = useState(!preview);
   const selectedPackage: PackageId = "santa";
   const [albums, setAlbums] = useState(0);
-  const quote = sessionQuote(albums), subtotal = quote.subtotal;
+  const quote = depositQuote(albums), subtotal = quote.subtotal;
   const [activity, setActivity] = useState("");
   const seenActivity = useRef(new Set<string>());
   const [selectedDate, setSelectedDate] = useState("");
@@ -113,7 +114,7 @@ export default function ChristmasExperience({ preview = false, storybook = false
     const f = new FormData(e.currentTarget); setBusy(true);
     try {
       const response = await fetch("/api/christmas/checkout", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({
-        cartId: f.get("cartId"), cartToken: f.get("cartToken"), slotId: slot.id, packageId: pkg.id, name: f.get("name"), email: f.get("email"), phone: f.get("phone"), consent: f.get("consent") === "on", website: f.get("website") || "", acceptedPolicy: data.cancellationPolicy, expectedSubtotal: subtotal, expectedTotal: quote.total, albums, shareActivity: f.get("shareActivity") === "on", albumDeliveryConsent: f.get("albumDeliveryConsent") === "on",
+        cartId: f.get("cartId"), cartToken: f.get("cartToken"), slotId: slot.id, packageId: pkg.id, name: f.get("name"), email: f.get("email"), phone: f.get("phone"), consent: f.get("consent") === "on", website: f.get("website") || "", acceptedPolicy: data.cancellationPolicy, expectedSubtotal: subtotal, expectedTotal: quote.total, paymentPlan: DEPOSIT_PLAN, expectedDueNow: quote.dueNow, albums, shareActivity: f.get("shareActivity") === "on", albumDeliveryConsent: f.get("albumDeliveryConsent") === "on",
         delivery: { letterNames: f.get("letterNames"), line1: f.get("mailLine1"), line2: f.get("mailLine2") || "", city: f.get("mailCity"), postalCode: f.get("mailPostalCode"), province: "BC", country: "CA" },
       }) });
       const result = await response.json();
@@ -133,7 +134,7 @@ export default function ChristmasExperience({ preview = false, storybook = false
     <main id="christmas-main">
       <section className="xm-hero">
         <div className="xm-hero-stars" aria-hidden="true"><span>✧</span><span>✦</span><span>✧</span><span>✦</span></div>
-        {simple ? <div className="xm-hero-copy"><h1>Christmas photos.<br /><em>With Santa.</em></h1><p className="xm-lead">For families with kids.<br />A private 30-minute session<br />across three Christmas sets.</p><p className="xm-simple-price"><strong>$250</strong><span>CAD + GST</span></p><a href="#booking" className="xm-button">Choose a time &amp; book <Arrow /></a></div> : <div className="xm-hero-copy"><p className="xm-eyebrow"><span /> A VERY NORTH VANCOUVER CHRISTMAS · 2026 <span /></p><h1>Come in.<br /><em>It’s Christmas.</em></h1><p className="xm-lead">A fireside kind of Christmas. The people you love.<br className="xm-desktop-break" /> And a little visit from Santa, included.</p><a href="#booking" className="xm-button">Find your Christmas moment <Arrow /></a><p className="xm-hero-dates">NOVEMBER 9 – DECEMBER 20 <span>✦</span> NORTH VANCOUVER, BC</p></div>}
+        {simple ? <div className="xm-hero-copy"><h1>Christmas photos.<br /><em>With Santa.</em></h1><p className="xm-lead">For families with kids.<br />A private 30-minute session<br />across three Christmas sets.</p><p className="xm-simple-price"><strong>$250</strong><span>CAD + GST</span></p><p className="xm-deposit-offer"><strong>Reserve with just $50 today</strong><span>$262.50 including GST. $212.50 remaining, due on arrival before your session starts.</span></p><a href="#booking" className="xm-button">Reserve your session <Arrow /></a></div> : <div className="xm-hero-copy"><p className="xm-eyebrow"><span /> A VERY NORTH VANCOUVER CHRISTMAS · 2026 <span /></p><h1>Come in.<br /><em>It’s Christmas.</em></h1><p className="xm-lead">A fireside kind of Christmas. The people you love.<br className="xm-desktop-break" /> And a little visit from Santa, included.</p><a href="#booking" className="xm-button">Find your Christmas moment <Arrow /></a><p className="xm-hero-dates">NOVEMBER 9 – DECEMBER 20 <span>✦</span> NORTH VANCOUVER, BC</p></div>}
         <div className="xm-photo-trio">
           <figure className="xm-photo xm-photo-left"><ProtectedPhoto src="/christmas/santa-portrait-2026.webp?v=clean-1" alt="Santa and a little boy sharing a playful moment beside the Christmas tree" width="1200" height="1789" loading="eager" /><figcaption>A little Santa magic <span>✧</span></figcaption></figure>
           <figure className="xm-photo xm-photo-main"><ProtectedPhoto src="/christmas/family-portrait-2026.webp?v=clean-1" alt="Parents cuddling their baby by the Christmas tree and fireplace" width="1122" height="1402" fetchPriority="high" /><figcaption>The ones who make it Christmas.</figcaption><span className="xm-photo-seal" aria-hidden="true">Made for<br /><b>your</b><br />family</span></figure>
@@ -162,7 +163,7 @@ export default function ChristmasExperience({ preview = false, storybook = false
           {!p.santa && <p className="xm-no-santa">Family portraits · Santa is not included</p>}
           <button onClick={() => choosePackage(p.id)} className="xm-button">{p.santa ? "Book a visit with Santa" : "Book our family session"} <Arrow /></button>
         </article>)}</div>
-        <p className="xm-package-foot">One household, up to five people. One $250 CAD package, plus 5% GST ($262.50 total). Full payment reserves your appointment.</p>
+        <p className="xm-package-foot">One household, up to five people. One $250 CAD package, plus 5% GST ($262.50 total). Reserve with $50 including GST. The remaining $212.50 is due on arrival before your session starts. Optional albums increase the balance, not today’s deposit.</p>
       </div></section>
 
       <section className="xm-album-banner" aria-labelledby="xm-album-banner-title"><div className="xm-album-banner-panel">
@@ -175,7 +176,7 @@ export default function ChristmasExperience({ preview = false, storybook = false
 
       </>}
 
-      <section id="booking" className="xm-booking"><div className="xm-wrap"><div className="xm-section-heading">{simple ? <><p className="xm-eyebrow">CHRISTMAS WITH SANTA · $250 + GST</p><h2>Choose a time.<br /><em>Book &amp; pay.</em></h2></> : <><p className="xm-eyebrow">YOUR NAME ON THE NICE LIST</p><h2>Let’s save you<br /><em>a little Christmas.</em></h2><p>Pick your day. Choose your moment. We’ll keep the firelight warm.</p></>}</div>
+      <section id="booking" className="xm-booking"><div className="xm-wrap"><div className="xm-section-heading">{simple ? <><p className="xm-eyebrow">CHRISTMAS WITH SANTA · $250 + GST</p><h2>Choose a time.<br /><em>Reserve with $50.</em></h2><p className="xm-calendar-deposit">No full payment required today.<br />$50 now · $212.50 on arrival before your session starts.<br /><small>$262.50 including GST. Optional albums added to the balance.</small></p></> : <><p className="xm-eyebrow">YOUR NAME ON THE NICE LIST</p><h2>Let’s save you<br /><em>a little Christmas.</em></h2><p>Pick your day. Choose your moment. We’ll keep the firelight warm.</p></>}</div>
         {data.mode === "live" && remaining > 0 && remaining <= 3 && <p className="xm-availability-note" role="status">{remaining === 1 ? "One appointment remains" : `${remaining} appointments remain`} for this collection in the current release.</p>}
         {data.mode === "closed" && !loading ? <div className="xm-closed"><Star /><h3>A little Christmas is on its way.</h3><p>{data.message || "Bookings are not open yet."}</p></div> : <ChristmasBooking data={data} loading={loading} selectedDate={selectedDate} selectedSlot={selectedSlot} albums={albums} busy={busy}
           onDate={date => { setSelectedDate(date); setSelectedSlot(""); setError(""); }}
@@ -190,10 +191,10 @@ export default function ChristmasExperience({ preview = false, storybook = false
     </main>
     <footer className="xm-footer xm-footer-minimal"><span>© 2026 Arman Arai</span><nav aria-label="Legal"><a href="https://www.armanarai.ca/privacy-policy">Privacy</a><a href="https://www.armanarai.ca/terms-of-service">Terms</a></nav></footer>
     {activity && <div className="xm-activity" role="status"><span aria-hidden="true">✓</span><div><strong>{activity}</strong><small>Recent confirmed booking</small></div><button type="button" aria-label="Dismiss recent booking" onClick={()=>setActivity("")}>×</button></div>}
-    <div className="xm-mobile-cta"><span>{simple ? "Christmas with Santa" : "Your little Christmas"}<small>{simple ? "$250 + GST" : "$250 with Santa · 3 sets + keepsake"}</small></span><a className="xm-button" href="#booking">{simple ? "Book & pay" : "Find a time"} <Arrow /></a></div>
+    <div className="xm-mobile-cta"><span>{simple ? "Christmas with Santa" : "Your little Christmas"}<small>{simple ? "$250 + GST · $50 today" : "$250 with Santa · 3 sets + keepsake"}</small></span><a className="xm-button" href="#booking">{simple ? "Reserve $50" : "Find a time"} <Arrow /></a></div>
     <dialog ref={modalRef} aria-label="Book your Christmas session" className="xm-dialog" onCancel={e => { e.preventDefault(); if (!busy) closeModal(); }} onClick={e => { if (e.target === e.currentTarget && !busy) closeModal(); }}><div className="xm-dialog-inner"><button className="xm-dialog-close" aria-label="Close booking" onClick={closeModal} disabled={busy}>×</button>
-      {step === "demo" ? <div className="xm-demo-complete"><Star /><p className="xm-eyebrow">YOUR BOOKING PREVIEW</p><h2>A little Christmas,<br /><em>ready to book.</em></h2><p>{pkg.name}<br />{slot && `${dateLabel(slot.date)} · ${timeLabel(slot.time)}`}<br />{money(subtotal)} + applicable taxes · {money(quote.total)} CAD total{albums ? ` · ${albums} album(s) included` : ""}</p><p className="xm-demo-notice">This is a design preview. No payment has been taken, no contact details have been sent, and no appointment has been reserved.</p><button className="xm-button" onClick={closeModal}>Back to the Christmas page <Arrow /></button></div>
-      : <><p className="xm-eyebrow">YOUR APPOINTMENT · YOUR DETAILS</p><h2>Let’s make<br /><em>it yours.</em></h2><div className="xm-dialog-summary"><strong>{pkg.name}</strong><span>{slot && `${dateLabel(slot.date)} · ${timeLabel(slot.time)}`} · Approximately {pkg.minutes} minutes</span><span>{money(subtotal)} + applicable taxes · {money(quote.total)} CAD total{albums ? ` · ${albums} album(s) included` : ""}</span></div>{step === "details" && slot && <ChristmasCheckoutDetails slotId={slot.id} albums={albums} preview={preview} busy={busy} error={error} policy={data.cancellationPolicy} onPayment={beginPayment} onExpired={() => { closeModal(); setSelectedSlot(""); }} />}</>}
+      {step === "demo" ? <div className="xm-demo-complete"><Star /><p className="xm-eyebrow">YOUR BOOKING PREVIEW</p><h2>A little Christmas,<br /><em>ready to book.</em></h2><p>{pkg.name}<br />{slot && `${dateLabel(slot.date)} · ${timeLabel(slot.time)}`}<br />{money(subtotal)} + applicable taxes · {money(quote.total)} CAD total{albums ? ` · ${albums} album(s) included` : ""}<br />$50 today · {money(quote.balance)} due on arrival before your session starts.</p><p className="xm-demo-notice">This is a design preview. No payment has been taken, no contact details have been sent, and no appointment has been reserved.</p><button className="xm-button" onClick={closeModal}>Back to the Christmas page <Arrow /></button></div>
+      : <><p className="xm-eyebrow">YOUR APPOINTMENT · YOUR DETAILS</p><h2>Let’s make<br /><em>it yours.</em></h2><div className="xm-dialog-summary"><strong>{pkg.name}</strong><span>{slot && `${dateLabel(slot.date)} · ${timeLabel(slot.time)}`} · Approximately {pkg.minutes} minutes</span><span>{money(quote.total)} CAD total, including tax{albums ? ` · ${albums} album(s) included` : ""}</span><strong>$50 deposit today · {money(quote.balance)} remaining</strong><span>Balance due {slot && balanceDeadline(slot.date, slot.time)}.</span></div>{step === "details" && slot && <ChristmasCheckoutDetails slotId={slot.id} albums={albums} preview={preview} busy={busy} error={error} policy={data.cancellationPolicy} paymentTerms={`$50 CAD including GST is charged today and credited to your ${money(quote.total)} CAD total. The remaining ${money(quote.balance)} CAD is due ${balanceDeadline(slot.date, slot.time)}.`} onPayment={beginPayment} onExpired={() => { closeModal(); setSelectedSlot(""); }} />}</>}
     </div></dialog>
   </div>;
 }

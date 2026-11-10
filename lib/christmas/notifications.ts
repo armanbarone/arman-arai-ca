@@ -5,6 +5,7 @@ import { dateLabel, timeLabel, money, packageById } from "./catalog";
 import { bookingLink } from "./access";
 import type { Slot } from "./inventory";
 import { inventoryStore, updateSlot } from "./store";
+import { bookingPaymentSummary, bookingPaymentText, balanceDeadline } from "./payment-plan";
 
 export function calendarAttachment(slot: Slot) {
   const r = slot.reservation!, minutes = r.packageSnapshot?.minutes ?? 45;
@@ -19,8 +20,10 @@ export function bookingEmails(slot: Slot, { preview = false }: { preview?: boole
   const when = `${dateLabel(slot.date, { weekday: "long", month: "long", day: "numeric", year: "numeric" })} at ${timeLabel(slot.time)} Pacific`;
   const confirmation = preview ? "/christmas/confirmation/preview" : bookingLink(slot.id, r, "confirmation"), questionnaire = preview ? "/christmas/questionnaire/preview" : bookingLink(slot.id, r, "questionnaire");
   const first = r.name.trim().split(/\s+/)[0];
+  const payment = bookingPaymentSummary(r), paymentText = bookingPaymentText(r, slot.date, slot.time);
+  const paymentHtml = r.paymentPlan ? `<p><strong>${esc(money(payment.paid))} CAD paid · ${esc(money(payment.balance))} CAD remaining</strong><br>Full order total: ${esc(money(payment.total))} CAD including tax. Your $50 deposit includes $2.38 GST and is credited in full.${payment.balance ? `<br><strong>Balance due ${esc(balanceDeadline(slot.date, slot.time))}.</strong> Pay online using your balance invoice or settle it at the studio before we begin.` : " Your order is paid in full."}${r.paymentPlan.balanceInvoiceUrl ? ` <a href="${esc(r.paymentPlan.balanceInvoiceUrl)}">${payment.balance ? "Pay remaining balance" : "View balance receipt"}</a>.` : ""}</p>` : `<p><strong>Paid ${esc(money(payment.paid))} CAD</strong></p>`;
   const album = r.albums ? `${r.albums} printed album(s), 10 pages and 20 photographs each. Hand delivery across Greater Vancouver through Surrey is arranged after selections; pre-Christmas album delivery is not guaranteed.` : "No printed albums added.";
-  const details = `${when}\n${cfg.studioAddress}, ${cfg.postalCode}\n${cfg.arrivalNotes}\nApproximately ${pkg.minutes} minutes · ${pkg.images} digital photographs · ${pkg.sets} sets · Santa included\n${album}\nPaid ${money(r.paidCents ?? r.totalCents ?? r.subtotalCents)} CAD · ${r.id}`;
+  const details = `${when}\n${cfg.studioAddress}, ${cfg.postalCode}\n${cfg.arrivalNotes}\nApproximately ${pkg.minutes} minutes · ${pkg.images} digital photographs · ${pkg.sets} sets · Santa included\n${album}\n${paymentText} · ${r.id}${r.paymentPlan?.balanceInvoiceUrl ? `\nBalance invoice: ${r.paymentPlan.balanceInvoiceUrl}` : ""}`;
   const guide = [
     { title: "Where to come", paragraphs: [`${cfg.studioAddress}, ${cfg.postalCode}. ${cfg.arrivalNotes}`, `Your ${pkg.minutes}-minute session takes place indoors across ${pkg.sets} Christmas sets. Arrive dressed and ready for your booked start time.`] },
     { title: "What to wear & bring", paragraphs: ["Cream, burgundy, olive, warm neutrals and simple knitwear suit the sets. Coordinate colours; identical outfits are not necessary. Plan one outfit so we can spend the session taking photographs.", "Bring water, wipes and a small comfort toy if it helps. Spare clothes for little ones are welcome."] },
@@ -34,7 +37,7 @@ export function bookingEmails(slot: Slot, { preview = false }: { preview?: boole
   const guideText = guide.map(section => `${section.title.toUpperCase()}\n${section.paragraphs.join("\n\n")}`).join("\n\n");
   const welcome = {
     subject: `You’re booked · Your Christmas session guide · ${dateLabel(slot.date)}`,
-    html: layout({ heading: "Your Christmas visit is booked.", bodyHtml: `<p>Hi ${esc(first)},</p><p>Your payment is received and your appointment is confirmed. Here’s your guide to the visit.</p><p><strong>${esc(when)}</strong><br>Approximately ${pkg.minutes} minutes · ${pkg.images} edited digital photographs · ${pkg.sets} Christmas sets · Santa included.</p><p><strong>Paid ${esc(money(r.paidCents ?? r.totalCents ?? r.subtotalCents))} CAD</strong><br>Booking reference: ${esc(r.id)}. Stripe emails your payment receipt separately.${r.invoiceUrl ? ` <a href="${esc(r.invoiceUrl)}">View your paid invoice</a>.` : " Your paid invoice link will also appear on your booking page when Stripe finishes generating it."}</p><p><strong>Next: your family questionnaire.</strong> A separate email follows this guide. Tell us who’s coming, the children’s ages, outfits and comfort with Santa so we can prepare.</p>${guideHtml}<p>Keep this email handy. Questions or changes? Reply to this email.<br>Arman</p>`, button: { label: "View your booking", href: confirmation } }),
+    html: layout({ heading: "Your Christmas visit is booked.", bodyHtml: `<p>Hi ${esc(first)},</p><p>Your ${r.paymentPlan ? "$50 deposit is" : "payment is"} received and your appointment is confirmed. Here’s your guide to the visit.</p><p><strong>${esc(when)}</strong><br>Approximately ${pkg.minutes} minutes · ${pkg.images} edited digital photographs · ${pkg.sets} Christmas sets · Santa included.</p>${paymentHtml}<p>Booking reference: ${esc(r.id)}. Stripe emails your ${r.paymentPlan ? "deposit " : "payment "}receipt separately.${r.invoiceUrl ? ` <a href="${esc(r.invoiceUrl)}">View your ${r.paymentPlan ? "deposit receipt" : "paid invoice"}</a>.` : " Your receipt link will also appear on your booking page when Stripe finishes generating it."}</p><p><strong>Next: your family questionnaire.</strong> A separate email follows this guide. Tell us who’s coming, the children’s ages, outfits and comfort with Santa so we can prepare.</p>${guideHtml}<p>Keep this email handy. Questions or changes? Reply to this email.<br>Arman</p>`, button: { label: "View your booking", href: confirmation } }),
     text: `Hi ${first},\nYour Christmas visit is confirmed. Here’s your session guide.\n\n${details}\n\nNEXT: YOUR FAMILY QUESTIONNAIRE\nA separate email follows this guide. Tell us who’s coming, the children’s ages, outfits and comfort with Santa so we can prepare.\n\n${guideText}\n\nStripe emails your receipt separately. Your paid invoice appears on your booking page when ready.\nView booking: ${confirmation}\nKeep this email handy. Reply with questions or changes: ${BUSINESS.email}\nArman`,
   };
   const survey = {
@@ -44,7 +47,7 @@ export function bookingEmails(slot: Slot, { preview = false }: { preview?: boole
   };
   const studio = {
     subject: `New Christmas booking · ${dateLabel(slot.date)} · ${timeLabel(slot.time)} · ${r.name}`,
-    html: layout({ heading: "A Christmas session was purchased", bodyHtml: `<h2 style="font-size:21px;color:#264232">${esc(when)}</h2><p><strong>${esc(r.name)}</strong><br>${esc(r.email)}<br>${esc(r.phone)}</p><p>${esc(details).replace(/\n/g, "<br>")}</p><p>This alert is sent after Stripe confirms payment. The appointment is marked sold in your booking calendar.</p>`, button: { label: "Open Christmas calendar", href: `${APP_URL}/admin/christmas?date=${slot.date}` } }),
+    html: layout({ heading: r.paymentPlan ? "Christmas deposit received · Session confirmed" : "A Christmas session was purchased", bodyHtml: `<h2 style="font-size:21px;color:#264232">${esc(when)}</h2><p><strong>${esc(r.name)}</strong><br>${esc(r.email)}<br>${esc(r.phone)}</p><p>${esc(details).replace(/\n/g, "<br>")}</p><p>This alert is sent after Stripe confirms payment. The appointment is marked sold in your booking calendar.</p>`, button: { label: "Open Christmas calendar", href: `${APP_URL}/admin/christmas?date=${slot.date}` } }),
     text: `NEW PAID CHRISTMAS BOOKING\n\n${r.name} · ${r.email} · ${r.phone}\n${details}\n\n${APP_URL}/admin/christmas?date=${slot.date}`,
   };
   if (r.testMode) for (const message of [welcome, survey, studio]) {
@@ -79,4 +82,16 @@ export async function sendBookingNotifications(slotId: string) {
   await updateSlot(slotId, s => { if (s.reservation?.id === r!.id) s.reservation.emailsSent = !!(s.reservation.welcomeSentAt && s.reservation.questionnaireSentAt && s.reservation.studioSentAt); });
   const failed = results.find(result => result.status === "rejected");
   if (failed?.status === "rejected") throw failed.reason;
+}
+
+export async function sendBalanceReceipt(slotId: string) {
+  const slot = (await inventoryStore.read(slotId))?.data, r = slot?.reservation, plan = r?.paymentPlan;
+  if (!slot || !r || !plan?.balancePaidCents || plan.balanceReceiptSentAt) return;
+  const summary = bookingPaymentSummary(r);
+  if (summary.balance !== 0 || !plan.balanceInvoiceUrl) throw Error("The balance receipt is not ready.");
+  const text = `Hi ${r.name.trim().split(/\s+/)[0]},\nYour remaining Christmas session balance of ${money(plan.balancePaidCents)} CAD has been received.\n$50 deposit + ${money(plan.balancePaidCents)} balance = ${money(summary.total)} CAD paid, including tax. Nothing remains owing.\nBooking: ${r.id}\nReceipt: ${plan.balanceInvoiceUrl}\nYour appointment and questionnaire remain unchanged.\nArman`;
+  await sendEmail({ to: r.email, subject: `${r.testMode ? "[TEST] " : ""}Christmas session · Balance paid · ${r.id}`, text,
+    html: layout({ heading: "Your Christmas session is paid in full.", bodyHtml: `<p>${esc(text).replace(/\n/g, "<br>")}</p>`, button: { label: "View balance receipt", href: plan.balanceInvoiceUrl } }),
+    idempotencyKey: `christmas-balance-receipt-v1-${r.id}` });
+  await updateSlot(slotId, s => { if (s.reservation?.id === r.id && s.reservation.paymentPlan) s.reservation.paymentPlan.balanceReceiptSentAt = Date.now(); });
 }

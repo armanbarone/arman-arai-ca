@@ -11,6 +11,7 @@ const inputSchema = z.object({
   name: z.string().trim().min(2).max(100), email: z.email().max(254).transform(s => s.trim().toLowerCase()),
   phone: z.string().trim().min(7).max(35), consent: z.literal(true), website: z.string().max(0).optional(),
   acceptedPolicy: z.string().min(1).max(2000), expectedSubtotal: z.number().int().positive(), expectedTotal: z.number().int().positive(),
+  paymentPlan: z.literal("deposit-50-v1"), expectedDueNow: z.literal(5000),
 }).refine(data => !data.albums || data.albumDeliveryConsent, { message: "Confirm the album delivery area.", path: ["albumDeliveryConsent"] });
 export async function POST(req: Request) {
   if (!christmasSameOrigin(req)) return Response.json({ error: "Invalid request origin." }, { status: 403 });

@@ -26,6 +26,11 @@
 .xm-simple .xm-section-heading{margin-bottom:30px}
 .xm-simple .xm-section-heading h2{font-size:48px}
 .xm-simple .xm-section-heading>.xm-eyebrow{margin-bottom:10px}
+.xm-deposit-offer{max-width:390px;margin:0 auto 23px!important;color:#f4d69d}
+.xm-deposit-offer strong{display:block;font-size:21px;font-weight:500;line-height:1.4}
+.xm-deposit-offer span{display:block;margin-top:8px;font-size:12px;line-height:1.75;color:#d4d8bf}
+.xm-calendar-deposit{font-size:15px;line-height:1.8;color:#e1d8bc}
+.xm-calendar-deposit small{font-size:11px}
 .xm-simple .xm-section-heading>p:last-child:not(.xm-eyebrow){margin-top:12px}
 .xm-simple .xm-availability-note{margin:0 auto 25px!important}
 .xm-simple .xm-cart>p:not([class]){font-size:12px;line-height:1.8}

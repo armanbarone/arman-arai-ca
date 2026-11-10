@@ -7,6 +7,7 @@ import { todayInBusinessTz } from "./money";
 import type { Booking } from "./types";
 import type { Lead } from "./lead-types";
 import type { FollowUp } from "./followup-types";
+import { OUTSIDE_COMMITMENTS } from "../wedding-availability-server";
 
 /* One read of everything, turned into the two questions a studio owner opens
  * the morning with: what needs me today, and what is the year doing.
@@ -78,6 +79,13 @@ export async function studioDashboard(): Promise<StudioDashboard> {
   const today = todayInBusinessTz();
   const actions: StudioAction[] = [];
   const calendar: CalendarEntry[] = [];
+
+  /* Days Arman is committed to that this site's bookings cannot see, chiefly
+     the elopements on the .com side. The diary had a "commitment" kind from the
+     start and nothing ever produced one, so his own calendar showed only half
+     of what he had sold and he could accept a wedding on a day already gone. */
+  for (const c of OUTSIDE_COMMITMENTS)
+    calendar.push({ date: c.date, kind: "commitment", label: c.label });
 
   // ------------------------------------------------------------- follow-ups
   for (const t of followUps.filter((t) => !t.done)) {

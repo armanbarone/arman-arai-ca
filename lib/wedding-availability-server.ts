@@ -15,9 +15,17 @@ import {
  *
  * It had gone stale exactly that way: it held one date while a signed wedding
  * sat on 2027-05-28, so the site was telling couples that day was free. */
-const MANUAL_COMMITMENTS = new Set([
-  "2027-08-28", // Trinity & Noah, Banff elopement, booked on the .com side
-]);
+/* Read off the armanarai.com dashboard on 2026-11-10. This list has to be
+   revisited whenever an elopement is booked or moved, because the two sites
+   keep their bookings in separate blob stores and neither can see the other. */
+export const OUTSIDE_COMMITMENTS: { date: string; label: string }[] = [
+  { date: "2027-05-03", label: "Josh & Manda · elopement on armanarai.com" },
+  { date: "2027-06-12", label: "Josh & Manda · their held backup date" },
+  { date: "2027-08-28", label: "Trinity & Noah · Banff elopement on armanarai.com" },
+  { date: "2027-09-18", label: "Trinity & Noah · their held backup date" },
+];
+
+const MANUAL_COMMITMENTS = new Set(OUTSIDE_COMMITMENTS.map((c) => c.date));
 
 /** A booking only holds its date once it is past draft. */
 const HOLDS_THE_DATE = [

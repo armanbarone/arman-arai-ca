@@ -35,10 +35,10 @@ export function inquiryMarket(location: string, page: string) {
 
 /** Call only after /api/contact confirms delivery. Client navigation preserves
  * the in-memory receipt even if the browser blocks session storage. */
-export function completeInquiry(fields: InquiryFields, emailed: boolean, market?: string) {
+export function completeInquiry(fields: InquiryFields, emailed: boolean, market?: string, inquiryId?: unknown) {
   const page = window.location.pathname;
   latest = {
-    id: crypto.randomUUID(), page,
+    id: typeof inquiryId === "string" && /^[a-f0-9-]{36}$/i.test(inquiryId) ? inquiryId : crypto.randomUUID(), page,
     market: market && markets.includes(market) ? market : inquiryMarket(fields.location || "", page),
     sentAt: Date.now(),
     names: [fields.firstName, fields.lastName].filter(Boolean).join(" "),

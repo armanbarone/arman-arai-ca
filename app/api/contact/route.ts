@@ -5,6 +5,8 @@ import { WEDDING_CITIES } from "@/lib/ads/city-wedding-pages";
 import { autoReplyEnabled, sendInquiryAutoReply, type Inquiry } from "@/lib/auto-reply";
 import { leadSource, leadSourceBox, leadSourceTag } from "@/lib/lead-source";
 import { recordLead } from "@/lib/portal/leads";
+import { randomUUID } from "node:crypto";
+import { reportWeddingLead } from "@/lib/meta-conversions";
 
 /* One inquiry endpoint for every form on the site.
  *
@@ -76,7 +78,7 @@ export async function POST(req: NextRequest) {
     // fills it is a bot: answer 200 so it believes it succeeded, and send
     // nothing. Silently dropping beats a 400 that tells a scraper to retry.
     if (typeof body.company === "string" && body.company.trim() !== "") {
-      return NextResponse.json({ success: true });
+      return NextResponse.json({ success: true, ignored: true });
     }
 
     // Older open tabs can still post a single `name`. Split it rather than
@@ -213,6 +215,17 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Your inquiry could not be sent. Please try again or email i@armanarai.com." }, { status: 503 });
     }
 
+    // The browser and server use the same opaque ID, so Meta counts one Lead.
+    const inquiryId = randomUUID();
+    // Older open tabs do not consume the returned ID. Keep their existing
+    // browser-only reporting rather than count them twice with different IDs.
+    if (body.trackingVersion === "wedding-lead-v1") {
+      after(() => reportWeddingLead({
+        id: inquiryId, email: values.email, phone: values.phone, page: body.page,
+        fbclid: body.fbclid, headers: req.headers, cookies: req.cookies,
+      }));
+    }
+
     // The couple's email goes out after this response, so the form never waits
     // on it. after() keeps the function alive until it is sent.
     if (autoReply) {
@@ -220,7 +233,7 @@ export async function POST(req: NextRequest) {
       after(() => sendInquiryAutoReply(inquiry));
     }
 
-    return NextResponse.json({ success: true, autoReply: Boolean(autoReply) });
+    return NextResponse.json({ success: true, autoReply: Boolean(autoReply), inquiryId });
   } catch (err) {
     console.error("Contact API error:", err);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });

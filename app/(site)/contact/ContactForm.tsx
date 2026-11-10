@@ -36,16 +36,16 @@ export default function ContactForm() {
       const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ type: "full", subjectLabel: "Contact page inquiry", ...form, ...leadAttribution() }),
+        body: JSON.stringify({ type: "full", subjectLabel: "Contact page inquiry", ...form, ...leadAttribution(), trackingVersion: "wedding-lead-v1" }),
       });
       const data = await res.json().catch(() => ({}));
-      if (!res.ok || data.success !== true) {
+      if (!res.ok || data.success !== true || data.ignored === true) {
         setError(data.error || "Something went wrong. Email me directly at i@armanarai.com and I will pick it up there.");
         setStatus("error");
         sending.current = false;
         return;
       }
-      router.push(completeInquiry(form, data.autoReply === true));
+      router.push(completeInquiry(form, data.autoReply === true, undefined, data.inquiryId));
     } catch {
       setError("Something went wrong. Email me directly at i@armanarai.com and I will pick it up there.");
       setStatus("error");

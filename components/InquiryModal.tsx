@@ -63,17 +63,17 @@ export default function InquiryModal() {
       const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ type: "quick", subjectLabel: "Quick inquiry", ...form, ...leadAttribution() }),
+        body: JSON.stringify({ type: "quick", subjectLabel: "Quick inquiry", ...form, ...leadAttribution(), trackingVersion: "wedding-lead-v1" }),
       });
       const data = await res.json().catch(() => ({}));
-      if (!res.ok || data.success !== true) {
+      if (!res.ok || data.success !== true || data.ignored === true) {
         setError(data.error || "Something went wrong. Please email me directly at i@armanarai.com");
         setStatus("error");
         sending.current = false;
         return;
       }
       setStatus("sent");
-      const destination = completeInquiry(form, data.autoReply === true);
+      const destination = completeInquiry(form, data.autoReply === true, undefined, data.inquiryId);
       close();
       router.push(destination);
     } catch {

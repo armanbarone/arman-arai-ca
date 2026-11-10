@@ -9,7 +9,8 @@ const definitions = [
   ['@/app/wedding-photography/InquiryFunnel', 'InquiryForm'],
 ];
 
-function harness(file, exported, { response = { success: true, autoReply: true }, ok = true, blocked = false } = {}) {
+const inquiryId = '11111111-2222-4333-8444-555555555555';
+function harness(file, exported, { response = { success: true, autoReply: true, inquiryId }, ok = true, blocked = false } = {}) {
   global.window = { location: { pathname: '/contact' } };
   global.sessionStorage = blocked ? { getItem() { throw Error('blocked'); }, setItem() { throw Error('blocked'); } } : storage();
   const states = [], refs = [], requests = [], redirects = [];
@@ -47,6 +48,7 @@ for (const [file, exported] of definitions) {
       const h = harness(file, exported, { blocked });
       await Promise.all([h.submit(), h.submit()]);
       assert.equal(h.requests.length, 1);
+      assert.equal(h.requests[0].trackingVersion, 'wedding-lead-v1');
       const market = exported === 'InquiryForm' ? 'victoria' : 'toronto';
       assert.deepEqual(h.redirects, [`/wedding-photography/${market}-pricing/thank-you`]);
       const receipt = h.completion.readSentInquiry(market);
@@ -54,9 +56,9 @@ for (const [file, exported] of definitions) {
       assert.equal(receipt.date, 'Summer 2027');
       assert.equal(receipt.page, '/contact');
       assert.equal(receipt.emailed, true);
-      assert.match(receipt.id, /^[a-f0-9-]{36}$/);
+      assert.equal(receipt.id, inquiryId);
     }
-    for (const result of [{ ok: false, response: { error: 'Delivery failed' } }, { response: { success: false } }]) {
+    for (const result of [{ ok: false, response: { error: 'Delivery failed' } }, { response: { success: false } }, { response: { success: true, ignored: true } }]) {
       const h = harness(file, exported, result);
       await h.submit();
       assert.deepEqual(h.redirects, []);

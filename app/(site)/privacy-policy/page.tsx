@@ -60,8 +60,9 @@ export default function PrivacyPolicy() {
             <li>Send a custom proposal or pricing information</li>
             <li>Communicate about your booking if we proceed to contract</li>
             <li>Deliver your gallery and related correspondence</li>
+            <li>Measure which advertisements lead to successful inquiries, using hashed contact details for Meta matching</li>
           </ul>
-          <p style={{ marginTop: 12 }}>I do not sell or rent your inquiry details. Google and Meta receive website activity and advertising identifiers to measure advertising performance. I do not send unsolicited emails or add you to mailing lists without your consent.</p>
+          <p style={{ marginTop: 12 }}>I do not sell or rent your inquiry details. Google and Meta receive website activity and advertising identifiers to measure advertising performance. After a successful wedding inquiry, Meta may also receive hashed versions of your email address and phone number to match the inquiry to an ad interaction. I do not send unsolicited emails or add you to mailing lists without your consent.</p>
         </Section>
 
         <Section title="Christmas Session Bookings and Checkout Reminders">
@@ -78,7 +79,7 @@ export default function PrivacyPolicy() {
             <li><strong style={{ color: "var(--text)" }}>Cloudflare</strong>: serves the photographs on this site from cdn.armanarai.ca and sits in front of it as a CDN. Cloudflare keeps standard request logs.</li>
             <li><strong style={{ color: "var(--text)" }}>Calendly</strong>: powers the scheduling calendar embedded on the contact and wedding landing pages. It loads only if you scroll to it, and only then does it set its own cookies. If you book a time, the name, email and any details you enter go to Calendly to create the appointment.</li>
           </ul>
-          <p style={{ marginTop: 12 }}><strong style={{ color: "var(--text)" }}>Google Analytics 4 and Google Ads</strong> measure visits, submitted inquiries, advertising attribution and completed discovery-call bookings. <strong style={{ color: "var(--text)" }}>Meta Pixel</strong> measures page visits, submitted inquiries and completed bookings for advertising attribution. All three load when a public page loads. These services may process data outside Canada under their own privacy policies. Website conversion events do not include the name, email or answers you enter in Calendly.</p>
+          <p style={{ marginTop: 12 }}><strong style={{ color: "var(--text)" }}>Google Analytics 4 and Google Ads</strong> measure visits, submitted inquiries, advertising attribution and completed discovery-call bookings. <strong style={{ color: "var(--text)" }}>Meta Pixel</strong> measures page visits, submitted inquiries and completed bookings for advertising attribution. All three load when a public page loads. For successful wedding inquiries, <strong style={{ color: "var(--text)" }}>Meta Conversions API</strong> also reports the inquiry from the website server, using a duplicate-prevention identifier, the public page address, browser and ad-click identifiers where available, IP address, browser type, and hashed email and phone details for matching. Your wedding date, venue and message are not included in this report. These services may process data outside Canada under their own privacy policies. Booking conversion events do not include the name, email or answers you enter in Calendly.</p>
         </Section>
 
         <Section title="Cookies">

@@ -8,7 +8,7 @@ import { CTA_LABEL, FORM_ID, longDate, weekdayOf } from "@/lib/ads/pricing-reque
 import { PROMISE_LABEL, PROMISE_NOTE, PROMISE_OPTIONS, REFERRAL_OPTIONS } from "@/lib/contact-form";
 import { weddingToday } from "@/lib/wedding-availability";
 import WeddingCalendar from "./wedding-calendar";
-import { ATTRIBUTION_KEYS, fbclidFromCookie, gclidFromCookie } from "@/lib/attribution";
+import { leadAttribution } from "@/lib/attribution";
 import styles from "./vancouver.module.css";
 import funnel from "./inquiry.module.css";
 
@@ -78,15 +78,7 @@ export function InquiryForm({ city, market, page, variant = "standard", classNam
 
   useEffect(() => {
     setToday(weddingToday());
-    const q = new URLSearchParams(window.location.search);
-    const captured: Record<string, string> = { page: window.location.pathname, referrer: document.referrer || "" };
-    for (const key of ATTRIBUTION_KEYS) {
-      const value = q.get(key);
-      if (value) captured[key] = value;
-    }
-    captured.gclid = q.get("gclid") || q.get("wbraid") || q.get("gbraid") || gclidFromCookie();
-    captured.fbclid = q.get("fbclid") || fbclidFromCookie();
-    setAttribution(captured);
+    setAttribution(leadAttribution());
   }, []);
 
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -112,12 +104,13 @@ export function InquiryForm({ city, market, page, variant = "standard", classNam
       promise: value("promise"),
       company: value("company"), // honeypot
       ...attribution,
+      trackingVersion: "wedding-lead-v1",
     };
     try {
       const res = await fetch("/api/contact", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
       const data = await res.json();
-      if (!res.ok || data.success !== true) throw new Error(data.error || "That did not send. Please try again or email i@armanarai.com.");
-      router.push(completeInquiry(payload, data.autoReply === true, market));
+      if (!res.ok || data.success !== true || data.ignored === true) throw new Error(data.error || "That did not send. Please try again or email i@armanarai.com.");
+      router.push(completeInquiry(payload, data.autoReply === true, market, data.inquiryId));
     } catch (err) {
       setError(err instanceof Error ? err.message : "That did not send.");
       setStatus("error");

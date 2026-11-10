@@ -92,7 +92,7 @@ export const SCOPE = {
   notes: [
     "Prices on this site are in Canadian dollars for every wedding, Canadian or destination.",
     "The legal marriage itself is yours to arrange with the local authority. Arman photographs the day; he does not file paperwork or act as an officiant.",
-    "Destination dates are held the same way Canadian dates are: a free 48-hour hold, then a contract and a non-refundable 30% deposit.",
+    "Destination dates are held the same way Canadian dates are: a free 48-hour hold, then a contract and a non-refundable 50% deposit.",
   ],
 } as const;
 
@@ -491,14 +491,16 @@ export const TRAVEL = {
 /** What a collection costs, anywhere in Canada, before tax and travel. */
 export const priceOf = (tier: Tier): number => tier.price;
 
-/** Booking terms for weddings, identical everywhere. Three payments (owner,
- *  2026-09-30): a non-refundable 30% deposit with the signed contract, 35% due
- *  60 days before the wedding, and the final 35% 30 days before. Elopements on
- *  armanarai.com have their own terms; do not mix them. */
+/** Booking terms for weddings, identical everywhere. Two payments (owner,
+ *  2026-11-10, replacing the 30/35/35 that ran until then): a non-refundable
+ *  50% deposit with the signed contract and the remaining 50% one month before
+ *  the wedding. Every surface that states the terms reads them from here, so
+ *  changing them here changes them everywhere. Elopements on armanarai.com
+ *  have their own terms; do not mix them. */
 export const TERMS = {
-  retainer: "A non-refundable 30% deposit secures your date",
-  balance: "35% due 60 days before the wedding, the final 35% 30 days before",
-  schedule: "Three payments: a non-refundable 30% deposit with the signed contract, 35% due 60 days before the wedding, and the final 35% due 30 days before.",
+  retainer: "A non-refundable 50% deposit secures your date",
+  balance: "the remaining 50% due one month before the wedding",
+  schedule: "Two payments: a non-refundable 50% deposit with the signed contract, and the remaining 50% due one month before the wedding.",
   extraHour: 400,
 } as const;
 

@@ -194,7 +194,7 @@ function sections(inquiry: Inquiry, links: { guide: string; vendors: string; cal
   <p style="margin:0 0 10px;font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.65;color:#6B6258;">Three collections, and only three. Every one includes an engagement session, a next-day preview and the full gallery in three weeks.</p>
   ${priceTable("signature")}
   <p style="margin:0 0 6px;font-family:Arial,Helvetica,sans-serif;font-size:13px;line-height:1.6;color:#6B6258;">Canadian dollars, before tax. ${escapeHtml(travelLine(inquiry))}</p>
-  <p style="margin:0 0 6px;font-family:Arial,Helvetica,sans-serif;font-size:13px;line-height:1.6;color:#6B6258;">Payment is in three parts: ${escapeHtml(TERMS.schedule.replace(/^Three payments: /, ""))}</p>
+  <p style="margin:0 0 6px;font-family:Arial,Helvetica,sans-serif;font-size:13px;line-height:1.6;color:#6B6258;">Payment is in two parts: ${escapeHtml(TERMS.schedule.replace(/^Two payments: /, ""))}</p>
 
   ${sectionHeading("Two", "Your welcome guide")}
   <p style="margin:0 0 16px;font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.65;color:#6B6258;">How I actually work a wedding day: where I am during the getting-ready, how family photographs get done in twenty minutes instead of an hour, what happens if it rains, and what you get back and when. It takes about ten minutes to read and it will save you a dozen questions.</p>
@@ -213,7 +213,7 @@ function sections(inquiry: Inquiry, links: { guide: string; vendors: string; cal
 const NEXT_STEPS = [
   "I read your inquiry properly and reply myself, within 60 minutes.",
   "We talk for twenty or thirty minutes, by video or phone, whichever you prefer. No pitch, and no obligation.",
-  "If it feels right, I send a contract and an invoice for the 30% deposit. Your date is held free for 48 hours while you read them.",
+  "If it feels right, I send a contract and an invoice for the 50% deposit. Your date is held free for 48 hours while you read them.",
   "Signed and paid, the date is yours, and we start planning the day properly about three months out.",
 ];
 

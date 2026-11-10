@@ -31,7 +31,7 @@ The source contains English documents only. Quebec agreements and Quebec change 
 
 ## Collections and creative planning
 
-Signature (C$3,000), Legacy (C$4,200) and Photo + Film (C$5,900) are imported from the same `TIERS` catalogue used by the public website. Studio quotation fields remain editable before issue. New default payments match the website: 30% at booking, 35% at 60 days and 35% at 30 days before the wedding. Already-issued payment tables and signed PDFs are fixed snapshots.
+Signature (C$3,000), Legacy (C$4,200) and Photo + Film (C$5,900) are imported from the same `TIERS` catalogue used by the public website. Studio quotation fields remain editable before issue. New default payments match the website: 50% at booking and the remaining 50% one month before the wedding. Already-issued payment tables and signed PDFs are fixed snapshots.
 
 Both partners can upload private profile photos and up to 24 moodboard images, with captions and shared creative notes. JPEG, PNG and WebP files are capped at 3 MB, decoded and re-encoded as WebP, with metadata stripped. Files remain in private Blob storage and are fetched through booking authorization. Removal is a private soft removal; one booking cannot read another's images.
 

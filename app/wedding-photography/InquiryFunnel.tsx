@@ -243,7 +243,7 @@ function ThankYou({ sent, collections, city, page, phone, phoneE164, travelNote,
       </div>
       <div className={funnel.noCall}>
         <p><strong>Rather not do a call?</strong> That&rsquo;s fine. {sent.emailed ? "Reply to my email, or message me on " : `I’ll reply to ${sent.email} within the hour, or message me on `}<MessageLinks phone={phone} phoneE164={phoneE164} city={city} />.</p>
-        <p className={styles.checkMicro}>A signed contract and a non-refundable 30% deposit secure your date.</p>
+        <p className={styles.checkMicro}>A signed contract and a non-refundable 50% deposit secure your date.</p>
         {onEdit
           ? <button type="button" className={styles.checkAnother} onClick={onEdit}>Change my details</button>
           : <a className={styles.checkAnother} href={`/${page}#${FORM_ID}`}>Change my details</a>}

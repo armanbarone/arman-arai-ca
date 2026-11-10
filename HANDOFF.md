@@ -379,11 +379,20 @@ Everything in this list is live and was verified with a real HTTP check.
   to the city hub, the rest to /pricing. Shared bits moved: the calendar to
   `app/wedding-photography/wedding-calendar.tsx`, content helpers to
   `landing-content.ts`, ad attribution to `lib/attribution.ts`.
-  **Payment terms for weddings (owner, 2026-09-30):** a NON-REFUNDABLE 30% deposit
-  with the signed contract, 35% due 60 days before the wedding, the final 35%
-  30 days before. TERMS in site.ts is the source; the FAQ, pricing steps, terms
-  of service, llms.txt, the destination page, the pricing pages and the brief
-  all say it. The cancellation percentages now apply only to instalments paid.
+  **Payment terms for weddings (owner, 2026-11-10):** a NON-REFUNDABLE 50%
+  deposit with the signed contract and the remaining 50% ONE MONTH before the
+  wedding. This replaced the 30/35/35 that ran from 2026-09-30. TERMS in
+  site.ts is the source and the FAQ and pricing step now read it rather than
+  restating it; terms of service, llms.txt, the destination page, the wedding
+  guide, the inquiry funnel micro-copy and the auto-reply say it in prose and
+  had to be changed one by one. PARTS in lib/portal/money.ts builds every new
+  contract schedule and matches. Schedules already issued keep their stored
+  snapshot. AA-CA-2027-083 (Sydney Griffioen) was deliberately LEFT on 30/35/35
+  by the owner, because her draft had already gone out saying that; a change to
+  her contract total would rebuild her schedule on the new terms.
+  The cancellation percentages now apply only to payments beyond the deposit,
+  and the published refund ladder still offers 75% at six months, which a 50%
+  non-refundable deposit cannot deliver. Raised with the owner, unresolved.
   The client portal (lib/portal) is NOT changed: owner, "elopements are
   different, don't change them".
   **Heroes (owner, 2026-10-01: "pictures that are about that location"):**

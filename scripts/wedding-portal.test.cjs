@@ -104,7 +104,7 @@ function fixture() {
     },
   };
 }
-test("signed commercial tables use exact booking totals and all three website payment dates", () => {
+test("signed commercial tables use exact booking totals and every website payment date", () => {
   const b = sampleWedding(),
     t = w.templateFor("agreement", b);
   const fields = {
@@ -117,7 +117,8 @@ test("signed commercial tables use exact booking totals and all three website pa
     p = blocks.find((x) => x.id === "calculated-prices"),
     s = blocks.find((x) => x.id === "calculated-schedule");
   assert.equal(p.rows.at(-1)[2].text, "$3,150.00");
-  assert.equal(s.rows.length, 4);
+  // A header row plus the two payments the website now publishes.
+  assert.equal(s.rows.length, 3);
   assert.equal(s.rows.at(-1).at(-1).text, "$0.00");
   assert.equal(w.missingDocumentFields(t, fields).length, 0);
 });
@@ -832,17 +833,28 @@ test("PDF delivery uses both client addresses, stores the file, and retries only
   };
   delete f.doubles["@/lib/portal/wedding-delivery"];
   const delivery = loader(f.doubles)("@/lib/portal/wedding-delivery");
-  await assert.rejects(
-    delivery.deliverSignedWeddingDocument(f.booking.ref, d.id),
+  /* One bad address no longer throws: it used to, which meant the first
+     failure stopped the signed PDF reaching anybody else. The failure is
+     recorded on the document and the retry picks up only who is still
+     unsent. */
+  await delivery.deliverSignedWeddingDocument(f.booking.ref, d.id);
+  assert.match(
+    f.booking.wedding.documents[0].deliveryError || "",
+    /james@example\.com/,
   );
-  assert.equal(sent.length, 1);
+  // Everyone reachable still got it on the first pass; only james did not.
+  assert.deepEqual(sent.map((x) => x.to), [
+    "maya@example.com",
+    "i@armanarai.com",
+  ]);
   assert(f.booking.wedding.documents[0].pdfKey);
   fail = false;
   await delivery.deliverSignedWeddingDocument(f.booking.ref, d.id);
-  assert.deepEqual(
-    sent.map((x) => x.to),
-    ["maya@example.com", "james@example.com", "i@armanarai.com"],
-  );
+  assert.deepEqual(sent.map((x) => x.to).sort(), [
+    "i@armanarai.com",
+    "james@example.com",
+    "maya@example.com",
+  ]);
   await delivery.deliverSignedWeddingDocument(f.booking.ref, d.id);
   assert.equal(sent.length, 3);
   assert(
@@ -866,13 +878,14 @@ test("current catalogue and website payment percentages use one shared source", 
     PACKAGES.slice(0, 3).map((p) => [p.key, p.name, p.priceCents]),
     TIERS.map((t) => [t.slug, t.name, t.price * 100]),
   );
+  // Two payments from 2026-11-10: half on signing, half one month before.
   assert.deepEqual(
     b.schedule.map((i) => i.totalCents),
-    [94500, 110250, 110250],
+    [157500, 157500],
   );
   assert.deepEqual(
     b.schedule.map((i) => i.dueDate),
-    ["2026-10-03", "2027-04-20", "2027-05-20"],
+    ["2026-10-03", "2027-05-20"],
   );
   const money = pure("@/lib/portal/money");
   b.totals = money.computeTotals([{ cents: 300001 }], b.taxes);

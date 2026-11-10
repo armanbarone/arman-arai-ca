@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import InquireButton from "@/components/InquireButton";
 import { DOCUMENTARY } from "@/lib/images";
-import { ENTRY, MARKETS, SCOPE, SITE, TIERS } from "@/lib/site";
+import { ENTRY, MARKETS, SCOPE, SITE, TERMS, TIERS } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "FAQ — Booking, Coverage, Travel and Delivery",
@@ -34,7 +34,7 @@ const GROUPS = [
       },
       {
         q: "How do the payments work?",
-        a: "Three payments. A non-refundable 30% deposit with the signed contract secures your date. Then 35% is due 60 days before the wedding, and the final 35% is due 30 days before.",
+        a: TERMS.schedule,
       },
       {
         q: "How many hours do we need?",

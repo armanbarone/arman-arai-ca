@@ -57,12 +57,12 @@ export default function TermsOfService() {
 
         <Section title="Booking and Payment">
           <p>Your date is not reserved until a signed contract and the deposit have both been received. I will hold a date informally for 48 hours as a courtesy while you decide, and that hold is not a booking.</p>
-          <p style={{ marginTop: 12 }}><strong style={{ color: "var(--text)" }}>The deposit is 30% of the total and it is non-refundable.</strong> The remaining 70% is paid in two instalments: 35% due 60 days before the wedding date, and the final 35% due 30 days before. Payment methods are specified in your contract. Once the contract is signed and the deposit has cleared, the date is yours.</p>
+          <p style={{ marginTop: 12 }}><strong style={{ color: "var(--text)" }}>The deposit is 50% of the total and it is non-refundable.</strong> The remaining 50% is due one month before the wedding date. Payment methods are specified in your contract. Once the contract is signed and the deposit has cleared, the date is yours.</p>
           <p style={{ marginTop: 12 }}>All prices are quoted in Canadian dollars and are subject to applicable sales tax. Where travel applies, it appears on your proposal as its own agreed line alongside the collection price. Neither figure changes after signing, and no further travel or destination charge is added later.</p>
         </Section>
 
         <Section title="Cancellation by Client">
-          <p>All cancellations must be submitted in writing to <a href="mailto:i@armanarai.com" style={{ color: "var(--accent)" }}>i@armanarai.com</a>. The 30% deposit is non-refundable in every case. The percentages below apply to any instalments you have already paid, and depend on how far in advance the cancellation occurs relative to your wedding date:</p>
+          <p>All cancellations must be submitted in writing to <a href="mailto:i@armanarai.com" style={{ color: "var(--accent)" }}>i@armanarai.com</a>. The 50% deposit is non-refundable in every case. The percentages below apply to any payment you have made beyond that deposit, and depend on how far in advance the cancellation occurs relative to your wedding date:</p>
           <ul style={{ paddingLeft: "1.25rem", marginTop: 12, display: "flex", flexDirection: "column", gap: 10 }}>
             <li><strong style={{ color: "var(--text)" }}>6 or more months before the wedding:</strong> 75% refund. I retain 25% to account for the date being held and planning work already completed.</li>
             <li><strong style={{ color: "var(--text)" }}>3 to 6 months before the wedding:</strong> 50% refund.</li>

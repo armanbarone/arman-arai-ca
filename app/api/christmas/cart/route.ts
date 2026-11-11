@@ -1,9 +1,10 @@
 import { z } from "zod";
+import { RESERVATION_REQUEST } from "@/lib/christmas/catalog";
 import { createCart, saveCartContact } from "@/lib/christmas/cart";
 import { checkoutRateLimit } from "@/lib/christmas/payments";
 import { christmasPaymentMode, christmasSameOrigin } from "@/lib/christmas/environment";
 export const runtime = "nodejs";
-const create = z.object({ slotId: z.string().regex(/^2026-(11|12)-\d{2}_\d{4}$/), albums: z.number().int().min(0).max(3) });
+const create = z.object({ slotId: z.literal(RESERVATION_REQUEST), albums: z.number().int().min(0).max(3) });
 const contact = z.object({ id: z.string().regex(/^[a-f0-9]{32}$/), token: z.string().regex(/^[a-f0-9]{64}$/), name: z.string().trim().min(2).max(100), email: z.email().max(254).transform(s => s.trim().toLowerCase()), reminders: z.boolean() });
 async function handle(req: Request, mode: "create" | "contact") {
   const headers = { "Cache-Control": "no-store" };
@@ -21,7 +22,7 @@ async function handle(req: Request, mode: "create" | "contact") {
     const data = contact.parse(JSON.parse(text));
     await saveCartContact(data.id, data.token, data.name, data.email, data.reminders);
     return Response.json({ saved: true }, { headers });
-  } catch { return Response.json({ error: "We couldn’t save these details. Your checkout may have expired. Please choose an appointment again." }, { status: 409, headers }); }
+  } catch { return Response.json({ error: "We couldn’t save these details. Your checkout may have expired. Please return to reservations and try again." }, { status: 409, headers }); }
 }
 export const POST = (req: Request) => handle(req, "create");
 export const PATCH = (req: Request) => handle(req, "contact");

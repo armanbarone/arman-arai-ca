@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useRef, useState, type FormEvent, type ImgHTMLAttributes } from "react";
-import { PACKAGES, PREVIEW_AVAILABILITY, dateLabel, timeLabel, money, type Availability, type PackageId } from "../../lib/christmas/catalog";
+import { PACKAGES, PREVIEW_AVAILABILITY, PERSONAL_SCHEDULING, RESERVATION_REQUEST, reservationPolicy, money, type Availability, type PackageId } from "../../lib/christmas/catalog";
 import { DEPOSIT_PLAN, depositQuote, balanceDeadline } from "../../lib/christmas/payment-plan";
 import { trackChristmasCheckout } from "../../lib/analytics";
 import { advertisingOptOut } from "../../lib/advertising-preferences";
@@ -8,7 +8,7 @@ import ChristmasAtmosphere from "./ChristmasAtmosphere";
 import ChristmasStorybook, { ChristmasCharacter } from "./ChristmasStorybook";
 import ChristmasCheckoutDetails from "./ChristmasCheckoutDetails";
 import { ChristmasSimpleIncludes } from "./ChristmasSimpleContent";
-import ChristmasBooking from "./ChristmasBooking";
+import ChristmasReservations from "./ChristmasReservations";
 import "./christmas.css";
 import "./christmas-simple.css";
 import "./christmas-booking.css";
@@ -24,7 +24,7 @@ function ProtectedPhoto(props: ImgHTMLAttributes<HTMLImageElement>) {
 }
 
 export default function ChristmasExperience({ preview = false, storybook = false, simple = false }: { preview?: boolean; storybook?: boolean; simple?: boolean }) {
-  const [data, setData] = useState<Availability>(preview ? PREVIEW_AVAILABILITY : { mode: "closed", slots: [], location: "North Vancouver, BC", cancellationPolicy: "", publishableKey: "" });
+  const [data, setData] = useState<Availability>(preview ? { ...PREVIEW_AVAILABILITY, cancellationPolicy: reservationPolicy(PREVIEW_AVAILABILITY.cancellationPolicy) } : { mode: "closed", slots: [], location: "North Vancouver, BC", cancellationPolicy: "", publishableKey: "" });
   const [notice, setNotice] = useState("");
   const [loading, setLoading] = useState(!preview);
   const selectedPackage: PackageId = "santa";
@@ -32,16 +32,12 @@ export default function ChristmasExperience({ preview = false, storybook = false
   const quote = depositQuote(albums), subtotal = quote.subtotal;
   const [activity, setActivity] = useState("");
   const seenActivity = useRef(new Set<string>());
-  const [selectedDate, setSelectedDate] = useState("");
-  const [selectedSlot, setSelectedSlot] = useState("");
   const [step, setStep] = useState<"booking" | "details" | "demo">("booking");
   const [busy, setBusy] = useState(false), [error, setError] = useState("");
   const modalRef = useRef<HTMLDialogElement>(null);
   const paymentPending = useRef(false);
   const pkg = PACKAGES.find(p => p.id === selectedPackage)!;
-  const eligible = data.slots.filter(s => !pkg.santa || s.santa);
-  const remaining = eligible.filter(s => s.available).length;
-  const slot = data.slots.find(s => s.id === selectedSlot);
+  const slot = { id: RESERVATION_REQUEST, santa: true, available: !!data.capacity?.checkoutAvailable };
 
   useEffect(() => {
     if (preview) return;
@@ -52,11 +48,12 @@ export default function ChristmasExperience({ preview = false, storybook = false
         if (!r.ok) throw Error();
         const d = await r.json() as Availability;
         if (active) setData(d);
-      } catch { if (active) setError("The calendar could not refresh. Please try again shortly."); }
+      } catch { if (active) setError("The reservation count could not refresh. Please try again shortly."); }
       finally { if (active) setLoading(false); }
     }
-    void refresh(); const interval = window.setInterval(refresh, 30000);
-    return () => { active = false; clearInterval(interval); };
+    void refresh(); const interval = window.setInterval(refresh, 15000);
+    window.addEventListener("focus", refresh);
+    return () => { active = false; clearInterval(interval); window.removeEventListener("focus", refresh); };
   }, [preview]);
 
   useEffect(() => {
@@ -71,7 +68,7 @@ export default function ChristmasExperience({ preview = false, storybook = false
       if (!active) return;
       if (result.paid && result.confirmationUrl) { location.assign(result.confirmationUrl); return; }
       if (!r.ok) throw Error(result.error || "The payment hold could not be released yet.");
-      setNotice("Payment wasn’t completed. Your temporary hold has been released; choose another time whenever you’re ready.");
+      setNotice("Payment wasn’t completed. Your temporary hold has been released; reserve again whenever you’re ready.");
       const refreshed = await fetch("/api/christmas/availability", { cache: "no-store" });
       if (active && refreshed.ok) setData(await refreshed.json());
     }).catch(e => { if (active) setError(e.message); });
@@ -89,22 +86,18 @@ export default function ChristmasExperience({ preview = false, storybook = false
     return () => clearTimeout(timeout);
   }, [activity]);
   useEffect(() => {
-    if (selectedSlot && !data.slots.some(s => s.id === selectedSlot && s.available)) setSelectedSlot("");
-  }, [data.slots, selectedSlot]);
-  useEffect(() => {
     if (step === "details" || step === "demo") modalRef.current?.showModal();
     else modalRef.current?.close();
   }, [step]);
 
   useEffect(() => {
     if (preview) return;
-    const params = new URLSearchParams(location.search), date = params.get("date"), quantity = Number(params.get("albums"));
-    if (date && /^2026-(11|12)-\d{2}$/.test(date)) setSelectedDate(date);
+    const params = new URLSearchParams(location.search), quantity = Number(params.get("albums"));
     if (params.has("albums") && Number.isInteger(quantity) && quantity >= 0 && quantity <= 3) setAlbums(quantity);
   }, [preview]);
 
   function choosePackage(_id: PackageId) {
-    setSelectedSlot(""); setSelectedDate(""); setError("");
+    setError("");
     document.getElementById("booking")?.scrollIntoView({ behavior: "smooth", block: "start" });
   }
   function closeModal() { setStep("booking"); setError(""); }
@@ -112,7 +105,7 @@ export default function ChristmasExperience({ preview = false, storybook = false
   async function beginPayment(e: FormEvent<HTMLFormElement>) {
     e.preventDefault(); setError("");
     if (paymentPending.current) return;
-    if (!slot || !slot.available || (pkg.santa && !slot.santa)) { setError("Please choose another available appointment."); return; }
+    if (!slot || !slot.available || (pkg.santa && !slot.santa)) { setError("All remaining sessions are sold out or currently in checkout. Please try again shortly."); return; }
     if (data.mode === "preview") { setStep("demo"); return; }
     if (data.mode !== "live" && data.mode !== "test") { setError("Bookings are not open yet."); return; }
     const f = new FormData(e.currentTarget); paymentPending.current = true; setBusy(true);
@@ -136,7 +129,7 @@ export default function ChristmasExperience({ preview = false, storybook = false
   return <div className={`xm${simple ? " xm-simple" : ""}`} data-christmas-preview={preview ? "true" : undefined}>
     <ChristmasAtmosphere />
     <a className="xm-skip" href="#christmas-main">Skip to content</a>
-    {data.mode === "preview" && <div className="xm-preview-bar">PRIVATE DESIGN PREVIEW · Sample appointments · No payments or bookings are taken</div>}
+    {data.mode === "preview" && <div className="xm-preview-bar">PRIVATE DESIGN PREVIEW · Sample reservation count · No payments or bookings are taken</div>}
     {data.mode === "test" && <div className="xm-preview-bar">STRIPE TEST CHECKOUT · Test cards only · No real charges · Separate test booking records</div>}
     <div className="xm-fairy-lights" aria-hidden="true">{Array.from({ length: 24 }, (_, i) => <i key={i} style={{ animationDelay: `${i * .19}s` }} />)}</div>
     <main id="christmas-main">
@@ -184,13 +177,8 @@ export default function ChristmasExperience({ preview = false, storybook = false
 
       </>}
 
-      <section id="booking" className="xm-booking"><div className="xm-wrap"><div className="xm-section-heading">{simple ? <><p className="xm-eyebrow">CHRISTMAS WITH SANTA · $250 + GST</p><h2>Choose a time.<br /><em>Reserve with $50.</em></h2><p className="xm-calendar-deposit">No full payment required today.<br />$50 now · $212.50 on arrival before your session starts.<br /><small>$262.50 including GST. Optional albums added to the balance.</small></p></> : <><p className="xm-eyebrow">YOUR NAME ON THE NICE LIST</p><h2>Let’s save you<br /><em>a little Christmas.</em></h2><p>Pick your day. Choose your moment. We’ll keep the firelight warm.</p></>}</div>
-        {data.mode === "live" && remaining > 0 && remaining <= 3 && <p className="xm-availability-note" role="status">{remaining === 1 ? "One appointment remains" : `${remaining} appointments remain`} for this collection in the current release.</p>}
-        {data.mode === "closed" && !loading ? <div className="xm-closed"><Star /><h3>A little Christmas is on its way.</h3><p>{data.message || "Bookings are not open yet."}</p></div> : <ChristmasBooking data={data} loading={loading} selectedDate={selectedDate} selectedSlot={selectedSlot} albums={albums} busy={busy}
-          onDate={date => { setSelectedDate(date); setSelectedSlot(""); setError(""); }}
-          onSlot={id => { setSelectedSlot(id); setError(""); }} onAlbums={setAlbums}
-          onBook={() => { setError(""); setStep("details"); }} />}
-
+      <section id="booking" className="xm-booking"><div className="xm-wrap"><div className="xm-section-heading"><p className="xm-eyebrow">DECEMBER 1–14 · NORTH VANCOUVER</p><h2>Only 50<br /><em>family sessions.</em></h2><p>Reserve with $50 today.<br />I’ll personally contact you to arrange your date and time.<br /><small>Remaining balance due on arrival.</small></p></div>
+        <ChristmasReservations data={data} loading={loading} albums={albums} busy={busy} onAlbums={setAlbums} onBook={() => { setError(""); setStep("details"); }} />
         {notice && <p className="xm-availability-note" role="status">{notice}</p>}
         {error && step === "booking" && <p className="xm-error" role="alert">{error}</p>}
       </div></section>
@@ -201,8 +189,8 @@ export default function ChristmasExperience({ preview = false, storybook = false
     {activity && <div className="xm-activity" role="status"><span aria-hidden="true">✓</span><div><strong>{activity}</strong><small>Recent confirmed booking</small></div><button type="button" aria-label="Dismiss recent booking" onClick={()=>setActivity("")}>×</button></div>}
     <div className="xm-mobile-cta"><span>{simple ? "Christmas with Santa" : "Your little Christmas"}<small>{simple ? "$250 + GST · $50 today" : "$250 with Santa · 3 sets + keepsake"}</small></span><a className="xm-button" href="#booking">{simple ? "Reserve $50" : "Find a time"} <Arrow /></a></div>
     <dialog ref={modalRef} aria-label="Book your Christmas session" className="xm-dialog" onCancel={e => { e.preventDefault(); if (!busy) closeModal(); }} onClick={e => { if (e.target === e.currentTarget && !busy) closeModal(); }}><div className="xm-dialog-inner"><button className="xm-dialog-close" aria-label="Close booking" onClick={closeModal} disabled={busy}>×</button>
-      {step === "demo" ? <div className="xm-demo-complete"><Star /><p className="xm-eyebrow">YOUR BOOKING PREVIEW</p><h2>A little Christmas,<br /><em>ready to book.</em></h2><p>{pkg.name}<br />{slot && `${dateLabel(slot.date)} · ${timeLabel(slot.time)}`}<br />{money(subtotal)} + applicable taxes · {money(quote.total)} CAD total{albums ? ` · ${albums} album(s) included` : ""}<br />$50 today · {money(quote.balance)} due on arrival before your session starts.</p><p className="xm-demo-notice">This is a design preview. No payment has been taken, no contact details have been sent, and no appointment has been reserved.</p><button className="xm-button" onClick={closeModal}>Back to the Christmas page <Arrow /></button></div>
-      : <><p className="xm-eyebrow">YOUR APPOINTMENT · YOUR DETAILS</p><h2>Let’s make<br /><em>it yours.</em></h2><div className="xm-dialog-summary"><strong>{pkg.name}</strong><span>{slot && `${dateLabel(slot.date)} · ${timeLabel(slot.time)}`} · Approximately {pkg.minutes} minutes</span><span>{money(quote.total)} CAD total, including tax{albums ? ` · ${albums} album(s) included` : ""}</span><strong>$50 deposit today · {money(quote.balance)} remaining</strong><span>Balance due {slot && balanceDeadline(slot.date, slot.time)}.</span></div>{step === "details" && slot && <ChristmasCheckoutDetails slotId={slot.id} albums={albums} preview={preview} busy={busy} error={error} policy={data.cancellationPolicy} paymentTerms={`$50 CAD including GST is charged today and credited to your ${money(quote.total)} CAD total. The remaining ${money(quote.balance)} CAD is due ${balanceDeadline(slot.date, slot.time)}.`} onPayment={beginPayment} onExpired={() => { closeModal(); setSelectedSlot(""); }} />}</>}
+      {step === "demo" ? <div className="xm-demo-complete"><Star /><p className="xm-eyebrow">YOUR BOOKING PREVIEW</p><h2>A little Christmas,<br /><em>ready to book.</em></h2><p>{pkg.name}<br />{PERSONAL_SCHEDULING}<br />{money(subtotal)} + applicable taxes · {money(quote.total)} CAD total{albums ? ` · ${albums} album(s) included` : ""}<br />$50 today · {money(quote.balance)} due on arrival before your session starts.</p><p className="xm-demo-notice">This is a design preview. No payment has been taken, no contact details have been sent, and no appointment has been reserved.</p><button className="xm-button" onClick={closeModal}>Back to the Christmas page <Arrow /></button></div>
+      : <><p className="xm-eyebrow">YOUR RESERVATION · YOUR DETAILS</p><h2>Let’s make<br /><em>it yours.</em></h2><div className="xm-dialog-summary"><strong>{pkg.name}</strong><span>{PERSONAL_SCHEDULING} · Approximately {pkg.minutes} minutes</span><span>{money(quote.total)} CAD total, including tax{albums ? ` · ${albums} album(s) included` : ""}</span><strong>$50 deposit today · {money(quote.balance)} remaining</strong><span>Remaining balance due on arrival.</span></div>{step === "details" && slot && <ChristmasCheckoutDetails slotId={slot.id} albums={albums} preview={preview} busy={busy} error={error} policy={data.cancellationPolicy} paymentTerms={`$50 CAD including GST is charged today and credited to your ${money(quote.total)} CAD total. The remaining ${money(quote.balance)} CAD is due ${balanceDeadline("", "")}.`} onPayment={beginPayment} onExpired={closeModal} />}</>}
     </div></dialog>
   </div>;
 }

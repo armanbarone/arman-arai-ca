@@ -31,7 +31,13 @@ export interface RecentBooking { id: string; text: string }
 export interface Availability {
   mode: "live" | "test" | "preview" | "closed"; slots: PublicSlot[]; location: string;
   cancellationPolicy: string; publishableKey: string; message?: string; recentBookings?: RecentBooking[];
+  capacity?: { limit: number; remaining: number; checkoutAvailable: number };
 }
+export const RESERVATION_LIMIT = 50;
+export const RESERVATION_REQUEST = "christmas-reservation";
+export const FLEXIBLE_SESSION_WINDOW = "December 1–14, 2026";
+export const PERSONAL_SCHEDULING = "Arman will personally contact you after payment to arrange your session for December 1–14, 2026.";
+export const reservationPolicy = (policy: string) => `Your $50 deposit reserves one family session. ${PERSONAL_SCHEDULING} Your date and time are agreed personally after payment. If we cannot agree on a suitable appointment, your deposit is fully refundable. ${policy.replace(/December 20, 2026/g, "December 14, 2026")}`;
 export const CALENDAR_START = "2026-11-01", SEASON_START = "2026-11-09", SEASON_END = "2026-12-20";
 export const BLOCKED_DATES = new Set(["2026-12-10", "2026-12-11", "2026-12-12"]);
 export const BOOKING_POLICY = "Cancel at least 48 hours before your appointment for a full refund. Cancellations within 48 hours are non-refundable. One reschedule is free, subject to an available appointment on or before December 20, 2026. Contact i@armanarai.com to cancel or reschedule.";
@@ -62,5 +68,5 @@ export function seasonalSlots(): PublicSlot[] {
 }
 export const PREVIEW_AVAILABILITY: Availability = {
   mode: "preview", location: "583 E Kings Rd, North Vancouver, BC V7N 1J2", publishableKey: "", cancellationPolicy: BOOKING_POLICY,
-  slots: seasonalSlots(), recentBookings: [],
+  slots: seasonalSlots(), recentBookings: [], capacity: { limit: 50, remaining: 50, checkoutAvailable: 50 },
 };

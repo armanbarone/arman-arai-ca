@@ -4,10 +4,11 @@ import { christmasMetaAttribution, reportChristmasMeta } from "@/lib/christmas/m
 import { startCheckout, checkoutRateLimit } from "@/lib/christmas/payments";
 import { validateCheckoutCart, markCartCheckout } from "@/lib/christmas/cart";
 import { christmasSameOrigin } from "@/lib/christmas/environment";
+import { RESERVATION_REQUEST } from "@/lib/christmas/catalog";
 export const runtime = "nodejs";
 const inputSchema = z.object({
   cartId: z.string().regex(/^[a-f0-9]{32}$/), cartToken: z.string().regex(/^[a-f0-9]{64}$/),
-  slotId: z.string().regex(/^2026-(11|12)-\d{2}_\d{4}$/), packageId: z.literal("santa"),
+  slotId: z.literal(RESERVATION_REQUEST), packageId: z.literal("santa"),
   albums: z.number().int().min(0).max(3), shareActivity: z.boolean().default(false), albumDeliveryConsent: z.boolean().default(false),
   delivery: z.object({ letterNames: z.string().trim().min(1).max(160), line1: z.string().trim().min(3).max(150), line2: z.string().trim().max(100), city: z.string().trim().min(2).max(100), postalCode: z.string().trim().toUpperCase().regex(/^V\d[A-Z] ?\d[A-Z]\d$/), province: z.literal("BC"), country: z.literal("CA") }),
   name: z.string().trim().min(2).max(100), email: z.email().max(254).transform(s => s.trim().toLowerCase()),
@@ -34,7 +35,7 @@ export async function POST(req: Request) {
     return Response.json(response, { headers: { "Cache-Control": "no-store" } });
   } catch (e) {
     const message = e instanceof Error ? e.message : "";
-    const safe = /^(That appointment|Choose a valid|Santa is not|The calendar|Bookings are not|Booking details changed|Too many|Please try checkout|Your checkout|This checkout)/.test(message);
+    const safe = /^(All remaining sessions|The reservation count|That appointment|Choose a valid|Santa is not|The calendar|Bookings are not|Booking details changed|Too many|Please try checkout|Your checkout|This checkout)/.test(message);
     return Response.json({ error: safe ? message : "We could not open payment. No booking is confirmed. Please contact Arman before trying again." }, { status: safe ? 409 : 503 });
   }
 }

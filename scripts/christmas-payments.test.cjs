@@ -5,7 +5,7 @@ const { loader } = require('./wedding-test-loader.cjs');
 process.env.PORTAL_SECRET = 'offline-test-only-private-link-fixture';
 process.env.VERCEL_ENV = 'production';
 process.env.STRIPE_SECRET_KEY = 'rk_live_offline_fixture_not_a_credential';
-function harness({ failQuestionnaireOnce = false, failWelcomeOnce = false, failCalendarOnce = false, failBalanceOnce = false, failAlbumLineOnce = false } = {}) {
+function harness({ failQuestionnaireOnce = false, failWelcomeOnce = false, failCalendarOnce = false, failBalanceOnce = false, failAlbumLineOnce = false, flexible = false } = {}) {
   const rows = [{ id: '2026-12-05_1100', date: '2026-12-05', time: '11:00', santa: true, published: true }];
   let version = 0, created, emails = 0, calendarCalls = 0; const messages=[], invoices=new Map(), invoiceItems=[]; let invoiceCreates=0, balancePayCalls=0;
   class MemoryConflict extends Error {}
@@ -21,6 +21,7 @@ function harness({ failQuestionnaireOnce = false, failWelcomeOnce = false, failC
     list: async()=>({data:[...invoices.values()].map(structuredClone)}),
     create: async p=>{if(failBalanceOnce){failBalanceOnce=false;throw Error('Offline invoice failure');}invoiceCreates++;const i={...p,id:'in_balance_offline',livemode:true,status:'draft',total:0,amount_paid:0,hosted_invoice_url:null};invoices.set(i.id,i);return structuredClone(i);},
     retrieve: async id=>invoices.has(id)?structuredClone(invoices.get(id)):{id,hosted_invoice_url:'https://invoice.stripe.com/offline-fixture'},
+    update:async(id,p)=>{Object.assign(invoices.get(id),p);return structuredClone(invoices.get(id));},
     pay:async(id,p)=>{assert.equal(p.paid_out_of_band,true);balancePayCalls++;const i=invoices.get(id);i.status='paid';i.amount_paid=i.total;return structuredClone(i);},
     finalizeInvoice:async id=>{const i=invoices.get(id);i.status='open';i.hosted_invoice_url='https://invoice.stripe.com/balance-offline';return structuredClone(i);},
   }, invoiceItems:{list:async p=>({data:invoiceItems.filter(i=>i.invoice===p.invoice)}),create:async p=>{if(failAlbumLineOnce&&p.metadata.payment_component==='album-1'){failAlbumLineOnce=false;throw Error('Offline album line failure');}const amounts={price_balance:20238,price_first:6700,price_second:5500,price_third:4500};const net=amounts[p.pricing.price];assert.ok(net);const total=net+Math.round(net*.05)+(p.tax_rates.includes('txr_pst')?Math.round(net*.07):0);invoiceItems.push({...p,net,total});invoices.get(p.invoice).total+=total;return p;}} };
@@ -30,13 +31,13 @@ function harness({ failQuestionnaireOnce = false, failWelcomeOnce = false, failC
     '@/lib/portal/email': { sendEmail: async opts => { if(failWelcomeOnce && opts.idempotencyKey.includes("welcome")){failWelcomeOnce=false;throw Error("Offline welcome failure");} if(failQuestionnaireOnce && opts.idempotencyKey.includes("questionnaire")){failQuestionnaireOnce=false;throw Error("Offline mail failure");} emails++;messages.push(opts); }, layout: ({ bodyHtml }) => bodyHtml, esc: String },
     '@/lib/portal/store': { readJson: async () => null, writeJson: async () => {}, ConflictError: class extends Error {} },
     './stripe-catalog': { christmasCheckoutCatalog: async () => ({ price: 'price_base', depositPrice:'price_deposit', balancePrice:'price_balance', albumPrices: ['price_first', 'price_second', 'price_third'], taxRates: ['txr_gst'], albumTaxRates: ['txr_gst', 'txr_pst'] }) },
-    './store': { settings: async () => cfg, allSlots: async () => structuredClone(rows), inventoryStore: store, updateSlot: async (id, change) => { for(let attempt=0;attempt<5;attempt++){const row = await store.read(id); change(row.data); try{await store.write(id, row.data, row.etag); return row.data;}catch(error){if(!(error instanceof MemoryConflict))throw error;}}throw Error('Memory write retries exceeded'); } },
+    './store': { settings: async () => cfg, allSlots: async () => structuredClone(rows), claimFlexibleReservation:async r=>{rows[0]={id:`2026-reservation_${r.id.slice(-20)}`,date:'',time:'',flexible:true,santa:true,published:false,reservation:r};return structuredClone(rows[0]);}, inventoryStore: store, updateSlot: async (id, change) => { for(let attempt=0;attempt<5;attempt++){const row = await store.read(id); change(row.data); try{await store.write(id, row.data, row.etag); return row.data;}catch(error){if(!(error instanceof MemoryConflict))throw error;}}throw Error('Memory write retries exceeded'); } },
     './google-calendar': { syncChristmasCalendar: async()=>{calendarCalls++;if(failCalendarOnce){failCalendarOnce=false;throw Error('Offline calendar failure');}return{status:'synced'};} },
   });
   const payments = load('@/lib/christmas/payments'), catalog = load('@/lib/christmas/catalog');
-  const input = n => ({ slotId: rows[0].id, packageId: 'santa', name: 'Offline Test', email: 'offline@example.invalid', phone: '6045550100', albums: n, shareActivity: false, acceptedPolicy: cfg.cancellationPolicy, expectedSubtotal: catalog.sessionQuote(n).subtotal, expectedTotal: catalog.sessionQuote(n).total, paymentPlan:'deposit-50-v1', expectedDueNow:5000, delivery: { letterNames: 'Family', line1: 'Test address', line2: '', city: 'Vancouver', postalCode: 'V7N 1J2', province: 'BC', country: 'CA' } });
+  const input = n => ({ slotId: flexible ? catalog.RESERVATION_REQUEST : rows[0].id, packageId: 'santa', name: 'Offline Test', email: 'offline@example.invalid', phone: '6045550100', albums: n, shareActivity: false, acceptedPolicy: flexible ? catalog.reservationPolicy(cfg.cancellationPolicy) : cfg.cancellationPolicy, expectedSubtotal: catalog.sessionQuote(n).subtotal, expectedTotal: catalog.sessionQuote(n).total, paymentPlan:'deposit-50-v1', expectedDueNow:5000, delivery: { letterNames: 'Family', line1: 'Test address', line2: '', city: 'Vancouver', postalCode: 'V7N 1J2', province: 'BC', country: 'CA' } });
   const session = (status = 'paid') => ({ id: 'cs_offline_fixture', metadata: { service: 'christmas-2026', slotId: rows[0].id, bookingId: rows[0].reservation.id, payment_kind:rows[0].reservation.paymentPlan?'deposit':undefined }, customer:'cus_offline', livemode: true, currency: 'cad', amount_subtotal: rows[0].reservation.paymentPlan?.depositSubtotalCents??rows[0].reservation.subtotalCents, amount_total: rows[0].reservation.paymentPlan?.depositCents??rows[0].reservation.totalCents, payment_status: status, status: 'complete' });
-  return { rows, payments, input, session, actions:load('@/app/admin/christmas/actions'), balancePayCalls:()=>balancePayCalls, created: () => created, emails: () => emails, messages:()=>messages, calendarCalls:()=>calendarCalls, invoices, invoiceItems, invoiceCreates:()=>invoiceCreates, paidBalance:()=>{const i=invoices.get('in_balance_offline');i.status='paid';i.amount_paid=i.total;return structuredClone(i);} };
+  return { rows, payments, input, session, notifications:load('@/lib/christmas/notifications'), balance:load('@/lib/christmas/balance'), actions:load('@/app/admin/christmas/actions'), balancePayCalls:()=>balancePayCalls, created: () => created, emails: () => emails, messages:()=>messages, calendarCalls:()=>calendarCalls, invoices, invoiceItems, invoiceCreates:()=>invoiceCreates, paidBalance:()=>{const i=invoices.get('in_balance_offline');i.status='paid';i.amount_paid=i.total;return structuredClone(i);} };
 }
 test('checkout charges exactly $50 including GST; album lines and tax go onto the balance invoice', async () => {
   for (let n = 0; n <= 3; n++) {
@@ -85,10 +86,10 @@ test('the retired $10 price and verification flag cannot override checkout prici
   assert.equal(h.created(), undefined);
 });
 test('paid reconciliation marks sold and retries cannot duplicate confirmations', async () => {
-  const h = harness(); await h.payments.startCheckout(h.input(3)); assert.equal((await h.payments.availability()).slots[0].status, 'reserved');
+  const h = harness(); await h.payments.startCheckout(h.input(3)); assert.equal((await h.payments.availability()).capacity.checkoutAvailable, 49);
   await h.payments.reconcileChristmasSession(h.session('unpaid')); assert.equal(h.rows[0].reservation.status, 'pending'); assert.equal(h.emails(), 0);
   await assert.rejects(h.payments.reconcileChristmasSession({ ...h.session(), amount_total: 1 }), /mismatch/);
-  await h.payments.reconcileChristmasSession(h.session()); assert.equal((await h.payments.availability()).slots[0].status, 'sold'); assert.equal(h.emails(), 3);
+  await h.payments.reconcileChristmasSession(h.session()); assert.equal((await h.payments.availability()).capacity.remaining, 49); assert.equal(h.emails(), 3);
   await h.payments.reconcileChristmasSession(h.session()); assert.equal(h.emails(), 3);
   await h.payments.reconcileChristmasSession({ ...h.session('unpaid'), status: 'expired' }); assert.equal(h.rows[0].reservation.status, 'paid');
 });
@@ -194,4 +195,37 @@ test('recording an in-person balance requires an explicit received acknowledgmen
  await assert.rejects(h.actions.recordChristmasBalancePayment(form),/actually received/);assert.equal(h.balancePayCalls(),0);
  form.set('received','on');await h.actions.recordChristmasBalancePayment(form);await h.actions.recordChristmasBalancePayment(form);
  assert.equal(h.balancePayCalls(),1);assert.equal(h.rows[0].reservation.paidCents,26250);assert.equal(h.emails(),4);
+});
+
+
+test('undated reservation collects the same deposit and sends scheduling instructions without an invented appointment',async()=>{
+ const h=harness({flexible:true});await h.payments.startCheckout(h.input(1));
+ assert.equal(h.rows[0].date,'');assert.equal(h.rows[0].time,'');assert.equal(h.rows[0].reservation.paymentPlan.balanceDueAt,undefined);
+ assert.match(h.created().custom_text.submit.message,/personally contact.*December 1–14/);
+ assert.doesNotMatch(h.created().invoice_creation.invoice_data.description,/Invalid Date|NaN/);
+ assert.equal((await h.payments.availability()).capacity.remaining,50);
+ await h.payments.reconcileChristmasSession(h.session());
+ assert.equal(h.invoices.size,0);assert.equal(h.messages().length,3);
+ const welcome=h.messages().find(m=>/session is reserved/.test(m.subject));
+ assert.ok(welcome);assert.equal(welcome.attachments,undefined);assert.match(welcome.text,/appointment time is not assigned/);
+ assert.ok(h.messages().some(m=>/CONTACT TO SCHEDULE/.test(m.subject)));
+ assert.equal((await h.payments.availability()).capacity.remaining,49);
+ const token=new URL(h.created().success_url).searchParams.get('token');
+ const status=await h.payments.bookingStatus(h.rows[0].id,token);assert.equal(status.awaitingScheduling,true);assert.equal(status.purchaseTracking.paidCents,5000);assert.doesNotMatch(status.cancellationPolicy,/December 20, 2026/);
+ await h.payments.reconcileChristmasSession(h.session());assert.equal(h.messages().length,3);assert.equal((await h.payments.availability()).capacity.remaining,49);
+});
+
+
+test('agreed appointments receive one calendar email and the correct deferred balance invoice without another Purchase',async()=>{
+ const h=harness({flexible:true});await h.payments.startCheckout(h.input(2));await h.payments.reconcileChristmasSession(h.session());
+ const token=new URL(h.created().success_url).searchParams.get('token'), purchase=(await h.payments.bookingStatus(h.rows[0].id,token)).purchaseTracking;
+ await h.notifications.sendScheduleConfirmation(h.rows[0].id);assert.equal(h.messages().length,3);assert.equal(h.invoices.size,0);
+ Object.assign(h.rows[0],{date:'2026-12-05',time:'11:00'});Object.assign(h.rows[0].reservation,{scheduleVersion:1});
+ h.rows[0].reservation.paymentPlan.balanceDueAt=new Date('2026-12-05T11:00:00-08:00').getTime();
+ await h.balance.ensureBalanceInvoice(h.rows[0].id);await h.notifications.sendScheduleConfirmation(h.rows[0].id);await h.notifications.sendScheduleConfirmation(h.rows[0].id);
+ assert.equal(h.invoices.size,1);assert.equal(h.invoices.get('in_balance_offline').total,34914);assert.equal(h.messages().length,4);
+ const scheduled=h.messages()[3];assert.match(scheduled.subject,/appointment is confirmed/);assert.match(scheduled.text,/December 5, 2026.*11:00 am Pacific/);assert.equal(scheduled.attachments[0].filename,'Christmas-session.ics');
+ const status=await h.payments.bookingStatus(h.rows[0].id,token);assert.equal(status.awaitingScheduling,false);assert.deepEqual(status.purchaseTracking,purchase);
+ h.rows[0].time='12:00';h.rows[0].reservation.scheduleVersion=2;h.rows[0].reservation.paymentPlan.balanceDueAt=new Date('2026-12-05T12:00:00-08:00').getTime();
+ await h.balance.ensureBalanceInvoice(h.rows[0].id);await h.notifications.sendScheduleConfirmation(h.rows[0].id);assert.equal(h.messages().length,5);assert.equal(h.invoices.size,1);assert.equal(h.invoices.get('in_balance_offline').due_date,new Date('2026-12-05T12:00:00-08:00').getTime()/1000);assert.match(h.messages()[4].text,/12:00 pm/);
 });

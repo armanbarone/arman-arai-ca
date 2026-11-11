@@ -6,7 +6,7 @@ import "./christmas.css";
 const empty: Answers = { peopleCount: 3, attendees: "", children: [], outfits: "", mustHavePhotos: "", santaComfort: "unsure", comfortNotes: "", interests: "", treats: "yes", allergyNotes: "", accessNotes: "", letterNames: "", questions: "", consent: true };
 type Details = { date: string; time: string; name: string; letterNames: string; answers: Answers | null; submittedAt?: number; confirmationUrl: string };
 export default function FamilyQuestionnaire({ preview = false }: { preview?: boolean }) {
-  const [details, setDetails] = useState<Details | null>(preview ? { date: "2026-11-21", time: "10:00", name: "Alex", letterNames: "Sam and Riley", answers: null, confirmationUrl: "/christmas/confirmation/preview" } : null);
+  const [details, setDetails] = useState<Details | null>(preview ? { date: "", time: "", name: "Alex", letterNames: "Sam and Riley", answers: null, confirmationUrl: "/christmas/confirmation/preview" } : null);
   const [answers, setAnswers] = useState<Answers>({ ...empty, letterNames: preview ? "Sam and Riley" : "" });
   const [consent, setConsent] = useState(false), [busy, setBusy] = useState(false), [saved, setSaved] = useState(false), [error, setError] = useState("");
   useEffect(() => {
@@ -37,10 +37,11 @@ export default function FamilyQuestionnaire({ preview = false }: { preview?: boo
     <p className="xm-eyebrow">YOUR FAMILY · YOUR CHRISTMAS VISIT</p>
     <h1>{saved ? "Thank you." : "A little about"}<br /><em>{saved ? "We’ve got your details." : "your family."}</em></h1>
     {!details && !error && <p role="status">Opening your private questionnaire…</p>}
-    {details && <p>{dateLabel(details.date, { weekday: "long", month: "long", day: "numeric" })} · {timeLabel(details.time)} Pacific</p>}
-    {saved ? <><p>{preview ? "This is a sample. No answers were saved." : "Your answers are saved for Arman to use when planning your session. Your appointment remains confirmed."}</p><p>You can use this same private link to update your answers before your visit.</p><button className="xm-button" onClick={() => setSaved(false)}>Edit my answers ↗</button>{details && <p><a href={details.confirmationUrl}>Back to your booking ↗</a></p>}</>
+    {details && <p>{details.date && details.time ? `${dateLabel(details.date, { weekday: "long", month: "long", day: "numeric" })} · ${timeLabel(details.time)} Pacific` : "Your family session is reserved. Arman will personally arrange your date and time for December 1–14."}</p>}
+    {saved ? <><p>{preview ? "This is a sample. No answers were saved." : "Your answers are saved for Arman to use when planning your session. Your reservation remains confirmed."}</p><p>You can use this same private link to update your answers before your visit.</p><button className="xm-button" onClick={() => setSaved(false)}>Edit my answers ↗</button>{details && <p><a href={details.confirmationUrl}>Back to your booking ↗</a></p>}</>
     : details && <><p>This short form helps us plan for your family. Approximate ages are enough; dates of birth aren’t needed. Food and access notes are optional—share only what helps us prepare.</p><form className="xm-family-form" onSubmit={submit}>
       <fieldset><legend>1 · Who’s joining us?</legend>
+        <label>Which days and times work for your family? (optional)<textarea maxLength={1500} value={answers.availabilityPreferences || ""} onChange={e => value("availabilityPreferences", e.target.value)} placeholder="Sessions take place December 1–14. Share preferred days, mornings or afternoons, and any days you cannot attend. Arman will contact you to agree on your appointment." /></label>
         <label>How many people will be photographed?<input type="number" min={1} max={12} required value={answers.peopleCount} onChange={e => value("peopleCount", Number(e.target.value))} /></label>
         {answers.peopleCount > 5 && <p className="xm-form-note">Your package covers one household of up to five. Please contact Arman before the session so we can discuss a larger group.</p>}
         <label>Who is coming, and how are you related?<textarea required maxLength={1000} value={answers.attendees} onChange={e => value("attendees", e.target.value)} placeholder="For example: Alex and Taylor (parents), Sam and Riley (children). First names are enough." /></label>
@@ -64,7 +65,7 @@ export default function FamilyQuestionnaire({ preview = false }: { preview?: boo
         <label>Anything else you’d like to ask or tell Arman? (optional)<textarea maxLength={1500} value={answers.questions} onChange={e => value("questions", e.target.value)} /></label>
       </fieldset>
       <label className="xm-activity-consent"><input type="checkbox" required checked={consent} onChange={e => setConsent(e.target.checked)} /><span>I am the booking adult or parent/guardian and agree to share these answers with Arman Arai to plan this session. Optional food and access notes stay private. This does not grant permission to publish our photographs.</span></label>
-      {error && <p className="xm-error" role="alert">{error}</p>}<button className="xm-button" disabled={busy}>{busy ? "Saving…" : details.submittedAt ? "Update our details" : "Send our details"} ↗</button><p className="xm-small">Your appointment is already confirmed. This form does not take a payment.</p>
+      {error && <p className="xm-error" role="alert">{error}</p>}<button className="xm-button" disabled={busy}>{busy ? "Saving…" : details.submittedAt ? "Update our details" : "Send our details"} ↗</button><p className="xm-small">Your family session is reserved. This form does not take a payment or assign your appointment.</p>
     </form></>}
     {!details && error && <p className="xm-error" role="alert">{error}</p>}<p className="xm-small">Questions? <a href="mailto:i@armanarai.com">i@armanarai.com</a></p>
   </div></div>;

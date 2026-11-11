@@ -7,7 +7,7 @@ export const DEPOSIT = { subtotal: 4762, gst: 238, total: 5000 } as const;
 export interface DepositPlan {
   kind: typeof DEPOSIT_PLAN;
   depositSubtotalCents: number; depositGstCents: number; depositCents: number;
-  balanceDueAt: number; depositPaidCents?: number; balancePaidCents?: number;
+  balanceDueAt?: number; depositPaidCents?: number; balancePaidCents?: number;
   customerId?: string; balanceInvoiceId?: string; balanceInvoiceUrl?: string;
   balanceReceiptSentAt?: number;
 }
@@ -24,6 +24,7 @@ export function bookingPaymentSummary(r: Reservation) {
     deposit: !!r.paymentPlan, dueAt: r.paymentPlan?.balanceDueAt };
 }
 export function balanceDeadline(date: string, time: string) {
+  if (!date || !time) return "on arrival, before your session starts";
   return `on arrival, before your session starts on ${dateLabel(date, { weekday: "long", month: "long", day: "numeric", year: "numeric" })} at ${timeLabel(time)} Pacific`;
 }
 export function bookingPaymentText(r: Reservation, date: string, time: string) {

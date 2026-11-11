@@ -12,7 +12,7 @@ import { christmasPaymentMode } from "./environment";
  * It never charges a saved card or emails a second booking confirmation. */
 export async function ensureBalanceInvoice(slotId: string) {
   const slot = (await inventoryStore.read(slotId))?.data, r = slot?.reservation;
-  if (!slot || !r?.paymentPlan || r.status !== "paid") return;
+  if (!slot || !r?.paymentPlan || r.status !== "paid" || !slot.date || !slot.time) return;
   const plan = r.paymentPlan, stripe = stripeClient(), expected = bookingPaymentSummary(r).total - DEPOSIT.total;
   if (!plan.customerId) throw Error("The deposit has no Stripe customer for its balance invoice.");
   const catalog = await christmasCheckoutCatalog();
@@ -24,11 +24,11 @@ export async function ensureBalanceInvoice(slotId: string) {
     invoice = existing ?? await stripe.invoices.create({
       customer: plan.customerId, currency: "cad", collection_method: "send_invoice", auto_advance: false,
       pending_invoice_items_behavior: "exclude",
-      ...(plan.balanceDueAt > Date.now() ? { due_date: Math.floor(plan.balanceDueAt / 1000) } : { days_until_due: 0 }),
+      ...(plan.balanceDueAt && plan.balanceDueAt > Date.now() ? { due_date: Math.floor(plan.balanceDueAt / 1000) } : { days_until_due: 0 }),
       description: `Christmas session balance · ${r.id}. Order total ${money(bookingPaymentSummary(r).total)} CAD including tax. $50 deposit already paid and credited. Remaining ${money(expected)} CAD due ${balanceDeadline(slot.date, slot.time)}.`,
       footer: `Your $50 deposit receipt is separate. This invoice contains only the remaining session amount and any optional albums. Payment is due on arrival before the session starts. ${r.bookingDetails.cancellationPolicy}`,
       custom_fields: [{ name: "GST/HST registration", value: BUSINESS.gstHstNumber }],
-      metadata: { service: "christmas-2026", slotId, bookingId: r.id, payment_kind: "balance", deposit_paid: String(DEPOSIT.total), original_due_at: String(Math.floor(plan.balanceDueAt / 1000)) },
+      metadata: { service: "christmas-2026", slotId, bookingId: r.id, payment_kind: "balance", deposit_paid: String(DEPOSIT.total), original_due_at: String(Math.floor((plan.balanceDueAt ?? Date.now()) / 1000)) },
     }, { idempotencyKey: `christmas-balance-${r.id}` });
     await updateSlot(slotId, s => { if (s.reservation?.id !== r.id || !s.reservation.paymentPlan) throw Error("Balance booking changed."); s.reservation.paymentPlan.balanceInvoiceId = invoice.id; });
   }
@@ -47,6 +47,11 @@ export async function ensureBalanceInvoice(slotId: string) {
     invoice = await stripe.invoices.finalizeInvoice(invoice.id, { auto_advance: false }, { idempotencyKey: `christmas-balance-finalize-${r.id}` });
   }
   if (invoice.total !== expected || !["open", "paid"].includes(invoice.status ?? "")) throw Error("Christmas balance invoice is not payable or has an incorrect total.");
+  const due = Math.floor((plan.balanceDueAt ?? 0) / 1000);
+  if (invoice.status === "open" && due * 1000 > Date.now() && invoice.due_date !== due) {
+    invoice = await stripe.invoices.update(invoice.id, { due_date: due,
+      description: `Christmas session balance · ${r.id}. Order total ${money(bookingPaymentSummary(r).total)} CAD including tax. $50 deposit already paid and credited. Remaining ${money(expected)} CAD due ${balanceDeadline(slot.date, slot.time)}.` });
+  }
   await updateSlot(slotId, s => { if (s.reservation?.id === r.id && s.reservation.paymentPlan) s.reservation.paymentPlan.balanceInvoiceUrl = invoice.hosted_invoice_url ?? undefined; });
   return invoice;
 }

@@ -1,6 +1,6 @@
 import type { PackageId } from "./catalog";
 import { createHash } from "node:crypto";
-import { isSeasonDate, scheduledTime, type PublicSlot, type RecentBooking } from "./catalog.ts";
+import { isSeasonDate, scheduledTime, RESERVATION_LIMIT, type PublicSlot, type RecentBooking } from "./catalog.ts";
 import type { FamilyQuestionnaire } from "./questionnaire-schema";
 import type { DepositPlan } from "./payment-plan";
 import type { ChristmasMetaAttribution } from "./meta";
@@ -22,6 +22,7 @@ export interface Reservation {
   paymentPlan?: DepositPlan;
   metaAttribution?: ChristmasMetaAttribution; metaPurchaseQueuedAt?: number;
   welcomeSentAt?: number; questionnaireSentAt?: number; studioSentAt?: number;
+  scheduleEmailKey?: string; scheduleVersion?: number;
   googleCalendarEventId?: string; googleCalendarFingerprint?: string; googleCalendarSyncedAt?: number; googleCalendarEventUrl?: string; googleCalendarLastError?: string;
   questionnaire?: { answers: FamilyQuestionnaire; submittedAt: number; updatedAt: number };
   bookingDetails: { studioAddress: string; postalCode: string; arrivalNotes: string; cancellationPolicy: string };
@@ -31,6 +32,7 @@ export interface Slot {
   manuallyBlocked?: boolean;
   manuallySoldOut?: boolean;
   reservationBlocked?: boolean;
+  flexible?: boolean;
 }
 export interface Versioned<T> { data: T; etag: string }
 export interface InventoryStore {
@@ -38,7 +40,13 @@ export interface InventoryStore {
   write(id: string, data: Slot, etag: string): Promise<void>;
   conflict(error: unknown): boolean;
 }
-export const SLOT_PATTERN = /^2026-(?:11|12)-\d{2}_\d{4}$/;
+export const SLOT_PATTERN = /^2026-(?:(?:11|12)-\d{2}_\d{4}|reservation_[a-f0-9]{20})$/;
+export const awaitingSchedule = (s: Pick<Slot, "flexible" | "date" | "time">) => !!s.flexible && (!s.date || !s.time);
+export function reservationCapacity(rows: Slot[], includeTests = false) {
+  const reservations = rows.flatMap(s => s.reservation && !s.reservation.ownerPaymentCheck && (includeTests || !s.reservation.testMode) ? [s.reservation] : []);
+  const paid = reservations.filter(r => r.status === "paid").length;
+  return { limit: RESERVATION_LIMIT, remaining: Math.max(0, RESERVATION_LIMIT - paid), checkoutAvailable: Math.max(0, RESERVATION_LIMIT - reservations.length) };
+}
 export function validSlot(date: string, time: string) {
   return isSeasonDate(date) && scheduledTime(date, time);
 }

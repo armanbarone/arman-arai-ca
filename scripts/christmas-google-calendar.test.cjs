@@ -72,3 +72,9 @@ test('read-only access and provider failures never report a connected calendar',
   let h=harness(t,{calendarRole:'reader'});assert.equal((await h.api.calendarConnectionHealth()).status,'not_connected');
   h=harness(t,{failOnce:true});assert.equal((await h.api.calendarConnectionHealth()).status,'not_connected');assert.equal((await h.api.calendarConnectionHealth()).status,'connected');assert.equal(h.events.size,0);
 });
+
+
+test('an undated paid reservation waits for personal scheduling before calling Google',async t=>{
+ const h=harness(t);h.row.flexible=true;h.row.date='';h.row.time='';
+ assert.equal((await h.api.syncChristmasCalendar(h.row.id)).status,'awaiting_schedule');assert.equal(h.tokenCalls(),0);assert.equal(h.calls.length,0);
+});

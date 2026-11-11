@@ -4,10 +4,10 @@ import type Stripe from "stripe";
 import { stripeClient, stripeConfiguration, connectStripe, paymentSetupStatus } from "@/lib/portal/stripe";
 import { APP_URL, BUSINESS } from "@/lib/portal/business";
 import { readJson, writeJson, ConflictError } from "@/lib/portal/store";
-import { PACKAGES, packageById, money, validAlbumCount, gstCents, dateLabel, timeLabel, type Availability, type PackageId } from "./catalog";
+import { PACKAGES, RESERVATION_REQUEST, reservationPolicy, PERSONAL_SCHEDULING, packageById, money, validAlbumCount, gstCents, dateLabel, timeLabel, type Availability, type PackageId } from "./catalog";
 import { christmasCheckoutCatalog } from "./stripe-catalog";
-import { claimSlot, validSlot, SLOT_PATTERN, publicSlots, recentBookings, type Slot, type Reservation } from "./inventory";
-import { allSlots, settings, inventoryStore, updateSlot } from "./store";
+import { claimSlot, validSlot, SLOT_PATTERN, publicSlots, recentBookings, reservationCapacity, awaitingSchedule, type Slot, type Reservation } from "./inventory";
+import { allSlots, settings, inventoryStore, updateSlot, claimFlexibleReservation } from "./store";
 import { authorized, bookingLink } from "./access";
 import { sendBookingNotifications, sendBalanceReceipt } from "./notifications";
 import { ensureBalanceInvoice } from "./balance";
@@ -88,6 +88,7 @@ async function reconcileStale(slot: Slot) {
 export async function availability(): Promise<Availability> {
   const cfg = await settings();
   const publishableKey = "";
+  if (Date.now() >= new Date("2026-12-14T16:30:00-08:00").getTime()) return { mode: "closed", slots: [], location: "North Vancouver, BC", cancellationPolicy: reservationPolicy(cfg.cancellationPolicy), publishableKey: "", message: "Reservations for this Christmas collection have closed." };
   if (!cfg.enabled || !cfg.studioAddress || !cfg.postalCode || !cfg.cancellationPolicy || !(await paymentReady()))
     return { mode: "closed", slots: [], location: "North Vancouver, BC", cancellationPolicy: cfg.cancellationPolicy, publishableKey: "", message: "Christmas bookings are not open yet. Email Arman for the release date." };
   await christmasCheckoutCatalog();
@@ -95,8 +96,8 @@ export async function availability(): Promise<Availability> {
   await Promise.all(rows.filter(s => s.reservation?.status === "pending" && s.reservation.expiresAt + 120000 < Date.now()).map(reconcileStale));
   rows = await allSlots();
   return {
-    mode: christmasPaymentMode() === "test" ? "test" : "live", location: `${cfg.studioAddress}, ${cfg.postalCode}`, cancellationPolicy: cfg.cancellationPolicy, publishableKey,
-    slots: publicSlots(rows), recentBookings: recentBookings(rows),
+    mode: christmasPaymentMode() === "test" ? "test" : "live", location: `${cfg.studioAddress}, ${cfg.postalCode}`, cancellationPolicy: reservationPolicy(cfg.cancellationPolicy), publishableKey,
+    slots: [], recentBookings: recentBookings(rows), capacity: reservationCapacity(rows, christmasPaymentMode() === "test"),
   };
 }
 export async function checkoutRateLimit(ip: string) {
@@ -115,21 +116,25 @@ export async function startCheckout(input: CheckoutInput, metaAttribution?: Chri
   if (!pkg) throw Error("Choose a valid package.");
   if (!validAlbumCount(input.albums)) throw Error("Choose a valid album quantity.");
   const quote = depositQuote(input.albums), subtotal = quote.subtotal, expectedTotal = quote.total;
-  if (input.paymentPlan !== DEPOSIT_PLAN || input.expectedDueNow !== DEPOSIT.total || input.acceptedPolicy !== cfg.cancellationPolicy || input.expectedSubtotal !== subtotal || input.expectedTotal !== expectedTotal) throw Error("Booking details changed. Refresh the page and review the price and policy before paying.");
+  const flexible = input.slotId === RESERVATION_REQUEST, policy = flexible ? reservationPolicy(cfg.cancellationPolicy) : cfg.cancellationPolicy;
+  if (input.paymentPlan !== DEPOSIT_PLAN || input.expectedDueNow !== DEPOSIT.total || input.acceptedPolicy !== policy || input.expectedSubtotal !== subtotal || input.expectedTotal !== expectedTotal) throw Error("Booking details changed. Refresh the page and review the price and policy before paying.");
   const catalog = await christmasCheckoutCatalog();
-  const current = await inventoryStore.read(input.slotId);
-  if (!current || !validSlot(current.data.date, current.data.time)) throw Error("Choose a valid appointment.");
+  const current = flexible ? null : await inventoryStore.read(input.slotId);
+  if (!flexible && (!current || !validSlot(current.data.date, current.data.time))) throw Error("Choose a valid appointment.");
   if (current) await reconcileStale(current.data);
+  if (flexible) for (const s of await allSlots()) await reconcileStale(s);
   const token = randomBytes(32).toString("hex"), id = `XMAS-${randomBytes(10).toString("hex")}`;
   const expiresAt = Math.floor(Date.now() / 1000) * 1000 + 35 * 60000;
-  const slot = await claimSlot(inventoryStore, input.slotId, {
+  const reservation: Reservation = {
     id, tokenHash: hash(token), packageId: pkg.id, name: input.name, email: input.email, phone: input.phone,
     albums: input.albums, shareActivity: input.shareActivity, testMode: christmasPaymentMode() === "test", gstCents: quote.gst, pstCents: quote.pst, delivery: input.delivery, totalCents: expectedTotal, packageSnapshot: { name: pkg.name, minutes: pkg.minutes, images: input.albums ? 20 : pkg.images, sets: pkg.sets, santa: pkg.santa },
     subtotalCents: subtotal, status: "pending", createdAt: Date.now(), expiresAt,
     metaAttribution,
-    paymentPlan: { kind: DEPOSIT_PLAN, depositSubtotalCents: DEPOSIT.subtotal, depositGstCents: DEPOSIT.gst, depositCents: DEPOSIT.total, balanceDueAt: new Date(`${current.data.date}T${current.data.time}:00-08:00`).getTime() },
-    bookingDetails: { studioAddress: cfg.studioAddress, postalCode: cfg.postalCode, arrivalNotes: cfg.arrivalNotes, cancellationPolicy: cfg.cancellationPolicy },
-  }, pkg.santa);
+    paymentPlan: { kind: DEPOSIT_PLAN, depositSubtotalCents: DEPOSIT.subtotal, depositGstCents: DEPOSIT.gst, depositCents: DEPOSIT.total, balanceDueAt: current ? new Date(`${current.data.date}T${current.data.time}:00-08:00`).getTime() : undefined },
+    bookingDetails: { studioAddress: cfg.studioAddress, postalCode: cfg.postalCode, arrivalNotes: cfg.arrivalNotes, cancellationPolicy: policy },
+  };
+  const slot = flexible ? await claimFlexibleReservation(reservation) : await claimSlot(inventoryStore, input.slotId, reservation, pkg.santa);
+  const appointment = flexible ? `Date and time arranged personally after payment. ${PERSONAL_SCHEDULING}` : `${dateLabel(slot.date)} at ${timeLabel(slot.time)} Pacific`;
   const returnUrl = `${APP_URL}/christmas/confirmation?slot=${encodeURIComponent(slot.id)}&token=${token}`;
   // Never free a hold on an ambiguous network error. Its fixed expiry protects
   // against a late but still payable Checkout Session and double bookings.
@@ -138,10 +143,10 @@ export async function startCheckout(input: CheckoutInput, metaAttribution?: Chri
     integration_identifier: "christmas-northvan-rqvkmsaz", customer_email: input.email,
     client_reference_id: id, metadata: { service: "christmas-2026", slotId: slot.id, bookingId: id, albums: String(input.albums), payment_kind: "deposit", order_total: String(quote.total), balance_due: String(quote.balance) },
     billing_address_collection: "required", customer_creation: "always", expires_at: Math.floor(expiresAt / 1000),
-    custom_text: { submit: { message: `$50 CAD deposit today, including GST, credited to your ${money(quote.total)} CAD order. Remaining ${money(quote.balance)} CAD due ${balanceDeadline(slot.date, slot.time)}. Your appointment is confirmed after the deposit is paid.` } },
+    custom_text: { submit: { message: `$50 CAD deposit today, including GST, credited to your ${money(quote.total)} CAD order. Remaining balance due on arrival. ${flexible ? appointment : `Remaining ${money(quote.balance)} CAD due ${balanceDeadline(slot.date, slot.time)}. Your appointment is confirmed after the deposit is paid.`}` } },
     payment_intent_data: { receipt_email: input.email, shipping: { name: input.name, address: { line1: input.delivery.line1, line2: input.delivery.line2 || undefined, city: input.delivery.city, state: "BC", postal_code: input.delivery.postalCode, country: "CA" } } },
     invoice_creation: { enabled: true, invoice_data: {
-      description: `$50 reservation deposit credited toward ${pkg.name} · ${dateLabel(slot.date)} at ${timeLabel(slot.time)} Pacific · ${pkg.minutes} minutes · ${input.albums ? 20 : pkg.images} digital photographs · ${pkg.sets} sets${input.albums ? ` · ${input.albums} album(s)` : ""}. Order total ${money(quote.total)} CAD including tax. Remaining ${money(quote.balance)} CAD due ${balanceDeadline(slot.date, slot.time)}.`,
+      description: `$50 reservation deposit credited toward ${pkg.name} · ${appointment} · ${pkg.minutes} minutes · ${input.albums ? 20 : pkg.images} digital photographs · ${pkg.sets} sets${input.albums ? ` · ${input.albums} album(s)` : ""}. Order total ${money(quote.total)} CAD including tax. Remaining ${money(quote.balance)} CAD due ${balanceDeadline(slot.date, slot.time)}.`,
       custom_fields: [{ name: "GST/HST registration", value: BUSINESS.gstHstNumber }],
       footer: "Arasaka Inc., operating as Arman Arai. Digital gallery, mailed Santa letter and complimentary keepsake. Base: GST 5%. Optional printed albums: GST 5% and BC PST 7%. Hand delivery across Greater Vancouver through Surrey.",
       metadata: { service: "christmas-2026", bookingId: id, slotId: slot.id, payment_kind: "deposit" },
@@ -174,7 +179,7 @@ export async function bookingStatus(slotId: string, token: string) {
   }
   if (!r) return { status: "expired" };
   const cfg = r.bookingDetails, pkg = r.packageSnapshot ?? PACKAGES.find(p => p.id === r!.packageId)!;
-  return { status: r.status, testMode: r.testMode, reference: r.id, date: row!.data.date, time: row!.data.time, package: pkg.name, minutes: pkg.minutes, images: pkg.images, sets: pkg.sets, santa: pkg.santa, albums: r.albums, grinch: r.grinch, delivery: r.delivery,
+  return { status: r.status, awaitingScheduling: awaitingSchedule(row!.data), testMode: r.testMode, reference: r.id, date: row!.data.date, time: row!.data.time, package: pkg.name, minutes: pkg.minutes, images: pkg.images, sets: pkg.sets, santa: pkg.santa, albums: r.albums, grinch: r.grinch, delivery: r.delivery,
     purchaseTracking: r.status === "paid" && r.paidCents && !r.testMode && r.metaAttribution?.allowed !== false && christmasPaymentMode() === "live" ? { eventId: christmasMetaEventId(r.id, "Purchase"), paidCents: r.paymentPlan?.depositPaidCents ?? r.paidCents, albums: r.albums ?? 0 } : undefined,
     totalCents: bookingPaymentSummary(r).total, balanceCents: bookingPaymentSummary(r).balance, depositCents: r.paymentPlan?.depositPaidCents, balanceDueAt: r.paymentPlan?.balanceDueAt, balanceInvoiceUrl: r.paymentPlan?.balanceInvoiceUrl,
     questionnaireUrl: r.status === "paid" ? bookingLink(slotId, r, "questionnaire") : undefined, questionnaireComplete: !!r.questionnaire, welcomeSent: !!r.welcomeSentAt || !!r.emailsSent, questionnaireSent: !!r.questionnaireSentAt, paidCents: r.paidCents, invoiceUrl: r.invoiceUrl, address: cfg.studioAddress, postalCode: cfg.postalCode, arrivalNotes: cfg.arrivalNotes, email: r.email, cancellationPolicy: cfg.cancellationPolicy };

@@ -80,6 +80,7 @@ export async function syncChristmasCalendar(slotId: string) {
   if (!state.configured) return { status: "setup_required" as const };
   const slot = (await inventoryStore.read(slotId))?.data, r = slot?.reservation;
   if (!slot || !r || r.status !== "paid") return { status: "not_paid" as const };
+  if (!slot.date || !slot.time) return { status: "awaiting_schedule" as const };
   const event = christmasCalendarEvent(slot), fingerprint = hash(JSON.stringify(event));
   if (r.googleCalendarEventId === event.id && r.googleCalendarFingerprint === fingerprint && r.googleCalendarSyncedAt) return { status: "synced" as const };
   try {

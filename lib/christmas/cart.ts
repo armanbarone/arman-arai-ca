@@ -2,8 +2,8 @@ import "server-only";
 import { createHash, createHmac, randomBytes, timingSafeEqual } from "node:crypto";
 import { ConflictError, readJson, writeJson, listJson, remove } from "@/lib/portal/store";
 import { allSlots, inventoryStore } from "./store";
-import { validSlot } from "./inventory";
-import { validAlbumCount, dateLabel, timeLabel } from "./catalog";
+import { validSlot, reservationCapacity } from "./inventory";
+import { validAlbumCount, dateLabel, timeLabel, RESERVATION_REQUEST, PERSONAL_SCHEDULING } from "./catalog";
 import { APP_URL, BUSINESS, BUSINESS_ADDRESS_ONE_LINE } from "@/lib/portal/business";
 import { esc, sendEmail } from "@/lib/portal/email";
 import { stripeClient } from "@/lib/portal/stripe";
@@ -43,8 +43,11 @@ async function changeCart(id: string, change: (cart: ChristmasCart) => void) {
 }
 export async function createCart(slotId: string, albums: number) {
   if (!christmasPaymentMode()) throw Error("Test pages do not save carts.");
-  const slot = (await inventoryStore.read(slotId))?.data;
-  if (!slot || !validSlot(slot.date, slot.time) || !slot.published || slot.reservation || !validAlbumCount(albums) || new Date(`${slot.date}T${slot.time}:00-08:00`).getTime() <= Date.now()) throw Error("Choose an available appointment.");
+  const flexible = slotId === RESERVATION_REQUEST;
+  if (flexible && Date.now() >= new Date("2026-12-14T16:30:00-08:00").getTime()) throw Error("Reservations have closed for this collection.");
+  if (flexible && (!validAlbumCount(albums) || !reservationCapacity(await allSlots(), christmasPaymentMode() === "test").checkoutAvailable)) throw Error("All remaining sessions are sold out or currently in checkout.");
+  const slot = flexible ? undefined : (await inventoryStore.read(slotId))?.data;
+  if (!flexible && (!slot || !validSlot(slot.date, slot.time) || !slot.published || slot.reservation || !validAlbumCount(albums) || new Date(`${slot.date}T${slot.time}:00-08:00`).getTime() <= Date.now())) throw Error("Choose an available appointment.");
   const id = randomBytes(16).toString("hex"), token = cartToken(id), now = Date.now();
   const cart: ChristmasCart = { id, slotId, albums, createdAt: now, expiresAt: now + CART_WINDOW_MS };
   await writeJson(path(id), cart, { createOnly: true });
@@ -77,17 +80,19 @@ export async function unsubscribeCart(id: string, token: string) {
   return true;
 }
 export function cartReminderEmail(c: ChristmasCart, stage: 1 | 2, preview = false) {
-  const [date, hhmm] = c.slotId.split("_"), time = `${hhmm.slice(0, 2)}:${hhmm.slice(2)}`;
+  const flexible = c.slotId === RESERVATION_REQUEST;
+  const [date, hhmm = ""] = c.slotId.split("_"), time = `${hhmm.slice(0, 2)}:${hhmm.slice(2)}`;
   const query = preview ? "" : `?id=${c.id}&token=${cartToken(c.id)}`;
   const resume = preview ? "/christmas/preview#booking" : `${APP_URL}/christmas/cart/return${query}`;
   const stop = preview ? "/christmas/cart/unsubscribe" : `${APP_URL}/christmas/cart/unsubscribe${query}`;
   const subject = stage === 1 ? "Still planning your Christmas visit?" : "A final little Christmas reminder";
-  const when = `${dateLabel(date)} at ${timeLabel(time)} Pacific time`;
+  const when = flexible ? "a family Christmas session, scheduled personally with Arman" : `${dateLabel(date)} at ${timeLabel(time)} Pacific time`;
+  const availabilityText = flexible ? `Your session has not been reserved. There are 50 family sessions in total; check the page for the current remaining count. ${PERSONAL_SCHEDULING}` : "Your appointment has not been booked. The checkout window has ended, so please check the calendar again for current availability. Your original time may have been taken.";
   const quote = depositQuote(c.albums);
   const depositOffer = `Reserve with $50 today, including GST, credited to your $${(quote.total / 100).toFixed(2)} CAD total. The remaining $${(quote.balance / 100).toFixed(2)} is due on arrival before your session starts.`;
   const intro = stage === 1 ? "You started planning a Christmas session with Santa but didn’t finish payment." : "One last note about the Christmas session you started booking. We won’t send any more checkout reminders after this.";
   const footer = `${BUSINESS.legalName}, operating as ${BUSINESS.tradeName}\n${BUSINESS_ADDRESS_ONE_LINE}\n${BUSINESS.phone} · ${BUSINESS.email}`;
-  return { subject, html: `<!doctype html><html><body style="background:#f4efe6;margin:0"><div style="max-width:560px;margin:auto;padding:32px 24px;font:16px/1.65 Georgia,serif;color:#263e31"><p style="font:11px Arial;letter-spacing:3px">CHRISTMAS AT ARMAN’S</p><h1 style="font-size:29px;font-weight:normal">${esc(subject)}</h1><p>Hi ${esc(c.name?.split(/\s+/)[0] || "there")},</p><p>${esc(intro)}</p><p>You selected <strong>${esc(when)}</strong>${c.albums ? ` with ${c.albums} printed album${c.albums > 1 ? "s" : ""}` : ""}.</p><p>${esc(depositOffer)}</p><p>Your appointment has not been booked. The checkout window has ended, so please check the calendar again for current availability. Your original time may have been taken.</p><p style="margin:28px 0"><a href="${esc(resume)}" style="background:#294534;color:white;padding:14px 20px;text-decoration:none;display:inline-block">Check Christmas availability ↗</a></p><p>Need a hand? Reply and I’ll help.<br>Arman</p><hr style="border:0;border-top:1px solid #d5cbb9;margin-top:30px"><p style="font:12px/1.65 Arial;color:#675b4a">${esc(footer).replace(/\n/g, "<br>")}<br>You asked for up to two reminders when you saved your checkout details.<br><a href="${esc(stop)}" style="color:#675b4a">Unsubscribe from checkout reminders</a></p></div></body></html>`, text: `Hi ${c.name?.split(/\s+/)[0] || "there"},\n${intro}\n\nYou selected ${when}. ${depositOffer}\nYour appointment has not been booked or held. Please check the calendar again; the original time may have been taken.\n${resume}\n\nReply if you need a hand.\nArman\n\n${footer}\nYou asked for up to two reminders when saving your checkout details.\nUnsubscribe: ${stop}` };
+  return { subject, html: `<!doctype html><html><body style="background:#f4efe6;margin:0"><div style="max-width:560px;margin:auto;padding:32px 24px;font:16px/1.65 Georgia,serif;color:#263e31"><p style="font:11px Arial;letter-spacing:3px">CHRISTMAS AT ARMAN’S</p><h1 style="font-size:29px;font-weight:normal">${esc(subject)}</h1><p>Hi ${esc(c.name?.split(/\s+/)[0] || "there")},</p><p>${esc(intro)}</p><p>You selected <strong>${esc(when)}</strong>${c.albums ? ` with ${c.albums} printed album${c.albums > 1 ? "s" : ""}` : ""}.</p><p>${esc(depositOffer)}</p><p>${esc(availabilityText)}</p><p style="margin:28px 0"><a href="${esc(resume)}" style="background:#294534;color:white;padding:14px 20px;text-decoration:none;display:inline-block">Check Christmas availability ↗</a></p><p>Need a hand? Reply and I’ll help.<br>Arman</p><hr style="border:0;border-top:1px solid #d5cbb9;margin-top:30px"><p style="font:12px/1.65 Arial;color:#675b4a">${esc(footer).replace(/\n/g, "<br>")}<br>You asked for up to two reminders when you saved your checkout details.<br><a href="${esc(stop)}" style="color:#675b4a">Unsubscribe from checkout reminders</a></p></div></body></html>`, text: `Hi ${c.name?.split(/\s+/)[0] || "there"},\n${intro}\n\nYou selected ${when}. ${depositOffer}\n${availabilityText}\n${resume}\n\nReply if you need a hand.\nArman\n\n${footer}\nYou asked for up to two reminders when saving your checkout details.\nUnsubscribe: ${stop}` };
 }
 export async function sendCartReminders(now = Date.now()) {
   if (process.env.VERCEL_ENV !== "production" || process.env.CHRISTMAS_CART_REMINDERS_ENABLED !== "true") return { sent: 0, disabled: true };
@@ -98,8 +103,9 @@ export async function sendCartReminders(now = Date.now()) {
     if (!c.email || !c.consentAt || !c.contactAt || c.unsubscribedAt || c.completedAt || c.secondSentAt || now < c.expiresAt || now > new Date("2026-12-20T15:00:00-08:00").getTime()) continue;
     // Only the latest cart for an email may send. Never follow up after a paid booking.
     if (carts.some(other => other.email === c.email && other.createdAt > c.createdAt) || slots.some(s => s.reservation?.email.toLowerCase() === c.email && s.reservation?.status === "paid")) continue;
+    if (c.slotId === RESERVATION_REQUEST && now >= new Date("2026-12-14T16:30:00-08:00").getTime()) continue;
     const appointment = slots.find(s => s.id === c.slotId);
-    if (!appointment || new Date(`${appointment.date}T${appointment.time}:00-08:00`).getTime() <= now) continue;
+    if (c.slotId === RESERVATION_REQUEST ? !reservationCapacity(slots).remaining : !appointment || new Date(`${appointment.date}T${appointment.time}:00-08:00`).getTime() <= now) continue;
     const suppression = await readJson<{ at: number }>(suppressionPath(c.email));
     if (suppression && suppression.data.at >= c.consentAt) continue;
     const stage: 1 | 2 = c.firstSentAt ? 2 : 1;

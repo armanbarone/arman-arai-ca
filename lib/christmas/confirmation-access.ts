@@ -1,6 +1,6 @@
 const KEY = "aa_christmas_confirmation_access_v1";
 type Access = { slot: string; token: string; savedAt: number };
-const valid = (a: Access | null): a is Access => !!a && /^2026-\d{2}-\d{2}_\d{4}$/.test(a.slot) && /^[a-f0-9]{64}$/.test(a.token) &&
+const valid = (a: Access | null): a is Access => !!a && /^2026-(?:\d{2}-\d{2}_\d{4}|reservation_[a-f0-9]{20})$/.test(a.slot) && /^[a-f0-9]{64}$/.test(a.token) &&
   Number.isFinite(a.savedAt) && Date.now() >= a.savedAt && Date.now() - a.savedAt < 86400000;
 
 /** Store access in this tab so Meta never sees a booking token in the URL.

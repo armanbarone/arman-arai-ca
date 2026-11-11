@@ -55,3 +55,12 @@ test('no reminder after session time and records are purged after 30 days',async
   const h=harness(t);await h.cart();await h.api.sendCartReminders(new Date('2026-12-05T11:00:00-08:00').getTime());assert.equal(h.sent.length,0);
   await h.api.sendCartReminders(Date.now()+31*86400_000);assert.equal(h.rows().length,0);
 });
+
+
+test('undated cart reminders describe personal scheduling and stop when the 50-session collection sells out',async t=>{
+ const h=harness(t), c=await h.api.createCart('christmas-reservation',0);await h.api.saveCartContact(c.id,c.token,'Sample Family','family@example.invalid',true);
+ const r=h.records.get(`christmas/2026/carts/${c.id}.json`).data;r.createdAt=Date.now()-2*3600000;r.contactAt=r.createdAt;r.consentAt=r.createdAt;r.expiresAt=r.createdAt+600000;
+ await h.api.sendCartReminders();assert.equal(h.sent.length,1);assert.match(h.sent[0].text,/personally contact.*December 1–14/);assert.doesNotMatch(h.sent[0].text,/Invalid Date|NaN|check the calendar|original time/);
+ h.slots.push(...Array.from({length:50},(_,i)=>({id:'paid-'+i,date:'',time:'',reservation:{status:'paid',email:`other-${i}@example.invalid`}})));
+ await h.api.sendCartReminders(Date.now()+25*3600000);assert.equal(h.sent.length,1);
+});

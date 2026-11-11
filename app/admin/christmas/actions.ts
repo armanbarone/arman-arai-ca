@@ -2,7 +2,8 @@
 import { revalidatePath } from "next/cache";
 import { requireAdmin } from "@/lib/portal/auth";
 import { writeJson } from "@/lib/portal/store";
-import { settings, SETTINGS_PATH, allSlots, addSlot, updateSlot } from "@/lib/christmas/store";
+import { settings, SETTINGS_PATH, allSlots, addSlot, updateSlot, assignFlexibleReservation } from "@/lib/christmas/store";
+import { sendScheduleConfirmation } from "@/lib/christmas/notifications";
 import { validSlot, SLOT_PATTERN } from "@/lib/christmas/inventory";
 import { paymentReady, reconcileChristmasInvoice } from "@/lib/christmas/payments";
 import { ensureBalanceInvoice } from "@/lib/christmas/balance";
@@ -19,8 +20,18 @@ export async function syncChristmasGoogleCalendar() {
   const state = calendarConnectionState();
   if (!state.activeEnvironment || !state.configured) throw Error("Authorize the website’s Google Calendar connection after launch before syncing bookings.");
   const rows = await allSlots();
-  for (const slot of rows.filter(s => s.reservation?.status === "paid")) await syncChristmasCalendar(slot.id);
+  for (const slot of rows.filter(s => s.reservation?.status === "paid" && s.date && s.time)) await Promise.all([syncChristmasCalendar(slot.id), sendScheduleConfirmation(slot.id)]);
   revalidatePath("/admin/christmas");
+}
+export async function scheduleChristmasReservation(form: FormData) {
+  await requireAdmin();
+  const id = String(form.get("id") || ""), date = String(form.get("date") || ""), time = String(form.get("time") || "");
+  if (!SLOT_PATTERN.test(id) || form.get("agreed") !== "on") throw Error("Confirm that this appointment has been agreed with the family.");
+  await assignFlexibleReservation(id, date, time);
+  const results = await Promise.allSettled([ensureBalanceInvoice(id), syncChristmasCalendar(id), sendScheduleConfirmation(id)]);
+  revalidatePath("/admin/christmas");
+  const failed = results.find(r => r.status === "rejected");
+  if (failed?.status === "rejected") throw failed.reason;
 }
 export async function saveChristmasSettings(form: FormData) {
   await requireAdmin();

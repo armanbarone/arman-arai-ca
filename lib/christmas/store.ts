@@ -1,7 +1,7 @@
 import "server-only";
 import { ConflictError, readJson, writeJson } from "@/lib/portal/store";
 import { seasonalSlots, BOOKING_POLICY } from "./catalog";
-import { mergeSeasonalInventory, markOwnerSoldOutSlots, recalculateReservationBlocks, overlaps, type ChristmasSettings, type Slot, type InventoryStore } from "./inventory";
+import { mergeSeasonalInventory, markOwnerSoldOutSlots, recalculateReservationBlocks, overlaps, reservationCapacity, validSlot, type Reservation, type ChristmasSettings, type Slot, type InventoryStore } from "./inventory";
 export const SETTINGS_PATH = "christmas/2026/settings.json";
 const INVENTORY_PATH = "christmas/2026/inventory.json";
 const CALENDAR_PATH = "christmas/2026/calendar.json";
@@ -39,8 +39,38 @@ async function calendar() {
   }
   throw Error("Calendar could not be initialized. Please retry.");
 }
-
 export async function allSlots(): Promise<Slot[]> { return (await calendar()).data.slots; }
+// The same compare-and-swap document contains dated bookings and undated
+// reservations, so two customers cannot buy the final capacity unit.
+export async function claimFlexibleReservation(reservation: Reservation): Promise<Slot> {
+  for (let attempt = 0; attempt < 20; attempt++) {
+    if (Date.now() >= new Date("2026-12-14T16:30:00-08:00").getTime()) throw Error("Bookings are not open for this Christmas collection anymore.");
+    const row = await calendar();
+    if (!reservationCapacity(row.data.slots, !!reservation.testMode).checkoutAvailable) throw Error("All remaining sessions are sold out or currently in checkout. Please try again shortly.");
+    const slot: Slot = { id: `2026-reservation_${reservation.id.slice(-20)}`, flexible: true, date: "", time: "", santa: true, published: false, reservation };
+    row.data.slots.push(slot);
+    try { await writeJson(CALENDAR_PATH, row.data, { etag: row.etag }); return slot; }
+    catch (e) { if (!(e instanceof ConflictError)) throw e; }
+  }
+  throw Error("The reservation count is updating. Please try again.");
+}
+export async function assignFlexibleReservation(id: string, date: string, time: string) {
+  if (date < "2026-12-01" || date > "2026-12-14" || !validSlot(date, time) || new Date(`${date}T${time}:00-08:00`).getTime() <= Date.now()) throw Error("Choose a future appointment from December 1–14 within your Christmas opening hours.");
+  for (let attempt = 0; attempt < 10; attempt++) {
+    const row = await calendar(), slot = row.data.slots.find(s => s.id === id);
+    if (!slot?.flexible || slot.reservation?.status !== "paid") throw Error("Choose a paid reservation awaiting scheduling.");
+    if (slot.date === date && slot.time === time) return;
+    const target = row.data.slots.find(s => s.date === date && s.time === time && !s.flexible);
+    if (!target || target.manuallyBlocked || target.manuallySoldOut || row.data.slots.some(s => s.id !== id && s.reservation && overlaps(s, { date, time, reservation: slot.reservation }))) throw Error("That appointment is sold out or blocked. Choose another time.");
+    slot.date = date; slot.time = time; slot.reservation.scheduleVersion = (slot.reservation.scheduleVersion ?? 0) + 1;
+    delete slot.reservation.googleCalendarSyncedAt;
+    if (slot.reservation.paymentPlan) slot.reservation.paymentPlan.balanceDueAt = new Date(`${date}T${time}:00-08:00`).getTime();
+    recalculateReservationBlocks(row.data.slots);
+    try { await writeJson(CALENDAR_PATH, row.data, { etag: row.etag }); return; }
+    catch (e) { if (!(e instanceof ConflictError)) throw e; }
+  }
+  throw Error("The calendar is updating. Please try again.");
+}
 export const inventoryStore: InventoryStore = {
   read: async id => { const row = await calendar(); const data = row.data.slots.find(s => s.id === id); return data ? { data, etag: row.etag } : null; },
   write: async (id, data, etag) => {

@@ -41,8 +41,8 @@ export default function ChristmasCheckoutDetails({ slotId, albums, preview, busy
     finally { setSaving(false); }
   }
   return <div className="xm-checkout-details">
-    <div className={`xm-cart-clock${seconds <= 60 ? " xm-clock-ending" : ""}`}><div><strong>{expired ? "Your checkout window has ended" : "Complete your details in"}</strong><p>{expired ? "Choose an available appointment to start again." : "Your selected time is checked again before payment."}</p></div>{cart && !expired && <span role="timer" aria-label={`${Math.floor(seconds / 60)} minutes ${seconds % 60} seconds remaining`}>{String(Math.floor(seconds / 60)).padStart(2, "0")}:{String(seconds % 60).padStart(2, "0")}</span>}</div>
-    {expired ? <div role="status"><p>Your appointment has not been booked. No payment was taken here.</p><button type="button" className="xm-button" onClick={onExpired}>Back to available times ↗</button></div> : !contact ? <form className="xm-contact-form" onSubmit={saveContact}>
+    <div className={`xm-cart-clock${seconds <= 60 ? " xm-clock-ending" : ""}`}><div><strong>{expired ? "Your checkout window has ended" : "Complete your details in"}</strong><p>{expired ? "Return to reservations to start again." : "Your family session is reserved only after successful payment."}</p></div>{cart && !expired && <span role="timer" aria-label={`${Math.floor(seconds / 60)} minutes ${seconds % 60} seconds remaining`}>{String(Math.floor(seconds / 60)).padStart(2, "0")}:{String(seconds % 60).padStart(2, "0")}</span>}</div>
+    {expired ? <div role="status"><p>Your session has not been reserved. No payment was taken here.</p><button type="button" className="xm-button" onClick={onExpired}>Back to reservations ↗</button></div> : !contact ? <form className="xm-contact-form" onSubmit={saveContact}>
       <p className="xm-eyebrow">01 · WHERE CAN WE REACH YOU?</p>
       <label>Your name<input name="name" autoComplete="name" minLength={2} maxLength={100} required placeholder="First and last name" /></label>
       <label>Email address<input name="email" type="email" autoComplete="email" maxLength={254} required placeholder="you@example.com" /></label>
@@ -73,7 +73,7 @@ export default function ChristmasCheckoutDetails({ slotId, albums, preview, busy
       <div className="xm-policy"><p>{policy}</p><p>{paymentTerms}</p><label><input type="checkbox" name="consent" required /><span>I agree to the booking and payment policy above and the <a href="https://www.armanarai.ca/terms-of-service" target="_blank" rel="noreferrer">terms</a>. I understand the selected collection’s inclusions and appointment time.</span></label></div>
       {error && <p role="alert" className="xm-error">{error}</p>}
       <button className="xm-button" disabled={busy || !cart}>{busy ? "Opening secure payment…" : preview ? "Preview $50 deposit checkout" : "Pay $50 deposit with Stripe"} ↗</button>
-      <p className="xm-small">{preview ? "Preview only. These details are not sent or saved." : "Stripe gives you a separate 35-minute payment window. Your appointment is confirmed only after successful payment."}</p>
+      <p className="xm-small">{preview ? "Preview only. These details are not sent or saved." : "Stripe gives you a separate 35-minute payment window. Your family session is reserved after successful payment. Arman then contacts you to agree on a date and time."}</p>
     </form>}
   </div>;
 }

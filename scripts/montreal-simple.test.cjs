@@ -64,7 +64,7 @@ function harness({ ok = true, response = { success: true, autoReply: true, inqui
   return { pageModule, tree, form, rail, GalleryRail, submit, requests, redirects, completion: load("@/lib/inquiry-completion") };
 }
 
-test("Montréal uses the simple design, its own photo album and the existing market funnel", () => {
+test("Montréal uses the simple design, the selected photo album and the existing market funnel", () => {
   const h = harness();
   assert.equal(h.tree.props["data-landing-city"], "montreal");
   assert.equal(h.form.props.city, "Montréal");
@@ -75,10 +75,16 @@ test("Montréal uses the simple design, its own photo album and the existing mar
   assert.equal(h.pageModule.metadata.robots.index, false);
   assert.match(h.pageModule.metadata.title.absolute, /Montréal/);
   assert.equal(h.pageModule.metadata.openGraph.images[0].url, "https://cdn.armanarai.ca/Landing%20Page%20Pics/TOP%20IMAGE.png");
-  assert.ok(h.rail.props.photos.length >= 9);
+  assert.equal(h.rail.props.photos.length, 9);
+  assert.deepEqual(h.rail.props.photos.map(photo => photo.src.split("/").pop()), [
+    "vancouver-new-15.webp", "vancouver-new-01.webp", "vancouver-hub-12.webp",
+    "vancouver-hub-33.webp", "vancouver-new-13.webp",
+    "montreal-landing-06.webp", "montreal-landing-08.webp",
+    "montreal-landing-10.webp", "montreal-landing-02.webp",
+  ]);
   assert.equal(new Set(h.rail.props.photos.map(photo => photo.src)).size, h.rail.props.photos.length);
   for (const photo of h.rail.props.photos) {
-    assert.match(photo.src, /\/cities\/montreal\/|\/galleries\/luca-lauren\//);
+    assert.match(photo.src, /\/cities\/(montreal|vancouver)\//);
     assert.ok(photo.width > 0 && photo.height > 0);
   }
   assert.equal(h.GalleryRail(h.rail.props).props["aria-label"], "Montréal wedding photographs");

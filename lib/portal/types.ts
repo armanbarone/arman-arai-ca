@@ -168,6 +168,15 @@ export interface Booking {
   events: AuditEvent[];
   internalNotes: string;
   remindersPaused: boolean;
+  /**
+   * Whether the couple has settled which collection they are taking.
+   *
+   * Undefined means not yet, and anything written for them then offers the
+   * published alternatives and invites them to choose. Once it is settled,
+   * repeating the other prices back at a couple who has already agreed one
+   * only invites them to reopen it.
+   */
+  collectionChosen?: boolean;
   wedding?: import("./wedding").WeddingData;
   archivedAt?: string;
   archiveReason?: string;

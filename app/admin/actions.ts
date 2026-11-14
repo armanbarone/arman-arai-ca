@@ -151,6 +151,7 @@ const bookingSchema = z
     fields: z.record(z.string(), z.string()),
     internalNotes: z.string().default(""),
     remindersPaused: z.boolean().default(false),
+    collectionChosen: z.boolean().optional(),
   })
   .superRefine((b, ctx) => {
     if (b.clients[1].email && b.clients[0].email === b.clients[1].email)
@@ -251,6 +252,7 @@ export async function saveBookingAction(
         ],
         internalNotes: input.internalNotes,
         remindersPaused: input.remindersPaused,
+        collectionChosen: input.collectionChosen,
       };
       booking.schedule = buildSchedule(booking, todayInBusinessTz());
       ensureWedding(booking).intake = {
@@ -364,6 +366,7 @@ export async function saveBookingAction(
       b.fields = input.fields;
       b.internalNotes = input.internalNotes;
       b.remindersPaused = input.remindersPaused;
+      b.collectionChosen = input.collectionChosen;
       /* Rebuild the instalments only when the money moved. This used to run on
          every save, so editing a venue or a guest count silently put a payment
          schedule set by hand back to the default three instalments. */

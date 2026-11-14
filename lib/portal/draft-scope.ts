@@ -95,7 +95,9 @@ export function draftScopeLines(b: Booking) {
     .filter(Boolean);
 
   const alternatives =
-    b.status === "draft" && TIERS.some((t) => t.slug === b.packageKey)
+    b.status === "draft" &&
+    !b.collectionChosen &&
+    TIERS.some((t) => t.slug === b.packageKey)
       ? TIERS.filter((t) => t.slug !== b.packageKey).map((t) => ({
           name: t.name,
           price: formatCad(t.price * 100),

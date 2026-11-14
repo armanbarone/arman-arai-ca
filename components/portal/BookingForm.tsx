@@ -251,6 +251,21 @@ export default function BookingForm({
               </select>
             </div>
             <div>
+              {/* A couple who has already agreed a collection should not be
+                  sent the other prices as though it were still open. */}
+              <label className="wp-checkbox" style={{ marginBottom: 12 }}>
+                <input
+                  type="checkbox"
+                  checked={!!b.collectionChosen}
+                  disabled={priceLocked}
+                  onChange={(e) =>
+                    update((d) => {
+                      d.collectionChosen = e.target.checked || undefined;
+                    })
+                  }
+                />
+                They have settled on this collection
+              </label>
               <label className={labelCls}>Package name as printed</label>
               <input
                 className={inputCls}

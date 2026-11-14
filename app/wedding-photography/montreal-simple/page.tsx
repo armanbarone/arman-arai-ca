@@ -9,7 +9,7 @@ import { proofByN, proofSrc } from "@/lib/reviews";
 import InquiryFunnel, { InquiryForm } from "../InquiryFunnel";
 import HeroHeadline from "../vancouver-simple/HeroHeadline";
 import GalleryRail from "../vancouver-simple/GalleryRail";
-import { MONTREAL_LANDING } from "@/lib/ads/city-landing-album";
+import { MONTREAL_SIMPLE_GALLERY } from "./gallery";
 import styles from "../vancouver-simple/page.module.css";
 
 const path = "/wedding-photography/montreal-simple";
@@ -90,8 +90,8 @@ export default function MontrealSimplePage() {
         </section>
 
         <section className={styles.gallery} aria-labelledby="gallery-title">
-          <div className={styles.galleryIntro}><h2 id="gallery-title">Your day, <em>in Montréal.</em></h2><p id="gallery-hint">Swipe to explore · {MONTREAL_LANDING.length} photographs</p></div>
-          <GalleryRail photos={MONTREAL_LANDING} city="Montréal" />
+          <div className={styles.galleryIntro}><h2 id="gallery-title">Your day, <em>in Montréal.</em></h2><p id="gallery-hint">Swipe to explore · {MONTREAL_SIMPLE_GALLERY.length} photographs</p></div>
+          <GalleryRail photos={MONTREAL_SIMPLE_GALLERY} city="Montréal" />
         </section>
 
         <section className={styles.reviews} aria-labelledby="reviews-title">

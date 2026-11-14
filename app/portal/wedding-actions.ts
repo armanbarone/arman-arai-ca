@@ -34,7 +34,7 @@ import {
   OPERATION_REGISTERS,
   calculateBudgetRow,
 } from "@/lib/portal/operations";
-import { roundDiv, formatCad, todayInBusinessTz } from "@/lib/portal/money";
+import { roundDiv, formatCad, formatDate, todayInBusinessTz } from "@/lib/portal/money";
 import {
   documentSections,
   initialsForName,
@@ -106,6 +106,11 @@ export async function saveWeddingDraft(
         };
         w.documents.push(d);
       }
+      /* The contract date is the day it is made, not the day the draft was
+         prepared, so it is stamped here rather than left as the seeded value. */
+      for (const f of templateFields(t))
+        if (/^contract date/i.test(f.label))
+          values[f.id] = formatDate(todayInBusinessTz());
       d.fields = values;
       const current = templateFor(key, b, d.amendment);
       d.blocks = resolveBlocks(current, {

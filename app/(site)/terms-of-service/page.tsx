@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { SITE } from "@/lib/site";
+import { CANCELLATION, SITE } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Terms of Service | Arman Arai",
@@ -62,13 +62,16 @@ export default function TermsOfService() {
         </Section>
 
         <Section title="Cancellation by Client">
-          <p>All cancellations must be submitted in writing to <a href="mailto:i@armanarai.com" style={{ color: "var(--accent)" }}>i@armanarai.com</a>. The 50% deposit is non-refundable in every case. The percentages below apply to any payment you have made beyond that deposit, and depend on how far in advance the cancellation occurs relative to your wedding date:</p>
+          {/* Rendered from CANCELLATION in lib/site.ts, the same source every
+              service agreement seeds its Part A bands from, so the published
+              policy and the contract cannot say different things. */}
+          <p>All cancellations must be submitted in writing to <a href="mailto:i@armanarai.com" style={{ color: "var(--accent)" }}>i@armanarai.com</a>. The deposit is non-refundable in every case. The percentages below apply to any payment you have made beyond that deposit, and depend on how far in advance the cancellation occurs relative to your wedding date:</p>
           <ul style={{ paddingLeft: "1.25rem", marginTop: 12, display: "flex", flexDirection: "column", gap: 10 }}>
-            <li><strong style={{ color: "var(--text)" }}>6 or more months before the wedding:</strong> 75% refund. I retain 25% to account for the date being held and planning work already completed.</li>
-            <li><strong style={{ color: "var(--text)" }}>3 to 6 months before the wedding:</strong> 50% refund.</li>
-            <li><strong style={{ color: "var(--text)" }}>Less than 3 months before the wedding:</strong> No refund. At this point the date is unlikely to be rebooked and significant preparation has been invested.</li>
+            {CANCELLATION.bands.slice(0, 3).map((band) => (
+              <li key={band.label}><strong style={{ color: "var(--text)" }}>{band.label}:</strong> {band.website}</li>
+            ))}
           </ul>
-          <p style={{ marginTop: 12 }}>Refunds are processed within 14 business days of written cancellation confirmation.</p>
+          <p style={{ marginTop: 12 }}>{CANCELLATION.refundWindow}</p>
         </Section>
 
         <Section title="Date Changes">

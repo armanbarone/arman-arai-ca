@@ -504,6 +504,56 @@ export const TERMS = {
   extraHour: 400,
 } as const;
 
+/**
+ * The published cancellation ladder, and the single source for it.
+ *
+ * It lives here because two places have to say the same thing: the terms of
+ * service page, and Part A of every service agreement. They were not connected,
+ * so the agreement's four bands were left blank on every contract and a human
+ * had to retype the policy from the website each time, or more often forget to,
+ * and find the publish button dead with no explanation.
+ *
+ * Bands are expressed as what the studio retains, because that is what the
+ * agreement asks for, while the website states the same thing as a refund.
+ */
+export const CANCELLATION = {
+  inWriting: "All cancellations must be submitted in writing to i@armanarai.com.",
+  depositNote:
+    "The booking payment is non-refundable in every case. The bands below apply to anything paid beyond it.",
+  refundWindow:
+    "Refunds are processed within 14 business days of written cancellation confirmation.",
+  bands: [
+    {
+      when: "180 days or more before the coverage date, being six months or more.",
+      retains:
+        "The booking payment is retained in full. Of anything paid beyond it, 75% is refunded and 25% is retained, for the date having been held and the planning already done.",
+      website: "75% refund. I retain 25% to account for the date being held and planning work already completed.",
+      label: "6 or more months before the wedding",
+    },
+    {
+      when: "90 to 179 days before the coverage date, being three to six months.",
+      retains:
+        "The booking payment is retained in full. Of anything paid beyond it, 50% is refunded.",
+      website: "50% refund.",
+      label: "3 to 6 months before the wedding",
+    },
+    {
+      when: "30 to 89 days before the coverage date, being one to three months.",
+      retains:
+        "The booking payment is retained in full, and nothing paid beyond it is refunded, because the date is unlikely to be rebooked and the preparation has been done.",
+      website: "No refund. At this point the date is unlikely to be rebooked and significant preparation has been invested.",
+      label: "Less than 3 months before the wedding",
+    },
+    {
+      when: "Less than 30 days before the coverage date.",
+      retains:
+        "The booking payment is retained in full, and nothing paid beyond it is refunded, because the date is unlikely to be rebooked and the preparation has been done.",
+      website: "No refund.",
+      label: "Less than 1 month before the wedding",
+    },
+  ],
+} as const;
+
 /* ── Add-ons ───────────────────────────────────────────────────────────────*/
 
 /* `priceMax` is set only where the honest answer is a range rather than a

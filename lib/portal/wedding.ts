@@ -2,7 +2,8 @@ import { amendmentBlocks } from "./amendments";
 import templates from "./wedding-templates.json";
 import type { Booking } from "./types";
 import { BUSINESS, BUSINESS_ADDRESS_ONE_LINE } from "./business";
-import { formatCad, formatDate } from "./money";
+import { formatCad, formatDate, todayInBusinessTz } from "./money";
+import { CANCELLATION } from "@/lib/site";
 import type { ContractIntake } from "./contract-details";
 import type { InitialSection } from "./document-sections";
 import { collectionFor } from "./contract-details";
@@ -372,6 +373,21 @@ export function defaultDocumentFields(t: WeddingTemplate, b: Booking) {
           : b.fields.coverage || "";
     if (/additional personnel/.test(label))
       fields[f.id] = b.fields.teamOnSite || tier?.crew || "";
+
+    /* The published cancellation ladder, so Part A states the policy the
+       website already states. These four bands were left blank on every
+       agreement, and nine blank required fields held the publish button shut
+       while the policy sat on the terms page all along. */
+    const band = /^entry (\d) . notice received before coverage date/.exec(label);
+    if (band) fields[f.id] = CANCELLATION.bands[Number(band[1]) - 1]?.when ?? "";
+    if (/cancellation amount before tax/.test(label)) {
+      const n = Number(f.id.split(".")[1]);
+      fields[f.id] = CANCELLATION.bands[n - 1]?.retains ?? "";
+    }
+    /* The contract date. Stamped again at issue, so a draft that sits for a
+       month is not published carrying the day it was drafted. */
+    if (/^contract date/.test(label) && !fields[f.id])
+      fields[f.id] = formatDate(todayInBusinessTz());
   }
   return fields;
 }

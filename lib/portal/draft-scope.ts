@@ -81,7 +81,8 @@ export function draftScopeLines(b: Booking) {
       (x) => !seen.some((y) => y.toLowerCase().includes(x.replace(/\.$/, "").toLowerCase())),
     );
     if (!fresh.length) continue;
-    scope.push([label, fresh.join(" ")]);
+    // Rejoining is lossy, so only do it when a repeat was actually removed.
+    scope.push([label, fresh.length === parts.length ? value : fresh.join(" ")]);
     seen.push(value);
   }
   if ((b.fields.locations ?? "").trim())
@@ -89,10 +90,19 @@ export function draftScopeLines(b: Booking) {
   if ((b.fields.guestCount ?? "").trim())
     scope.push(["Guests included", b.fields.guestCount.trim()]);
 
-  const included = (b.fields.overview ?? "")
-    .split("\n")
-    .map((l) => l.trim())
-    .filter(Boolean);
+  /* The inclusions field is a list, and a booking may add prose sections after
+     it, separated by a blank line. Those are not list items: one of them says a
+     second day is NOT included, which read as an inclusion when bulleted. */
+  const blocks = (b.fields.overview ?? "")
+    .split(/\n\s*\n/)
+    .map((part) => part.split("\n").map((l) => l.trim()).filter(Boolean))
+    .filter((part) => part.length);
+  const included = blocks.length ? blocks[0] : [];
+  const sections = blocks.slice(1).map((part) =>
+    part.length > 1
+      ? { heading: part[0], paragraphs: part.slice(1) }
+      : { heading: "", paragraphs: part },
+  );
 
   const alternatives =
     b.status === "draft" &&
@@ -104,7 +114,7 @@ export function draftScopeLines(b: Booking) {
         }))
       : [];
 
-  return { money, schedule, scope, included, alternatives };
+  return { money, schedule, scope, included, sections, alternatives };
 }
 
 const rows = (pairs: [string, string][]) =>
@@ -120,7 +130,16 @@ const rows = (pairs: [string, string][]) =>
     .join("");
 
 export function draftScopeEmail(b: Booking, firstName: string) {
-  const { money, schedule, scope, included, alternatives } = draftScopeLines(b);
+  const { money, schedule, scope, included, sections, alternatives } =
+    draftScopeLines(b);
+  const sectionsHtml = sections
+    .map(
+      (sec) =>
+        `${sec.heading ? `<h2 style="font-weight:normal;font-size:19px;margin:32px 0 6px">${esc(sec.heading)}</h2>` : ""}${sec.paragraphs
+          .map((x) => `<p>${esc(x)}</p>`)
+          .join("")}`,
+    )
+    .join("");
   const choiceHtml = alternatives.length
     ? `<p>The collection below is where we started, not a decision. ${alternatives
         .map((a) => `<strong>${esc(a.name)}</strong> at ${esc(a.price)}`)
@@ -154,6 +173,7 @@ ${
         .join("")}</ul>`
     : "<p>To be confirmed.</p>"
 }
+${sectionsHtml}
 <h2 style="font-weight:normal;font-size:19px;margin:32px 0 6px">In detail</h2>
 <table style="border-collapse:collapse;width:100%">${rows(scope)}</table>
 <h2 style="font-weight:normal;font-size:19px;margin:32px 0 6px">The price</h2>
@@ -186,6 +206,11 @@ ${
     "",
     "WHAT IS INCLUDED",
     ...(included.length ? included.map((l) => `- ${l}`) : ["To be confirmed."]),
+    ...sections.flatMap((sec) => [
+      "",
+      ...(sec.heading ? [sec.heading.toUpperCase()] : []),
+      ...sec.paragraphs,
+    ]),
     "",
     "IN DETAIL",
     ...scope.map(([k, v]) => `${k}: ${v}`),

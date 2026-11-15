@@ -112,6 +112,29 @@ export default function WeddingDocumentReader({
     allInitialed = initialSections.every(
       (s) => normalizeInitials(initials[s.id] || "") === expectedInitials,
     );
+  /* Every reason the sign button is shut, in the couple's own words.
+     It had five conditions and said nothing about any of them, so somebody who
+     typed a preferred name instead of a legal name, or left one section
+     un-initialled, was left pressing a dead button with no way to know why. */
+  const signBlockers: string[] = [
+    ...(consent ? [] : ["tick the electronic signature consent box"]),
+    ...(allInitialed
+      ? []
+      : [
+          `initial every section: ${
+            initialSections.filter(
+              (x) => normalizeInitials(initials[x.id] || "") === expectedInitials,
+            ).length
+          } of ${initialSections.length} done, and each needs ${expectedInitials}`,
+        ]),
+    ...(d.templateKey === "privacy" && answers.crossBorderNotice !== "read"
+      ? ["confirm you have read the cross-border notice"]
+      : []),
+    ...(name.trim().toLowerCase() === (activeName || "").trim().toLowerCase()
+      ? []
+      : [`type your full legal name exactly as ${activeName}`]),
+  ];
+
   const detailsPending =
     ["agreement", "proposal"].includes(d.templateKey) &&
     b?.wedding?.intake &&
@@ -586,17 +609,24 @@ export default function WeddingDocumentReader({
             version and signing time form your signature record. The completed
             PDF includes each signer’s record.
           </p>
+          {signBlockers.length > 0 && (
+            <div className="wp-message">
+              <strong>
+                {signBlockers.length === 1
+                  ? "One thing left before you can sign:"
+                  : "Before you can sign:"}
+              </strong>
+              <ul>
+                {signBlockers.map((x) => (
+                  <li key={x}>{x}</li>
+                ))}
+              </ul>
+            </div>
+          )}
           <div className="wp-toolbar">
             <button
               className={buttonCls}
-              disabled={
-                pending ||
-                !consent ||
-                !allInitialed ||
-                (d.templateKey === "privacy" &&
-                  answers.crossBorderNotice !== "read") ||
-                name.trim().toLowerCase() !== activeName!.trim().toLowerCase()
-              }
+              disabled={pending || signBlockers.length > 0}
               onClick={sign}
             >
               {pending ? "Recording signature…" : "Sign this document"}

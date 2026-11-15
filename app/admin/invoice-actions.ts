@@ -243,20 +243,30 @@ export async function issueInvoiceOnExecution(
     let number = "";
     let skipped = "";
     await updateBooking(ref, async (b) => {
-      const i = b.schedule.find(
-        (x) =>
-          x.status !== "void" &&
-          x.totalCents > x.paidCents &&
-          !b.invoices?.some(
-            (v) =>
-              v.installmentId === x.id &&
-              v.status === "issued" &&
-              v.basis === invoiceBasis(b, x.id) &&
-              invoiceBalance(b, v) > 0,
-          ),
-      );
+      /* Only ever the first instalment. Reaching for "the first one without an
+         invoice" would bill the second instalment the moment a contract was
+         signed, nine months before it falls due, on any booking whose deposit
+         had already been invoiced by hand. Later instalments are raised when
+         they come due, not here. */
+      const i = b.schedule.find((x) => x.status !== "void");
       if (!i) {
-        skipped = "every outstanding instalment already has an invoice";
+        skipped = "there is no payment schedule";
+        return;
+      }
+      if (i.totalCents <= i.paidCents) {
+        skipped = "the first instalment is already paid";
+        return;
+      }
+      if (
+        b.invoices?.some(
+          (v) =>
+            v.installmentId === i.id &&
+            v.status === "issued" &&
+            v.basis === invoiceBasis(b, i.id) &&
+            invoiceBalance(b, v) > 0,
+        )
+      ) {
+        skipped = "the first instalment already has an open invoice";
         return;
       }
       id = await attachInvoice(

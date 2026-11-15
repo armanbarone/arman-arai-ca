@@ -98,7 +98,7 @@ export async function POST(req: NextRequest) {
        travel sentence in the auto-reply and opens the vendor list on their
        own city; everything else works without it. */
     const market = pricingMarket(String(body.pricingMarket ?? ""));
-    const cityName = market ? WEDDING_CITIES.find((city) => city.slug === market.slug)?.name : undefined;
+    const cityName = market?.slug === "canada" ? "Canada" : market ? WEDDING_CITIES.find((city) => city.slug === market.slug)?.name : undefined;
 
     const autoReply: Inquiry | null = autoReplyEnabled()
       ? {

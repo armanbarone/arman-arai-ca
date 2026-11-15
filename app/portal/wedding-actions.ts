@@ -464,6 +464,9 @@ export async function signWeddingDocument(
     )
       throw new Error("Invalid preference");
     let executed = false;
+    // Which document was signed, so the work after the transaction can tell an
+    // agreement from a change order or a release.
+    let templateKeyOf = "";
     await updateBooking(ref, async (b) => {
       assertClientPortalAccess(b, session);
       executed = false;
@@ -576,6 +579,7 @@ export async function signWeddingDocument(
         });
       }
 
+      templateKeyOf = d.templateKey;
       if (d.templateKey === "agreement")
         b.status = executed
           ? b.schedule[0]?.paidCents >= b.schedule[0]?.totalCents
@@ -593,12 +597,26 @@ export async function signWeddingDocument(
     });
     refresh(ref);
     if (executed) {
+      /* The signature is the point the deposit is actually owed and the point
+         their card checkout opens, so the invoice is raised here rather than
+         waiting for somebody to remember it. It never blocks the signature:
+         a failure is recorded on the invoice for the studio to retry. */
+      if (templateKeyOf === "agreement")
+        try {
+          const { issueInvoiceOnExecution } = await import(
+            "@/app/admin/invoice-actions"
+          );
+          const r = await issueInvoiceOnExecution(ref);
+          if (!r.ok) console.error("auto invoice after signing:", r.error);
+        } catch (err) {
+          console.error("auto invoice after signing:", err);
+        }
       try {
         await deliverSignedWeddingDocument(ref, id);
         return {
           ok: true,
           message:
-            "All signatures are recorded. This is now binding, and the completed PDF has been emailed to every party and to the studio.",
+            "All signatures are recorded. This is now binding, the completed PDF has been emailed to every party and to the studio, and your next payment request is on its way.",
         };
       } catch {
         return {

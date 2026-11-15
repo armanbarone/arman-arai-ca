@@ -12,6 +12,7 @@ import {
   readFile,
 } from "@/lib/portal/store";
 import { randomId, sha256Hex } from "@/lib/portal/token";
+import type { Booking } from "@/lib/portal/types";
 import {
   activeCheckouts,
   invoiceBasis,
@@ -31,6 +32,63 @@ import {
   stripeClient,
   reconcileStripeSession,
 } from "@/lib/portal/stripe";
+/**
+ * Build the invoice record and attach it to the booking.
+ *
+ * Shared so an invoice raised automatically when a contract is signed is the
+ * same record, with the same numbering and the same hash, as one the studio
+ * raises by hand. Call it inside updateBooking; it mutates the booking.
+ */
+async function attachInvoice(
+  b: Booking,
+  i: Booking["schedule"][number],
+  description: string,
+  cardEnabled: boolean,
+  actor: string,
+): Promise<string> {
+  const ref = b.ref;
+  const id = randomId(16);
+  const at = new Date().toISOString();
+  const v: WeddingInvoice = {
+    id,
+    number: `${ref}-I${String((b.invoices?.length || 0) + 1).padStart(3, "0")}`,
+    status: "issued",
+    installmentId: i.id,
+    label: i.label,
+    description,
+    dueDate: i.dueDate,
+    issuedAt: at,
+    issuedBy: actor,
+    currency: "cad",
+    subtotalCents: i.subtotalCents,
+    taxes: b.taxes.map((t) => ({
+      label: t.label,
+      registration: t.registration,
+      cents: i.taxCents[t.code] || 0,
+    })),
+    totalCents: i.totalCents,
+    paidCentsAtIssue: i.paidCents,
+    amountDueCents: i.totalCents - i.paidCents,
+    clients: structuredClone(b.clients),
+    eventDate: b.event.date,
+    location: b.event.location,
+    packageName: b.packageName,
+    cardEnabled,
+    basis: invoiceBasis(b, i.id),
+    hash: "",
+    sourceSha256: templateFor("invoice").sourceSha256,
+  };
+  v.hash = await sha256Hex(JSON.stringify(v));
+  (b.invoices ??= []).push(v);
+  b.events.push({
+    at,
+    type: "invoice_issued",
+    actor,
+    detail: { id, number: v.number, cents: v.amountDueCents },
+  });
+  return id;
+}
+
 type Result =
   | { ok: true; message: string; url?: string }
   | { ok: false; error: string };
@@ -151,6 +209,88 @@ async function emailInvoice(ref: string, id: string) {
     // The couple have their invoice; the studio copy is not worth failing for.
   }
 }
+/**
+ * Raise and send the next invoice the moment a contract is fully signed.
+ *
+ * Publishing an agreement and asking for the deposit were two unconnected
+ * actions, so every booking relied on somebody remembering the second one.
+ * The couple's own signature is the honest trigger: it is the point the money
+ * is actually owed, and the point their card checkout opens.
+ *
+ * It is deliberately quiet. A booking whose deposit is already invoiced, or
+ * already paid, gets nothing, and a failure here is recorded and never
+ * allowed to break the signature that caused it.
+ */
+export async function issueInvoiceOnExecution(
+  ref: string,
+): Promise<{ ok: boolean; number?: string; skipped?: string; error?: string }> {
+  await requireBookingAccess(ref);
+  try {
+    const before = await getBooking(ref);
+    if (!before) return { ok: false, error: "Booking not found." };
+    if (before.archivedAt || before.status === "cancelled")
+      return { ok: true, skipped: "the wedding is not active" };
+    const signed = before.wedding?.documents?.some(
+      (d) => d.templateKey === "agreement" && d.status === "executed",
+    );
+    if (!signed) return { ok: true, skipped: "the agreement is not signed" };
+
+    // Card checkout only opens on a live Stripe account.
+    const stripe = await paymentSetupStatus().catch(() => null);
+    const cardEnabled = !!stripe?.connected && stripe.mode === "live";
+
+    let id = "";
+    let number = "";
+    let skipped = "";
+    await updateBooking(ref, async (b) => {
+      const i = b.schedule.find(
+        (x) =>
+          x.status !== "void" &&
+          x.totalCents > x.paidCents &&
+          !b.invoices?.some(
+            (v) =>
+              v.installmentId === x.id &&
+              v.status === "issued" &&
+              v.basis === invoiceBasis(b, x.id) &&
+              invoiceBalance(b, v) > 0,
+          ),
+      );
+      if (!i) {
+        skipped = "every outstanding instalment already has an invoice";
+        return;
+      }
+      id = await attachInvoice(
+        b,
+        i,
+        `${i.label} for your wedding on ${formatDate(b.event.date)}${b.event.location ? ` at ${b.event.location}` : ""}.`,
+        cardEnabled,
+        "system",
+      );
+      number = b.invoices!.at(-1)!.number;
+    });
+    if (skipped) return { ok: true, skipped };
+    if (!id) return { ok: true, skipped: "nothing to invoice" };
+
+    try {
+      await emailInvoice(ref, id);
+    } catch {
+      await updateBooking(ref, (b) => {
+        const v = b.invoices?.find((x) => x.id === id);
+        if (v)
+          v.deliveryError =
+            "Raised automatically when the contract was signed, but the email needs attention. Use Retry email.";
+      });
+    }
+    refresh(ref);
+    return { ok: true, number };
+  } catch (err) {
+    return {
+      ok: false,
+      error: err instanceof Error ? err.message : "Could not raise the invoice.",
+    };
+  }
+}
+
 export async function issueWeddingInvoice(
   ref: string,
   installmentId: string,
@@ -196,45 +336,7 @@ export async function issueWeddingInvoice(
         throw Error(
           "This instalment already has an open invoice. Retry its email or void it before issuing a replacement.",
         );
-      const at = new Date().toISOString();
-      id = randomId(16);
-      const v: WeddingInvoice = {
-        id,
-        number: `${ref}-I${String((b.invoices?.length || 0) + 1).padStart(3, "0")}`,
-        status: "issued",
-        installmentId: i.id,
-        label: i.label,
-        description: description.trim(),
-        dueDate: i.dueDate,
-        issuedAt: at,
-        issuedBy: admin.email,
-        currency: "cad",
-        subtotalCents: i.subtotalCents,
-        taxes: b.taxes.map((t) => ({
-          label: t.label,
-          registration: t.registration,
-          cents: i.taxCents[t.code] || 0,
-        })),
-        totalCents: i.totalCents,
-        paidCentsAtIssue: i.paidCents,
-        amountDueCents: i.totalCents - i.paidCents,
-        clients: structuredClone(b.clients),
-        eventDate: b.event.date,
-        location: b.event.location,
-        packageName: b.packageName,
-        cardEnabled,
-        basis: invoiceBasis(b, i.id),
-        hash: "",
-        sourceSha256: templateFor("invoice").sourceSha256,
-      };
-      v.hash = await sha256Hex(JSON.stringify(v));
-      (b.invoices ??= []).push(v);
-      b.events.push({
-        at,
-        type: "invoice_issued",
-        actor: admin.email,
-        detail: { id, number: v.number, cents: v.amountDueCents },
-      });
+      id = await attachInvoice(b, i, description.trim(), cardEnabled, admin.email);
     });
     try {
       await emailInvoice(ref, id);

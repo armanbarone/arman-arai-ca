@@ -20,6 +20,11 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false, nocache: true },
 };
 
+/** The region count is spelled out in the lead, and the lead must never
+ *  disagree with the list: it said "five regions" for a day after Edmonton
+ *  was added. */
+const REGION_WORDS: Record<number, string> = { 4: "four", 5: "five", 6: "six", 7: "seven", 8: "eight", 9: "nine", 10: "ten" };
+
 export default function PreferredVendorsPage() {
   const total = vendorCount();
   return (
@@ -32,7 +37,7 @@ export default function PreferredVendorsPage() {
           </h1>
           <div className={styles.leadGrid}>
             <p className={styles.lead}>
-              {total} teams across five regions: planners, florists, hair and makeup, music and
+              {total} teams across {REGION_WORDS[VENDOR_CITIES.length] ?? VENDOR_CITIES.length} regions: planners, florists, hair and makeup, music and
               officiants. These are the names I give couples when they ask me who else to call, and
               I&rsquo;d be glad to see any of them on your vendor list.
             </p>

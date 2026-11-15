@@ -245,6 +245,55 @@ export const VENDOR_CITIES: VendorCity[] = [
     ],
   },
   {
+    /* Added 2026-11-15. There is no Edmonton pricing market, so `market`
+       simply matches the slug; the Canada-wide landing page sends every
+       inquiry to the top of this page rather than to a city anchor.
+       Every site below was opened and read on the day it was added. */
+    slug: "edmonton",
+    market: "edmonton",
+    name: "Edmonton",
+    area: "Edmonton, St. Albert, Sherwood Park and the surrounding area",
+    groups: [
+      {
+        category: "planning",
+        vendors: [
+          { name: "Olivia Fata Events", site: "oliviafata.com", note: "An Edmonton wedding and event planner, offering planning, on-site styling and wedding-day management." },
+          { name: "Your Day Wedding", site: "yourdaywedding.com", note: "Full-service and partial planning, down to month-of and day-of, from a planner who works in Edmonton and Vancouver both." },
+        ],
+      },
+      {
+        category: "flowers",
+        vendors: [
+          { name: "Heather de Kok Floral Design", site: "heatherdekok.com", note: "An Edmonton wedding florist with its own studio, taking wedding consultations by appointment." },
+          { name: "Graham & Lane Florists", site: "grahamandlane.com", note: "A downtown Edmonton design studio doing wedding and event flowers, delivering into St. Albert and Sherwood Park as well as the city." },
+          { name: "Two Buds Floral", site: "twobudsfloral.com", note: "A home studio in St. Albert that takes wedding flowers by consultation alongside workshops and everyday orders." },
+        ],
+      },
+      {
+        category: "beauty",
+        vendors: [
+          { name: "Behind the Blush", site: "behindtheblush.ca", note: "A team of hair stylists and makeup artists based in Edmonton, with weddings and elopements through the portfolio." },
+          { name: "Reemake Studio", site: "reemakestudio.com", note: "Indian, Pakistani and Western bridal hair and makeup, from its own Edmonton studio." },
+          { name: "YEG Beauty Collective", site: "yegbeautycollective.com", note: "On-location makeup in Edmonton, so the artist comes to where you are getting ready." },
+        ],
+      },
+      {
+        category: "music",
+        vendors: [
+          { name: "Market Sound Entertainment", site: "marketsound.ca", note: "An Edmonton DJ service that carries uplighting, dance-floor lighting and photo booths under the same booking." },
+          { name: "Nyquest Entertainment", site: "nyquestentertainment.com", note: "Edmonton based, and says plainly that it specializes in weddings rather than clubs." },
+        ],
+      },
+      {
+        category: "officiant",
+        vendors: [
+          { name: "Young Hip & Married", site: "younghipandmarried.com", note: "Licensed officiants in Alberta, with Edmonton on their list of cities as well as Calgary." },
+          { name: "Marry Us, Mary", site: "marryusmary.ca", note: "Mary Zakordonski, an authorized marriage commissioner for the Province of Alberta since 2015, based in St. Albert." },
+        ],
+      },
+    ],
+  },
+  {
     slug: "victoria",
     market: "victoria",
     name: "Victoria & Vancouver Island",

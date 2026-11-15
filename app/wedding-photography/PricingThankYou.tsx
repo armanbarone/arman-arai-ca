@@ -9,18 +9,20 @@ import styles from "./vancouver.module.css";
  * lands, so Google Ads can count the inquiry by URL. noindex, never linked,
  * out of the sitemap. The content comes from the tab that sent the form. */
 
-export const pricingThankYouMetadata = (city: WeddingCity): Metadata => ({
+type ThankYouCity = Pick<WeddingCity, "name" | "slug">;
+
+export const pricingThankYouMetadata = (city: ThankYouCity): Metadata => ({
   title: { absolute: `Your pricing | ${city.name} Wedding Photography | Arman Arai` },
   robots: { index: false, follow: false, googleBot: { index: false, follow: false } },
 });
 
-export default function PricingThankYou({ city, market }: { city: WeddingCity; market: PricingMarket }) {
+export default function PricingThankYou({ city, market, page }: { city: ThankYouCity; market: PricingMarket; page?: string }) {
   return <div className={`${styles.page} ${styles.dark}`} data-landing-theme="dark" data-landing-city={city.slug}>
     <ThankYouFromSession
       market={market.slug}
       collections={funnelCollections()}
       city={city.name}
-      page={`wedding-photography/${market.slug}-pricing`}
+      page={page ?? `wedding-photography/${market.slug}-pricing`}
       phone={SITE.phone.replace(/^\+1\s*/, "")}
       phoneE164={SITE.phoneE164}
       travelNote={market.travelNote}

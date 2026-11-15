@@ -141,8 +141,11 @@ test("Canada confirmation keeps the correct market, national travel wording and 
   assert.equal(gate.props.market, "canada");
   assert.equal(gate.props.city, "Canada");
   assert.equal(gate.props.page, "wedding-photography/canada");
-  assert.match(gate.props.travelNote, /same across Canada/);
+  assert.match(gate.props.travelNote, /the same anywhere in Canada/);
   assert.doesNotMatch(gate.props.travelNote, /Local travel within Vancouver/);
+  // "Canadian wedding photography", never "Canada wedding photography".
+  assert.equal(gate.props.adjective, "Canadian");
+  assert.match(confirmation.metadata.title.absolute, /Canadian Wedding Photography/);
   assert.equal(confirmation.metadata.robots.index, false);
 });
 
@@ -175,7 +178,11 @@ test("Canada contact processing records a Canada lead and queues the same automa
     assert.equal(leads[0].attribution.landingPage, path);
     assert.equal(replies[0].market.slug, "canada");
     assert.equal(replies[0].cityName, "Canada");
-    assert.match(replies[0].market.travelNote, /same across Canada/);
+    // One national price, travel quoted separately, and said in Arman's own
+    // voice: this sentence is printed in an email he signs.
+    assert.match(replies[0].market.travelNote, /the same anywhere in Canada/);
+    assert.match(replies[0].market.travelNote, /Travel is quoted separately/);
+    assert.doesNotMatch(replies[0].market.travelNote, /Arman/);
   } finally {
     if (previous === undefined) delete process.env.RESEND_API_KEY;
     else process.env.RESEND_API_KEY = previous;

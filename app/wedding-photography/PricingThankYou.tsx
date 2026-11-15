@@ -9,10 +9,12 @@ import styles from "./vancouver.module.css";
  * lands, so Google Ads can count the inquiry by URL. noindex, never linked,
  * out of the sitemap. The content comes from the tab that sent the form. */
 
-type ThankYouCity = Pick<WeddingCity, "name" | "slug">;
+/** `adjective` is how the market reads before "wedding photography": a city
+ *  is its own name, Canada-wide is "Canadian". */
+type ThankYouCity = Pick<WeddingCity, "name" | "slug"> & { adjective?: string };
 
 export const pricingThankYouMetadata = (city: ThankYouCity): Metadata => ({
-  title: { absolute: `Your pricing | ${city.name} Wedding Photography | Arman Arai` },
+  title: { absolute: `Your pricing | ${city.adjective ?? city.name} Wedding Photography | Arman Arai` },
   robots: { index: false, follow: false, googleBot: { index: false, follow: false } },
 });
 
@@ -22,6 +24,7 @@ export default function PricingThankYou({ city, market, page }: { city: ThankYou
       market={market.slug}
       collections={funnelCollections()}
       city={city.name}
+      adjective={city.adjective}
       page={page ?? `wedding-photography/${market.slug}-pricing`}
       phone={SITE.phone.replace(/^\+1\s*/, "")}
       phoneE164={SITE.phoneE164}

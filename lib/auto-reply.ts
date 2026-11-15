@@ -178,7 +178,9 @@ function detailsBlock(inquiry: Inquiry) {
  *  the information, and a wall of text at the top gets skipped. */
 function opening(inquiry: Inquiry) {
   const when = whenPhrase(inquiry);
-  const about = [inquiry.location && `at ${inquiry.location}`, when && `on ${when}`].filter(Boolean).join(" ");
+  /* "in", not "at": the location field asks for a city or a venue, and on the
+     Canada-wide page most couples type a city, where "at Halifax" reads wrong. */
+  const about = [inquiry.location && `in ${inquiry.location}`, when && `on ${when}`].filter(Boolean).join(" ");
   return [
     `Hi ${inquiry.firstName || "there"},`,
     `Congratulations, and thank you for writing. This is Arman. I have your inquiry about your wedding${about ? ` ${about}` : ""}, and I'll reply to you personally within 60 minutes.`,

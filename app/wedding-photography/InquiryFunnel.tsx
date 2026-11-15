@@ -158,6 +158,9 @@ export function InquiryForm({ city, market, page, variant = "standard", classNam
 type ThankYouProps = {
   collections: FunnelCollection[];
   city: string;
+  /** How the market reads before "wedding photography": "Vancouver", but
+   *  "Canadian" for the Canada-wide page. Defaults to `city`. */
+  adjective?: string;
   page: string;
   travelNote: string;
 } & Contact;
@@ -177,7 +180,7 @@ export function ThankYouFromSession({ market, ...props }: ThankYouProps & { mark
   if (!sent) return <section className={funnel.thanks} aria-labelledby="thanks-title">
     <header className={styles.header}><a className={styles.wordmark} href={`/${props.page}`}>Arman Arai<span>WEDDING PHOTOGRAPHY</span></a></header>
     <div className={funnel.thanksGrid}><div className={funnel.thanksCopy}>
-      <p className={styles.eyebrow}>{props.city} wedding photography</p>
+      <p className={styles.eyebrow}>{props.adjective ?? props.city} wedding photography</p>
       <h1 id="thanks-title" className={funnel.thanksTitle}>Your pricing starts here.</h1>
       <p className={funnel.thanksLead}>This page opens once you send the short form. It takes a minute.</p>
       <p style={{ marginTop: 24 }}><a className={styles.button} href={`/${props.page}#${FORM_ID}`}>{CTA_LABEL} <span aria-hidden="true">↗</span></a></p>

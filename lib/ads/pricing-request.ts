@@ -8,7 +8,7 @@
  * The form collects a date for Arman's reply. Availability is not inferred
  * by the page or its automatic guide; only Arman confirms whether he is free.
  */
-import { TIERS, TRAVEL, type Tier } from "../site";
+import { TIERS, type Tier } from "../site";
 
 /* The form's anchor and the one button label. Here, not in the "use client"
    InquiryFunnel: a plain value exported from a client module reaches a server
@@ -50,7 +50,11 @@ export const PRICING_MARKETS: PricingMarket[] = [
   {
     slug: "canada",
     travelShort: "travel quoted before you book",
-    travelNote: TRAVEL.availabilityNote,
+    /* TRAVEL.availabilityNote says the same thing about Arman in the third
+       person, which is right on /pricing and wrong in an email he signs. The
+       facts are its facts: one national price, travel quoted separately, less
+       when a date is already in the region. */
+    travelNote: "A collection costs the same anywhere in Canada. Travel is quoted separately against your venue and agreed before you book, and it comes down when I already have dates in your region.",
     coverageAnswer: "Yes. Weddings anywhere in Canada, with the same published collection prices. Travel is quoted against your venue and date and agreed before you book.",
   },
   {

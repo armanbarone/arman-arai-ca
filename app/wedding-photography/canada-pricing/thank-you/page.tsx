@@ -1,7 +1,7 @@
 import PricingThankYou, { pricingThankYouMetadata } from "../../PricingThankYou";
 import { pricingMarket } from "@/lib/ads/pricing-request";
 
-const city = { slug: "canada", name: "Canada" };
+const city = { slug: "canada", name: "Canada", adjective: "Canadian" };
 export const metadata = pricingThankYouMetadata(city);
 
 export default function ThankYouPage() {

@@ -20,7 +20,7 @@ function find(node, predicate) {
   if (predicate(node)) return node;
   return [node.props?.children].flat(Infinity).map(child => find(child, predicate)).find(Boolean);
 }
-function harness({ ok = true, response = { success: true, autoReply: true, inquiryId }, blocked = false } = {}) {
+function harness({ ok = true, response = { success: true, autoReply: true, inquiryId }, blocked = false, pageModulePath = "@/app/wedding-photography/canada/page" } = {}) {
   const states = [], refs = [], effects = [], requests = [], redirects = [];
   let stateIndex = 0, refIndex = 0;
   global.window = {
@@ -45,7 +45,7 @@ function harness({ ok = true, response = { success: true, autoReply: true, inqui
     "./inquiry.module.css": styles,
     "./wedding-calendar": {},
   });
-  const pageModule = load("@/app/wedding-photography/canada/page");
+  const pageModule = load(pageModulePath);
   const { InquiryForm } = load("@/app/wedding-photography/InquiryFunnel");
   const GalleryRail = load("@/app/wedding-photography/vancouver-simple/GalleryRail").default;
   const tree = pageModule.default();
@@ -189,14 +189,20 @@ test("Canada contact processing records a Canada lead and queues the same automa
   }
 });
 
-test("the former Vancouver-simple URL redirects to the national campaign URL", async () => {
+test("Vancouver-simple keeps its own URL, Vancouver wording and market alongside Canada", async () => {
   const fs = require("node:fs"), vm = require("node:vm"), ts = require("typescript");
   const module = { exports: {} };
   const source = fs.readFileSync(require("node:path").join(__dirname, "../next.config.ts"), "utf8");
   const compiled = ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.CommonJS } }).outputText;
   vm.runInNewContext(compiled, { module, exports: module.exports, __dirname });
   const redirects = await module.exports.default.redirects();
-  const redirect = redirects.find(rule => rule.source === "/wedding-photography/vancouver-simple");
-  assert.equal(redirect.destination, path);
-  assert.equal(redirect.permanent, true);
+  assert.equal(redirects.some(rule => rule.source === "/wedding-photography/vancouver-simple"), false);
+
+  const vancouver = harness({ pageModulePath: "@/app/wedding-photography/vancouver-simple/page" });
+  assert.equal(vancouver.pageModule.metadata.alternates.canonical, "/wedding-photography/vancouver-simple");
+  assert.equal(vancouver.form.props.page, "/wedding-photography/vancouver-simple");
+  assert.equal(vancouver.form.props.city, "Vancouver");
+  assert.equal(vancouver.form.props.market, "vancouver");
+  const heading = find(vancouver.tree, node => node.props?.id === "gallery-title");
+  assert.equal(heading.props.children[0] + heading.props.children[1].props.children, "Your day, in Vancouver.");
 });

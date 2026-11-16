@@ -1,4 +1,4 @@
-import { SITE, TERMS } from "./site";
+import { SITE, TERMS, type Tier } from "./site";
 import { weddingCalendarUrl } from "./wedding-booking";
 import { pricingMarket, pricingTiers, longDate, weekdayOf, type PricingMarket } from "./ads/pricing-request";
 import { vendorCity } from "./vendors";
@@ -115,14 +115,6 @@ export function replySubject(inquiry: Inquiry) {
   return `Your wedding photography inquiry${about ? `: ${about}` : ""}`.replace(/[\r\n]+/g, " ").slice(0, 140);
 }
 
-/** The travel sentence for this couple: the market's published rule when the
- *  inquiry came from a city landing page, and the site-wide rule otherwise.
- *  Never invent a figure; travel is quoted against the venue. */
-function travelLine(inquiry: Inquiry) {
-  if (inquiry.market) return inquiry.market.travelNote;
-  return "A collection costs the same anywhere in Canada. Travel is quoted separately against your venue and agreed before you book, and it comes down when I already have dates in your region.";
-}
-
 /** An email button that renders as a block in every client, Outlook included:
  *  a full-width table cell, not a styled link on its own. */
 function bigButton(href: string, label: string, background: string, color: string) {
@@ -150,6 +142,23 @@ function albumsBlock() {
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 6px;"><tr>${cells}</tr></table>`;
 }
 
+/* Why couples book me (owner, 2026-11-15, in his words: cinematic work, far
+   past what an average wedding photographer can do, and a handful of people
+   in North America shooting this way). It sits between the three albums and
+   the price, because it is the sentence that makes the price make sense. */
+function whyBlock() {
+  return `<p style="margin:34px 0 10px;font-family:Arial,Helvetica,sans-serif;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#9A7A54;">Why couples book me</p>
+  <p style="margin:0 0 12px;font-size:25px;line-height:1.15;">The work is cinematic.</p>
+  <p style="margin:0 0 14px;font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.65;color:#6B6258;">That is a different craft from covering a wedding competently, and it is the whole of what I do. I light a room, I direct the two of you where directing is what the frame needs, and I shoot your day so it comes back looking like stills from a film rather than a record of an event. A handful of photographers in North America work this way. I am one of them.</p>
+  <p style="margin:0 0 6px;font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.65;color:#6B6258;">The rest is effort. I go past what the collection obliges me to do on every wedding I shoot, because your day happens once and the pictures are what is left of it.</p>`;
+}
+
+const WHY_TEXT = [
+  "WHY COUPLES BOOK ME: THE WORK IS CINEMATIC",
+  "That is a different craft from covering a wedding competently, and it is the whole of what I do. I light a room, I direct the two of you where directing is what the frame needs, and I shoot your day so it comes back looking like stills from a film rather than a record of an event. A handful of photographers in North America work this way. I am one of them.",
+  "The rest is effort. I go past what the collection obliges me to do on every wedding I shoot, because your day happens once and the pictures are what is left of it.",
+].join("\n");
+
 function priceTable(fit?: string) {
   const tiers = pricingTiers();
   return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;margin:4px 0 10px;border-top:1px solid #D9CEBC;">
@@ -159,6 +168,65 @@ function priceTable(fit?: string) {
     </tr>`).join("")}
   </table>`;
 }
+
+/* "My price against everybody else" (owner, 2026-11-15).
+ *
+ * The right-hand column is what C$3,000 buys from a Canadian wedding
+ * photographer in 2026 according to the published pricing guides, checked
+ * across several of them on 2026-11-15: Bridebook's Canadian photography and
+ * videography guides, Bark's Canadian videography prices, Candid Studios'
+ * 2026 pricing statistics, Ruah Creative House on film pricing, and Imagen's
+ * delivery-turnaround guide. They disagree on exact averages, so nothing here
+ * is printed as a statistic: every cell is a range or a "usually", which is
+ * what the sources actually support. No competitor is named, and the left
+ * column is read from TIERS so it can never drift from the real collection.
+ *
+ * If you widen a claim here, source it first. An email that overstates the
+ * market is the one thing in this sequence a couple can catch out.
+ */
+const MARKET_ROWS: [string, (tier: Tier) => string, string][] = [
+  ["Hours on the day", (tier) => tier.coverage, "6 to 8, charged by the hour beyond that"],
+  ["Edited images", (tier) => tier.images, "300 to 600, sometimes web-size only"],
+  ["First look at them", (tier) => tier.preview, "a handful of favourites within a few days"],
+  ["Full gallery", (tier) => tier.delivery, "4 to 8 weeks, and 8 to 12 in peak season"],
+  ["Engagement session", (tier) => tier.engagement, "an add-on, priced separately"],
+  ["A film of your day", (tier) => tier.film, "not offered; a separate videographer is usually C$2,000 to C$4,000"],
+  ["Real 35mm film", (tier) => tier.rolls, "not offered"],
+  ["Vertical reels", () => "Cut from the day, in the first week", "rarely offered"],
+];
+
+function comparisonTable() {
+  const tier = pricingTiers()[0];
+  const cell = "padding:11px 10px;border-bottom:1px solid #EDE7DA;font-family:Arial,Helvetica,sans-serif;font-size:13px;line-height:1.5;vertical-align:top;";
+  const rows = MARKET_ROWS.map(([label, mine, theirs]) => `<tr>
+      <td style="${cell}color:#6B6258;width:27%;">${escapeHtml(label)}</td>
+      <td style="${cell}color:#2C2420;width:36%;background:#F7F3EC;">${escapeHtml(mine(tier))}</td>
+      <td style="${cell}color:#6B6258;width:37%;">${escapeHtml(theirs)}</td>
+    </tr>`).join("");
+  return `<p style="margin:26px 0 8px;font-size:21px;line-height:1.2;">The same money, a different list.</p>
+  <p style="margin:0 0 12px;font-family:Arial,Helvetica,sans-serif;font-size:14px;line-height:1.6;color:#6B6258;">What ${money(tier.price)} usually buys from a wedding photographer in Canada, against what it buys here. The right-hand column is drawn from the published Canadian pricing guides for 2026, not from one studio.</p>
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;margin:0 0 10px;">
+    <tr>
+      <td style="padding:0 10px 8px;border-bottom:1px solid #D9CEBC;"></td>
+      <td style="padding:0 10px 8px;border-bottom:1px solid #D9CEBC;font-family:Arial,Helvetica,sans-serif;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#9A7A54;">${escapeHtml(tier.name)} · ${money(tier.price)}</td>
+      <td style="padding:0 10px 8px;border-bottom:1px solid #D9CEBC;font-family:Arial,Helvetica,sans-serif;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#9A7A54;">Typical at this price</td>
+    </tr>
+    ${rows}
+  </table>
+  <p style="margin:0 0 6px;font-family:Arial,Helvetica,sans-serif;font-size:13px;line-height:1.6;color:#6B6258;">Legacy and Photo + Film widen the same gap: a second photographer, a printed album, and in Photo + Film a filmmaker beside me for all twelve hours rather than a second vendor you book and brief yourself.</p>
+  <p style="margin:0 0 6px;font-family:Arial,Helvetica,sans-serif;font-size:13px;line-height:1.6;color:#6B6258;">Prices in CAD, before tax. Travel outside your region is quoted separately and agreed before you book.</p>`;
+}
+
+const COMPARISON_TEXT = () => {
+  const tier = pricingTiers()[0];
+  return [
+    "THE SAME MONEY, A DIFFERENT LIST",
+    `What ${money(tier.price)} usually buys from a wedding photographer in Canada, against what it buys here, from the published Canadian pricing guides for 2026.`,
+    ...MARKET_ROWS.map(([label, mine, theirs]) => `${label} - mine: ${mine(tier)}. Typical: ${theirs}.`),
+    "Legacy and Photo + Film widen the same gap: a second photographer, a printed album, and in Photo + Film a filmmaker beside me for all twelve hours.",
+    "Prices in CAD, before tax. Travel outside your region is quoted separately and agreed before you book.",
+  ].join("\n");
+};
 
 /** What the couple sent, played back so the email reads as an answer to them
  *  and so they can see I read it. Their own contact details stay out. */
@@ -195,15 +263,15 @@ function sections(inquiry: Inquiry, links: { guide: string; vendors: string; cal
   ${sectionHeading("One", "Full pricing")}
   <p style="margin:0 0 10px;font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.65;color:#6B6258;">Three collections, and only three. Every one includes an engagement session, a next-day preview and the full gallery in three weeks.</p>
   ${priceTable("signature")}
-  <p style="margin:0 0 6px;font-family:Arial,Helvetica,sans-serif;font-size:13px;line-height:1.6;color:#6B6258;">Canadian dollars, before tax. ${escapeHtml(travelLine(inquiry))}</p>
   <p style="margin:0 0 6px;font-family:Arial,Helvetica,sans-serif;font-size:13px;line-height:1.6;color:#6B6258;">Payment is in two parts: ${escapeHtml(TERMS.schedule.replace(/^Two payments: /, ""))}</p>
+  ${comparisonTable()}
 
   ${sectionHeading("Two", "Your welcome guide")}
   <p style="margin:0 0 16px;font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.65;color:#6B6258;">How I actually work a wedding day: where I am during the getting-ready, how family photographs get done in twenty minutes instead of an hour, what happens if it rains, and what you get back and when. It takes about ten minutes to read and it will save you a dozen questions.</p>
   ${bigButton(links.guide, "Open the wedding guide", "#A95C31", "#FFFFFF")}
 
   ${sectionHeading("Three", "Securing your date")}
-  <p style="margin:0 0 10px;font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.65;color:#6B6258;">A date is yours once the contract is signed and the deposit is in, and not before. ${escapeHtml(TERMS.retainer)}, and I'll hold a date for 48 hours free while you decide. The fastest way there is a short call, so you can ask me the things people don't put in an email.</p>
+  <p style="margin:0 0 10px;font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.65;color:#6B6258;">${escapeHtml(HOLD)} ${escapeHtml(TERMS.retainer)}, once the contract is signed, and not before. The fastest way there is a short call, so you can ask me the things people don't put in an email.</p>
   <p style="margin:0 0 16px;font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.65;color:#2C2420;"><strong>${escapeHtml(TONIGHT_CALL)}</strong>, or pick any time that suits you both.</p>
   ${bigButton(links.calendar, "Book your free 30-minute call", "#B8956A", "#1A1612")}
 
@@ -212,11 +280,20 @@ function sections(inquiry: Inquiry, links: { guide: string; vendors: string; cal
   ${bigButton(links.vendors, "See the vendor list", "#2C2420", "#FFFFFF")}`;
 }
 
+/* The hold, in the words the owner asked for (2026-11-15): 48 hours, free,
+   one date at a time, and whoever asks next gets it once the window closes.
+   One constant, because it is said twice and the two must never differ. */
+const HOLD =
+  "I hold your date for 48 hours, at no cost, from the moment I send you the contract. " +
+  "I only ever hold one date at a time, so when those 48 hours are up the date goes back on the calendar, " +
+  "and if another couple asks for it after that, theirs is the wedding I take.";
+
 const NEXT_STEPS = [
   "I read your inquiry properly and reply myself, within 60 minutes.",
   "We talk for twenty or thirty minutes, by video or phone, whichever you prefer. No pitch, and no obligation.",
-  "If it feels right, I send a contract and an invoice for the 50% deposit. Your date is held free for 48 hours while you read them.",
-  "Signed and paid, the date is yours, and we start planning the day properly about three months out.",
+  "If it feels right, I send the contract and the invoice for the 50% deposit, and your date is held free for the next 48 hours while you read them.",
+  "Sign and pay inside that window and the date is yours. Miss it and the date is open to the next couple who asks.",
+  "Booked, we start planning the day properly about three months out.",
 ];
 
 export function render(inquiry: Inquiry) {
@@ -237,6 +314,7 @@ export function render(inquiry: Inquiry) {
   const html = `<div style="font-family:Georgia,serif;max-width:560px;margin:0 auto;color:#2C2420;font-size:17px;line-height:1.65;">
   ${opening(inquiry).map((p) => `<p style="margin:0 0 16px;">${escapeHtml(p)}</p>`).join("")}
   ${albumsBlock()}
+  ${whyBlock()}
   ${sections(inquiry, links)}
   <p style="margin:34px 0 10px;font-family:Arial,Helvetica,sans-serif;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#9A7A54;">What happens next</p>
   <ol style="margin:0 0 22px;padding-left:20px;font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.7;color:#6B6258;">
@@ -254,12 +332,13 @@ export function render(inquiry: Inquiry) {
     "THREE COMPLETE WEDDINGS",
     "Not a highlight reel. Three whole days, every frame I delivered.",
     ...ALBUMS.map((album) => `${album.names}, ${album.where}: ${SITE.url}/galleries/${album.slug}`),
+    WHY_TEXT,
     "ONE. FULL PRICING",
     pricingTiers().map((tier) => `${tier.name}, ${tier.hours} hours: ${money(tier.price)}`).join("\n"),
-    `Canadian dollars, before tax. ${travelLine(inquiry)}`,
     TERMS.schedule,
+    COMPARISON_TEXT(),
     `TWO. YOUR WELCOME GUIDE\nHow I work a wedding day, start to finish: ${links.guide}`,
-    `THREE. SECURING YOUR DATE\n${TERMS.retainer}, and I'll hold a date free for 48 hours while you decide. ${TONIGHT_CALL}, or pick any time: ${links.calendar}`,
+    `THREE. SECURING YOUR DATE\n${HOLD} ${TERMS.retainer}. ${TONIGHT_CALL}, or pick any time: ${links.calendar}`,
     `FOUR. MY PREFERRED VENDORS\nPlanners, florists, hair and makeup, music and officiants, by city: ${links.vendors}`,
     `WHAT HAPPENS NEXT\n${NEXT_STEPS.map((step, n) => `${n + 1}. ${step}`).join("\n")}`,
     `Message me on WhatsApp: ${whatsapp}`,

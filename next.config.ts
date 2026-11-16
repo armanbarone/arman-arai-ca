@@ -61,8 +61,6 @@ const nextConfig: NextConfig = {
   },
   async redirects() {
     return [
-      // Preserve existing ad links and click IDs after the Canada-wide rename.
-      { source: "/wedding-photography/vancouver-simple", destination: "/wedding-photography/canada", permanent: true },
       // Destination weddings are not part of this business. The page is gone and
       // everything that pointed at it now lands on pricing, which is what a
       // couple arriving from those links is actually looking for.

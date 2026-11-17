@@ -54,7 +54,7 @@ test('missing cookies still use a real captured click, and never invent attribut
 });
 
 test('server delivery is production-only and one retry keeps the exact same ID and payload', async () => {
-  const before = { token: process.env.META_CONVERSIONS_ACCESS_TOKEN, env: process.env.VERCEL_ENV, fetch: global.fetch };
+  const before = { token: process.env.META_WEDDING_CONVERSIONS_ACCESS_TOKEN, env: process.env.VERCEL_ENV, fetch: global.fetch };
   const calls = [];
   try {
     const { reportWeddingLead } = loader()('@/lib/meta-conversions');
@@ -62,15 +62,15 @@ test('server delivery is production-only and one retry keeps the exact same ID a
       calls.push({ url, ...options });
       return calls.length === 1 ? { ok: false, status: 503, json: async () => ({}) } : { ok: true, status: 200, json: async () => ({ events_received: 1 }) };
     };
-    process.env.META_CONVERSIONS_ACCESS_TOKEN = 'stub-only';
+    process.env.META_WEDDING_CONVERSIONS_ACCESS_TOKEN = 'stub-only';
     process.env.VERCEL_ENV = 'preview';
     await reportWeddingLead(input());
     assert.equal(calls.length, 0);
     process.env.VERCEL_ENV = 'production';
-    delete process.env.META_CONVERSIONS_ACCESS_TOKEN;
+    delete process.env.META_WEDDING_CONVERSIONS_ACCESS_TOKEN;
     await reportWeddingLead(input());
     assert.equal(calls.length, 0);
-    process.env.META_CONVERSIONS_ACCESS_TOKEN = 'stub-only';
+    process.env.META_WEDDING_CONVERSIONS_ACCESS_TOKEN = 'stub-only';
     await reportWeddingLead(input());
     assert.equal(calls.length, 2);
     assert.equal(calls[0].body, calls[1].body);
@@ -79,7 +79,7 @@ test('server delivery is production-only and one retry keeps the exact same ID a
     assert.equal(JSON.parse(calls[0].body).data[0].event_id, `ca-lead-${id}`);
   } finally {
     global.fetch = before.fetch;
-    for (const [key, value] of [['META_CONVERSIONS_ACCESS_TOKEN', before.token], ['VERCEL_ENV', before.env]]) {
+    for (const [key, value] of [['META_WEDDING_CONVERSIONS_ACCESS_TOKEN', before.token], ['VERCEL_ENV', before.env]]) {
       if (value === undefined) delete process.env[key]; else process.env[key] = value;
     }
   }
@@ -120,7 +120,7 @@ test('only delivered inquiries queue a server Lead, and share the ID returned to
 
 test('explicit browser opt-outs suppress the existing server-side wedding event too',async()=>{
  const {reportWeddingLead}=loader()('@/lib/meta-conversions');
- const old={fetch:global.fetch,env:process.env.VERCEL_ENV,token:process.env.META_CONVERSIONS_ACCESS_TOKEN};let calls=0;
- try{process.env.VERCEL_ENV='production';process.env.META_CONVERSIONS_ACCESS_TOKEN='offline';global.fetch=async()=>{calls++;throw Error('must not transmit');};for(const key of ['sec-gpc','dnt'])await reportWeddingLead(input({headers:new Headers({[key]:'1'})}));assert.equal(calls,0);}
- finally{global.fetch=old.fetch;for(const [k,v]of [['VERCEL_ENV',old.env],['META_CONVERSIONS_ACCESS_TOKEN',old.token]])v===undefined?delete process.env[k]:process.env[k]=v;}
+ const old={fetch:global.fetch,env:process.env.VERCEL_ENV,token:process.env.META_WEDDING_CONVERSIONS_ACCESS_TOKEN};let calls=0;
+ try{process.env.VERCEL_ENV='production';process.env.META_WEDDING_CONVERSIONS_ACCESS_TOKEN='offline';global.fetch=async()=>{calls++;throw Error('must not transmit');};for(const key of ['sec-gpc','dnt'])await reportWeddingLead(input({headers:new Headers({[key]:'1'})}));assert.equal(calls,0);}
+ finally{global.fetch=old.fetch;for(const [k,v]of [['VERCEL_ENV',old.env],['META_WEDDING_CONVERSIONS_ACCESS_TOKEN',old.token]])v===undefined?delete process.env[k]:process.env[k]=v;}
 });

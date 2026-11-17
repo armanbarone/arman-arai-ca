@@ -41,21 +41,37 @@ export function weddingLeadEvent(input: InquiryConversion, now = Date.now()) {
   if (isIP(ip)) userData.client_ip_address = ip;
   const agent = input.headers.get("user-agent");
   if (agent) userData.client_user_agent = agent.slice(0, 1024);
+  // An optional owner-controlled test recipient goes to Test Events only.
+  // Ordinary inquiries are never diverted when verifying a production setup.
+  const testCode = hash(email) === process.env.META_WEDDING_TEST_EMAIL_HASH &&
+    /^TEST[a-z0-9]+$/i.test(process.env.META_WEDDING_TEST_EVENT_CODE || "")
+    ? process.env.META_WEDDING_TEST_EVENT_CODE : undefined;
   return {
     event_name: "Lead", event_id: `ca-lead-${input.id}`, event_time: Math.floor(now / 1000),
     action_source: "website", event_source_url: sourceUrl(input.page), user_data: userData,
     custom_data: { content_name: "Wedding photography inquiry", content_category: "wedding_photography" },
+    ...(testCode ? { test_event_code: testCode } : {}),
   };
 }
+
+export type WeddingLeadEvent = ReturnType<typeof weddingLeadEvent>;
+
+export const weddingMetaEnabled = () => process.env.VERCEL_ENV === "production" && Boolean(process.env.META_WEDDING_CONVERSIONS_ACCESS_TOKEN);
 
 /** Runs after successful delivery, independently of the thank-you page and
  * the auto-reply. Retries keep the same event ID for Meta deduplication.
  * Credentials, contact details and Meta's response text must never be logged. */
 export async function reportWeddingLead(input: InquiryConversion) {
-  if (input.headers.get("sec-gpc") === "1" || input.headers.get("dnt") === "1") return;
-  const token = process.env.META_CONVERSIONS_ACCESS_TOKEN;
+  return reportWeddingLeadEvent(weddingLeadEvent(input), input.headers);
+}
+
+export async function reportWeddingLeadEvent(event: WeddingLeadEvent, headers: Headers) {
+  if (headers.get("sec-gpc") === "1" || headers.get("dnt") === "1") return;
+  // Wedding activation must not enable the separate Christmas delivery queue.
+  const token = process.env.META_WEDDING_CONVERSIONS_ACCESS_TOKEN;
   if (process.env.VERCEL_ENV !== "production" || !token) return;
-  const payload = { data: [weddingLeadEvent(input)], access_token: token };
+  const { test_event_code, ...eventData } = event;
+  const payload = { data: [eventData], access_token: token, ...(test_event_code ? { test_event_code } : {}) };
   for (let attempt = 0; attempt < 2; attempt++) {
     try {
       const response = await fetch(`https://graph.facebook.com/v26.0/${META_PIXEL_ID}/events`, {
@@ -63,7 +79,10 @@ export async function reportWeddingLead(input: InquiryConversion) {
         body: JSON.stringify(payload), signal: AbortSignal.timeout(4000), cache: "no-store",
       });
       const result = await response.json().catch(() => null);
-      if (response.ok && result?.events_received === 1) return;
+      if (response.ok && result?.events_received === 1) {
+        console.info("Meta wedding Lead accepted", { eventId: event.event_id, source: event.event_source_url, test: Boolean(test_event_code) });
+        return;
+      }
       if (attempt === 0 && (response.status === 429 || response.status >= 500)) continue;
       console.warn("Meta wedding Lead was not accepted", { status: response.status, code: Number(result?.error?.code) || undefined });
       return;

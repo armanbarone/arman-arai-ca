@@ -6,7 +6,9 @@ import { autoReplyEnabled, sendInquiryAutoReply, type Inquiry } from "@/lib/auto
 import { leadSource, leadSourceBox, leadSourceTag } from "@/lib/lead-source";
 import { recordLead } from "@/lib/portal/leads";
 import { randomUUID } from "node:crypto";
-import { reportWeddingLead } from "@/lib/meta-conversions";
+import { reportWeddingLead, weddingLeadEvent } from "@/lib/meta-conversions";
+import { createMontrealLeadReceipt, MONTREAL_CONFIRMATION_PATH, MONTREAL_LEAD_COOKIE, MONTREAL_RECEIPT_LIFETIME } from "@/lib/montreal-lead-receipt";
+import { inquiryMarket } from "@/lib/inquiry-completion";
 
 /* One inquiry endpoint for every form on the site.
  *
@@ -217,13 +219,21 @@ export async function POST(req: NextRequest) {
 
     // The browser and server use the same opaque ID, so Meta counts one Lead.
     const inquiryId = randomUUID();
+    let montrealReceipt: string | null = null;
     // Older open tabs do not consume the returned ID. Keep their existing
     // browser-only reporting rather than count them twice with different IDs.
     if (body.trackingVersion === "wedding-lead-v1") {
-      after(() => reportWeddingLead({
+      const conversion = {
         id: inquiryId, email: values.email, phone: values.phone, page: body.page,
         fbclid: body.fbclid, headers: req.headers, cookies: req.cookies,
-      }));
+      };
+      const confirmationMarket = market?.slug ?? inquiryMarket(values.location, typeof body.page === "string" ? body.page : "");
+      if (confirmationMarket === "montreal") {
+        montrealReceipt = createMontrealLeadReceipt(weddingLeadEvent(conversion), req.headers);
+      }
+      // Montréal's existing campaign requires the real thank-you URL. Its
+      // server event is sent when that page is served using this receipt.
+      if (!montrealReceipt) after(() => reportWeddingLead(conversion));
     }
 
     // The couple's email goes out after this response, so the form never waits
@@ -233,7 +243,11 @@ export async function POST(req: NextRequest) {
       after(() => sendInquiryAutoReply(inquiry));
     }
 
-    return NextResponse.json({ success: true, autoReply: Boolean(autoReply), inquiryId });
+    const response = NextResponse.json({ success: true, autoReply: Boolean(autoReply), inquiryId });
+    if (montrealReceipt) response.cookies.set(MONTREAL_LEAD_COOKIE, montrealReceipt, {
+      httpOnly: true, secure: true, sameSite: "lax", path: MONTREAL_CONFIRMATION_PATH, maxAge: MONTREAL_RECEIPT_LIFETIME,
+    });
+    return response;
   } catch (err) {
     console.error("Contact API error:", err);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });

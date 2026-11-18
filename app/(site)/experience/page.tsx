@@ -261,8 +261,8 @@ export default function Experience() {
             Three collections, <em className="italic text-rose">one price anywhere</em>
           </h2>
           <p className="text-blush text-[0.95rem] leading-relaxed max-w-2xl mx-auto mb-10 font-light">
-            The same figure wherever the wedding happens. Travel stays separate, uses
-            early-booked low-cost routes and drops when regional dates can be grouped.
+            The same figure wherever the wedding happens, with travel included in it and a
+            scouting day at your venue two days before the wedding.
           </p>
           <div className="flex flex-wrap items-center justify-center gap-4 mb-10">
             {TIERS.map((t) => (

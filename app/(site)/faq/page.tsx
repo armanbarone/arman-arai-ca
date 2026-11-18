@@ -8,7 +8,7 @@ import { ENTRY, MARKETS, SCOPE, SITE, TERMS, TIERS } from "@/lib/site";
 export const metadata: Metadata = {
   title: "FAQ — Booking, Coverage, Travel and Delivery",
   description:
-    "What a wedding costs in Canada or abroad, where the travel reaches, what arrives and when, and every other question couples ask before they get in touch.",
+    "What a wedding costs in Canada or abroad, what travel is included, what arrives and when, and every other question couples ask before they get in touch.",
   alternates: { canonical: "/faq" },
   openGraph: {
     title: "FAQ | Arman Arai",
@@ -26,11 +26,11 @@ const GROUPS = [
     faqs: [
       {
         q: "What does a wedding actually cost?",
-        a: `Three collections, at the same figure anywhere in Canada: ${TIERS.map((t) => `${t.name} ${money(t.price)}` + ` for ${t.hours} hours`).join(", ")}. The city does not change the number. Sales tax goes on top, and travel stays separate only when the wedding requires its own trip.`,
+        a: `Three collections, at the same figure anywhere in Canada: ${TIERS.map((t) => `${t.name} ${money(t.price)}` + ` for ${t.hours} hours`).join(", ")}. The city does not change the number, and travel is included in it. Sales tax goes on top.`,
       },
       {
         q: "Is anything added afterwards?",
-        a: "Only what you choose, plus travel if your wedding needs it. Add-ons are listed with their prices. Travel uses the lowest practical early-booked route, and a permit, helicopter or other venue-specific requirement remains its own line.",
+        a: "Only what you choose. Add-ons are listed with their prices, travel is already inside the collection price, and the only other lines are the ones that are genuinely somebody else's invoice: a permit, a helicopter, a shuttle for your guests.",
       },
       {
         q: "How do the payments work?",
@@ -67,12 +67,12 @@ const GROUPS = [
     title: "Travel",
     faqs: [
       {
-        q: "How do you keep travel affordable?",
-        a: "I book practical routes early, including low-cost carriers when they make sense, and group regional dates whenever possible. If I am already scheduled in your region, the travel fee is reduced or waived.",
+        q: "Is travel charged on top of the collection price?",
+        a: "No. Travel is included anywhere in Canada. The flights, the ferries, the drive and the nights the schedule requires are inside the figure you read on the pricing page, and there is no mileage line and no destination surcharge. A wedding outside Canada is the one exception, and it is quoted per wedding.",
       },
       {
         q: "How far will you actually travel?",
-        a: "Anywhere in Canada, and anywhere in the world outside the United States. Inside Canada the collection price does not move: Whistler, Vancouver Island, Québec City, the Eastern Townships, Niagara, Muskoka and the Rockies all buy Signature for C$3,000, and travel uses the leanest practical route for the venue and date, dropping when another regional booking already covers part of the trip. A wedding outside Canada is quoted rather than priced off that ladder.",
+        a: "Anywhere in Canada, and anywhere in the world outside the United States. Inside Canada the collection price does not move and the travel is included in it: Whistler, Vancouver Island, Québec City, the Eastern Townships, Niagara, Muskoka and the Rockies all buy Signature for C$3,000, with nothing added for getting me there. I arrive two days before the wedding to scout the venue, which is also what keeps a delayed flight away from your day. A wedding outside Canada is quoted rather than priced off that ladder.",
       },
       {
         q: "Do you photograph destination weddings?",

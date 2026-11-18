@@ -20,11 +20,11 @@ import {
 export const metadata: Metadata = {
   title: "Wedding Photography Pricing — One Price, Anywhere in Canada",
   description:
-    "Three collections at one national price: Signature C$3,000 for 8 hours, Legacy C$4,200 for 10, and Photo + Film C$5,900 for 12 with a dedicated filmmaker. Travel stays separate and lean.",
+    "Three collections at one national price: Signature C$3,000 for 8 hours, Legacy C$4,200 for 10, and Photo + Film C$5,900 for 12 with a dedicated filmmaker. Travel is included anywhere in Canada.",
   alternates: { canonical: "/pricing" },
   openGraph: {
     title: "Wedding Photography Pricing — Arman Arai",
-    description: "Three collections, one price anywhere in Canada, with travel kept separate and lean.",
+    description: "Three collections, one price anywhere in Canada, with travel included in it.",
     url: `${SITE.url}/pricing`,
     images: [{ url: CITY_PHOTOS.montreal.hero.src, alt: CITY_PHOTOS.montreal.hero.alt }],
   },
@@ -46,7 +46,7 @@ const PROCESS = [
   { n: "01", t: "You send the date", b: "Date, city, venue if you have one, and roughly how many hours you think you need. Two minutes." },
   { n: "02", t: "I reply within 60 minutes", b: "The full pricing, the welcome guide and my preferred vendor list reach you the moment you send the form. Then I reply myself, with the collection I would actually recommend, which is not always the middle one." },
   { n: "03", t: "A twenty minute call", b: "Not a sales call. I need to hear the shape of the day before I can quote it properly." },
-  { n: "04", t: "One recommended collection", b: "With the one either side of it, the travel figure if your day needs one, and the tax, so you see the whole invoice before you decide." },
+  { n: "04", t: "One recommended collection", b: "With the one either side of it and the tax, so you see the whole invoice before you decide. There is no travel figure to add, wherever your wedding is." },
   { n: "05", t: "A 48-hour hold on the date", b: "Free, and I will tell you if someone else asks about it in the meantime." },
   { n: "06", t: "Contract and deposit", b: `A non-refundable 50% deposit to book, and ${TERMS.balance}.` },
 ];
@@ -54,15 +54,15 @@ const PROCESS = [
 const FAQS = [
   {
     q: "Does the price change depending on the city?",
-    a: "No. Signature is C$3,000 in Montréal, Toronto, Vancouver and Halifax. The photography is the same work wherever it happens, so it carries the same number. Travel stays separate and is reduced or waived when I am already scheduled in your region.",
+    a: "No. Signature is C$3,000 in Montréal, Toronto, Vancouver and Halifax, and travel is included in it. The photography is the same work wherever it happens, so it carries the same number, and getting me there is my cost rather than yours.",
   },
   {
-    q: "So what does travel actually cost?",
-    a: "Often less than people expect. I book practical routes early, including low-cost carriers when they make sense, and charge only for the transportation, ground travel and nights the schedule actually needs. If I am already scheduled in your region, the travel fee is reduced or waived.",
+    q: "Is travel really included, even across the country?",
+    a: "Yes. The flights, the ferries, the drive and the nights the schedule requires are inside the collection price, anywhere in Canada. There is no mileage line and no destination surcharge, and nothing to do with getting me there appears on your invoice. A wedding outside Canada is the one exception, and it is quoted per wedding rather than sold off this ladder.",
   },
   {
-    q: "Why quote travel instead of publishing a grid?",
-    a: "Because even low-cost fares move with the date and route, and grouped regional dates can make travel much cheaper. A blanket grid would overcharge some couples and undercharge others. I use the leanest practical route for the actual venue and date.",
+    q: "What if the venue is remote, or hard to reach?",
+    a: "It changes my plan and not your price. I arrive two days before the wedding wherever it is, which gives me a full day to scout the venue in the real light and puts a cancelled flight or a day of weather two days away from your ceremony. The only costs that stay outside a collection are the ones that are genuinely somebody else's invoice: a park or Crown land permit, a helicopter, a shuttle for your guests. Those are quoted as their own lines so you can decline any of them.",
   },
   {
     q: "What are the social reels, and are they the feature film?",
@@ -151,8 +151,8 @@ export default function Pricing() {
           </h1>
           <p className="text-blush text-[1rem] leading-relaxed max-w-2xl mx-auto mt-6 font-light">
             A collection costs the same in Montréal, in Toronto, in Vancouver and in a field in
-            Saskatchewan. The city does not move the number. Travel stays separate and is kept
-            lean through early booking and grouped regional dates.
+            Saskatchewan. The city does not move the number, and travel is included in it:
+            getting me to your wedding is my cost, not a line on your invoice.
           </p>
         </div>
       </section>
@@ -166,9 +166,9 @@ export default function Pricing() {
               What you <em className="italic text-rose">get</em>
             </h2>
             <p className="text-blush text-[0.95rem] leading-relaxed font-light max-w-2xl mx-auto mt-5">
-Every figure below is the whole price of that collection, in every city I work in.
-              Sales tax and anything you choose from the add-ons go on top. Travel stays separate
-              only when the wedding requires its own trip.
+Every figure below is the whole price of that collection, in every city I work in,
+              with travel included. Sales tax and anything you choose from the add-ons go on
+              top.
             </p>
             <div className="divider mt-6">
               <div className="divider-line" />

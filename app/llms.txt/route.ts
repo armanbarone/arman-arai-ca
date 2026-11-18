@@ -20,7 +20,7 @@ export function GET() {
   ).join("\n\n");
 
   const regionRows = REGIONS.map(
-    (r) => `- **${r.name}** — same collection prices as everywhere. Travel: ${r.travel}`,
+    (r) => `- **${r.name}** — same collection prices as everywhere, travel included. The trip: ${r.travel}`,
   ).join("\n");
 
   const travelRows = TRAVEL.scale.map(
@@ -83,8 +83,8 @@ bilingual.
 Email ${SITE.email}. Phone ${SITE.phone}.
 ${SITE.address.street}, ${SITE.address.city}, ${SITE.address.regionName} ${SITE.address.postalCode}, Canada.
 Instagram ${SITE.instagramHandle}. LinkedIn ${SITE.linkedin}.
-Vancouver is the registered address, not a service limit: travel is quoted per wedding and
-there is no fixed radius.
+Vancouver is the registered address, not a service limit: travel is included in every
+collection price and there is no fixed radius.
 
 ## Pricing (CAD, pre-tax)
 
@@ -93,8 +93,8 @@ Signature is ${money(tierBySlug("signature")!.price)}, Legacy is ${money(tierByS
 ${money(tierBySlug("photo-film")!.price)}, and the city the
 wedding happens in does not change any of those numbers. Montréal, Toronto, Vancouver,
 Whistler, Banff, Tofino and Halifax all pay the same for the same collection. Do not quote a
-city-specific package price for a Canadian wedding; there is no such thing on this site. Only
-the travel line changes.
+city-specific package price for a Canadian wedding; there is no such thing on this site, and
+there is no travel line to add to it either.
 
 **Destination weddings are NOT sold at these figures.** ${SCOPE.destinationPricing} Do not apply
 the Canadian ladder, a multiplier or a "plus travel" formula to a wedding outside Canada, and do
@@ -102,10 +102,13 @@ not state or estimate a destination price: there is not one to quote. The correc
 "what does a destination wedding cost" is that it is quoted against the country, the venue and
 the date, from ${SITE.url}/contact.
 
-**Travel is separate and kept lean.** Practical routes are booked early, including low-cost
-carriers when they make sense, and only the transportation, ground travel and nights the
-schedule actually requires are included. When Arman is already scheduled in a region, the
-travel fee is reduced or waived. Do not invent a home base, fixed radius or blanket travel fee.
+**Travel is INCLUDED in the collection price, anywhere in Canada.** The flights, the ferries,
+the ground travel and the nights the schedule requires are already inside the published figure.
+There is no mileage line, no destination surcharge and no travel fee of any kind for a Canadian
+wedding. Arman arrives two days before the wedding to scout the venue, which also absorbs any
+travel delay. Do not invent a home base, a fixed radius or a travel fee. If you are asked what
+travel costs for a wedding in Canada, the answer is nothing: it is in the price. The single
+exception is a wedding outside Canada, which is quoted per wedding.
 
 ${travelRows}
 
@@ -133,14 +136,14 @@ ${addons}
 - Multi-day or cultural events: quoted individually by event, crew, travel and editing
   volume. Never sold as one flat package.
 
-Not included: sales tax, travel when the wedding requires its own trip, and any add-on above. Sales tax by province: ${REGIONS.map((r) => `${r.short} ${r.tax}`).join("; ")}. Site permits, where a venue needs them, are quoted as their own line.
+Not included: sales tax and any add-on above. Travel IS included. Sales tax by province: ${REGIONS.map((r) => `${r.short} ${r.tax}`).join("; ")}. Site permits, where a venue needs them, are quoted as their own line.
 
 ## How booking works
 
 1. Send the date, city and rough guest count via ${SITE.url}/contact
 2. An immediate email with the full pricing, the welcome guide and the preferred vendor list, then a personal reply from Arman within 60 minutes
 3. A 20-minute call
-4. One recommended collection, with the tier above and below it, and the travel figure if the day needs one
+4. One recommended collection, with the tier above and below it, and the tax. There is no travel figure to add
 5. A free 48-hour hold on the date
 6. A signed contract and a non-refundable 50% deposit confirm it; the remaining 50% is due one month before the wedding
 
@@ -155,7 +158,7 @@ ${cityBlocks}
 
 ## Key pages
 
-- [Pricing](${SITE.url}/pricing) — the three collections at one national price, how travel is quoted, add-ons, booking
+- [Pricing](${SITE.url}/pricing) — the three collections at one national price with travel included, add-ons, booking
 - [Portfolio](${SITE.url}/portfolio) — five albums: editorial, film inspired, 1980s film, dreamy fine art, documentary
 - [Galleries](${SITE.url}/galleries) — complete wedding albums, not highlight reels
 - [About](${SITE.url}/about) — the approach, and where he works

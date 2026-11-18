@@ -50,7 +50,7 @@ export const HUBS: Record<string, HubContent> = {
     ],
     stats: [
       { k: "Best months", v: "May to Oct, and January" },
-      { k: "Travel", v: "Reduced on grouped dates" },
+      { k: "Travel", v: "Included in the price" },
       { k: "Working language", v: "English" },
       CORE_STAT,
     ],
@@ -60,8 +60,8 @@ export const HUBS: Record<string, HubContent> = {
         body: "I have already made the mistakes at these venues: which side of the courtyard is lit at five in July and which at five in October, which rooms lose the light early, and which street is worth the ten-minute walk in falling snow.",
       },
       {
-        title: "Travel kept practical",
-        body: "I book the leanest route the date requires and group regional work whenever possible. If another wedding already covers the trip, the travel fee is reduced or waived.",
+        title: "Travel is included, and I come early",
+        body: "Getting to your wedding is my cost, not a line on your invoice, wherever in the country it is. I arrive two days before the day to scout the venue in the light it will actually have, which is also what keeps a delayed flight away from your morning.",
       },
       {
         title: "Winter is not a compromise here",
@@ -156,7 +156,7 @@ export const HUBS: Record<string, HubContent> = {
       { time: "Hour 7–8", title: "Reception", body: "Speeches, the dances that matter, the room. Off-camera flash once it goes dark, because a dark room is not an excuse." },
     ],
     colophon:
-      "Toronto and the GTA, from Burlington to Whitby, plus Niagara, Muskoka and Prince Edward County. Travel stays separate and drops when dates can be grouped.",
+      "Toronto and the GTA, from Burlington to Whitby, plus Niagara, Muskoka and Prince Edward County, with travel included wherever the venue is.",
   },
 
   vancouver: {
@@ -185,7 +185,7 @@ export const HUBS: Record<string, HubContent> = {
       },
       {
         title: "Whistler and the Island cost the same as everywhere",
-        body: "The collection price does not move with the map, and travel uses the leanest practical route for the date. Tofino is the one I will flag honestly, because it usually wants an extra night and therefore the ten-hour collection.",
+        body: "The collection price does not move with the map, and the travel is included in it. Tofino is the one I will flag honestly, because it usually wants an extra night and therefore the ten-hour collection.",
       },
     ],
     venuesIntro:
@@ -276,7 +276,7 @@ export const HUBS: Record<string, HubContent> = {
       { time: "Hour 7–8", title: "Dinner and the room", body: "Speeches and the dances that matter. Nobody is driving home, so the night runs later here than almost anywhere else I work." },
     ],
     colophon:
-      "Whistler, Squamish and Pemberton, at the same collection price as anywhere. The corridor drive stays separate and grouped regional dates can lower the travel fee.",
+      "Whistler, Squamish and Pemberton, at the same collection price as anywhere, with the corridor drive included in it.",
   },
 
   tofino: {

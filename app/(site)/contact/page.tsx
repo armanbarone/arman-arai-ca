@@ -69,7 +69,7 @@ export default function Contact() {
             </p>
             <p className="text-slate text-sm leading-relaxed mb-10">
               {ENTRY.name} is C${STARTING_FROM.toLocaleString("en-CA")}, and it is the same figure wherever you
-              are getting married. Travel stays separate and uses the lowest practical route.{" "}
+              are getting married, with travel included in it.{" "}
               <Link href="/pricing" className="text-rose border-b border-dust hover:border-rose transition-colors">
                 The full ladder is published
               </Link>{" "}

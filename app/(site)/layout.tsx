@@ -59,7 +59,7 @@ const ORG_LD = {
       image: "https://cdn.armanarai.ca/about/arman-portrait-camera-window.webp",
       // The description is the sentence an answer engine is most likely to
       // lift, so it states the service, the country and the exclusion.
-      description: `${SCOPE.oneLine} ${SCOPE.excludedShort} Documentary and editorial coverage, with one published collection price wherever the wedding happens and travel quoted separately.`,
+      description: `${SCOPE.oneLine} ${SCOPE.excludedShort} Documentary and editorial coverage, with one published collection price wherever the wedding happens and travel included in it.`,
       priceRange: "CA$3,000–CA$6,000",
       currenciesAccepted: "CAD",
       paymentAccepted: "Credit card, Interac e-Transfer, pre-authorised debit",
@@ -91,11 +91,12 @@ const ORG_LD = {
       // One offer per collection, for every wedding this site takes. The price
       // no longer varies by city, so a region-by-region matrix would repeat the
       // same figure and imply a distinction that does not exist. Travel is
-      // quoted per booking and is deliberately not in this markup.
+      // included in the price (owner, 2026-11-17), so the offer says so rather
+      // than leaving an answer engine to assume a fee it cannot see.
       makesOffer: TIERS.map((t) => ({
         "@type": "Offer",
         name: `${t.name} wedding photography: ${t.coverage}`,
-        description: `${t.crew}. ${t.images}. This price is for a wedding anywhere in Canada and does not change with the city; travel is quoted separately. Weddings outside Canada are quoted per wedding, not sold at this figure.`,
+        description: `${t.crew}. ${t.images}. This price is for a wedding anywhere in Canada, travel included, and does not change with the city. Weddings outside Canada are quoted per wedding, not sold at this figure.`,
         price: t.price,
         priceCurrency: "CAD",
         availability: "https://schema.org/InStock",

@@ -104,7 +104,7 @@ const carried = [
   { t: "A written family-photo plan", d: "Twelve groups and two callers, agreed before the day. This is the single largest block of time a big wedding gets back." },
   { t: "A preview in 48 hours", d: "Thirty frames while the day is still in your head. Next day on Signature, 24 hours on Legacy." },
   { t: "The full gallery, dated", d: "Three weeks, on every collection. The date is in the contract, not in an email." },
-  { t: "One price, wherever it happens", d: "A collection costs the same in every city. Travel stays separate, uses the lowest practical route and drops when regional dates can be grouped." },
+  { t: "One price, travel included", d: "A collection costs the same in every city, and getting me there is inside that figure. No mileage line, no destination surcharge, and I arrive two days early to scout." },
 ];
 
 const INCANTATION =
@@ -178,10 +178,9 @@ export default function Home() {
 
               <p className="dr-lede" style={{ marginBottom: "2.2rem", maxWidth: "30rem" }}>
                 <strong>Documentary and editorial wedding photography, across Canada.</strong>{" "}
-                Three collections at one price in every province, with vertical social reels
-                and film prints in every one and travel quoted openly on top. Destination
-                weddings too, anywhere outside the United States, quoted against the country
-                and the date.
+                Three collections at one price in every province, travel included, with
+                vertical social reels and film prints in every one. Destination weddings too,
+                anywhere outside the United States, quoted against the country and the date.
               </p>
 
               <div className="dr-cta-row">
@@ -480,8 +479,8 @@ export default function Home() {
                 <p className="dr-p">
                   {ENTRY.name} is {money(ENTRY.price)} in Montréal, in Toronto, in Vancouver and in a
                   field in Saskatchewan. The city does not move the number, because the work
-                  does not change. Travel stays separate, is kept lean through early booking and
-                  is reduced or waived when another regional date already covers the trip.
+                  does not change, and travel is included in it: the flights, the drive and the
+                  nights are mine to pay for, and I am at your venue two days before the day.
                 </p>
                 <div style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}>
                   {TIERS.map((t) => (

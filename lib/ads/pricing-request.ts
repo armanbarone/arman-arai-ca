@@ -31,12 +31,13 @@ export function tierItems(tier: Tier): string[] {
 }
 
 /** Per market: the travel rule, and a coverage answer that does not contradict
- *  it. Toronto and Montréal carry no travel costs for now (owner, 2026-09-28).
- *  Vancouver keeps the rule its ads page already published. Calgary & Banff
- *  and Victoria (added 2026-10-01) carry the rule the rest of the site already
- *  publishes for the Rockies and the island: travel is quoted against the
- *  venue before booking. If the owner says "no travel costs" for them, it is
- *  these lines, as for Toronto. */
+ *  it. Since 2026-11-17 there is only one rule, in every market: travel is
+ *  INCLUDED in the collection price, and Arman arrives two days before the
+ *  wedding to scout the venue. Toronto and Montréal keep the shorter "no
+ *  travel costs" wording they have carried since 2026-09-28, which says the
+ *  same thing to a couple. These strings are read by the thank-you screen and
+ *  the sticky price bar, and lib/auto-reply.ts promises the same thing in the
+ *  email that lands thirty seconds later, so the two must never disagree. */
 export type PricingMarket = {
   slug: string;
   /** For the price line and the sticky bar: "no travel costs". */
@@ -52,20 +53,17 @@ export const PRICING_MARKETS: PricingMarket[] = [
     travelShort: "travel included",
     /* Owner, 2026-11-17: on the national page travel is INCLUDED in the
        collection, and he arrives two days before the wedding to scout. That
-       overrides TRAVEL.availabilityNote in lib/site.ts, which still says
-       travel is quoted separately and is still what /pricing, /faq, llms.txt,
-       the wedding guide and the journal say. This market and lib/auto-reply.ts
-       were changed because they are the same post-inquiry sequence and a
-       couple reads both inside a minute; the rest was flagged to him. Keep the
-       two in step, and keep the claim to Canada. */
+       matches TRAVEL in lib/site.ts, which carries the same rule for /pricing,
+       /faq, llms.txt, the wedding guide, the hubs and the journal. Keep the
+       claim to Canada: a wedding outside it is still quoted per wedding. */
     travelNote: "A collection costs the same anywhere in Canada, and travel is included in it. The flights, the ground travel and the nights are inside the collection price, and I arrive two days before the wedding to scout your venue.",
     coverageAnswer: "Yes. Weddings anywhere in Canada, at the same published collection prices, with travel included. I arrive two days before the wedding to scout your venue and build the timeline around it.",
   },
   {
     slug: "vancouver",
-    travelShort: "local travel included",
-    travelNote: "Local travel within Vancouver and the Lower Mainland is included. Longer travel is quoted separately and agreed before you book.",
-    coverageAnswer: "Yes. Vancouver, Burnaby, Richmond, the North Shore, the Fraser Valley, Squamish and Whistler. Local travel within Vancouver and the Lower Mainland is included; anything further is quoted before you book.",
+    travelShort: "travel included",
+    travelNote: "Travel is included in the collection price, in Vancouver and anywhere else in Canada. I arrive two days before the wedding to scout your venue.",
+    coverageAnswer: "Yes. Vancouver, Burnaby, Richmond, the North Shore, the Fraser Valley, Squamish and Whistler, with travel included wherever the venue is.",
   },
   {
     slug: "toronto",
@@ -81,15 +79,15 @@ export const PRICING_MARKETS: PricingMarket[] = [
   },
   {
     slug: "calgary",
-    travelShort: "travel quoted before you book",
-    travelNote: "Travel is quoted against your venue, kept to the route your date actually requires, and agreed before you book.",
-    coverageAnswer: "Yes. Calgary, Banff, Lake Louise, Canmore, Kananaskis and the Bow Valley. Travel is quoted against your venue and agreed before you book.",
+    travelShort: "travel included",
+    travelNote: "Travel is included in the collection price, whether the wedding is in the city or up the Bow Valley. I arrive two days before the day to scout your venue.",
+    coverageAnswer: "Yes. Calgary, Banff, Lake Louise, Canmore, Kananaskis and the Bow Valley, with travel included wherever the venue is.",
   },
   {
     slug: "victoria",
-    travelShort: "travel quoted before you book",
-    travelNote: "Victoria is a ferry and a short drive. Travel is quoted against your venue and agreed before you book.",
-    coverageAnswer: "Yes. Victoria, Oak Bay, Saanich, Sidney, the West Shore and the rest of Vancouver Island. Travel is quoted against your venue and agreed before you book.",
+    travelShort: "travel included",
+    travelNote: "Victoria is a ferry and a short drive, and both are included in the collection price. I come over two days before the wedding to scout your venue.",
+    coverageAnswer: "Yes. Victoria, Oak Bay, Saanich, Sidney, the West Shore and the rest of Vancouver Island, with the ferry and the driving included.",
   },
 ];
 export const pricingMarket = (slug: string) => PRICING_MARKETS.find((market) => market.slug === slug);

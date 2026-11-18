@@ -77,7 +77,7 @@ export const posts: BlogPost[] = [
 
 <h2>What I charge, and why it is on the website</h2>
 <figure><img src="${CDN}/cities/toronto/muskoka.webp" alt="Couple on a dock in front of a float plane on a Muskoka lake"><figcaption>Muskoka, Niagara and Prince Edward County are all inside a reasonable Toronto radius.</figcaption></figure>
-<p>My collections are C$3,000 for eight hours with an engagement session, C$4,200 for ten with a second photographer, and C$5,900 for twelve hours alongside a dedicated filmmaker. Those figures are the same in Toronto as they are in Montréal or Vancouver, because the photography is the same work wherever it happens. Travel is kept separate and built around the lowest practical route booked early; when nearby dates can be grouped, that fee drops or disappears. Niagara, Niagara-on-the-Lake, the 1000 Islands, Muskoka and Prince Edward County all buy the same collections at the same price, with travel handled the same way. Multi-day weddings are quoted individually and always will be, and a rehearsal dinner or welcome event of up to three hours is C$1,000.</p>
+<p>My collections are C$3,000 for eight hours with an engagement session, C$4,200 for ten with a second photographer, and C$5,900 for twelve hours alongside a dedicated filmmaker. Those figures are the same in Toronto as they are in Montréal or Vancouver, because the photography is the same work wherever it happens. Travel is included in all three figures. Niagara, Niagara-on-the-Lake, the 1000 Islands, Muskoka and Prince Edward County all buy the same collections at the same price, with nothing added for the drive or the night it takes to get there. Multi-day weddings are quoted individually and always will be, and a rehearsal dinner or welcome event of up to three hours is C$1,000.</p>
 <p>Every add-on has a published price: a second photographer is C$800 for a four-hour minimum, an extra coverage hour is C$400, a 10&times;10 Signature album is C$1,200. Vertical social reels are in every collection rather than sold separately, and so are the film prints handed to guests on the night, because the gap between the wedding and the gallery is exactly when everyone wants something in their hands.</p>
 <p>Those numbers are on the pricing page because roughly three quarters of couples say price is the thing they most want to know before making contact, and most photographers make them ask for it anyway. Publishing it saves us both the two emails where we discover we were never in the same range.</p>
 <p><strong>It also means I cannot quietly quote you differently from the next couple</strong>, which is a discipline worth having.</p>
@@ -112,12 +112,12 @@ export const posts: BlogPost[] = [
 <h2>Why Montréal prices lower than Toronto</h2>
 <figure><img src="${CDN}/cities/montreal/places/mtl-montroyal-dusk.png" alt="Couple embracing on Mont-Royal with the Montréal skyline behind them at dusk"><figcaption>Lower overhead and a smaller radius flow straight through to the price.</figcaption></figure>
 <p>The work is the same. The cost of doing it is not. Montréal is geographically compact in a way the GTA is not, so travel between a Griffintown getting-ready and an Old Montréal ceremony is fifteen minutes rather than an hour on the 401. Studio and living costs are lower. Reaching couples costs less, because the market is less crowded with photographers bidding for the same search terms.</p>
-<p>Signature here is C$3,000, Signature in Toronto is C$3,000, and Signature in Vancouver is C$3,000. The city does not move the number, because the work does not change. Travel stays separate and is based on the leanest practical route: early-booked low-cost air or rail, only the ground transport the day requires, and only the nights the schedule requires. When regional dates can be grouped, the travel fee is reduced or waived.</p>
+<p>Signature here is C$3,000, Signature in Toronto is C$3,000, and Signature in Vancouver is C$3,000. The city does not move the number, because the work does not change. Travel is included in all three figures. The air or rail, the ground transport and the nights the schedule requires are my cost rather than a line on your invoice, and that is as true of a wedding in Halifax as it is of one in Mile End.</p>
 
 <h2>What knowing Montréal actually buys you</h2>
 <figure><img src="${CDN}/portfolio/documentary/guests-laughing-champagne.webp" alt="Guests laughing together with champagne at the reception"><figcaption>The advantage is not access. It is having already made the mistakes at your venue.</figcaption></figure>
 <p>Every photographer in this city will tell you they know it. What that should mean, concretely, is that they have already been wrong about your venue and corrected it. I know which side of Place d'Armes is lit at five in July and which at five in October. I know which reception rooms lose the window an hour before the couple expects, and which streets are worth a ten-minute walk in falling snow.</p>
-<p><strong>That is the entire argument for hiring locally, and it is worth more than it sounds.</strong> A photographer flying in for your date is scouting on the morning of, or from photographs, or not at all. It is also why Montréal is the only market where I charge nothing for travel: there is nothing to charge for.</p>
+<p><strong>That is the entire argument for hiring locally, and it is worth more than it sounds.</strong> A photographer flying in for your date is scouting on the morning of, or from photographs, or not at all. It is also why I stopped charging for travel anywhere: a photographer who arrives two days early and learns the place has already absorbed the trip, and billing you for it as well was a way of being paid twice for the same decision.</p>
 <p>One thing I will say plainly rather than let you discover it: <strong>I work in English.</strong> In practice your planner, your venue and your officiant carry the French side of a Québec wedding, and directing a portrait is mostly gesture and a handful of words. If having a French-speaking photographer genuinely matters to you, tell me at the enquiry and I will point you toward someone instead of talking you out of it.</p>
 
 <h2>What the low end of the range is really selling</h2>
@@ -129,7 +129,7 @@ export const posts: BlogPost[] = [
 <h2>The Laurentians and the Eastern Townships are a drive, not a destination</h2>
 <figure><img src="${CDN}/cities/montreal/jacques-cartier.webp" alt="Couple kissing at the edge of a lake ringed with autumn forest"><figcaption>Mont-Tremblant, Sutton, Bromont and Knowlton are inside the working radius.</figcaption></figure>
 <p>Some photographers quote a Mont-Tremblant or Eastern Townships wedding as a destination job with a travel package attached. It is ninety minutes up the autoroute. <strong>I include it, and I say so before you ask.</strong></p>
-<p>Québec City is genuinely different: it is a travel day with an overnight, and it is quoted as one. The line I draw is whether the wedding requires a hotel, not whether it happens outside the island.</p>
+<p>Québec City is genuinely different: it is a travel day with an overnight. It costs you nothing extra either, because the overnight is mine to pay for, but it does change the plan, which is why I am there two days ahead rather than driving up on the morning.</p>
 
 <h2>A civil ceremony with a notaire is not too small</h2>
 <figure><img src="${CDN}/cities/montreal/places/mtl-snow-lane.png" alt="Couple sharing an umbrella in falling snow on a Montréal street of exterior staircases"><figcaption>A six-hour day covers a notaire ceremony, portraits and a long dinner comfortably.</figcaption></figure>
@@ -182,7 +182,7 @@ export const posts: BlogPost[] = [
 <h2>Product two: Sea-to-Sky, Squamish and Whistler</h2>
 <figure><img src="${CDN}/cities/vancouver/whistler/12-snowy-birch-turnaround.webp" alt="Couple in the snow among the conifers on Cypress Mountain"><figcaption>Up the corridor, access and permits stop being details and become the plan.</figcaption></figure>
 <p>The corridor is a different job. Travel time has to be counted properly rather than absorbed. Anything on Crown land or in a provincial park needs its permit arranged well before the date, and the process is not fast. Helicopter access, ground transport, and getting a wedding party up a mountain in dresses are all real logistics with real costs.</p>
-<p>My answer is that the corridor costs the same as the city: <strong>Signature is C$3,000 whether the day happens in Kitsilano, in Squamish or up at Whistler</strong>, because it is identical work. Travel is kept to the leanest practical route booked early, and regional dates are grouped whenever possible so the fee can be reduced or waived. What sits outside both is anything that is genuinely somebody else's invoice: a helicopter, a shuttle for guests, a vendor. Those are quoted as their own lines so you can see each one and decline any of them.</p>
+<p>My answer is that the corridor costs the same as the city: <strong>Signature is C$3,000 whether the day happens in Kitsilano, in Squamish or up at Whistler</strong>, because it is identical work. Travel is included in that figure, up the corridor exactly as in the city. What sits outside it is anything that is genuinely somebody else's invoice: a helicopter, a shuttle for guests, a vendor. Those are quoted as their own lines so you can see each one and decline any of them.</p>
 
 <h2>Why the $800 packages exist</h2>
 <figure><img src="${CDN}/portfolio/documentary/private-door-groom.webp" alt="A door marked PRIVATE with the groom waiting beyond it"><figcaption>The bottom of the Vancouver range is usually a two-hour elopement product, not a wedding day.</figcaption></figure>
@@ -201,7 +201,7 @@ export const posts: BlogPost[] = [
 
 <h2>My Vancouver numbers</h2>
 <figure><img src="${CDN}/cities/vancouver/locations/lighthouse-park/01.webp" alt="Couple embracing on driftwood at Lighthouse Park with the lighthouse above them"><figcaption>Lighthouse Park, Whytecliff, Deep Cove and Cypress are all inside the normal radius.</figcaption></figure>
-<p>Signature is C$3,000 for eight hours, Legacy C$4,200 for ten, and Photo + Film C$5,900 for twelve. Those figures remain the same across Canada. Travel is separate and kept lean through early booking, low-cost routes and grouped regional dates. Premium local coverage in this city runs roughly C$5,800 to C$7,500 for a full day, so Signature remains positioned below much of the local premium band before travel.</p>
+<p>Signature is C$3,000 for eight hours, Legacy C$4,200 for ten, and Photo + Film C$5,900 for twelve. Those figures remain the same across Canada. Travel is included in every one of them. Premium local coverage in this city runs roughly C$5,800 to C$7,500 for a full day, so Signature sits below much of the local premium band with nothing left to add to it.</p>
 <p>Whistler, Squamish and the North Shore are the same numbers, because they are one published region. Vancouver Island and Tofino sit outside it: a ferry and three more hours of highway are a different trip, so those are quoted against your actual venue rather than published. A scouted weather backup and any provincial-park permit are part of the work, not an add-on.</p>
 <p>Helicopter access, ground transport and vendors are the only separate lines, so you can see each one and decline any of them. Everything else is in the number on the pricing page.</p>
 <h2>Where the money goes on a coastal wedding</h2>
@@ -467,7 +467,7 @@ export const posts: BlogPost[] = [
 <h2>What the all-inclusive numbers actually contain</h2>
 <figure><img src="${CDN}/cities/vancouver/whytecliff.webp" alt="Couple seated on the rocks at Whytecliff Park with the islands beyond"><figcaption>The published Whistler packages bundle vendors, not just a better photographer.</figcaption></figure>
 <p>All-inclusive Whistler packages advertised from about $8,500 typically bundle photography with an officiant, florals, hair and makeup, planning and travel. The photography inside that is not $8,500 of photography. It is roughly half of it, plus several thousand dollars of other people's work and the coordination to make them arrive in the right order.</p>
-<p><strong>If you want somebody to run the whole thing, that is a reasonable way to buy it.</strong> If you are booking your own officiant and florist, you should not pay a bundled price for a service you are performing yourself. My Whistler collections are the same as everywhere: C$3,000 for eight hours, C$4,200 for ten, and C$5,900 for twelve with a dedicated filmmaker. Travel stays separate and is kept lean through early booking and grouped regional dates.</p>
+<p><strong>If you want somebody to run the whole thing, that is a reasonable way to buy it.</strong> If you are booking your own officiant and florist, you should not pay a bundled price for a service you are performing yourself. My Whistler collections are the same as everywhere: C$3,000 for eight hours, C$4,200 for ten, and C$5,900 for twelve with a dedicated filmmaker, with the travel up the corridor included in each of them.</p>
 
 <h2>The permit is the part that goes wrong</h2>
 <figure><img src="${CDN}/cities/vancouver/locations/squamish-sea-to-sky-gondola/01.webp" alt="Valley view from the Sea-to-Sky gondola above Squamish"><figcaption>Crown land and provincial parks both want paperwork, and neither is fast.</figcaption></figure>
@@ -512,7 +512,7 @@ export const posts: BlogPost[] = [
 
 <h2>What the collections cost on the Sea-to-Sky</h2>
 <figure><img src="${CDN}/cities/vancouver/whistler/24-vows-with-wedding-party.webp" alt="Still water and forest at Lost Lake in Whistler in the evening"><figcaption>The same numbers as Vancouver, because it is the same trip.</figcaption></figure>
-<p><strong>Signature is C$3,000 for eight hours, Legacy C$4,200 for ten, and Photo + Film C$5,900 for twelve.</strong> Those are the same figures as a Vancouver city wedding, and the same as a Montréal one, because the photography is the same work. Travel stays separate and uses the lowest practical early-booked route, with only the nights and ground transport the schedule requires.</p>
+<p><strong>Signature is C$3,000 for eight hours, Legacy C$4,200 for ten, and Photo + Film C$5,900 for twelve.</strong> Those are the same figures as a Vancouver city wedding, and the same as a Montréal one, because the photography is the same work. Travel is included in all three, which on this coast means the ferry, the drive and the nights as well as the flight.</p>
 <p>Signature is the collection I recommend most here, for a specific reason: a corridor wedding almost always has the getting-ready in one place and the ceremony somewhere the light is better, and eight hours is what that actually takes on a road this slow. Legacy earns its price when guests are already up for the weekend, which in Whistler is nearly always.</p>
 <p>The <a href="/pricing">full ladder is published</a>, the region sits on the <a href="/vancouver-wedding-photographer">Vancouver page</a>, and if you want the locations rather than the logistics, <a href="/blog/vancouver-wedding-photo-locations">twenty of them are listed here</a>.</p>
 `,
@@ -529,7 +529,7 @@ export const posts: BlogPost[] = [
     coverImage: `${CDN}/cities/vancouver/locations/lighthouse-park/01.webp`,
     coverAlt: "Couple embracing on driftwood with a lighthouse above them",
     excerpt:
-      "Vancouver Island is a ferry and a drive, and Tofino is three hours past that. What the travel means for your day, and why it is quoted, not published.",
+      "Vancouver Island is a ferry and a drive, and Tofino is three hours past that. What the travel means for your day, and why none of it reaches your invoice.",
     topic: "Places",
     city: "vancouver",
     body: `
@@ -539,7 +539,7 @@ export const posts: BlogPost[] = [
 <h2>The ferry is a schedule, not a road</h2>
 <figure><img src="${CDN}/cities/vancouver/locations/porteau-cove/01.webp" alt="Mountains and water on the British Columbia coast"><figcaption>Sailings fill in summer. A missed one is two hours, not twenty minutes.</figcaption></figure>
 <p>In July and August the sailings fill, and a missed one is a two-hour problem rather than a twenty-minute one. If any part of your wedding party is crossing on the day, reserve. If your photographer is crossing on the day, something has gone wrong in the planning.</p>
-<p><strong>I come over the day before as a rule</strong>, which is part of why the travel is priced honestly rather than absorbed: that night is a real cost and pretending otherwise just moves it into a worse place.</p>
+<p><strong>I come over two days before the wedding as a rule</strong>, which is a real cost and one I carry rather than bill: it buys a full day to scout the venue in the light it will actually have, and it puts a missed ferry two days away from your ceremony instead of ninety minutes.</p>
 
 <h2>Tofino wants the ten-hour collection</h2>
 <figure><img src="${CDN}/portfolio/documentary/rainy-arcade-umbrella-bw.webp" alt="Black and white frame of a couple under an umbrella in the rain"><figcaption>Three hours of highway each way makes a single ten-hour day very tight.</figcaption></figure>
@@ -589,14 +589,14 @@ export const posts: BlogPost[] = [
     slug: "wedding-venues-outside-toronto",
     title: "Wedding Venues Outside Toronto: Niagara, Muskoka, the County",
     subtitle:
-      "Three regions within three hours of the city, what each does to a photograph, and what the travel really costs.",
+      "Three regions within three hours of the city, what each does to a photograph, and why none of them costs more to photograph than King Street.",
     date: "2026-08-13",
     dateDisplay: "August 13, 2026",
     readTime: "7 min read",
     coverImage: `${CDN}/cities/toronto/muskoka.webp`,
     coverAlt: "Couple on a dock in front of a float plane on a Muskoka lake",
     excerpt:
-      "Niagara costs what downtown Toronto costs. Muskoka and Prince Edward County are quoted separately. How to choose between the three regions.",
+      "Niagara, Muskoka and Prince Edward County all cost what downtown Toronto costs. How to choose between the three regions.",
     topic: "Places",
     city: "toronto",
     body: `
@@ -623,10 +623,10 @@ export const posts: BlogPost[] = [
 <p>Five hours northwest, white quartzite ridges and water that goes genuinely turquoise. It is the most beautiful of the four and the least practical: almost nobody's grandmother is making that drive, and the accommodation situation is thinner than the County's.</p>
 <p>It works for a small wedding of people who would have gone camping together anyway. For anything above forty guests it is a fight.</p>
 
-<h2>What the travel actually costs</h2>
+<h2>What the travel actually costs you</h2>
 <figure><img src="${CDN}/cities/toronto/niagara/2023-weddings-np-ramblersrest-14-edited-e1724685930816.webp" alt="Couple under a stone arch with rows of white ceremony chairs"><figcaption>Niagara, Muskoka and the County are one region on my pricing, not three surprises.</figcaption></figure>
-<p>They cost the same. <strong>A Signature wedding at a Niagara-on-the-Lake winery is C$3,000, exactly what a downtown Toronto Saturday costs</strong>, and so is one in Muskoka or Prince Edward County. What differs is the trip: Niagara is a drive, the County and Muskoka are a longer drive and usually a night, and each is costed against the actual property rather than averaged.</p>
-<p><strong>Ask any photographer where their included radius ends before you sign rather than after.</strong> A Toronto base rate that quietly assumes a downtown venue and then adds mileage for Muskoka is not a cheaper quote, it is a later one.</p>
+<p>They cost the same. <strong>A Signature wedding at a Niagara-on-the-Lake winery is C$3,000, exactly what a downtown Toronto Saturday costs</strong>, and so is one in Muskoka or Prince Edward County. What differs is the trip: Niagara is a drive, the County and Muskoka are a longer drive and usually a night. All of it is included, so the difference lands on my schedule rather than on your invoice.</p>
+<p><strong>Ask any photographer where their included radius ends before you sign rather than after.</strong> A Toronto base rate that quietly assumes a downtown venue and then adds mileage for Muskoka is not a cheaper quote, it is a later one. Mine has no radius: the figure is the figure wherever the venue is.</p>
 
 <h2>How to choose between them</h2>
 <figure><img src="${CDN}/cities/toronto/niagara.webp" alt="Bride holding an orange bouquet among ferns in a conservatory"><figcaption>Pick for the constraint you actually have, not the photograph you saw once.</figcaption></figure>
@@ -651,7 +651,7 @@ export const posts: BlogPost[] = [
 <p><a href="/blog/niagara-wedding-venues-and-photo-locations">Niagara</a> covers the Niagara Parks ceremony sites, including the Floral Showhouse and its twenty-person capacity limit, Rambler's Rest, and how to build a day around the wet plan.</p>
 <p><a href="/blog/prince-edward-county-wedding-venues">Prince Edward County</a> goes property by property from Wellington to Milford, with the light, the shelter and the lodging problem for each.</p>
 <p><a href="/blog/muskoka-cottage-country-wedding-photography">Muskoka</a> covers the towns, the dock question, boats, blackfly season, and why September is the region's best month by a distance.</p>
-<p><strong>Niagara is C$3,000 for Signature, C$4,200 for Legacy and C$5,900 for Photo + Film</strong>, the same as Toronto and the same as everywhere. Muskoka and Prince Edward County buy those same three collections, with their own travel quoted against the actual property. <a href="/contact">Send the date and a rough guest count</a> and I will tell you what the day costs and what the trip costs.</p>
+<p><strong>Niagara is C$3,000 for Signature, C$4,200 for Legacy and C$5,900 for Photo + Film</strong>, the same as Toronto and the same as everywhere. Muskoka and Prince Edward County buy those same three collections, travel included, however long the drive up turns out to be. <a href="/contact">Send the date and a rough guest count</a> and I will tell you what the day costs, which is all there is to tell you.</p>
 `,
   },
   /* ──────────────────────────────────────────────────────── VANCOUVER ── */
@@ -734,7 +734,7 @@ export const posts: BlogPost[] = [
 
 <h2>What this costs, and how the locations get chosen</h2>
 <figure><img src="${CDN}/cities/vancouver/locations/lynn-canyon/01.webp" alt="Couple on a mossy trail in Lynn Canyon under heavy green canopy"><figcaption>Every location on this list costs the same to shoot. Only the trip out is quoted.</figcaption></figure>
-<p>My collections are C$3,000 for Signature at eight hours, C$4,200 for Legacy at ten, and C$5,900 for Photo + Film at twelve. Whistler, Squamish, the North Shore and Vancouver Island carry the same numbers, because the photography is the same work. Travel stays separate and uses the leanest practical route booked early.</p>
+<p>My collections are C$3,000 for Signature at eight hours, C$4,200 for Legacy at ten, and C$5,900 for Photo + Film at twelve. Whistler, Squamish, the North Shore and Vancouver Island carry the same numbers, because the photography is the same work, and the travel to reach any of them is included.</p>
 <p>Choosing between the locations above is part of the planning rather than something you do alone. I ask where the ceremony is, what time it ends, how mobile your oldest guest is, and what the forecast has been doing for the fortnight before. Two locations come out of that: the one we want and the one we use if it is raining, both of which I will have physically looked at.</p>
 <p><strong>The rain plan being a specific named place rather than an attitude is the whole local skill.</strong> Anyone can photograph Whytecliff in July. The question worth asking a Vancouver photographer is what they do on the third Saturday in November, and the good answer has a location in it.</p>
 <p>The full ladder is on the <a href="/pricing">pricing page</a>, the region in detail sits on the <a href="/vancouver-wedding-photographer">Vancouver page</a>, and if you already have a date, <a href="/contact">send it</a> and I will tell you what the light is doing that evening.</p>
@@ -1035,7 +1035,7 @@ export const posts: BlogPost[] = [
 
 <h2>What coverage in Niagara costs</h2>
 <figure><img src="${CDN}/cities/toronto/niagara/2023-weddings-np-ramblersrest-7-edited-e1724685922414.webp" alt="Couple close together on the stone steps of the heritage pavilion at dusk"><figcaption>Niagara, Muskoka and the County all buy the same collections at the same price. Only the drive differs.</figcaption></figure>
-<p>Niagara costs exactly what a downtown Toronto Saturday costs, and what a Montréal one costs: <strong>C$3,000 for Signature at eight hours, C$4,200 for Legacy at ten, and C$5,900 for Photo + Film at twelve.</strong> Travel stays separate and is limited to the practical route and any night the schedule actually requires; a winery in Niagara-on-the-Lake is not a more expensive wedding than one on King Street.</p>
+<p>Niagara costs exactly what a downtown Toronto Saturday costs, and what a Montréal one costs: <strong>C$3,000 for Signature at eight hours, C$4,200 for Legacy at ten, and C$5,900 for Photo + Film at twelve.</strong> Travel is included in those figures, so a winery in Niagara-on-the-Lake is not a more expensive wedding than one on King Street in any sense at all.</p>
 <p>Vertical social reels and film prints handed to guests on the night are in every collection here as everywhere, which matters more for a wedding people drove two hours to reach: they get something in their hands before they leave, and the gallery is still weeks away. The colour-graded feature film comes with Signature and Legacy, and Photo + Film carries a longer one shot by a dedicated filmmaker.</p>
 <p>If you are weighing Niagara against Muskoka or the County, <a href="/blog/wedding-venues-outside-toronto">the comparison is written out here</a>. If you already have a date and a venue, <a href="/contact">send them</a> and I will tell you what the light does there at that hour in that month.</p>
 `,
@@ -1098,7 +1098,7 @@ export const posts: BlogPost[] = [
 
 <h2>What a Muskoka wedding costs to photograph</h2>
 <figure><img src="${CDN}/cities/toronto/muskoka/touchstone-resort-bracebridge/01.webp" alt="Resort lawn sloping to the water near Bracebridge in evening light"><figcaption>The collection price is the same as anywhere. Only the drive and the nights are quoted.</figcaption></figure>
-<p>Muskoka buys the same collections as everywhere else: <strong>C$3,000 for Signature, C$4,200 for Legacy and C$5,900 for Photo + Film.</strong> The travel is quoted rather than printed, because Muskoka adds a long drive and accommodation that varies enormously by lake. I cost it against your actual venue instead of averaging it.</p>
+<p>Muskoka buys the same collections as everywhere else: <strong>C$3,000 for Signature, C$4,200 for Legacy and C$5,900 for Photo + Film.</strong> Travel is included, which matters more here than almost anywhere, because Muskoka adds a long drive and a night of accommodation that varies enormously by lake. That variation is mine to absorb now rather than yours to discover.</p>
 <p>Two practical notes on which collection to take. <strong>Signature is the honest answer for most Muskoka weddings</strong>, because the getting-ready is frequently at a cottage twenty minutes from the venue and six hours disappears fast on a road that slow. And Legacy earns its price here for the same reason it does in the County: everybody has already come up on Friday, and ten hours means the evening on the lake is covered rather than cut.</p>
 <p>The last thing I will say is about coverage ending early. Muskoka receptions run late because nobody is driving home. <strong>A package that ends at nine on a night when the party goes to one is the most expensive economy available</strong>, and it is the mistake I see most in this region. The <a href="/pricing">full ladder is published</a>, the region sits inside the <a href="/toronto-wedding-photographer">Toronto and Southern Ontario page</a>, and if the drive is the thing you are weighing, <a href="/blog/wedding-venues-outside-toronto">the three-region comparison is here</a>.</p>
 `,
@@ -1142,7 +1142,7 @@ export const posts: BlogPost[] = [
 <p><strong>Old Montréal</strong> is the strongest winter set the city has, and it is at its best in falling snow at blue hour. The stone, the cobbles and the gas-style lamps were built for low light, and the snow softens the tourist infrastructure that spoils it in August. Place d'Armes, Rue Saint-Paul and the lanes off it are twenty minutes of walking with four distinct backdrops.</p>
 <p><strong>The Plateau</strong> is the one I recommend most and couples request least. Exterior staircases, brick and murals in snow is the most specifically Montréal photograph available, and it is not something you can take anywhere else in the world. In falling snow the staircases become graphic in a way they are not in summer.</p>
 <p><strong>Mont-Royal</strong> works better in winter than in summer for a counterintuitive reason: the trees are bare, so the city reads clearly through them from the lookout instead of being hidden behind foliage. The chalet is a warm place to retreat to, which matters when it is minus eighteen.</p>
-<p>For a genuine winter landscape, <strong>the Laurentians</strong> are ninety minutes north and reliably snow-covered when the city is slush. Signature is C$3,000 there exactly as it is downtown. Travel stays separate and can drop when nearby dates are grouped. What it wants is a chalet with a fire rather than a day trip.</p>
+<p>For a genuine winter landscape, <strong>the Laurentians</strong> are ninety minutes north and reliably snow-covered when the city is slush. Signature is C$3,000 there exactly as it is downtown, travel included. What it wants is a chalet with a fire rather than a day trip.</p>
 
 <h2>What people actually wear, and for how long</h2>
 <figure><img src="${CDN}/portfolio/editorial/night-courtyard-train-bw.webp" alt="Bride with a long train in a lit courtyard at night in black and white"><figcaption>Eight minutes outdoors, planned, beats forty minutes improvised and cold.</figcaption></figure>
@@ -1209,7 +1209,7 @@ export const posts: BlogPost[] = [
 <h2>How I actually quote it</h2>
 <figure><img src="${CDN}/portfolio/editorial/candlelit-head-table.webp" alt="Bride standing at a candlelit head table in a warm panelled room"><figcaption>One conversation, then one itemised number. Not a package with an asterisk.</figcaption></figure>
 <p>I start from the published Toronto ladder and build up by event, and the whole thing is itemised so you can remove any line.</p>
-<p><strong>Signature is C$3,000 for eight continuous hours, Legacy is C$4,200 for ten, and Photo + Film is C$5,900 for twelve.</strong> Those are the same figures everywhere in Canada. Travel stays separate, uses the lowest practical route booked early, and is reduced or waived when regional dates can be grouped.</p>
+<p><strong>Signature is C$3,000 for eight continuous hours, Legacy is C$4,200 for ten, and Photo + Film is C$5,900 for twelve.</strong> Those are the same figures everywhere in Canada, with travel included in each of them.</p>
 <p>From there, <strong>a rehearsal dinner or welcome event of up to three hours is C$1,000</strong>. A second photographer is C$800 for a four-hour minimum, then C$175 an hour. An extra coverage hour is C$400. A dedicated filmmaker for eight hours is C$2,900, and Photo + Film already carries one.</p>
 <p>So a genuine three-day celebration with a mehndi, a full wedding day and a large reception typically lands as Legacy plus one or two additional events plus extra second-photographer hours on the biggest day. That is a real number arrived at from your actual schedule, and it is the same arithmetic for every couple.</p>
 
@@ -1282,7 +1282,7 @@ export const posts: BlogPost[] = [
 
 <h2>Outside the city, at the same price</h2>
 <figure><img src="${CDN}/galleries/nicole-js/017.webp" alt="A stone manor and chapel in the mist above a Townships vineyard"><figcaption>The Laurentians and the Townships are inside the Montréal price, not beside it.</figcaption></figure>
-<p><strong>This is the part most couples get wrong, and it is worth money.</strong> A vineyard in Sutton, a chalet in the Laurentians, an estate in Charlevoix and a hotel on Saint-Paul all cost the same to photograph with me: C$3,000 for Signature, C$4,200 for Legacy and C$5,900 for Photo + Film. Travel stays separate, follows the leanest practical route and can drop when regional dates are grouped.</p>
+<p><strong>This is the part most couples get wrong, and it is worth money.</strong> A vineyard in Sutton, a chalet in the Laurentians, an estate in Charlevoix and a hotel on Saint-Paul all cost the same to photograph with me: C$3,000 for Signature, C$4,200 for Legacy and C$5,900 for Photo + Film, travel included in all three.</p>
 <p>Which means the decision is purely about the day you want rather than the budget. Vineyard country gives you rows, hills and weather. The Laurentians give you lakes and hard autumn colour from the last week of September. Charlevoix gives you the river and cliffs.</p>
 <p>What they all cost you is guest logistics: an hour of driving each way, which caps how late your reception can run for anyone not sleeping on site.</p>
 
@@ -1295,7 +1295,7 @@ export const posts: BlogPost[] = [
 <h2>What a Montréal wedding costs to photograph</h2>
 <figure><img src="${CDN}/galleries/luca-lauren/001.webp" alt="Couple on a terrace above the Old Port with the city behind them"><figcaption>One number, whether the day happens on Saint-Paul or ninety minutes north.</figcaption></figure>
 <p><strong>Signature is C$3,000 for eight hours, Legacy C$4,200 for ten, and Photo + Film C$5,900 for twelve.</strong> Every collection includes vertical social reels sent in the first week and film prints handed to your guests on the night, plus the timeline work. Signature adds an engagement session, a colour-graded feature film and real film. Legacy adds a second photographer and an album, and Photo + Film puts a dedicated filmmaker on the day.</p>
-<p>Those figures are the same on the island, in the Laurentians, in the Eastern Townships, in Québec City and in Charlevoix. Travel is handled separately and kept to what the route and schedule actually require.</p>
+<p>Those figures are the same on the island, in the Laurentians, in the Eastern Townships, in Québec City and in Charlevoix. Travel is included in them, whichever of those the day happens in.</p>
 <p>If you have a venue in mind, <a href="/contact">send it</a> and I will tell you what the light does in that room on your date. The <a href="/pricing">full ladder is published</a>, the city sits on the <a href="/montreal-wedding-photographer">Montréal page</a>, and a complete Montréal wedding is <a href="/galleries/luca-lauren">here start to finish</a>.</p>
 `,
   },
@@ -1373,7 +1373,7 @@ export const posts: BlogPost[] = [
     topic: "Places",
     city: "montreal",
     body: `
-<p><strong>Québec City and Charlevoix cost exactly what a Montréal wedding costs to photograph: C$3,000 for Signature, C$4,200 for Legacy and C$5,900 for Photo + Film.</strong> The collection price does not move with the city. Travel stays separate, uses the most practical route and can drop when nearby dates are grouped.</p>
+<p><strong>Québec City and Charlevoix cost exactly what a Montréal wedding costs to photograph: C$3,000 for Signature, C$4,200 for Legacy and C$5,900 for Photo + Film.</strong> The collection price does not move with the city, and travel is included in it, overnight and all.</p>
 <p>That matters more here than anywhere else in Québec, because most photographers quote the walled city as a destination job. It is a drive.</p>
 
 <h2>What the walled city actually gives you</h2>
@@ -1516,7 +1516,7 @@ export const posts: BlogPost[] = [
 <h2>What it costs, and why that is a conversation</h2>
 <figure><img src="${CDN}/cities/banff/banff-62.webp" alt="A small group in formalwear at a mountain lake"><figcaption>Quoted against the venue rather than averaged across the whole province.</figcaption></figure>
 <p><strong>Banff sits outside the three regions I publish figures for, so it is quoted rather than printed.</strong> That is deliberate. A Canmore Saturday at a lodge and a Moraine Lake sunrise with shuttle logistics are different jobs, and one averaged number would be wrong for both.</p>
-<p>The photography is published and it is the same as everywhere: C$3,000 for Signature, C$4,200 for Legacy and C$5,900 for Photo + Film. Travel is kept to the lowest practical route booked early, and grouping nearby dates can reduce or remove that fee. Send the venue and the date and the route can be worked out around what the day actually requires.</p>
+<p>The photography is published and it is the same as everywhere: C$3,000 for Signature, C$4,200 for Legacy and C$5,900 for Photo + Film. Travel is included in those figures. Send the venue and the date and the plan can be built around what the day actually requires, rather than around what the trip would have cost you.</p>
 <p>Every collection carries the same things it carries everywhere: vertical social reels, film prints handed to your guests on the night, and the timeline work. The feature film comes with Signature and Legacy, and an engagement session is included in every collection. The <a href="/banff-wedding-photographer">Banff page</a> has the venues and the seasons in full, <a href="/jasper-wedding-photographer">Jasper is three hours north</a> and much quieter, and the <a href="/pricing">published regions are here</a>.</p>
 `,
   },

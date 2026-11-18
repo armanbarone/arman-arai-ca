@@ -219,14 +219,12 @@ const MARKET_ROWS: [string, (tier: Tier) => string, string][] = [
  * fear a national landing page creates, which is hiring somebody from out of
  * town.
  *
- * WARNING, read before editing: this contradicts the rest of the site, which
- * says travel is quoted separately (lib/site.ts TRAVEL, /pricing, /faq,
- * llms.txt, the wedding guide, the per-city ads markets and roughly twenty
- * journal posts). The owner's 2026-11-17 instruction governs this email and
- * the canada market copy; the remaining surfaces were flagged to him and left
- * alone rather than rewritten unilaterally. Do not widen or narrow the claim
- * here without him, and keep it to CANADA: destination weddings are quoted per
- * wedding and nothing about them is included in these figures.
+ * The rest of the site now says the same thing: lib/site.ts TRAVEL is the
+ * source, and /pricing, /faq, the terms of service, llms.txt, the wedding
+ * guide, the hubs, the ads markets and the journal were all moved onto it on
+ * 2026-11-17. Do not widen or narrow the claim here without the owner, and
+ * keep it to CANADA: a wedding outside Canada is quoted per wedding and
+ * nothing about it is included in these figures.
  */
 function travelBlock() {
   const line = "margin:0 0 10px;font-family:Arial,Helvetica,sans-serif;font-size:14px;line-height:1.6;color:#6B6258;";

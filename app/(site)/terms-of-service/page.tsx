@@ -51,14 +51,14 @@ export default function TermsOfService() {
             <li>Timeline planning and a written family-photograph plan</li>
             <li>Optional add-ons at published prices: additional hours and events, a second photographer, sessions, albums, loose and framed prints, film, drone and dedicated video coverage</li>
           </ul>
-          <p style={{ marginTop: 12 }}>A collection carries the same published price anywhere in Canada. A wedding outside Canada is not sold at the published figure; it is quoted individually against the country, the venue and the date, and the agreed figure is the one on your proposal. Travel within Canada is charged separately only when the wedding requires its own trip, with reduced or waived travel when regional dates can be grouped. Every price on this website is in Canadian dollars and excludes applicable sales tax.</p>
+          <p style={{ marginTop: 12 }}>A collection carries the same published price anywhere in Canada. A wedding outside Canada is not sold at the published figure; it is quoted individually against the country, the venue and the date, and the agreed figure is the one on your proposal. Travel within Canada is included in the published collection price, and no travel charge of any kind is added for a wedding in Canada. Every price on this website is in Canadian dollars and excludes applicable sales tax.</p>
           <p style={{ marginTop: 12 }}>The specific scope of services, deliverables, and coverage hours are defined in your individual contract. I accept a limited number of commissions per year to maintain the quality of my work.</p>
         </Section>
 
         <Section title="Booking and Payment">
           <p>Your date is not reserved until a signed contract and the deposit have both been received. I will hold a date informally for 48 hours as a courtesy while you decide, and that hold is not a booking.</p>
           <p style={{ marginTop: 12 }}><strong style={{ color: "var(--text)" }}>The deposit is 50% of the total and it is non-refundable.</strong> The remaining 50% is due one month before the wedding date. Payment methods are specified in your contract. Once the contract is signed and the deposit has cleared, the date is yours.</p>
-          <p style={{ marginTop: 12 }}>All prices are quoted in Canadian dollars and are subject to applicable sales tax. Where travel applies, it appears on your proposal as its own agreed line alongside the collection price. Neither figure changes after signing, and no further travel or destination charge is added later.</p>
+          <p style={{ marginTop: 12 }}>All prices are quoted in Canadian dollars and are subject to applicable sales tax. Travel within Canada is included in the collection price and does not appear as a separate line. The figure on your proposal does not change after signing, and no travel or destination charge is added later.</p>
         </Section>
 
         <Section title="Cancellation by Client">

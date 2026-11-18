@@ -184,10 +184,10 @@ export default function About() {
             </h2>
             <p className="text-blush text-[0.9rem] leading-relaxed font-light">
               I will travel anywhere in this country for a wedding, from Newfoundland to Vancouver
-              Island to the territories. A collection costs the same figure in every one of them.
-              Three places are home, which means a photographer who already knows the light, the
-              traffic and the venues. Travel is the only thing that moves, and you see it before
-              you sign.
+              Island to the territories. A collection costs the same figure in every one of them,
+              and the travel is included in it. Three places are home, which means a photographer
+              who already knows the light, the traffic and the venues. Everywhere else, I arrive
+              two days early and learn them.
             </p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-px bg-dust/20">
@@ -206,8 +206,8 @@ export default function About() {
             ))}
           </div>
           <p className="text-slate text-[0.8rem] leading-relaxed mt-7 max-w-3xl">
-            Everywhere else in Canada uses the same collection price, with travel kept separate,
-            booked early and reduced when regional dates can be grouped. I work in English.
+            Everywhere else in Canada uses the same collection price, with travel included in
+            it and a scouting day two days before the wedding. I work in English.
           </p>
         </div>
       </section>

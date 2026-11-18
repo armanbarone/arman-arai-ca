@@ -73,3 +73,31 @@ test("prices come from lib/site.ts, and tax is all that is left of the small pri
     assert.match(body, /Prices in CAD, before tax\./);
   }
 });
+
+test("the email paints its own background, so a dark inbox cannot supply one", () => {
+  const [html] = twins();
+  /* The owner's report on 2026-11-17 was "it's just text against a blackish
+     background": the email set no background, so the client chose it. These
+     four together are the fix, and none of them works alone. */
+  assert.match(html, /^<!doctype html>/i);
+  assert.match(html, /<meta name="color-scheme" content="light only">/);
+  assert.match(html, /<meta name="supported-color-schemes" content="light only">/);
+  assert.match(html, /<body style="margin:0;padding:0;background:#[0-9A-F]{6};">/i);
+  /* Every coloured cell needs the attribute as well as the CSS, because
+     Outlook ignores one and some webmail strips the other. */
+  for (const match of html.match(/<t[dr][^>]*style="[^"]*background:#[0-9A-F]{6}/gi) ?? []) {
+    assert.match(match, /bgcolor="#[0-9A-F]{6}"/i, `missing bgcolor: ${match.slice(0, 90)}`);
+  }
+});
+
+test("the layout is one 600px column that collapses on a phone", () => {
+  const [html] = twins();
+  assert.match(html, /class="card"[^>]*width="600"/);
+  assert.match(html, /@media screen and \(max-width:620px\)/);
+  assert.match(html, /\.card \{ width:100% !important/);
+  assert.match(html, /\.stack \{ display:block !important/);
+  /* No fixed pixel width may survive the collapse except the card itself and
+     the two full-bleed photographs, which are capped by max-width. */
+  const widths = [...html.matchAll(/width="(\d+)"/g)].map((m) => Number(m[1])).filter((w) => w > 180);
+  assert.deepEqual(widths, [600, 600, 600]);
+});

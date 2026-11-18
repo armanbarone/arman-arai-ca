@@ -86,6 +86,48 @@ const ALBUMS = [
   },
 ];
 
+/* ── Email design ──────────────────────────────────────────────────────────
+ * The light half of the site's palette, hard-coded, because an email cannot
+ * read a stylesheet. The page colour is a shade darker than the card so the
+ * message reads as a printed thing lying on a surface.
+ *
+ * It also has to be declared. Until 2026-11-17 this email set no background at
+ * all, so a dark-mode inbox supplied its own and the whole thing arrived as
+ * text on black (owner: "it's just text against a blackish background"). The
+ * fix is three things together, and none of them works alone: the colour-scheme
+ * metas in the head, bgcolor attributes as well as CSS on every coloured cell,
+ * and no transparent text. Do not remove any of the three.
+ */
+const C = {
+  page: "#E3DACA",
+  card: "#FBF8F3",
+  panel: "#F2EBE0",
+  rule: "#DED3BE",
+  ink: "#211C15",
+  body: "#5F5344",
+  muted: "#7A6D5C",
+  bronze: "#8A6A44",
+  bronzeDeep: "#5F4728",
+  onDark: "#E8E0D0",
+  onDarkMuted: "#A79784",
+  whatsapp: "#25D366",
+};
+const SERIF = "Georgia,'Times New Roman',serif";
+const SANS = "Arial,Helvetica,sans-serif";
+
+/** The two photographs the design hangs on. Both were opened and looked at
+ *  through the resizer, at the size the email asks for, on 2026-11-17. The
+ *  second one sits above the cinematic claim because it is the claim: it is
+ *  what a frame looks like when the camera is moving with the day. */
+const HERO_IMAGE = {
+  path: "cities/vancouver-island/vancouver-island-04.webp",
+  alt: "A couple standing forehead to forehead at the edge of still water in low golden light",
+};
+const CINEMA_IMAGE = {
+  path: "home/couple-kiss-motion-blur-warm.webp",
+  alt: "A bride's bouquet and veil smeared into warm motion blur as she turns",
+};
+
 const money = (amount: number) => `C$${amount.toLocaleString("en-CA")}`;
 const escapeHtml = (value: string) =>
   value.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!);
@@ -118,27 +160,59 @@ export function replySubject(inquiry: Inquiry) {
 /** An email button that renders as a block in every client, Outlook included:
  *  a full-width table cell, not a styled link on its own. */
 function bigButton(href: string, label: string, background: string, color: string) {
-  return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 14px;"><tr><td align="center" bgcolor="${background}" style="background:${background};border-radius:8px;"><a href="${escapeHtml(href)}" style="display:block;padding:20px;font-family:Arial,Helvetica,sans-serif;font-size:18px;font-weight:bold;line-height:1.2;color:${color};text-decoration:none;border-radius:8px;">${escapeHtml(label)}</a></td></tr></table>`;
+  const edge = background === C.panel ? `border:1px solid ${C.rule};` : "";
+  return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:4px 0 6px;"><tr><td align="center" bgcolor="${background}" style="background:${background};border-radius:7px;${edge}"><a href="${escapeHtml(href)}" style="display:block;padding:17px 20px;font-family:${SANS};font-size:14px;font-weight:bold;letter-spacing:.06em;text-transform:uppercase;line-height:1.3;color:${color};text-decoration:none;border-radius:7px;">${escapeHtml(label)}</a></td></tr></table>`;
 }
 
 function sectionHeading(number: string, title: string) {
-  return `<p style="margin:34px 0 10px;font-family:Arial,Helvetica,sans-serif;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#9A7A54;">${number}</p>
-  <p style="margin:0 0 12px;font-size:25px;line-height:1.15;">${escapeHtml(title)}</p>`;
+  return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 14px;">
+    <tr>
+      <td width="34" valign="middle" style="width:34px;font-family:${SERIF};font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:${C.bronze};">${escapeHtml(number)}</td>
+      <td valign="middle" style="padding:0 0 0 4px;"><div style="height:1px;max-height:1px;overflow:hidden;background:${C.rule};font-size:1px;line-height:1px;">&nbsp;</div></td>
+    </tr>
+  </table>
+  <p class="h2" style="margin:0 0 12px;font-family:${SERIF};font-weight:normal;font-size:27px;line-height:1.15;color:${C.ink};">${escapeHtml(title)}</p>`;
+}
+
+/** A small uppercase label. */
+function eyebrow(text: string) {
+  return `<p style="margin:0 0 9px;font-family:${SANS};font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:${C.bronze};">${escapeHtml(text)}</p>`;
+}
+
+/** A serif sub-heading inside a section. */
+function subTitle(text: string, top = 0) {
+  return `<p style="margin:${top}px 0 12px;font-family:${SERIF};font-weight:normal;font-size:22px;line-height:1.2;color:${C.ink};">${escapeHtml(text)}</p>`;
+}
+
+/** Body copy. One place, so the whole email has one measure and one colour. */
+function para(text: string, size = 15) {
+  return `<p style="margin:0 0 14px;font-family:${SANS};font-size:${size}px;line-height:1.7;color:${C.body};">${escapeHtml(text)}</p>`;
+}
+
+/** A full-bleed photograph across the card. */
+function band(image: { path: string; alt: string }, height: number) {
+  return `<tr><td style="padding:0;font-size:0;line-height:0;"><img class="band" src="${cdn(image.path, 1200, height * 2)}" width="600" height="${height}" alt="${escapeHtml(image.alt)}" style="display:block;width:100%;max-width:600px;height:auto;border:0;"></td></tr>`;
+}
+
+/** One padded row of the single-column layout. */
+function row(inner: string, top = 30, bottom = 0) {
+  return `<tr><td class="px" style="padding:${top}px 34px ${bottom}px;">${inner}</td></tr>`;
 }
 
 /** The three complete weddings, side by side. A three-cell table rather than
  *  stacked images: it survives Outlook, and three full-width photographs
  *  would push everything below them off the first two screens. */
 function albumsBlock() {
-  const cells = ALBUMS.map((album) => `<td width="33.3%" valign="top" style="padding:0 5px;">
-      <a href="${SITE.url}/galleries/${album.slug}" style="text-decoration:none;color:#2C2420;">
-        <img src="${cdn(album.frame, 360, 480)}" width="176" alt="${escapeHtml(album.alt)}" style="display:block;width:100%;height:auto;border:0;border-radius:6px;">
-        <p style="margin:9px 0 2px;font-size:15px;line-height:1.3;">${escapeHtml(album.names)}</p>
-        <p style="margin:0;font-family:Arial,Helvetica,sans-serif;font-size:11px;line-height:1.5;color:#6B6258;">${escapeHtml(album.where)}</p>
+  const cells = ALBUMS.map((album) => `<td class="stack" width="33.3%" valign="top" style="padding:0 5px;">
+      <a href="${SITE.url}/galleries/${album.slug}" style="text-decoration:none;color:${C.ink};">
+        <img src="${cdn(album.frame, 360, 480)}" width="176" alt="${escapeHtml(album.alt)}" style="display:block;width:100%;height:auto;border:1px solid ${C.rule};border-radius:8px;">
+        <p style="margin:10px 0 2px;font-family:${SERIF};font-size:15px;line-height:1.3;color:${C.ink};">${escapeHtml(album.names)}</p>
+        <p style="margin:0;font-family:${SANS};font-size:11px;line-height:1.5;color:${C.body};">${escapeHtml(album.where)}</p>
       </a>
     </td>`).join("");
-  return `<p style="margin:30px 0 10px;font-size:25px;line-height:1.15;">Three complete weddings</p>
-  <p style="margin:0 0 16px;font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.65;color:#6B6258;">Not a highlight reel. These are three whole days, every frame I delivered, from the quiet hour before anyone is dressed to the last of the dancing. It is the only honest way to judge a photographer, because it shows you the ordinary parts of a day as well as the best thirty seconds of it.</p>
+  return `${eyebrow("See a whole day, not a highlight reel")}
+  <p class="h2" style="margin:0 0 14px;font-family:${SERIF};font-weight:normal;font-size:28px;line-height:1.18;color:${C.ink};">Three complete weddings</p>
+  <p style="margin:0 0 16px;font-family:${SANS};font-size:15px;line-height:1.7;color:${C.body};">Not a highlight reel. These are three whole days, every frame I delivered, from the quiet hour before anyone is dressed to the last of the dancing. It is the only honest way to judge a photographer, because it shows you the ordinary parts of a day as well as the best thirty seconds of it.</p>
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 6px;"><tr>${cells}</tr></table>`;
 }
 
@@ -163,28 +237,33 @@ function albumsBlock() {
  * albums and the price, because it is what makes the price make sense.
  */
 function approachBlock() {
-  return `<p style="margin:34px 0 10px;font-family:Arial,Helvetica,sans-serif;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#9A7A54;">How I approach wedding photography</p>
-  <p style="margin:0 0 12px;font-size:25px;line-height:1.15;">Art, made while you are fully present and never rushed.</p>
-  <p style="margin:0 0 14px;font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.65;color:#6B6258;">Your day should feel genuine and unhurried. Laughter, happy tears, good food, music, dancing, everyone you love under one roof, and the two of you spending those hours with each other and your families instead of worrying about whether the perfect shot is being taken. I am there the whole time and almost none of it should feel like a photoshoot you have to perform in.</p>
-  <p style="margin:0 0 14px;font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.65;color:#6B6258;">What I am doing while that happens is making art. Candid and documentary through the day, with romantic, editorial portraits where the light and the location earn them. The frames come back effortless, a little nostalgic, full of emotion: the vows and the first dance, and equally the quiet glances, the spontaneous laughter, the way your families are with each other, the details nobody else is looking at. That is cinematic work. It is a different craft from covering a wedding competently, and a handful of photographers in North America shoot this way. I am one of them.</p>
-  <p style="margin:0 0 6px;font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.65;color:#6B6258;">The rest is effort. On every wedding I photograph I go further than the collection obliges me to, because there is only one thing I am really being hired for: that you open these pictures years from now and feel like you are living the day all over again.</p>`;
+  return `${eyebrow("How I approach wedding photography")}
+  <p class="h2" style="margin:0 0 16px;font-family:${SERIF};font-weight:normal;font-size:28px;line-height:1.18;color:${C.ink};">${escapeHtml(APPROACH_TITLE)}</p>
+  ${APPROACH_PARAS.map((text) => para(text)).join("")}`;
 }
 
-const APPROACH_TEXT = [
-  "HOW I APPROACH WEDDING PHOTOGRAPHY: ART, MADE WHILE YOU ARE FULLY PRESENT AND NEVER RUSHED",
+const APPROACH_TITLE = "Art, made while you are fully present and never rushed.";
+const APPROACH_PARAS = [
   "Your day should feel genuine and unhurried. Laughter, happy tears, good food, music, dancing, everyone you love under one roof, and the two of you spending those hours with each other and your families instead of worrying about whether the perfect shot is being taken. I am there the whole time and almost none of it should feel like a photoshoot you have to perform in.",
   "What I am doing while that happens is making art. Candid and documentary through the day, with romantic, editorial portraits where the light and the location earn them. The frames come back effortless, a little nostalgic, full of emotion: the vows and the first dance, and equally the quiet glances, the spontaneous laughter, the way your families are with each other, the details nobody else is looking at. That is cinematic work. It is a different craft from covering a wedding competently, and a handful of photographers in North America shoot this way. I am one of them.",
   "The rest is effort. On every wedding I photograph I go further than the collection obliges me to, because there is only one thing I am really being hired for: that you open these pictures years from now and feel like you are living the day all over again.",
-].join("\n");
+];
+const APPROACH_TEXT = ["HOW I APPROACH WEDDING PHOTOGRAPHY: ART, MADE WHILE YOU ARE FULLY PRESENT AND NEVER RUSHED", ...APPROACH_PARAS].join("\n");
 
 function priceTable(fit?: string) {
-  const tiers = pricingTiers();
-  return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;margin:4px 0 10px;border-top:1px solid #D9CEBC;">
-    ${tiers.map((tier) => `<tr>
-      <td style="padding:13px 0;border-bottom:1px solid #EDE7DA;font-size:18px;">${escapeHtml(tier.name)} <span style="font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#6B6258;">${tier.hours} hours${tier.slug === "photo-film" ? ", photo and film" : ""}</span>${fit && tier.slug === fit ? ` <span style="font-family:Arial,Helvetica,sans-serif;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#9A7A54;">Most booked</span>` : ""}</td>
-      <td style="padding:13px 0 13px 16px;border-bottom:1px solid #EDE7DA;text-align:right;white-space:nowrap;font-size:18px;">${money(tier.price)}</td>
-    </tr>`).join("")}
-  </table>`;
+  return pricingTiers().map((tier) => {
+    const picked = fit === tier.slug;
+    const background = picked ? C.panel : C.card;
+    return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="${background}" style="background:${background};border:1px solid ${picked ? C.bronze : C.rule};border-radius:10px;margin:0 0 9px;">
+      <tr>
+        <td style="padding:15px 18px;">
+          <p style="margin:0;font-family:${SERIF};font-size:20px;line-height:1.2;color:${C.ink};">${escapeHtml(tier.name)}${picked ? ` <span style="font-family:${SANS};font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:${C.bronzeDeep};">Most booked</span>` : ""}</p>
+          <p style="margin:5px 0 0;font-family:${SANS};font-size:12px;line-height:1.5;color:${C.muted};">${escapeHtml(`${tier.coverage} \u00b7 ${tier.images}`)}</p>
+        </td>
+        <td align="right" valign="top" style="padding:15px 18px;white-space:nowrap;font-family:${SERIF};font-size:23px;color:${C.ink};">${money(tier.price)}</td>
+      </tr>
+    </table>`;
+  }).join("");
 }
 
 /* "My price against everybody else" (owner, 2026-11-15).
@@ -227,38 +306,46 @@ const MARKET_ROWS: [string, (tier: Tier) => string, string][] = [
  * nothing about it is included in these figures.
  */
 function travelBlock() {
-  const line = "margin:0 0 10px;font-family:Arial,Helvetica,sans-serif;font-size:14px;line-height:1.6;color:#6B6258;";
-  return `<p style="margin:22px 0 8px;font-size:21px;line-height:1.2;">Travel is included, and I arrive two days early.</p>
-  <p style="${line}">The collection price is the whole price wherever in Canada you are marrying. Flights, the ground travel and the nights are already inside the figures above. There is no mileage line, no out-of-town surcharge, and nothing that turns up on an invoice later.</p>
-  <p style="${line}">I get there two days before the wedding. That gives me a full day at your venue in the real light, walking your ceremony spot and your portrait locations and building the timeline around what is actually there rather than around photographs of it. It also means the travel risk is mine and never yours: a cancelled flight or a day of weather is absorbed two days out, long before anyone is getting dressed.</p>`;
+  return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="${C.panel}" style="background:${C.panel};border:1px solid ${C.rule};border-radius:10px;margin:18px 0 4px;">
+    <tr>
+      <td width="4" bgcolor="${C.bronze}" style="width:4px;background:${C.bronze};font-size:0;line-height:0;">&nbsp;</td>
+      <td style="padding:20px 22px 8px;">
+        ${eyebrow("Travel")}
+        ${subTitle(TRAVEL_TITLE)}
+        ${TRAVEL_PARAS.map((text) => para(text, 14)).join("")}
+      </td>
+    </tr>
+  </table>`;
 }
 
-const TRAVEL_TEXT = [
-  "TRAVEL IS INCLUDED, AND I ARRIVE TWO DAYS EARLY",
+const TRAVEL_TITLE = "Travel is included, and I arrive two days early.";
+const TRAVEL_PARAS = [
   "The collection price is the whole price wherever in Canada you are marrying. Flights, the ground travel and the nights are already inside the figures above. There is no mileage line, no out-of-town surcharge, and nothing that turns up on an invoice later.",
   "I get there two days before the wedding. That gives me a full day at your venue in the real light, walking your ceremony spot and your portrait locations and building the timeline around what is actually there rather than around photographs of it. It also means the travel risk is mine and never yours: a cancelled flight or a day of weather is absorbed two days out, long before anyone is getting dressed.",
-].join("\n");
+];
+const TRAVEL_TEXT = ["TRAVEL IS INCLUDED, AND I ARRIVE TWO DAYS EARLY", ...TRAVEL_PARAS].join("\n");
 
 function comparisonTable() {
   const tier = pricingTiers()[0];
-  const cell = "padding:11px 10px;border-bottom:1px solid #EDE7DA;font-family:Arial,Helvetica,sans-serif;font-size:13px;line-height:1.5;vertical-align:top;";
+  /* A template literal, not a plain string: it carries tokens. */
+  const cell = `padding:11px 10px;border-bottom:1px solid ${C.rule};font-family:${SANS};font-size:13px;line-height:1.55;vertical-align:top;`;
   const rows = MARKET_ROWS.map(([label, mine, theirs]) => `<tr>
-      <td style="${cell}color:#6B6258;width:27%;">${escapeHtml(label)}</td>
-      <td style="${cell}color:#2C2420;width:36%;background:#F7F3EC;">${escapeHtml(mine(tier))}</td>
-      <td style="${cell}color:#6B6258;width:37%;">${escapeHtml(theirs)}</td>
+      <td style="${cell}color:${C.body};width:27%;">${escapeHtml(label)}</td>
+      <td bgcolor="${C.panel}" style="${cell}color:${C.ink};width:36%;background:${C.panel};">${escapeHtml(mine(tier))}</td>
+      <td style="${cell}color:${C.body};width:37%;">${escapeHtml(theirs)}</td>
     </tr>`).join("");
-  return `<p style="margin:26px 0 8px;font-size:21px;line-height:1.2;">The same money, a different list.</p>
-  <p style="margin:0 0 12px;font-family:Arial,Helvetica,sans-serif;font-size:14px;line-height:1.6;color:#6B6258;">What ${money(tier.price)} usually buys from a wedding photographer in Canada, against what it buys here. The right-hand column is drawn from the published Canadian pricing guides for 2026, not from one studio.</p>
+  return `${subTitle("The same money, a different list.", 26)}
+  <p style="margin:0 0 12px;font-family:${SANS};font-size:14px;line-height:1.6;color:${C.body};">What ${money(tier.price)} usually buys from a wedding photographer in Canada, against what it buys here. The right-hand column is drawn from the published Canadian pricing guides for 2026, not from one studio.</p>
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;margin:0 0 10px;">
     <tr>
-      <td style="padding:0 10px 8px;border-bottom:1px solid #D9CEBC;"></td>
-      <td style="padding:0 10px 8px;border-bottom:1px solid #D9CEBC;font-family:Arial,Helvetica,sans-serif;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#9A7A54;">${escapeHtml(tier.name)} · ${money(tier.price)}</td>
-      <td style="padding:0 10px 8px;border-bottom:1px solid #D9CEBC;font-family:Arial,Helvetica,sans-serif;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#9A7A54;">Typical at this price</td>
+      <td bgcolor="${C.ink}" style="padding:9px 10px;background:${C.ink};border-radius:6px 0 0 0;"></td>
+      <td bgcolor="${C.ink}" style="padding:9px 10px;background:${C.ink};font-family:${SANS};font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:${C.onDark};">${escapeHtml(tier.name)} · ${money(tier.price)}</td>
+      <td bgcolor="${C.ink}" style="padding:9px 10px;background:${C.ink};font-family:${SANS};font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:${C.onDarkMuted};border-radius:0 6px 0 0;">Typical at this price</td>
     </tr>
     ${rows}
   </table>
-  <p style="margin:0 0 6px;font-family:Arial,Helvetica,sans-serif;font-size:13px;line-height:1.6;color:#6B6258;">Legacy and Photo + Film widen the same gap: a second photographer, a printed album, and in Photo + Film a filmmaker beside me for all twelve hours rather than a second vendor you book and brief yourself.</p>
-  <p style="margin:0 0 6px;font-family:Arial,Helvetica,sans-serif;font-size:13px;line-height:1.6;color:#6B6258;">Prices in CAD, before tax.</p>`;
+  <p style="margin:0 0 6px;font-family:${SANS};font-size:13px;line-height:1.6;color:${C.body};">Legacy and Photo + Film widen the same gap: a second photographer, a printed album, and in Photo + Film a filmmaker beside me for all twelve hours rather than a second vendor you book and brief yourself.</p>
+  <p style="margin:0 0 6px;font-family:${SANS};font-size:13px;line-height:1.6;color:${C.body};">Prices in CAD, before tax.</p>`;
 }
 
 const COMPARISON_TEXT = () => {
@@ -280,9 +367,9 @@ function detailsBlock(inquiry: Inquiry) {
     ["Where", inquiry.location || "To be decided"],
     ...(inquiry.message ? ([["What you told me", inquiry.message]] as [string, string][]) : []),
   ];
-  return `<div style="margin:30px 0 8px;padding:16px 18px;background:#F7F3EC;border-radius:8px;font-family:Arial,Helvetica,sans-serif;font-size:14px;line-height:1.6;color:#2C2420;">
-    <p style="margin:0 0 8px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#9A7A54;">Your inquiry</p>
-    ${rows.map(([label, value]) => `<p style="margin:0 0 3px;"><span style="color:#6B6258;">${label}:</span> ${escapeHtml(value)}</p>`).join("")}
+  return `<div style="margin:4px 0 0;padding:17px 19px;background:${C.panel};border:1px solid ${C.rule};border-radius:10px;font-family:${SANS};font-size:14px;line-height:1.6;color:${C.ink};">
+    <p style="margin:0 0 9px;font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:${C.bronze};">Your inquiry</p>
+    ${rows.map(([label, value]) => `<p style="margin:0 0 3px;"><span style="color:${C.body};">${label}:</span> ${escapeHtml(value)}</p>`).join("")}
   </div>`;
 }
 
@@ -305,24 +392,24 @@ function sections(inquiry: Inquiry, links: { guide: string; vendors: string; cal
   const first = pricingTiers()[0];
   return `
   ${sectionHeading("One", "Full pricing")}
-  <p style="margin:0 0 10px;font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.65;color:#6B6258;">Three collections, and only three. Every one includes an engagement session, a next-day preview and the full gallery in three weeks.</p>
+  <p style="margin:0 0 10px;font-family:${SANS};font-size:15px;line-height:1.7;color:${C.body};">Three collections, and only three. Every one includes an engagement session, a next-day preview and the full gallery in three weeks.</p>
   ${priceTable("signature")}
-  <p style="margin:0 0 6px;font-family:Arial,Helvetica,sans-serif;font-size:13px;line-height:1.6;color:#6B6258;">Payment is in two parts: ${escapeHtml(TERMS.schedule.replace(/^Two payments: /, ""))}</p>
+  <p style="margin:0 0 6px;font-family:${SANS};font-size:13px;line-height:1.6;color:${C.body};">Payment is in two parts: ${escapeHtml(TERMS.schedule.replace(/^Two payments: /, ""))}</p>
   ${travelBlock()}
   ${comparisonTable()}
 
   ${sectionHeading("Two", "Your welcome guide")}
-  <p style="margin:0 0 16px;font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.65;color:#6B6258;">How I actually work a wedding day: where I am during the getting-ready, how family photographs get done in twenty minutes instead of an hour, what happens if it rains, and what you get back and when. It takes about ten minutes to read and it will save you a dozen questions.</p>
-  ${bigButton(links.guide, "Open the wedding guide", "#A95C31", "#FFFFFF")}
+  <p style="margin:0 0 16px;font-family:${SANS};font-size:15px;line-height:1.7;color:${C.body};">How I actually work a wedding day: where I am during the getting-ready, how family photographs get done in twenty minutes instead of an hour, what happens if it rains, and what you get back and when. It takes about ten minutes to read and it will save you a dozen questions.</p>
+  ${bigButton(links.guide, "Open the wedding guide", C.bronze, C.card)}
 
   ${sectionHeading("Three", "Securing your date")}
-  <p style="margin:0 0 10px;font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.65;color:#6B6258;">${escapeHtml(TERMS.retainer)}, once the contract is signed, and not before. I photograph one wedding at a time and the summer and early autumn dates are the first to go, so the sooner we speak, the more of the calendar is still open to you. The fastest way there is a short call, where you can ask me the things people don't put in an email.</p>
-  <p style="margin:0 0 16px;font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.65;color:#2C2420;"><strong>${escapeHtml(TONIGHT_CALL)}</strong>, or pick any time that suits you both.</p>
-  ${bigButton(links.calendar, "Book your free 30-minute call", "#B8956A", "#1A1612")}
+  <p style="margin:0 0 10px;font-family:${SANS};font-size:15px;line-height:1.7;color:${C.body};">${escapeHtml(TERMS.retainer)}, once the contract is signed, and not before. I photograph one wedding at a time and the summer and early autumn dates are the first to go, so the sooner we speak, the more of the calendar is still open to you. The fastest way there is a short call, where you can ask me the things people don't put in an email.</p>
+  <p style="margin:0 0 16px;font-family:${SANS};font-size:15px;line-height:1.65;color:${C.ink};"><strong>${escapeHtml(TONIGHT_CALL)}</strong>, or pick any time that suits you both.</p>
+  ${bigButton(links.calendar, "Book your free 30-minute call", C.ink, C.onDark)}
 
   ${sectionHeading("Four", "My preferred vendors")}
-  <p style="margin:0 0 16px;font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.65;color:#6B6258;">The planners, florists, hair and makeup artists, DJs, bands and officiants I'd be glad to see on your day, by city. Nobody on it paid to be there and there are no referral fees in either direction. If you want, I'll make the introductions myself with your date in the subject line.</p>
-  ${bigButton(links.vendors, "See the vendor list", "#2C2420", "#FFFFFF")}`;
+  <p style="margin:0 0 16px;font-family:${SANS};font-size:15px;line-height:1.7;color:${C.body};">The planners, florists, hair and makeup artists, DJs, bands and officiants I'd be glad to see on your day, by city. Nobody on it paid to be there and there are no referral fees in either direction. If you want, I'll make the introductions myself with your date in the subject line.</p>
+  ${bigButton(links.vendors, "See the vendor list", C.panel, C.ink)}`;
 }
 
 /* The 48-hour date hold that lived here was removed on 2026-11-17 at the
@@ -353,21 +440,81 @@ export function render(inquiry: Inquiry) {
     `Hi Arman, it's ${inquiry.firstName}. I just sent you an inquiry about our wedding.`,
   )}`;
 
-  const html = `<div style="font-family:Georgia,serif;max-width:560px;margin:0 auto;color:#2C2420;font-size:17px;line-height:1.65;">
-  ${opening(inquiry).map((p) => `<p style="margin:0 0 16px;">${escapeHtml(p)}</p>`).join("")}
-  ${albumsBlock()}
-  ${approachBlock()}
-  ${sections(inquiry, links)}
-  <p style="margin:34px 0 10px;font-family:Arial,Helvetica,sans-serif;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#9A7A54;">What happens next</p>
-  <ol style="margin:0 0 22px;padding-left:20px;font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.7;color:#6B6258;">
-    ${NEXT_STEPS.map((step) => `<li style="margin:0 0 7px;">${escapeHtml(step)}</li>`).join("")}
-  </ol>
-  <p style="margin:0 0 14px;font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.65;color:#6B6258;">If you'd rather not wait for my email, message me. I answer WhatsApp faster than anything else.</p>
-  ${bigButton(whatsapp, "Message me on WhatsApp", "#25D366", "#FFFFFF")}
-  ${detailsBlock(inquiry)}
-  <p style="margin:22px 0 0;">Arman</p>
-  <p style="margin:16px 0 0;padding-top:16px;border-top:1px solid #EDE7DA;font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#6B6258;">Arman Arai · Wedding photography · <a href="${SITE.url}" style="color:#6B6258;">${SITE.domain}</a> · ${escapeHtml(SITE.phone)}</p>
-</div>`;
+  /* One column, 600px, every block a table row. The head carries the
+     colour-scheme metas and the only media query, which stacks the three
+     albums and tightens the comparison table on a phone. */
+  const html = `<!doctype html>
+<html lang="en" style="background:${C.page};">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light only">
+<meta name="supported-color-schemes" content="light only">
+<title>${escapeHtml(replySubject(inquiry))}</title>
+<style>
+  :root { color-scheme: light only; supports-color-schemes: light only; }
+  body { margin:0; padding:0; background:${C.page}; -webkit-text-size-adjust:100%; }
+  img { border:0; outline:none; -ms-interpolation-mode:bicubic; }
+  a { color:${C.bronzeDeep}; }
+  @media screen and (max-width:620px) {
+    .card { width:100% !important; max-width:100% !important; table-layout:fixed !important; border-left:0 !important; border-right:0 !important; border-radius:0 !important; }
+    td, p, a, div { word-break:break-word !important; }
+    .px { padding-left:20px !important; padding-right:20px !important; }
+    .stack { display:block !important; width:100% !important; padding:0 0 16px !important; }
+    .shell { padding:0 !important; }
+    .h2 { font-size:24px !important; }
+    .cmp td { font-size:12px !important; padding:9px 8px !important; }
+  }
+</style>
+</head>
+<body style="margin:0;padding:0;background:${C.page};">
+<div style="display:none;max-height:0;overflow:hidden;opacity:0;mso-hide:all;">Your full pricing, three complete weddings, and how I work a wedding day. I reply personally within 60 minutes.</div>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="${C.page}" style="background:${C.page};">
+  <tr>
+    <td align="center" class="shell" style="padding:24px 10px 30px;">
+      <table role="presentation" class="card" width="600" cellpadding="0" cellspacing="0" border="0" bgcolor="${C.card}" style="width:600px;max-width:600px;background:${C.card};border:1px solid ${C.rule};border-radius:12px;overflow:hidden;">
+
+        <tr>
+          <td align="center" bgcolor="${C.ink}" style="background:${C.ink};padding:20px 24px 18px;">
+            <p style="margin:0;font-family:${SERIF};font-size:19px;letter-spacing:.3em;text-transform:uppercase;color:${C.onDark};">Arman Arai</p>
+            <p style="margin:7px 0 0;font-family:${SANS};font-size:9px;letter-spacing:.26em;text-transform:uppercase;color:${C.bronze};">Wedding photography &middot; Canada</p>
+          </td>
+        </tr>
+        ${band(HERO_IMAGE, 260)}
+        ${row(opening(inquiry).map((text, index) => `<p style="margin:0 0 15px;font-family:${SERIF};font-size:${index === 0 ? 20 : 17}px;line-height:1.6;color:${C.ink};">${escapeHtml(text)}</p>`).join(""), 28)}
+        ${row(detailsBlock(inquiry), 4, 6)}
+        ${row(albumsBlock(), 30)}
+        ${band(CINEMA_IMAGE, 230)}
+        ${row(approachBlock(), 28)}
+        ${row(sections(inquiry, links), 8)}
+        ${row(`${eyebrow("What happens next")}
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+            ${NEXT_STEPS.map((step, index) => `<tr>
+              <td width="30" valign="top" style="width:30px;padding:0 0 11px;font-family:${SERIF};font-size:15px;color:${C.bronze};">${index + 1}.</td>
+              <td valign="top" style="padding:0 0 11px;font-family:${SANS};font-size:15px;line-height:1.6;color:${C.body};">${escapeHtml(step)}</td>
+            </tr>`).join("")}
+          </table>`, 34)}
+        ${row(`<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="${C.panel}" style="background:${C.panel};border:1px solid ${C.rule};border-radius:10px;">
+          <tr><td style="padding:18px 20px 10px;">
+            ${para("If you'd rather not wait for my email, message me. I answer WhatsApp faster than anything else.", 14)}
+            ${bigButton(whatsapp, "Message me on WhatsApp", C.whatsapp, "#07320F")}
+          </td></tr>
+        </table>`, 26)}
+        ${row(`<p style="margin:0;font-family:${SERIF};font-size:19px;color:${C.ink};">Arman</p>`, 30, 30)}
+
+        <tr>
+          <td align="center" bgcolor="${C.ink}" style="background:${C.ink};padding:22px 24px;">
+            <p style="margin:0 0 7px;font-family:${SERIF};font-size:13px;letter-spacing:.26em;text-transform:uppercase;color:${C.onDark};">Arman Arai</p>
+            <p style="margin:0;font-family:${SANS};font-size:11px;line-height:1.8;color:${C.onDarkMuted};">Wedding photography across Canada<br>
+              <a href="${SITE.url}" style="color:${C.bronze};text-decoration:none;">${SITE.domain}</a> &middot; <a href="tel:${SITE.phoneE164}" style="color:${C.bronze};text-decoration:none;">${escapeHtml(SITE.phone)}</a> &middot; <a href="${SITE.instagram}" style="color:${C.bronze};text-decoration:none;">${SITE.instagramHandle}</a></p>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+</body>
+</html>`;
 
   const text = [
     ...opening(inquiry),

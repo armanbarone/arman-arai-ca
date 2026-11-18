@@ -1,4 +1,4 @@
-import { ALBERTA_LANDING_OPENING, CALGARY_LANDING } from "@/lib/ads/city-landing-album";
+import { albertaLandingPhotos, CALGARY_LANDING } from "@/lib/ads/city-landing-album";
 import { MONTREAL_SIMPLE_GALLERY } from "../montreal-simple/gallery";
 
 // Alberta portraits already used on the Calgary page. Keep Calgary's Peace
@@ -35,4 +35,4 @@ const montrealSelection = montrealFilenames.map((filename) => {
   return photo;
 });
 
-export const EDMONTON_SIMPLE_GALLERY = [...ALBERTA_LANDING_OPENING, ...albertaPortraits, ...montrealSelection];
+export const EDMONTON_SIMPLE_GALLERY = albertaLandingPhotos([...albertaPortraits, ...montrealSelection]);

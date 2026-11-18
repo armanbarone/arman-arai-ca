@@ -1,10 +1,11 @@
 import LandingImage from "@/components/LandingImage";
 import { Analytics } from "@vercel/analytics/next";
 import type { Metadata } from "next";
-import { ARMAN, CITY_PHOTOS, type Photo } from "@/lib/images";
+import { ARMAN, CITY_PHOTOS } from "@/lib/images";
 import { SITE } from "@/lib/site";
 import type { WeddingCity } from "@/lib/ads/city-wedding-pages";
 import { cityWeddingMetadata } from "@/lib/ads/city-wedding-metadata";
+import { albertaLandingPhotos } from "@/lib/ads/city-landing-album";
 import { landingWorkPhotos } from "@/lib/ads/landing-work-selection";
 import { CTA_LABEL, FORM_ID, funnelCollections, pricingTiers, type PricingMarket } from "@/lib/ads/pricing-request";
 import { proofByN, proofSrc } from "@/lib/reviews";
@@ -50,11 +51,10 @@ function SectionLabel({ number, children }: { number: string; children: React.Re
   return <p className={styles.sectionLabel}><span>{number}</span>{children}</p>;
 }
 
-export default function WeddingsLanding({ city, market, path, openingPhotos = [], twoImageSizes }: {
+export default function WeddingsLanding({ city, market, path, twoImageSizes }: {
   city: WeddingCity;
   market: PricingMarket;
   path: string;
-  openingPhotos?: Photo[];
   twoImageSizes?: boolean;
 }) {
   const page = path.slice(1);
@@ -64,10 +64,8 @@ export default function WeddingsLanding({ city, market, path, openingPhotos = []
   const phone = SITE.phone.replace(/^\+1\s*/, "");
   // The hub album where the city has one (lib/ads/hub-work.ts); otherwise its
   // own photographs, leaving out the scene-setting "places" frames.
-  const albumPhotos = [
-    ...openingPhotos,
-    ...landingWorkPhotos(city.slug, city.work?.photos ?? [...city.heroes, ...city.interlude.filter((photo) => !PLACES.has(photo.src))]),
-  ];
+  const workPhotos = landingWorkPhotos(city.slug, city.work?.photos ?? [...city.heroes, ...city.interlude.filter((photo) => !PLACES.has(photo.src))]);
+  const albumPhotos = city.slug === "calgary" ? albertaLandingPhotos(workPhotos) : workPhotos;
   return <div className={`${original.page} ${original.dark} ${styles.clean}`} data-landing-theme="dark" data-landing-city={city.slug}>
     <a className={original.skip} href="#main">Skip to content</a>
     <InquiryFunnel city={city.name} page={page} collections={funnelCollections()} phone={phone} phoneE164={SITE.phoneE164} travelNote={market.travelNote}>

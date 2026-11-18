@@ -18,7 +18,7 @@ export function BookingLink({ children, className, placement }: { children: Reac
 /** The mobile sticky bar. `form` points it at a form on the page instead of
  *  the calendar: the bar hides while that form is on screen and its one
  *  button scrolls back to it, with the same label as the form's own button. */
-export function BookingNavigation({ classes, dateFirst = false, startingPrice = ENTRY.price, note = "Before tax · travel extra", form }: { classes: Record<string, string>; dateFirst?: boolean; startingPrice?: number; note?: string; form?: { id: string; label: string } }) {
+export function BookingNavigation({ classes, dateFirst = false, startingPrice = ENTRY.price, note = "Travel included · before tax", form }: { classes: Record<string, string>; dateFirst?: boolean; startingPrice?: number; note?: string; form?: { id: string; label: string } }) {
   const [hidden, setHidden] = useState(true);
   useEffect(() => {
     const section = document.getElementById("book-a-call");

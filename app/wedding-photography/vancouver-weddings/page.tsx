@@ -100,7 +100,7 @@ export default function VancouverWeddings() {
           <div className={styles.formPanel}><InquiryForm city={city.name} market={market.slug} page={path} /><p className={styles.messageLinks}>Rather message? <MessageLinks phone={phone} phoneE164={SITE.phoneE164} city={city.name} /></p></div>
         </section>
       </main>
-      <BookingNavigation classes={styles} startingPrice={from} note="CAD before tax" form={action} />
+      <BookingNavigation classes={styles} startingPrice={from} note="Travel included · CAD before tax" form={action} />
     </InquiryFunnel>
     <footer className={styles.footer}><a href="#main" className={styles.brand}>Arman Arai<span>Wedding photography · Vancouver</span></a><div><a href={`mailto:${SITE.email}`}>{SITE.email}</a><a href="/privacy-policy" target="_blank" rel="noopener noreferrer">Privacy policy</a><span>© {new Date().getFullYear()} Arman Arai</span></div></footer>
     <Analytics />

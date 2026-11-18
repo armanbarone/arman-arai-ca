@@ -59,9 +59,17 @@ const ALBERTA_LANDING_PORTRAITS: [WorkPhoto, WorkPhoto, WorkPhoto] = [
   },
 ];
 
+const WESTERN_WEDDING_PORTRAIT: WorkPhoto = {
+  src: `${CDN}/New%20Calgary%20Images/Cowboiz%20-%20graded.png`,
+  alt: "A black-and-white portrait of a wedding couple in cowboy hats beneath a veil",
+  width: 1200,
+  height: 1788,
+};
+
 export function albertaLandingPhotos<T extends Photo>(cityPhotos: T[]): (WorkPhoto | T)[] {
   const [horseCloseup, horseField, lakesidePortrait] = ALBERTA_LANDING_PORTRAITS;
-  return [horseCloseup, lakesidePortrait, ...cityPhotos.slice(0, 1), horseField, ...cityPhotos.slice(1)];
+  const photos = [horseCloseup, lakesidePortrait, ...cityPhotos.slice(0, 1), horseField, ...cityPhotos.slice(1)];
+  return photos.map((photo, index) => index === 5 ? WESTERN_WEDDING_PORTRAIT : photo);
 }
 
 /** Calgary, the foothills and the ranch country: the second batch is Western,

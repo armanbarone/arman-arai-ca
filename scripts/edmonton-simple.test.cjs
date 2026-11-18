@@ -78,13 +78,13 @@ test("Edmonton uses the simple design, the selected photo album and the existing
   const montrealTree = h.load("@/app/wedding-photography/montreal-simple/page").default();
   const montrealForm = find(montrealTree, node => node.props?.market === "montreal" && node.props?.variant === "minimal");
   assert.equal(h.form.type, montrealForm.type, "both pages reuse the exact same InquiryForm");
-  assert.equal(h.rail.props.photos.length, 14);
+  assert.equal(h.rail.props.photos.length, 15);
   assert.deepEqual(h.rail.props.photos.map(photo => photo.src.split("/").pop()), [
     "Horsie.png", "Eddie-1.png", "calgary-landing-02.webp", "Horsie-2.png",
     "Cowboiz%20-%20graded.png", "calgary-landing-07.webp",
     "calgary-landing-05.webp", "calgary-landing-09.webp",
     "vancouver-new-15.webp", "vancouver-new-01.webp", "vancouver-hub-12.webp",
-    "vancouver-hub-33.webp", "montreal-landing-10.webp", "montreal-landing-02.webp",
+    "vancouver-hub-33.webp", "montreal-landing-10.webp", "montreal-landing-02.webp", "Jasper-0.png",
   ]);
   assert.equal(new Set(h.rail.props.photos.map(photo => photo.src)).size, h.rail.props.photos.length);
   for (const photo of h.rail.props.photos) {

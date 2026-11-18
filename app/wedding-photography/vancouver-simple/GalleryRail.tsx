@@ -1,11 +1,11 @@
 "use client";
 
-import Image from "next/image";
+import LandingImage from "@/components/LandingImage";
 import type { CSSProperties, KeyboardEvent } from "react";
 import type { WorkPhoto } from "@/lib/ads/hub-work";
 import styles from "./page.module.css";
 
-export default function GalleryRail({ photos, city = "Vancouver" }: { photos: WorkPhoto[]; city?: string }) {
+export default function GalleryRail({ photos, city = "Vancouver", twoImageSizes }: { photos: WorkPhoto[]; city?: string; twoImageSizes?: boolean }) {
   function onKeyDown(event: KeyboardEvent<HTMLDivElement>) {
     if (event.target !== event.currentTarget || !["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) return;
     event.preventDefault();
@@ -26,7 +26,7 @@ export default function GalleryRail({ photos, city = "Vancouver" }: { photos: Wo
 
   return <div className={styles.galleryRail} role="region" aria-label={`${city} wedding photographs`} aria-describedby="gallery-hint" tabIndex={0} onKeyDown={onKeyDown}>
     {photos.map((photo, index) => <figure key={photo.src} data-gallery-photo={photo.src} style={{ "--photo-ratio": photo.width / photo.height } as CSSProperties}>
-      <div className={styles.galleryPhoto}><Image src={photo.src} alt={photo.alt} fill sizes="(max-width: 700px) 84vw, 560px" quality={78} /></div>
+      <div className={styles.galleryPhoto}><LandingImage twoSizes={twoImageSizes} src={photo.src} alt={photo.alt} fill sizes="(max-width: 700px) 84vw, 560px" quality={78} /></div>
       <figcaption>{String(index + 1).padStart(2, "0")} <span>/ {photos.length}</span></figcaption>
     </figure>)}
   </div>;

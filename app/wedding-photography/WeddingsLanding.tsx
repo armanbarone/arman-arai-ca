@@ -1,7 +1,7 @@
-import Image from "next/image";
+import LandingImage from "@/components/LandingImage";
 import { Analytics } from "@vercel/analytics/next";
 import type { Metadata } from "next";
-import { ARMAN, CITY_PHOTOS } from "@/lib/images";
+import { ARMAN, CITY_PHOTOS, type Photo } from "@/lib/images";
 import { SITE } from "@/lib/site";
 import type { WeddingCity } from "@/lib/ads/city-wedding-pages";
 import { cityWeddingMetadata } from "@/lib/ads/city-wedding-metadata";
@@ -50,7 +50,13 @@ function SectionLabel({ number, children }: { number: string; children: React.Re
   return <p className={styles.sectionLabel}><span>{number}</span>{children}</p>;
 }
 
-export default function WeddingsLanding({ city, market, path }: { city: WeddingCity; market: PricingMarket; path: string }) {
+export default function WeddingsLanding({ city, market, path, openingPhotos = [], twoImageSizes }: {
+  city: WeddingCity;
+  market: PricingMarket;
+  path: string;
+  openingPhotos?: Photo[];
+  twoImageSizes?: boolean;
+}) {
   const page = path.slice(1);
   const tiers = pricingTiers();
   const from = Math.min(...tiers.map((tier) => tier.price));
@@ -58,7 +64,10 @@ export default function WeddingsLanding({ city, market, path }: { city: WeddingC
   const phone = SITE.phone.replace(/^\+1\s*/, "");
   // The hub album where the city has one (lib/ads/hub-work.ts); otherwise its
   // own photographs, leaving out the scene-setting "places" frames.
-  const albumPhotos = landingWorkPhotos(city.slug, city.work?.photos ?? [...city.heroes, ...city.interlude.filter((photo) => !PLACES.has(photo.src))]);
+  const albumPhotos = [
+    ...openingPhotos,
+    ...landingWorkPhotos(city.slug, city.work?.photos ?? [...city.heroes, ...city.interlude.filter((photo) => !PLACES.has(photo.src))]),
+  ];
   return <div className={`${original.page} ${original.dark} ${styles.clean}`} data-landing-theme="dark" data-landing-city={city.slug}>
     <a className={original.skip} href="#main">Skip to content</a>
     <InquiryFunnel city={city.name} page={page} collections={funnelCollections()} phone={phone} phoneE164={SITE.phoneE164} travelNote={market.travelNote}>
@@ -77,7 +86,7 @@ export default function WeddingsLanding({ city, market, path }: { city: WeddingC
             <p className={styles.heroMicro}>You don’t need a finished timeline. I’ll help you choose.</p>
           </div>
           <div className={`${original.heroArt} ${funnel.heroArt} ${styles.heroFrames}`}>
-            <HeroConveyor photos={city.heroes}
+            <HeroConveyor photos={city.heroes} twoImageSizes={twoImageSizes}
               large={{ className: styles.heroPhoto, sizes: "(max-width: 760px) 88vw, (max-width: 1440px) 48vw, 680px", caption: city.coverage[0] }}
               small={{ className: styles.heroInset, sizes: "(max-width: 760px) 26vw, 16vw" }} />
           </div>
@@ -87,15 +96,15 @@ export default function WeddingsLanding({ city, market, path }: { city: WeddingC
           <SectionLabel number="01">The photographs</SectionLabel>
           <div className={styles.workIntro}>
             <div><h2 id="photographs-title">See how your day<br /><em>could feel.</em></h2><p>{city.workLine} Explore the photographs at your own pace.</p><div className={styles.shortNotes}><p><strong>Real moments.</strong> Space to be with your people.</p><p><strong>Relaxed portraits.</strong> Clear direction when you need it.</p></div></div>
-            <CityWorkAlbum photos={albumPhotos} place={city.name} />
+            <CityWorkAlbum photos={albumPhotos} place={city.name} twoImageSizes={twoImageSizes} />
           </div>
         </section>
 
-        <PortfolioHighlights />
+        <PortfolioHighlights twoImageSizes={twoImageSizes} />
 
         <section className={`${styles.section} ${styles.paper}`} aria-labelledby="about-title">
           <div className={styles.about}>
-            <figure className={styles.portrait}><Image src={ARMAN.src} alt={ARMAN.alt} fill sizes="(max-width: 760px) 40vw, 32vw" quality={78} /></figure>
+            <figure className={styles.portrait}><LandingImage twoSizes={twoImageSizes} src={ARMAN.src} alt={ARMAN.alt} fill sizes="(max-width: 760px) 40vw, 32vw" quality={78} /></figure>
             <div className={styles.aboutHeading}><SectionLabel number="03">Your photographer</SectionLabel><h2 id="about-title">Hi, I’m Arman.<br /><em>I’m with you.</em></h2></div>
             <div className={styles.aboutBody}><p>I photograph your wedding from start to finish. I’ll guide the portraits, plan the family photographs, and leave room for the moments you couldn’t plan.</p><ul className={styles.promiseList}><li>A timeline built around your day.</li><li>Simple direction, so you can relax.</li><li>A preview of your photographs the next day.</li></ul><blockquote>“Only one person understood our vision the way we were imagining it.”<a href={proofSrc(8)} target="_blank" rel="noopener noreferrer">Samantha · Read the Google review ↗</a></blockquote></div>
           </div>
@@ -105,7 +114,7 @@ export default function WeddingsLanding({ city, market, path }: { city: WeddingC
 
         <section className={`${styles.section} ${styles.paper}`} aria-labelledby="reviews-title">
           <SectionLabel number="05">From the couples</SectionLabel><h2 id="reviews-title">The words<br /><em>that stay with me.</em></h2>
-          <div className={styles.reviews}>{reviews.map(({ n, who, quote }) => { const proof = proofByN(n); return <figure key={n}><blockquote>“{quote}”</blockquote><figcaption>{who}</figcaption><a className={styles.reviewProof} href={proofSrc(n)} target="_blank" rel="noopener noreferrer"><Image src={proofSrc(n)} alt={proof.alt} width={proof.w} height={proof.h} sizes="160px" quality={72} /><span>Read the original message ↗</span></a></figure>; })}</div>
+          <div className={styles.reviews}>{reviews.map(({ n, who, quote }) => { const proof = proofByN(n); return <figure key={n}><blockquote>“{quote}”</blockquote><figcaption>{who}</figcaption><a className={styles.reviewProof} href={proofSrc(n)} target="_blank" rel="noopener noreferrer"><LandingImage twoSizes={twoImageSizes} src={proofSrc(n)} alt={proof.alt} width={proof.w} height={proof.h} sizes="160px" quality={72} /><span>Read the original message ↗</span></a></figure>; })}</div>
         </section>
 
         <section className={`${styles.section} ${styles.ink}`} aria-labelledby="process-title">

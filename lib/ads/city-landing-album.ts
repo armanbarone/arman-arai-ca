@@ -69,7 +69,9 @@ const WESTERN_WEDDING_PORTRAIT: WorkPhoto = {
 export function albertaLandingPhotos<T extends Photo>(cityPhotos: T[]): (WorkPhoto | T)[] {
   const [horseCloseup, horseField, lakesidePortrait] = ALBERTA_LANDING_PORTRAITS;
   const photos = [horseCloseup, lakesidePortrait, ...cityPhotos.slice(0, 1), horseField, ...cityPhotos.slice(1)];
-  return photos.map((photo, index) => index === 4 ? WESTERN_WEDDING_PORTRAIT : photo);
+  return photos
+    .filter((_, index) => index !== 8)
+    .map((photo, index) => index === 4 ? WESTERN_WEDDING_PORTRAIT : photo);
 }
 
 /** Calgary, the foothills and the ranch country: the second batch is Western,

@@ -24,6 +24,7 @@
  * Alt text is written from each photograph.
  */
 
+import type { Photo } from "../images";
 import type { WorkPhoto } from "./hub-work";
 
 const CDN = "https://cdn.armanarai.ca";
@@ -37,16 +38,10 @@ const gallery = (slug: string, n: string, alt: string, width: number, height: nu
   src: `${CDN}/galleries/${slug}/${n}.webp`, alt, width, height,
 });
 
-export const ALBERTA_LANDING_OPENING: WorkPhoto[] = [
+const ALBERTA_LANDING_PORTRAITS: [WorkPhoto, WorkPhoto, WorkPhoto] = [
   {
     src: `${CDN}/New%20Calgary%20Images/Horsie.png`,
     alt: "A bride nose to nose with a dark horse, in black and white",
-    width: 1200,
-    height: 900,
-  },
-  {
-    src: `${CDN}/New%20Calgary%20Images/Dogie-1.png`,
-    alt: "A dog team on a snow-covered trail beneath sunlit mountains",
     width: 1200,
     height: 900,
   },
@@ -63,6 +58,11 @@ export const ALBERTA_LANDING_OPENING: WorkPhoto[] = [
     height: 1600,
   },
 ];
+
+export function albertaLandingPhotos<T extends Photo>(cityPhotos: T[]): (WorkPhoto | T)[] {
+  const [horseCloseup, horseField, lakesidePortrait] = ALBERTA_LANDING_PORTRAITS;
+  return [horseCloseup, lakesidePortrait, ...cityPhotos.slice(0, 1), horseField, ...cityPhotos.slice(1)];
+}
 
 /** Calgary, the foothills and the ranch country: the second batch is Western,
  *  so the order alternates the city and the Stampede side of it. */

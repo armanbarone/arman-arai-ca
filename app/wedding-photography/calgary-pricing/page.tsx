@@ -1,5 +1,4 @@
 import WeddingsLanding, { weddingsMetadata } from "../WeddingsLanding";
-import { ALBERTA_LANDING_OPENING } from "@/lib/ads/city-landing-album";
 import { weddingCityRoute } from "@/lib/ads/city-wedding-pages";
 import { pricingMarket } from "@/lib/ads/pricing-request";
 
@@ -13,5 +12,5 @@ const path = "/wedding-photography/calgary-pricing";
 export const metadata = weddingsMetadata(route.city, path);
 
 export default function PricingPage() {
-  return <WeddingsLanding city={route.city} market={market} path={path} openingPhotos={ALBERTA_LANDING_OPENING} twoImageSizes />;
+  return <WeddingsLanding city={route.city} market={market} path={path} twoImageSizes />;
 }

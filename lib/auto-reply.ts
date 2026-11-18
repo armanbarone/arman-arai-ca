@@ -115,17 +115,19 @@ const C = {
 const SERIF = "Georgia,'Times New Roman',serif";
 const SANS = "Arial,Helvetica,sans-serif";
 
-/** The two photographs the design hangs on. Both were opened and looked at
- *  through the resizer, at the size the email asks for, on 2026-11-17. The
- *  second one sits above the cinematic claim because it is the claim: it is
- *  what a frame looks like when the camera is moving with the day. */
+/** The one photograph the design hangs on, opened and looked at through the
+ *  resizer at the size the email asks for, on 2026-11-17.
+ *
+ *  There is exactly one, and there was briefly a second: a full-bleed frame
+ *  between the three albums and the approach section, put there to separate
+ *  them. The owner rejected it the same day ("this approach is not the way").
+ *  Sections in this email are separated typographically, by the divider below
+ *  and by the eyebrows, never by dropping another photograph in. The three
+ *  album thumbnails are the only other imagery and they are there to be
+ *  clicked, not to break up the page. */
 const HERO_IMAGE = {
   path: "cities/vancouver-island/vancouver-island-04.webp",
   alt: "A couple standing forehead to forehead at the edge of still water in low golden light",
-};
-const CINEMA_IMAGE = {
-  path: "home/couple-kiss-motion-blur-warm.webp",
-  alt: "A bride's bouquet and veil smeared into warm motion blur as she turns",
 };
 
 const money = (amount: number) => `C$${amount.toLocaleString("en-CA")}`;
@@ -187,6 +189,21 @@ function subTitle(text: string, top = 0) {
 /** Body copy. One place, so the whole email has one measure and one colour. */
 function para(text: string, size = 15) {
   return `<p style="margin:0 0 14px;font-family:${SANS};font-size:${size}px;line-height:1.7;color:${C.body};">${escapeHtml(text)}</p>`;
+}
+
+/** The site's own section divider: a hairline either side of a small bronze
+ *  mark. Three cells rather than a border, because a styled hairline with a
+ *  character sitting in it is the one thing every email client renders the
+ *  same way. This is how sections are separated here. */
+function divider() {
+  const line = `<td valign="middle" style="padding:0;"><div style="height:1px;max-height:1px;overflow:hidden;background:${C.rule};font-size:1px;line-height:1px;">&nbsp;</div></td>`;
+  return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+    <tr>
+      ${line}
+      <td width="34" align="center" valign="middle" style="width:34px;font-family:${SERIF};font-size:12px;line-height:1;color:${C.bronze};">&#10022;</td>
+      ${line}
+    </tr>
+  </table>`;
 }
 
 /** A full-bleed photograph across the card. */
@@ -483,8 +500,8 @@ export function render(inquiry: Inquiry) {
         ${row(opening(inquiry).map((text, index) => `<p style="margin:0 0 15px;font-family:${SERIF};font-size:${index === 0 ? 20 : 17}px;line-height:1.6;color:${C.ink};">${escapeHtml(text)}</p>`).join(""), 28)}
         ${row(detailsBlock(inquiry), 4, 6)}
         ${row(albumsBlock(), 30)}
-        ${band(CINEMA_IMAGE, 230)}
-        ${row(approachBlock(), 28)}
+        ${row(divider(), 32)}
+        ${row(approachBlock(), 22)}
         ${row(sections(inquiry, links), 8)}
         ${row(`${eyebrow("What happens next")}
           <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">

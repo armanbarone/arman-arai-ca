@@ -99,9 +99,9 @@ test("the layout is one 600px column that collapses on a phone", () => {
   assert.match(html, /\.card \{ width:100% !important/);
   assert.match(html, /\.stack \{ display:block !important/);
   /* No fixed pixel width may survive the collapse except the card itself and
-     the two full-bleed photographs, which are capped by max-width. */
+     the single full-bleed photograph, which is capped by max-width. */
   const widths = [...html.matchAll(/width="(\d+)"/g)].map((m) => Number(m[1])).filter((w) => w > 180);
-  assert.deepEqual(widths, [600, 600, 600]);
+  assert.deepEqual(widths, [600, 600]);
 });
 
 test("section numbers cannot break across two lines on a phone", () => {
@@ -121,4 +121,18 @@ test("section numbers cannot break across two lines on a phone", () => {
   for (const line of mobile.split("\n").filter((l) => l.includes("word-break"))) {
     assert.match(line, /^\s*\.cmp td \{/, `word-break outside .cmp: ${line.trim()}`);
   }
+});
+
+test("one photograph at the top, and sections divided by rules rather than images", () => {
+  const [html] = twins();
+  /* The owner removed a second full-bleed frame on 2026-11-17: sections are
+     separated typographically here, never by dropping in another photograph.
+     The only images left are the hero and the three clickable album frames. */
+  const images = [...html.matchAll(/<img[^>]*src="([^"]+)"/g)].map((m) => m[1]);
+  assert.equal(images.length, 4, images.join(", "));
+  assert.equal(images.filter((src) => src.includes("/galleries/")).length, 3);
+  assert.match(images.find((src) => !src.includes("/galleries/")), /vancouver-island-04/);
+  assert.doesNotMatch(html, /motion-blur/);
+  /* The divider that replaced it. */
+  assert.match(html, /&#10022;/);
 });

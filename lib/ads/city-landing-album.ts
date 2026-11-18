@@ -66,12 +66,20 @@ const WESTERN_WEDDING_PORTRAIT: WorkPhoto = {
   height: 1788,
 };
 
+const JASPER_WEDDING_PORTRAIT: WorkPhoto = {
+  src: `${CDN}/New%20Calgary%20Images/Jasper-0.png`,
+  alt: "A bride holding yellow flowers faces the groom beside blue-green water",
+  width: 1200,
+  height: 1600,
+};
+
 export function albertaLandingPhotos<T extends Photo>(cityPhotos: T[]): (WorkPhoto | T)[] {
   const [horseCloseup, horseField, lakesidePortrait] = ALBERTA_LANDING_PORTRAITS;
   const photos = [horseCloseup, lakesidePortrait, ...cityPhotos.slice(0, 1), horseField, ...cityPhotos.slice(1)];
-  return photos
+  const selectedPhotos = photos
     .filter((_, index) => index !== 8)
     .map((photo, index) => index === 4 ? WESTERN_WEDDING_PORTRAIT : photo);
+  return [...selectedPhotos, JASPER_WEDDING_PORTRAIT];
 }
 
 /** Calgary, the foothills and the ranch country: the second batch is Western,

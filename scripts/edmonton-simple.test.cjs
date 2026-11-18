@@ -81,7 +81,7 @@ test("Edmonton uses the simple design, the selected photo album and the existing
   assert.equal(h.rail.props.photos.length, 15);
   assert.deepEqual(h.rail.props.photos.map(photo => photo.src.split("/").pop()), [
     "Horsie.png", "Eddie-1.png", "calgary-landing-02.webp", "Horsie-2.png",
-    "calgary-landing-06.webp", "Cowboiz%20-%20graded.png",
+    "Cowboiz%20-%20graded.png", "calgary-landing-07.webp",
     "calgary-landing-05.webp", "calgary-landing-09.webp", "calgary-landing-04.webp",
     "vancouver-new-15.webp", "vancouver-new-01.webp", "vancouver-hub-12.webp",
     "vancouver-hub-33.webp", "montreal-landing-10.webp", "montreal-landing-02.webp",

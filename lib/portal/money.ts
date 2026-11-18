@@ -85,23 +85,32 @@ export function computeTotals(lines: PriceLine[], taxes: TaxLine[]) {
   };
 }
 
-/* Two payments from 2026-11-10, by the owner's instruction, replacing the
-   30/35/35 that ran before it. Bookings whose schedule was already issued keep
-   their own stored snapshot and are not touched by this. */
+/* Three payments again from 2026-11-17, by the owner's instruction, restoring
+   the 30/35/35 that ran until 2026-11-10. These must stay in step with TERMS in
+   lib/site.ts, which is what the website and the welcome email state. Bookings
+   whose schedule was already issued keep their own stored snapshot and are not
+   touched by this, including the ones issued on the two-payment split. */
 const PARTS = [
   {
     label: "Booking payment",
     kind: "deposit" as const,
     days: 0,
-    bps: 5000,
-    rule: "50% at booking. Date reservation requires the signed agreement and received booking payment.",
+    bps: 3000,
+    rule: "30% at booking. Date reservation requires the signed agreement and received booking payment.",
   },
   {
-    label: "Final payment",
+    label: "Second instalment",
+    kind: "instalment" as const,
+    days: 60,
+    bps: 3500,
+    rule: "35% due 60 days before the wedding",
+  },
+  {
+    label: "Final instalment",
     kind: "instalment" as const,
     days: 30,
-    bps: 5000,
-    rule: "50% due one month before the wedding",
+    bps: 3500,
+    rule: "35% due 30 days before the wedding",
   },
 ];
 /** Public website starting schedule. The final part absorbs cent rounding; overdue dates fall due at booking. Issued schedules remain stored snapshots. */

@@ -57,7 +57,7 @@ export default function TermsOfService() {
 
         <Section title="Booking and Payment">
           <p>Your date is not reserved until a signed contract and the deposit have both been received. I will hold a date informally for 48 hours as a courtesy while you decide, and that hold is not a booking.</p>
-          <p style={{ marginTop: 12 }}><strong style={{ color: "var(--text)" }}>The deposit is 50% of the total and it is non-refundable.</strong> The remaining 50% is due one month before the wedding date. Payment methods are specified in your contract. Once the contract is signed and the deposit has cleared, the date is yours.</p>
+          <p style={{ marginTop: 12 }}><strong style={{ color: "var(--text)" }}>The deposit is 30% of the total and it is non-refundable.</strong> The remaining 70% is paid in two instalments: 35% due 60 days before the wedding date, and the final 35% due 30 days before it. Payment methods are specified in your contract. Once the contract is signed and the deposit has cleared, the date is yours.</p>
           <p style={{ marginTop: 12 }}>All prices are quoted in Canadian dollars and are subject to applicable sales tax. Travel within Canada is included in the collection price and does not appear as a separate line. The figure on your proposal does not change after signing, and no travel or destination charge is added later.</p>
         </Section>
 

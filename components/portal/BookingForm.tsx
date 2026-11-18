@@ -772,7 +772,7 @@ export default function BookingForm({
               ))}
             </ul>
             <p className="mt-3 text-xs text-slate">
-              Website default: 50% at booking and 50% one month before the wedding
+              Website default: 30% at booking, 35% at 60 days and 35% at 30 days
               before the wedding, including tax. Adjust amounts and dates in
               Payments before issuing the agreement. Cancellation and refund
               treatment comes from the completed wedding agreement.

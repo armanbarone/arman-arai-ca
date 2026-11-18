@@ -62,7 +62,9 @@ test("the 48-hour date hold is gone and the deposit is what secures a date", () 
     assert.doesNotMatch(body, /48[- ]hour/i);
     assert.doesNotMatch(body, /48 hours/);
     assert.doesNotMatch(body, /hold your date/i);
-    assert.match(body, /50% deposit secures your date/i);
+    assert.match(body, /30% deposit secures your date/i);
+    /* Three payments again from 2026-11-17. The email must not imply two. */
+    assert.match(body, /35% due 60 days before the wedding/);
   }
 });
 
@@ -100,4 +102,23 @@ test("the layout is one 600px column that collapses on a phone", () => {
      the two full-bleed photographs, which are capped by max-width. */
   const widths = [...html.matchAll(/width="(\d+)"/g)].map((m) => Number(m[1])).filter((w) => w > 180);
   assert.deepEqual(widths, [600, 600, 600]);
+});
+
+test("section numbers cannot break across two lines on a phone", () => {
+  const [html] = twins();
+  /* The owner read "Three" as "Th / ree" on mobile. Two causes, both fixed
+     here: the number cell carried a 34px width hint, which is narrower than
+     THREE at 12px with .2em tracking, and the mobile styles broke words in
+     every cell in the email. */
+  for (const number of ["One", "Two", "Three", "Four"]) {
+    const cell = html.match(new RegExp(`<td[^>]*>${number}</td>`));
+    assert.ok(cell, `no cell for ${number}`);
+    assert.match(cell[0], /white-space:nowrap/);
+    assert.match(cell[0], /width:64px/);
+  }
+  /* word-break belongs to the three-column comparison and nowhere else. */
+  const mobile = html.slice(html.indexOf("@media screen"), html.indexOf("</style>"));
+  for (const line of mobile.split("\n").filter((l) => l.includes("word-break"))) {
+    assert.match(line, /^\s*\.cmp td \{/, `word-break outside .cmp: ${line.trim()}`);
+  }
 });

@@ -48,7 +48,7 @@ const PROCESS = [
   { n: "03", t: "A twenty minute call", b: "Not a sales call. I need to hear the shape of the day before I can quote it properly." },
   { n: "04", t: "One recommended collection", b: "With the one either side of it and the tax, so you see the whole invoice before you decide. There is no travel figure to add, wherever your wedding is." },
   { n: "05", t: "A 48-hour hold on the date", b: "Free, and I will tell you if someone else asks about it in the meantime." },
-  { n: "06", t: "Contract and deposit", b: `A non-refundable 50% deposit to book, and ${TERMS.balance}.` },
+  { n: "06", t: "Contract and deposit", b: `A non-refundable 30% deposit to book, then ${TERMS.balance}.` },
 ];
 
 const FAQS = [

@@ -167,7 +167,7 @@ function bigButton(href: string, label: string, background: string, color: strin
 function sectionHeading(number: string, title: string) {
   return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 14px;">
     <tr>
-      <td width="34" valign="middle" style="width:34px;font-family:${SERIF};font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:${C.bronze};">${escapeHtml(number)}</td>
+      <td width="64" valign="middle" style="width:64px;white-space:nowrap;font-family:${SERIF};font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:${C.bronze};">${escapeHtml(number)}</td>
       <td valign="middle" style="padding:0 0 0 4px;"><div style="height:1px;max-height:1px;overflow:hidden;background:${C.rule};font-size:1px;line-height:1px;">&nbsp;</div></td>
     </tr>
   </table>
@@ -336,7 +336,7 @@ function comparisonTable() {
     </tr>`).join("");
   return `${subTitle("The same money, a different list.", 26)}
   <p style="margin:0 0 12px;font-family:${SANS};font-size:14px;line-height:1.6;color:${C.body};">What ${money(tier.price)} usually buys from a wedding photographer in Canada, against what it buys here. The right-hand column is drawn from the published Canadian pricing guides for 2026, not from one studio.</p>
-  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;margin:0 0 10px;">
+  <table role="presentation" class="cmp" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;margin:0 0 10px;">
     <tr>
       <td bgcolor="${C.ink}" style="padding:9px 10px;background:${C.ink};border-radius:6px 0 0 0;"></td>
       <td bgcolor="${C.ink}" style="padding:9px 10px;background:${C.ink};font-family:${SANS};font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:${C.onDark};">${escapeHtml(tier.name)} · ${money(tier.price)}</td>
@@ -394,7 +394,7 @@ function sections(inquiry: Inquiry, links: { guide: string; vendors: string; cal
   ${sectionHeading("One", "Full pricing")}
   <p style="margin:0 0 10px;font-family:${SANS};font-size:15px;line-height:1.7;color:${C.body};">Three collections, and only three. Every one includes an engagement session, a next-day preview and the full gallery in three weeks.</p>
   ${priceTable("signature")}
-  <p style="margin:0 0 6px;font-family:${SANS};font-size:13px;line-height:1.6;color:${C.body};">Payment is in two parts: ${escapeHtml(TERMS.schedule.replace(/^Two payments: /, ""))}</p>
+  <p style="margin:0 0 6px;font-family:${SANS};font-size:13px;line-height:1.6;color:${C.body};">Payment is in three parts: ${escapeHtml(TERMS.schedule.replace(/^Three payments: /, ""))}</p>
   ${travelBlock()}
   ${comparisonTable()}
 
@@ -421,7 +421,7 @@ function sections(inquiry: Inquiry, links: { guide: string; vendors: string; cal
 const NEXT_STEPS = [
   "I read your inquiry properly and reply myself, within 60 minutes.",
   "We talk for twenty or thirty minutes, by video or phone, whichever you prefer. No pitch, and no obligation.",
-  "If it feels right, I send the contract and the invoice for the 50% deposit. Signed and paid, the date is yours.",
+  "If it feels right, I send the contract and the invoice for the 30% deposit. Signed and paid, the date is yours.",
   "We start planning the day properly about three months out, and I am at your venue two days before the wedding.",
 ];
 
@@ -457,13 +457,12 @@ export function render(inquiry: Inquiry) {
   img { border:0; outline:none; -ms-interpolation-mode:bicubic; }
   a { color:${C.bronzeDeep}; }
   @media screen and (max-width:620px) {
-    .card { width:100% !important; max-width:100% !important; table-layout:fixed !important; border-left:0 !important; border-right:0 !important; border-radius:0 !important; }
-    td, p, a, div { word-break:break-word !important; }
+    .card { width:100% !important; max-width:100% !important; border-left:0 !important; border-right:0 !important; border-radius:0 !important; }
     .px { padding-left:20px !important; padding-right:20px !important; }
     .stack { display:block !important; width:100% !important; padding:0 0 16px !important; }
     .shell { padding:0 !important; }
     .h2 { font-size:24px !important; }
-    .cmp td { font-size:12px !important; padding:9px 8px !important; }
+    .cmp td { font-size:12px !important; padding:9px 7px !important; word-break:break-word !important; }
   }
 </style>
 </head>

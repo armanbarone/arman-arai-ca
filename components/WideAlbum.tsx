@@ -1,12 +1,14 @@
 "use client";
 
 import { useState, useRef, useCallback } from "react";
+import { LANDING_MOBILE_MEDIA } from "./LandingImage";
 
 interface Props {
   albumTitle: string;
   albumSubtitle: string;
   albumDate: string;
   images: string[];
+  mobileImages?: string[];
   siteLabel?: string;
   touchTargetSize?: number;
   controlColor?: string;
@@ -15,7 +17,7 @@ interface Props {
 
 // Single-page 16:9 album for landscape/widescreen images
 // Each image occupies the full spread; no left/right split
-export default function WideAlbum({ albumTitle, albumSubtitle, albumDate, images, siteLabel = "armanarai.com", touchTargetSize = 36, controlColor, counterWidth = 160 }: Props) {
+export default function WideAlbum({ albumTitle, albumSubtitle, albumDate, images, mobileImages, siteLabel = "armanarai.com", touchTargetSize = 36, controlColor, counterWidth = 160 }: Props) {
   const total = images.length + 2; // cover + images + closing
   const [cur, setCur] = useState(0);
   const [busy, setBusy] = useState(false);
@@ -89,13 +91,16 @@ export default function WideAlbum({ albumTitle, albumSubtitle, albumDate, images
           {/* IMAGE PAGE */}
           {cur > 0 && cur < total - 1 && (
             <div style={{ width: "100%", height: "100%", position: "relative", overflow: "hidden", background: "#0a0806" }}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={images[cur - 1]}
-                alt=""
-                draggable={false}
-                style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", userSelect: "none", pointerEvents: "none" }}
-              />
+              <picture style={{ display: "contents" }}>
+                {mobileImages && <source media={LANDING_MOBILE_MEDIA} srcSet={mobileImages[cur - 1]} />}
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={images[cur - 1]}
+                  alt=""
+                  draggable={false}
+                  style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", userSelect: "none", pointerEvents: "none" }}
+                />
+              </picture>
               {/* vignette */}
               <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse 90% 90% at 50% 50%, transparent 40%, rgba(0,0,0,.4) 100%)", pointerEvents: "none" }} />
               {/* scanlines */}

@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import LandingImage from "@/components/LandingImage";
 import { useEffect, useState } from "react";
 import type { HeroPhoto } from "@/lib/ads/city-wedding-pages";
 import funnel from "./inquiry.module.css";
@@ -22,8 +22,9 @@ const HOLD_MS = 5000;
 
 type Frame = { className: string; sizes: string; caption?: string; offset: number };
 
-export default function HeroConveyor({ photos, large, small }: {
+export default function HeroConveyor({ photos, large, small, twoImageSizes }: {
   photos: HeroPhoto[];
+  twoImageSizes?: boolean;
   large: { className: string; sizes: string; caption: string };
   small: { className: string; sizes: string };
 }) {
@@ -82,7 +83,8 @@ export default function HeroConveyor({ photos, large, small }: {
           const key = `${offset}:${i}`;
           const first = step === 0 && i === shown;
           return (
-            <Image
+            <LandingImage
+              twoSizes={twoImageSizes}
               key={key}
               src={photos[i].src}
               alt={photos[i].alt}

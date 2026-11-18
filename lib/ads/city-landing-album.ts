@@ -37,6 +37,33 @@ const gallery = (slug: string, n: string, alt: string, width: number, height: nu
   src: `${CDN}/galleries/${slug}/${n}.webp`, alt, width, height,
 });
 
+export const ALBERTA_LANDING_OPENING: WorkPhoto[] = [
+  {
+    src: `${CDN}/New%20Calgary%20Images/Horsie.png`,
+    alt: "A bride nose to nose with a dark horse, in black and white",
+    width: 1200,
+    height: 900,
+  },
+  {
+    src: `${CDN}/New%20Calgary%20Images/Dogie-1.png`,
+    alt: "A dog team on a snow-covered trail beneath sunlit mountains",
+    width: 1200,
+    height: 900,
+  },
+  {
+    src: `${CDN}/New%20Calgary%20Images/Horsie-2.png`,
+    alt: "A bride beside a dark horse in a golden field",
+    width: 1200,
+    height: 1600,
+  },
+  {
+    src: `${CDN}/New%20Calgary%20Images/Eddie-1.png`,
+    alt: "A couple embracing beside a turquoise lake with mountains behind them",
+    width: 1200,
+    height: 1600,
+  },
+];
+
 /** Calgary, the foothills and the ranch country: the second batch is Western,
  *  so the order alternates the city and the Stampede side of it. */
 export const CALGARY_LANDING: WorkPhoto[] = [

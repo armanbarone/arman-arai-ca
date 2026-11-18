@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import LandingImage from "@/components/LandingImage";
 import { useRef, useState } from "react";
 import type { Photo } from "@/lib/images";
 import styles from "./vancouver-weddings/landing.module.css";
@@ -10,7 +10,7 @@ import styles from "./vancouver-weddings/landing.module.css";
  *  (owner, 2026-10-03: "optimized version for mobile/desktop and not the full
  *  original image"): a phone asks for about 1080px, a retina desktop for
  *  1200px, instead of the 1920px variant the uncapped 52vw reached. */
-export default function CityWorkAlbum({ photos, place }: { photos: (Photo & { collection?: string })[]; place: string }) {
+export default function CityWorkAlbum({ photos, place, twoImageSizes }: { photos: (Photo & { collection?: string })[]; place: string; twoImageSizes?: boolean }) {
   const [index, setIndex] = useState(0);
   const touch = useRef<{ x: number; y: number } | null>(null);
   const go = (delta: number) => setIndex((current) => Math.max(0, Math.min(photos.length - 1, current + delta)));
@@ -31,7 +31,7 @@ export default function CityWorkAlbum({ photos, place }: { photos: (Photo & { co
       if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy)) go(dx < 0 ? 1 : -1);
     }}>
     <figure className={styles.workFrame}>
-      <Image key={photo.src} src={photo.src} alt={photo.alt} fill sizes="(max-width: 760px) 88vw, 600px" quality={72} />
+      <LandingImage key={photo.src} twoSizes={twoImageSizes} src={photo.src} alt={photo.alt} fill sizes="(max-width: 760px) 88vw, 600px" quality={twoImageSizes ? 78 : 72} />
     </figure>
     <div className={styles.workControls}>
       <p aria-live="polite" aria-atomic="true">{String(index + 1).padStart(2, "0")} <span>/ {photos.length} photographs</span>{photo.collection && <span className={styles.workCollection}>{photo.collection}</span>}</p>

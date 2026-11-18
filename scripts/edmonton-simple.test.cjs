@@ -78,8 +78,9 @@ test("Edmonton uses the simple design, the selected photo album and the existing
   const montrealTree = h.load("@/app/wedding-photography/montreal-simple/page").default();
   const montrealForm = find(montrealTree, node => node.props?.market === "montreal" && node.props?.variant === "minimal");
   assert.equal(h.form.type, montrealForm.type, "both pages reuse the exact same InquiryForm");
-  assert.equal(h.rail.props.photos.length, 12);
+  assert.equal(h.rail.props.photos.length, 16);
   assert.deepEqual(h.rail.props.photos.map(photo => photo.src.split("/").pop()), [
+    "Horsie.png", "Dogie-1.png", "Horsie-2.png", "Eddie-1.png",
     "calgary-landing-02.webp", "calgary-landing-06.webp", "calgary-landing-07.webp",
     "calgary-landing-05.webp", "calgary-landing-09.webp", "calgary-landing-04.webp",
     "vancouver-new-15.webp", "vancouver-new-01.webp", "vancouver-hub-12.webp",

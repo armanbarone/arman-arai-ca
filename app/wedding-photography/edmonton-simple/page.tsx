@@ -1,4 +1,4 @@
-import Image from "next/image";
+import LandingImage from "@/components/LandingImage";
 import type { Metadata } from "next";
 import { Analytics } from "@vercel/analytics/next";
 import { ARMAN, DOCUMENTARY, DREAMY_FINE_ART, EDITORIAL } from "@/lib/images";
@@ -57,7 +57,7 @@ export default function EdmontonSimplePage() {
       </header>
       <main>
         <figure className={styles.hero}>
-          <Image src={topImage} alt="A bride and groom close together in warm light, seen through reflections" width={2016} height={1344} priority sizes="(max-width: 1440px) 100vw, 1440px" quality={85} />
+          <LandingImage twoSizes src={topImage} alt="A bride and groom close together in warm light, seen through reflections" width={2016} height={1344} priority sizes="(max-width: 1440px) 100vw, 1440px" quality={85} />
           <span className={styles.heroShade} aria-hidden="true" />
           <HeroHeadline />
         </figure>
@@ -70,7 +70,7 @@ export default function EdmontonSimplePage() {
           </div>
           <div className={styles.examples}>
             {examples.map(({ label, photo }, index) => <figure key={label} className={index === 4 ? styles.documentary : undefined}>
-              <div className={styles.exampleImage}><Image src={photo.src} alt={photo.alt} fill sizes={index === 4 ? "(max-width: 700px) calc(100vw - 40px), (max-width: 1000px) 60vw, 44vw" : "(max-width: 700px) calc((100vw - 54px) / 2), (max-width: 1000px) 28vw, 22vw"} quality={80} /></div>
+              <div className={styles.exampleImage}><LandingImage twoSizes src={photo.src} alt={photo.alt} fill sizes={index === 4 ? "(max-width: 700px) calc(100vw - 40px), (max-width: 1000px) 60vw, 44vw" : "(max-width: 700px) calc((100vw - 54px) / 2), (max-width: 1000px) 28vw, 22vw"} quality={80} /></div>
               <figcaption>{label}</figcaption>
             </figure>)}
           </div>
@@ -78,7 +78,7 @@ export default function EdmontonSimplePage() {
 
         <section className={styles.about} aria-labelledby="about-title">
           <div className={styles.aboutInner}>
-            <figure className={styles.portrait}><Image src={ARMAN.src} alt={ARMAN.alt} width={800} height={1000} sizes="(max-width: 700px) 70vw, 360px" quality={80} /></figure>
+            <figure className={styles.portrait}><LandingImage twoSizes src={ARMAN.src} alt={ARMAN.alt} width={800} height={1000} sizes="(max-width: 700px) 70vw, 360px" quality={80} /></figure>
             <div className={styles.aboutCopy}>
               <h2 id="about-title">I’m Arman.</h2>
               <p className={styles.welcome}>Genuinely stoked you’re here.</p>
@@ -91,14 +91,14 @@ export default function EdmontonSimplePage() {
 
         <section className={styles.gallery} aria-labelledby="gallery-title">
           <div className={styles.galleryIntro}><h2 id="gallery-title">Your day, <em>in Edmonton.</em></h2><p id="gallery-hint">Swipe to explore · {EDMONTON_SIMPLE_GALLERY.length} photographs</p></div>
-          <GalleryRail photos={EDMONTON_SIMPLE_GALLERY} city="Edmonton" />
+          <GalleryRail photos={EDMONTON_SIMPLE_GALLERY} city="Edmonton" twoImageSizes />
         </section>
 
         <section className={styles.reviews} aria-labelledby="reviews-title">
           <div className={styles.sectionInner}>
             <p className={styles.eyebrow}>From the couples</p>
             <h2 id="reviews-title">In their words.</h2>
-            <div className={styles.quotes}>{reviews.map(({ n, who, quote }) => { const proof = proofByN(n); return <figure key={who}><blockquote>“{quote}”</blockquote><figcaption>{who}</figcaption><Image className={styles.reviewImage} src={proofSrc(n)} alt={proof.alt} width={proof.w} height={proof.h} sizes="(max-width: 700px) calc(100vw - 48px), 360px" quality={85} /></figure>; })}</div>
+            <div className={styles.quotes}>{reviews.map(({ n, who, quote }) => { const proof = proofByN(n); return <figure key={who}><blockquote>“{quote}”</blockquote><figcaption>{who}</figcaption><LandingImage twoSizes className={styles.reviewImage} src={proofSrc(n)} alt={proof.alt} width={proof.w} height={proof.h} sizes="(max-width: 700px) calc(100vw - 48px), 360px" quality={85} /></figure>; })}</div>
           </div>
         </section>
 

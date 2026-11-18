@@ -78,6 +78,12 @@ export const PRICING_MARKETS: PricingMarket[] = [
     coverageAnswer: "Yes. Montréal, Laval, the South Shore, the Laurentians and the Eastern Townships, with no travel costs.",
   },
   {
+    slug: "edmonton",
+    travelShort: "no travel costs",
+    travelNote: "No travel costs.",
+    coverageAnswer: "Yes. Edmonton and the surrounding area, with no travel costs.",
+  },
+  {
     slug: "calgary",
     travelShort: "travel included",
     travelNote: "Travel is included in the collection price, whether the wedding is in the city or up the Bow Valley. I arrive two days before the day to scout your venue.",

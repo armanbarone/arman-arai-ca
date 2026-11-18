@@ -136,3 +136,14 @@ test("one photograph at the top, and sections divided by rules rather than image
   /* The divider that replaced it. */
   assert.match(html, /&#10022;/);
 });
+
+test("every numbered section is pushed clear of the one above it", () => {
+  const [html] = twins();
+  /* The owner read TWO and THREE as "literally touching the rest of the
+     body". Margins are not enough: enough clients drop them that the space
+     has to be a cell with a real height. */
+  for (const number of ["One", "Two", "Three", "Four"]) {
+    const before = html.slice(0, html.indexOf(`>${number}</td>`));
+    assert.match(before.slice(-420), /height="40"[^>]*style="height:40px/, `no spacer above ${number}`);
+  }
+});

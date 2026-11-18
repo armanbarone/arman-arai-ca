@@ -166,8 +166,17 @@ function bigButton(href: string, label: string, background: string, color: strin
   return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:4px 0 6px;"><tr><td align="center" bgcolor="${background}" style="background:${background};border-radius:7px;${edge}"><a href="${escapeHtml(href)}" style="display:block;padding:17px 20px;font-family:${SANS};font-size:14px;font-weight:bold;letter-spacing:.06em;text-transform:uppercase;line-height:1.3;color:${color};text-decoration:none;border-radius:7px;">${escapeHtml(label)}</a></td></tr></table>`;
 }
 
+/** Vertical space, as a table cell with a real height rather than a margin.
+ *  Margins on block elements are ignored or collapsed by enough clients that
+ *  a heading set with one ends up touching the paragraph above it, which is
+ *  exactly what happened to TWO and THREE (owner, 2026-11-17). */
+function spacer(height: number) {
+  return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td height="${height}" style="height:${height}px;line-height:${height}px;font-size:0;">&nbsp;</td></tr></table>`;
+}
+
 function sectionHeading(number: string, title: string) {
-  return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 14px;">
+  return `${spacer(40)}
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 14px;">
     <tr>
       <td width="64" valign="middle" style="width:64px;white-space:nowrap;font-family:${SERIF};font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:${C.bronze};">${escapeHtml(number)}</td>
       <td valign="middle" style="padding:0 0 0 4px;"><div style="height:1px;max-height:1px;overflow:hidden;background:${C.rule};font-size:1px;line-height:1px;">&nbsp;</div></td>
@@ -502,7 +511,7 @@ export function render(inquiry: Inquiry) {
         ${row(albumsBlock(), 30)}
         ${row(divider(), 32)}
         ${row(approachBlock(), 22)}
-        ${row(sections(inquiry, links), 8)}
+        ${row(sections(inquiry, links), 0)}
         ${row(`${eyebrow("What happens next")}
           <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
             ${NEXT_STEPS.map((step, index) => `<tr>

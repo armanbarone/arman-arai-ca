@@ -8,6 +8,7 @@ import { recordLead } from "@/lib/portal/leads";
 import { randomUUID } from "node:crypto";
 import { reportWeddingLead, weddingLeadEvent } from "@/lib/meta-conversions";
 import { createMontrealLeadReceipt, MONTREAL_CONFIRMATION_PATH, MONTREAL_LEAD_COOKIE, MONTREAL_RECEIPT_LIFETIME } from "@/lib/montreal-lead-receipt";
+import { createEdmontonLeadReceipt, EDMONTON_CONFIRMATION_PATH, EDMONTON_LEAD_COOKIE, EDMONTON_RECEIPT_LIFETIME } from "@/lib/edmonton-lead-receipt";
 import { inquiryMarket } from "@/lib/inquiry-completion";
 
 /* One inquiry endpoint for every form on the site.
@@ -100,7 +101,7 @@ export async function POST(req: NextRequest) {
        travel sentence in the auto-reply and opens the vendor list on their
        own city; everything else works without it. */
     const market = pricingMarket(String(body.pricingMarket ?? ""));
-    const cityName = market?.slug === "canada" ? "Canada" : market ? WEDDING_CITIES.find((city) => city.slug === market.slug)?.name : undefined;
+    const cityName = market?.slug === "canada" ? "Canada" : market?.slug === "edmonton" ? "Edmonton" : market ? WEDDING_CITIES.find((city) => city.slug === market.slug)?.name : undefined;
 
     const autoReply: Inquiry | null = autoReplyEnabled()
       ? {
@@ -220,6 +221,7 @@ export async function POST(req: NextRequest) {
     // The browser and server use the same opaque ID, so Meta counts one Lead.
     const inquiryId = randomUUID();
     let montrealReceipt: string | null = null;
+    let edmontonReceipt: string | null = null;
     // Older open tabs do not consume the returned ID. Keep their existing
     // browser-only reporting rather than count them twice with different IDs.
     if (body.trackingVersion === "wedding-lead-v1") {
@@ -230,10 +232,12 @@ export async function POST(req: NextRequest) {
       const confirmationMarket = market?.slug ?? inquiryMarket(values.location, typeof body.page === "string" ? body.page : "");
       if (confirmationMarket === "montreal") {
         montrealReceipt = createMontrealLeadReceipt(weddingLeadEvent(conversion), req.headers);
+      } else if (confirmationMarket === "edmonton") {
+        edmontonReceipt = createEdmontonLeadReceipt(weddingLeadEvent(conversion), req.headers);
       }
-      // Montréal's existing campaign requires the real thank-you URL. Its
-      // server event is sent when that page is served using this receipt.
-      if (!montrealReceipt) after(() => reportWeddingLead(conversion));
+      // Montréal and Edmonton report the server event from their real
+      // confirmation page using the same encrypted-receipt flow.
+      if (!montrealReceipt && !edmontonReceipt) after(() => reportWeddingLead(conversion));
     }
 
     // The couple's email goes out after this response, so the form never waits
@@ -246,6 +250,9 @@ export async function POST(req: NextRequest) {
     const response = NextResponse.json({ success: true, autoReply: Boolean(autoReply), inquiryId });
     if (montrealReceipt) response.cookies.set(MONTREAL_LEAD_COOKIE, montrealReceipt, {
       httpOnly: true, secure: true, sameSite: "lax", path: MONTREAL_CONFIRMATION_PATH, maxAge: MONTREAL_RECEIPT_LIFETIME,
+    });
+    if (edmontonReceipt) response.cookies.set(EDMONTON_LEAD_COOKIE, edmontonReceipt, {
+      httpOnly: true, secure: true, sameSite: "lax", path: EDMONTON_CONFIRMATION_PATH, maxAge: EDMONTON_RECEIPT_LIFETIME,
     });
     return response;
   } catch (err) {

@@ -19,7 +19,7 @@ export type SentInquiry = {
 const SENT_KEY = "aa_ca_pricing_inquiry_v1";
 const SENT_LIFETIME = 2 * 60 * 60 * 1000;
 let latest: SentInquiry | null = null;
-const markets = ["vancouver", "toronto", "montreal", "calgary", "victoria", "canada"];
+const markets = ["vancouver", "toronto", "montreal", "calgary", "victoria", "edmonton", "canada"];
 
 /** Keep the relevant city's existing landing-page confirmation. General
  * inquiries use Vancouver when neither the location nor the page names a city. */

@@ -178,10 +178,14 @@ test("Canada contact processing records a Canada lead and queues the same automa
     assert.equal(leads[0].attribution.landingPage, path);
     assert.equal(replies[0].market.slug, "canada");
     assert.equal(replies[0].cityName, "Canada");
-    // One national price, travel quoted separately, and said in Arman's own
-    // voice: this sentence is printed in an email he signs.
+    // One national price with travel INSIDE it (owner, 2026-11-17), the
+    // two-day scout, and all of it in Arman's own voice: this sentence is
+    // printed in an email he signs. The welcome email says the same thing in
+    // lib/auto-reply.ts; the two must never disagree.
     assert.match(replies[0].market.travelNote, /the same anywhere in Canada/);
-    assert.match(replies[0].market.travelNote, /Travel is quoted separately/);
+    assert.match(replies[0].market.travelNote, /travel is included/);
+    assert.match(replies[0].market.travelNote, /two days before the wedding/);
+    assert.doesNotMatch(replies[0].market.travelNote, /quoted separately/);
     assert.doesNotMatch(replies[0].market.travelNote, /Arman/);
   } finally {
     if (previous === undefined) delete process.env.RESEND_API_KEY;

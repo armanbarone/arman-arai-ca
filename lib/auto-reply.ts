@@ -142,21 +142,39 @@ function albumsBlock() {
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 6px;"><tr>${cells}</tr></table>`;
 }
 
-/* Why couples book me (owner, 2026-11-15, in his words: cinematic work, far
-   past what an average wedding photographer can do, and a handful of people
-   in North America shooting this way). It sits between the three albums and
-   the price, because it is the sentence that makes the price make sense. */
-function whyBlock() {
-  return `<p style="margin:34px 0 10px;font-family:Arial,Helvetica,sans-serif;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#9A7A54;">Why couples book me</p>
-  <p style="margin:0 0 12px;font-size:25px;line-height:1.15;">The work is cinematic.</p>
-  <p style="margin:0 0 14px;font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.65;color:#6B6258;">That is a different craft from covering a wedding competently, and it is the whole of what I do. I light a room, I direct the two of you where directing is what the frame needs, and I shoot your day so it comes back looking like stills from a film rather than a record of an event. A handful of photographers in North America work this way. I am one of them.</p>
-  <p style="margin:0 0 6px;font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.65;color:#6B6258;">The rest is effort. I go past what the collection obliges me to do on every wedding I shoot, because your day happens once and the pictures are what is left of it.</p>`;
+/* How I approach wedding photography, which is also the answer to why couples
+   book me. The two were separate sections until 2026-11-17, when the owner
+   asked for them combined: the approach IS the argument, and splitting them
+   made the email say the same thing twice.
+ *
+ * His sentence, which everything here serves: "creating art while the couple
+ * are fully aware and not rushed." The detail under it is his too, written
+ * from the couple's side: a day that feels genuine and unhurried, laughter,
+ * happy tears, food, music, dancing, everyone under one roof, less time
+ * worrying about the perfect shot and more time present with each other;
+ * candid documentary mixed with romantic editorial portraits; effortless, a
+ * little nostalgic, full of emotion; the big moments and also the quiet
+ * glances, the spontaneous laughter, the family interactions and the details
+ * that would otherwise go unnoticed; and the test at the end, which is looking
+ * back years later and feeling like you are reliving the day.
+ *
+ * It is written in his first person, not the couple's "we want", and it keeps
+ * the cinematic claim he asked for on 2026-11-15. It sits between the three
+ * albums and the price, because it is what makes the price make sense.
+ */
+function approachBlock() {
+  return `<p style="margin:34px 0 10px;font-family:Arial,Helvetica,sans-serif;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#9A7A54;">How I approach wedding photography</p>
+  <p style="margin:0 0 12px;font-size:25px;line-height:1.15;">Art, made while you are fully present and never rushed.</p>
+  <p style="margin:0 0 14px;font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.65;color:#6B6258;">Your day should feel genuine and unhurried. Laughter, happy tears, good food, music, dancing, everyone you love under one roof, and the two of you spending those hours with each other and your families instead of worrying about whether the perfect shot is being taken. I am there the whole time and almost none of it should feel like a photoshoot you have to perform in.</p>
+  <p style="margin:0 0 14px;font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.65;color:#6B6258;">What I am doing while that happens is making art. Candid and documentary through the day, with romantic, editorial portraits where the light and the location earn them. The frames come back effortless, a little nostalgic, full of emotion: the vows and the first dance, and equally the quiet glances, the spontaneous laughter, the way your families are with each other, the details nobody else is looking at. That is cinematic work. It is a different craft from covering a wedding competently, and a handful of photographers in North America shoot this way. I am one of them.</p>
+  <p style="margin:0 0 6px;font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.65;color:#6B6258;">The rest is effort. On every wedding I photograph I go further than the collection obliges me to, because there is only one thing I am really being hired for: that you open these pictures years from now and feel like you are living the day all over again.</p>`;
 }
 
-const WHY_TEXT = [
-  "WHY COUPLES BOOK ME: THE WORK IS CINEMATIC",
-  "That is a different craft from covering a wedding competently, and it is the whole of what I do. I light a room, I direct the two of you where directing is what the frame needs, and I shoot your day so it comes back looking like stills from a film rather than a record of an event. A handful of photographers in North America work this way. I am one of them.",
-  "The rest is effort. I go past what the collection obliges me to do on every wedding I shoot, because your day happens once and the pictures are what is left of it.",
+const APPROACH_TEXT = [
+  "HOW I APPROACH WEDDING PHOTOGRAPHY: ART, MADE WHILE YOU ARE FULLY PRESENT AND NEVER RUSHED",
+  "Your day should feel genuine and unhurried. Laughter, happy tears, good food, music, dancing, everyone you love under one roof, and the two of you spending those hours with each other and your families instead of worrying about whether the perfect shot is being taken. I am there the whole time and almost none of it should feel like a photoshoot you have to perform in.",
+  "What I am doing while that happens is making art. Candid and documentary through the day, with romantic, editorial portraits where the light and the location earn them. The frames come back effortless, a little nostalgic, full of emotion: the vows and the first dance, and equally the quiet glances, the spontaneous laughter, the way your families are with each other, the details nobody else is looking at. That is cinematic work. It is a different craft from covering a wedding competently, and a handful of photographers in North America shoot this way. I am one of them.",
+  "The rest is effort. On every wedding I photograph I go further than the collection obliges me to, because there is only one thing I am really being hired for: that you open these pictures years from now and feel like you are living the day all over again.",
 ].join("\n");
 
 function priceTable(fit?: string) {
@@ -195,6 +213,34 @@ const MARKET_ROWS: [string, (tier: Tier) => string, string][] = [
   ["Vertical reels", () => "Cut from the day, in the first week", "rarely offered"],
 ];
 
+/* Travel, under the prices (owner, 2026-11-17): travel cost is INCLUDED in the
+ * collections, he arrives two days before the wedding to scout, and delays are
+ * already absorbed by that schedule. The stated purpose is to settle the one
+ * fear a national landing page creates, which is hiring somebody from out of
+ * town.
+ *
+ * WARNING, read before editing: this contradicts the rest of the site, which
+ * says travel is quoted separately (lib/site.ts TRAVEL, /pricing, /faq,
+ * llms.txt, the wedding guide, the per-city ads markets and roughly twenty
+ * journal posts). The owner's 2026-11-17 instruction governs this email and
+ * the canada market copy; the remaining surfaces were flagged to him and left
+ * alone rather than rewritten unilaterally. Do not widen or narrow the claim
+ * here without him, and keep it to CANADA: destination weddings are quoted per
+ * wedding and nothing about them is included in these figures.
+ */
+function travelBlock() {
+  const line = "margin:0 0 10px;font-family:Arial,Helvetica,sans-serif;font-size:14px;line-height:1.6;color:#6B6258;";
+  return `<p style="margin:22px 0 8px;font-size:21px;line-height:1.2;">Travel is included, and I arrive two days early.</p>
+  <p style="${line}">The collection price is the whole price wherever in Canada you are marrying. Flights, the ground travel and the nights are already inside the figures above. There is no mileage line, no out-of-town surcharge, and nothing that turns up on an invoice later.</p>
+  <p style="${line}">I get there two days before the wedding. That gives me a full day at your venue in the real light, walking your ceremony spot and your portrait locations and building the timeline around what is actually there rather than around photographs of it. It also means the travel risk is mine and never yours: a cancelled flight or a day of weather is absorbed two days out, long before anyone is getting dressed.</p>`;
+}
+
+const TRAVEL_TEXT = [
+  "TRAVEL IS INCLUDED, AND I ARRIVE TWO DAYS EARLY",
+  "The collection price is the whole price wherever in Canada you are marrying. Flights, the ground travel and the nights are already inside the figures above. There is no mileage line, no out-of-town surcharge, and nothing that turns up on an invoice later.",
+  "I get there two days before the wedding. That gives me a full day at your venue in the real light, walking your ceremony spot and your portrait locations and building the timeline around what is actually there rather than around photographs of it. It also means the travel risk is mine and never yours: a cancelled flight or a day of weather is absorbed two days out, long before anyone is getting dressed.",
+].join("\n");
+
 function comparisonTable() {
   const tier = pricingTiers()[0];
   const cell = "padding:11px 10px;border-bottom:1px solid #EDE7DA;font-family:Arial,Helvetica,sans-serif;font-size:13px;line-height:1.5;vertical-align:top;";
@@ -214,7 +260,7 @@ function comparisonTable() {
     ${rows}
   </table>
   <p style="margin:0 0 6px;font-family:Arial,Helvetica,sans-serif;font-size:13px;line-height:1.6;color:#6B6258;">Legacy and Photo + Film widen the same gap: a second photographer, a printed album, and in Photo + Film a filmmaker beside me for all twelve hours rather than a second vendor you book and brief yourself.</p>
-  <p style="margin:0 0 6px;font-family:Arial,Helvetica,sans-serif;font-size:13px;line-height:1.6;color:#6B6258;">Prices in CAD, before tax. Travel outside your region is quoted separately and agreed before you book.</p>`;
+  <p style="margin:0 0 6px;font-family:Arial,Helvetica,sans-serif;font-size:13px;line-height:1.6;color:#6B6258;">Prices in CAD, before tax.</p>`;
 }
 
 const COMPARISON_TEXT = () => {
@@ -224,7 +270,7 @@ const COMPARISON_TEXT = () => {
     `What ${money(tier.price)} usually buys from a wedding photographer in Canada, against what it buys here, from the published Canadian pricing guides for 2026.`,
     ...MARKET_ROWS.map(([label, mine, theirs]) => `${label} - mine: ${mine(tier)}. Typical: ${theirs}.`),
     "Legacy and Photo + Film widen the same gap: a second photographer, a printed album, and in Photo + Film a filmmaker beside me for all twelve hours.",
-    "Prices in CAD, before tax. Travel outside your region is quoted separately and agreed before you book.",
+    "Prices in CAD, before tax.",
   ].join("\n");
 };
 
@@ -252,7 +298,7 @@ function opening(inquiry: Inquiry) {
   return [
     `Hi ${inquiry.firstName || "there"},`,
     `Congratulations, and thank you for writing. This is Arman. I have your inquiry about your wedding${about ? ` ${about}` : ""}, and I'll reply to you personally within 60 minutes.`,
-    "This email is the part you'd normally have to ask three times for, so you have it now rather than after a week of back and forth: what everything costs, how I work, how a date actually gets held, and the other people I'd want on your day. Read it in whatever order you like.",
+    "This email is the part you'd normally have to ask three times for, so you have it now rather than after a week of back and forth: how I work a wedding, what everything costs with travel included, how a date gets secured, and the other people I'd want on your day. Read it in whatever order you like.",
   ];
 }
 
@@ -264,6 +310,7 @@ function sections(inquiry: Inquiry, links: { guide: string; vendors: string; cal
   <p style="margin:0 0 10px;font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.65;color:#6B6258;">Three collections, and only three. Every one includes an engagement session, a next-day preview and the full gallery in three weeks.</p>
   ${priceTable("signature")}
   <p style="margin:0 0 6px;font-family:Arial,Helvetica,sans-serif;font-size:13px;line-height:1.6;color:#6B6258;">Payment is in two parts: ${escapeHtml(TERMS.schedule.replace(/^Two payments: /, ""))}</p>
+  ${travelBlock()}
   ${comparisonTable()}
 
   ${sectionHeading("Two", "Your welcome guide")}
@@ -271,7 +318,7 @@ function sections(inquiry: Inquiry, links: { guide: string; vendors: string; cal
   ${bigButton(links.guide, "Open the wedding guide", "#A95C31", "#FFFFFF")}
 
   ${sectionHeading("Three", "Securing your date")}
-  <p style="margin:0 0 10px;font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.65;color:#6B6258;">${escapeHtml(HOLD)} ${escapeHtml(TERMS.retainer)}, once the contract is signed, and not before. The fastest way there is a short call, so you can ask me the things people don't put in an email.</p>
+  <p style="margin:0 0 10px;font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.65;color:#6B6258;">${escapeHtml(TERMS.retainer)}, once the contract is signed, and not before. I photograph one wedding at a time and the summer and early autumn dates are the first to go, so the sooner we speak, the more of the calendar is still open to you. The fastest way there is a short call, where you can ask me the things people don't put in an email.</p>
   <p style="margin:0 0 16px;font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.65;color:#2C2420;"><strong>${escapeHtml(TONIGHT_CALL)}</strong>, or pick any time that suits you both.</p>
   ${bigButton(links.calendar, "Book your free 30-minute call", "#B8956A", "#1A1612")}
 
@@ -280,20 +327,17 @@ function sections(inquiry: Inquiry, links: { guide: string; vendors: string; cal
   ${bigButton(links.vendors, "See the vendor list", "#2C2420", "#FFFFFF")}`;
 }
 
-/* The hold, in the words the owner asked for (2026-11-15): 48 hours, free,
-   one date at a time, and whoever asks next gets it once the window closes.
-   One constant, because it is said twice and the two must never differ. */
-const HOLD =
-  "I hold your date for 48 hours, at no cost, from the moment I send you the contract. " +
-  "I only ever hold one date at a time, so when those 48 hours are up the date goes back on the calendar, " +
-  "and if another couple asks for it after that, theirs is the wedding I take.";
+/* The 48-hour date hold that lived here was removed on 2026-11-17 at the
+   owner's instruction, and replaced by approachBlock(). Do not reintroduce it
+   anywhere in this email: the deposit is what secures a date now, and a hold
+   window that is promised in writing and not actually operated is worse than
+   no hold at all. */
 
 const NEXT_STEPS = [
   "I read your inquiry properly and reply myself, within 60 minutes.",
   "We talk for twenty or thirty minutes, by video or phone, whichever you prefer. No pitch, and no obligation.",
-  "If it feels right, I send the contract and the invoice for the 50% deposit, and your date is held free for the next 48 hours while you read them.",
-  "Sign and pay inside that window and the date is yours. Miss it and the date is open to the next couple who asks.",
-  "Booked, we start planning the day properly about three months out.",
+  "If it feels right, I send the contract and the invoice for the 50% deposit. Signed and paid, the date is yours.",
+  "We start planning the day properly about three months out, and I am at your venue two days before the wedding.",
 ];
 
 export function render(inquiry: Inquiry) {
@@ -314,7 +358,7 @@ export function render(inquiry: Inquiry) {
   const html = `<div style="font-family:Georgia,serif;max-width:560px;margin:0 auto;color:#2C2420;font-size:17px;line-height:1.65;">
   ${opening(inquiry).map((p) => `<p style="margin:0 0 16px;">${escapeHtml(p)}</p>`).join("")}
   ${albumsBlock()}
-  ${whyBlock()}
+  ${approachBlock()}
   ${sections(inquiry, links)}
   <p style="margin:34px 0 10px;font-family:Arial,Helvetica,sans-serif;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#9A7A54;">What happens next</p>
   <ol style="margin:0 0 22px;padding-left:20px;font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.7;color:#6B6258;">
@@ -332,13 +376,14 @@ export function render(inquiry: Inquiry) {
     "THREE COMPLETE WEDDINGS",
     "Not a highlight reel. Three whole days, every frame I delivered.",
     ...ALBUMS.map((album) => `${album.names}, ${album.where}: ${SITE.url}/galleries/${album.slug}`),
-    WHY_TEXT,
+    APPROACH_TEXT,
     "ONE. FULL PRICING",
     pricingTiers().map((tier) => `${tier.name}, ${tier.hours} hours: ${money(tier.price)}`).join("\n"),
     TERMS.schedule,
+    TRAVEL_TEXT,
     COMPARISON_TEXT(),
     `TWO. YOUR WELCOME GUIDE\nHow I work a wedding day, start to finish: ${links.guide}`,
-    `THREE. SECURING YOUR DATE\n${HOLD} ${TERMS.retainer}. ${TONIGHT_CALL}, or pick any time: ${links.calendar}`,
+    `THREE. SECURING YOUR DATE\n${TERMS.retainer}, once the contract is signed, and not before. I photograph one wedding at a time and the summer and early autumn dates are the first to go. ${TONIGHT_CALL}, or pick any time: ${links.calendar}`,
     `FOUR. MY PREFERRED VENDORS\nPlanners, florists, hair and makeup, music and officiants, by city: ${links.vendors}`,
     `WHAT HAPPENS NEXT\n${NEXT_STEPS.map((step, n) => `${n + 1}. ${step}`).join("\n")}`,
     `Message me on WhatsApp: ${whatsapp}`,

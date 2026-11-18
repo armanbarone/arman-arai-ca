@@ -49,13 +49,17 @@ export type PricingMarket = {
 export const PRICING_MARKETS: PricingMarket[] = [
   {
     slug: "canada",
-    travelShort: "travel quoted before you book",
-    /* TRAVEL.availabilityNote says the same thing about Arman in the third
-       person, which is right on /pricing and wrong in an email he signs. The
-       facts are its facts: one national price, travel quoted separately, less
-       when a date is already in the region. */
-    travelNote: "A collection costs the same anywhere in Canada. Travel is quoted separately against your venue and agreed before you book, and it comes down when I already have dates in your region.",
-    coverageAnswer: "Yes. Weddings anywhere in Canada, with the same published collection prices. Travel is quoted against your venue and date and agreed before you book.",
+    travelShort: "travel included",
+    /* Owner, 2026-11-17: on the national page travel is INCLUDED in the
+       collection, and he arrives two days before the wedding to scout. That
+       overrides TRAVEL.availabilityNote in lib/site.ts, which still says
+       travel is quoted separately and is still what /pricing, /faq, llms.txt,
+       the wedding guide and the journal say. This market and lib/auto-reply.ts
+       were changed because they are the same post-inquiry sequence and a
+       couple reads both inside a minute; the rest was flagged to him. Keep the
+       two in step, and keep the claim to Canada. */
+    travelNote: "A collection costs the same anywhere in Canada, and travel is included in it. The flights, the ground travel and the nights are inside the collection price, and I arrive two days before the wedding to scout your venue.",
+    coverageAnswer: "Yes. Weddings anywhere in Canada, at the same published collection prices, with travel included. I arrive two days before the wedding to scout your venue and build the timeline around it.",
   },
   {
     slug: "vancouver",

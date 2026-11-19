@@ -175,10 +175,10 @@ function bigButton(href: string, label: string, background: string, color: strin
 function sideButton(href: string, text: string, label: string) {
   return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="${C.panel}" style="background:${C.panel};border:1px solid ${C.rule};border-radius:10px;margin:4px 0 10px;">
     <tr>
-      <td class="sb-text" valign="middle" style="padding:15px 6px 15px 18px;font-family:${SANS};font-size:14px;line-height:1.55;color:${C.ink};">${escapeHtml(text)}</td>
-      <td class="sb-cell" width="142" valign="middle" align="right" style="width:142px;padding:12px 16px 12px 6px;">
-        <table role="presentation" class="sb-inner" cellpadding="0" cellspacing="0" border="0"><tr>
-          <td align="center" bgcolor="${C.ink}" style="background:${C.ink};border-radius:7px;"><a href="${escapeHtml(href)}" style="display:block;padding:13px 20px;font-family:${SANS};font-size:12px;font-weight:bold;letter-spacing:.1em;text-transform:uppercase;line-height:1.2;white-space:nowrap;color:${C.onDark};text-decoration:none;border-radius:7px;">${escapeHtml(label)}</a></td>
+      <td class="sb-text" valign="middle" style="padding:14px 8px 14px 18px;font-family:${SANS};font-size:14px;line-height:1.55;color:${C.ink};">${escapeHtml(text)}</td>
+      <td class="sb-cell" valign="middle" align="right" style="padding:12px 18px 12px 0;">
+        <table role="presentation" class="sb-inner" cellpadding="0" cellspacing="0" border="0" align="right"><tr>
+          <td align="center" bgcolor="${C.ink}" style="background:${C.ink};border-radius:7px;"><a href="${escapeHtml(href)}" style="display:block;padding:12px 16px;font-family:${SANS};font-size:12px;font-weight:bold;letter-spacing:.08em;text-transform:uppercase;line-height:1.2;white-space:nowrap;color:${C.onDark};text-decoration:none;border-radius:7px;">${escapeHtml(label)}</a></td>
         </tr></table>
       </td>
     </tr>

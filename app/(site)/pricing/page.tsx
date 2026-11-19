@@ -226,8 +226,8 @@ Every figure below is the whole price of that collection, in every city I work i
             <div className="flex-1">
               <p className="text-[0.6rem] tracking-[0.3em] uppercase text-rose mb-3">None of them quite right?</p>
               <p className="text-blush text-[0.95rem] leading-relaxed font-light">
-                Build your own custom collection from the same prices, add only what you want,
-                and send it to me. It takes two minutes and nothing is booked by doing it.
+                Build one from scratch instead. Pick the hours, add only what you want, see the
+                price as you go, and send it to me. Nothing is booked by doing it.
               </p>
             </div>
             <Link

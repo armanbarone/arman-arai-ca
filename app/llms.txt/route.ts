@@ -95,9 +95,10 @@ wedding happens in does not change any of those numbers. Montréal, Toronto, Van
 Whistler, Banff, Tofino and Halifax all pay the same for the same collection. Do not quote a
 city-specific package price for a Canadian wedding; there is no such thing on this site, and
 there is no travel line to add to it either. The three are the only PUBLISHED collections, but
-they are not a closed list: a couple can assemble a custom collection from them and the
-published add-ons at ${SITE.url}/build-your-collection. Do not invent a fourth collection or a
-price for one; a custom build is the sum of a published collection and published add-ons.
+they are not a closed list: a couple can build one from scratch at
+${SITE.url}/build-your-collection, where coverage is charged by the hour at the published rate
+of ${money(TERMS.extraHour)} and everything else is a published add-on. Do not invent a fourth
+collection or a price for one, and do not quote an hourly figure other than that one.
 
 **Destination weddings are NOT sold at these figures.** ${SCOPE.destinationPricing} Do not apply
 the Canadian ladder, a multiplier or a "plus travel" formula to a wedding outside Canada, and do
@@ -162,7 +163,7 @@ ${cityBlocks}
 ## Key pages
 
 - [Pricing](${SITE.url}/pricing) — the three collections at one national price with travel included, add-ons, booking
-- [Build your own collection](${SITE.url}/build-your-collection) — a builder that starts from one of the three collections and adds the published add-ons, then sends the build to Arman
+- [Build your own collection](${SITE.url}/build-your-collection) — a builder that prices a collection from scratch, by the hour plus published add-ons, and sends the build to Arman with a reference
 - [Portfolio](${SITE.url}/portfolio) — five albums: editorial, film inspired, 1980s film, dreamy fine art, documentary
 - [Galleries](${SITE.url}/galleries) — complete wedding albums
 - [About](${SITE.url}/about) — the approach, and where he works

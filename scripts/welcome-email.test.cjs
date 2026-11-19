@@ -71,17 +71,30 @@ test("the albums are a highlight reel of what he may publish, not every frame", 
   }
 });
 
-test("the custom collection builder is offered, with a button, under the prices", () => {
-  const [html, text] = twins();
-  for (const body of [html, text]) {
+test("the email offers no custom collection builder, because there is no page", () => {
+  /* It was offered for one day, 2026-11-18 to 2026-11-19, then the owner
+     deleted the page outright with no redirect. A link to it from here would
+     be a 404 in every couple's inbox. */
+  for (const body of twins()) {
+    assert.doesNotMatch(body, /build-your-collection/);
+    assert.doesNotMatch(body, /build your own/i);
+    assert.doesNotMatch(body, />Build it</);
+    /* And the line he cut before that one has not crept back either. */
     assert.doesNotMatch(body, /Three collections, and only three/);
-    assert.match(body, /[Bb]uild your own custom collection and send it to me/);
-    assert.match(body, /https:\/\/www\.armanarai\.ca\/build-your-collection/);
   }
-  /* A real button, inside section one, below the three collection cards. */
-  const one = html.slice(html.indexOf(">One</td>"), html.indexOf(">Two</td>"));
-  assert.match(one, /<a href="https:\/\/www\.armanarai\.ca\/build-your-collection"[^>]*>Build it<\/a>/);
-  assert.ok(one.indexOf("Build it") > one.indexOf("Most booked"), "the builder must sit below the collections");
+});
+
+test("every link in the email points at a page that still exists", () => {
+  const [html] = twins();
+  const own = [...html.matchAll(/href="(https:\/\/www\.armanarai\.ca[^"]*)"/g)].map((m) => m[1]);
+  const live = ["/wedding-guide", "/preferred-vendors", "/galleries/", "https://www.armanarai.ca\""];
+  for (const href of own) {
+    const path = href.replace("https://www.armanarai.ca", "") || "/";
+    assert.ok(
+      path === "/" || live.some((ok) => path.startsWith(ok)),
+      `${path} is linked from the welcome email and is not a known page`,
+    );
+  }
 });
 
 test("travel is included and the two-day scout is promised, in both twins", () => {

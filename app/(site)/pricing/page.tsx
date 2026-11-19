@@ -219,24 +219,6 @@ Every figure below is the whole price of that collection, in every city I work i
               </div>
             ))}
           </div>
-
-          {/* The builder (owner, 2026-11-18). The three collections are a
-              starting point, so say so here as well as in the welcome email. */}
-          <div className="mt-10 border border-dust px-7 py-7 md:px-9 md:py-8 flex flex-col md:flex-row md:items-center gap-6 md:gap-10">
-            <div className="flex-1">
-              <p className="text-[0.6rem] tracking-[0.3em] uppercase text-rose mb-3">None of them quite right?</p>
-              <p className="text-blush text-[0.95rem] leading-relaxed font-light">
-                Build one from scratch instead. Pick the hours, add only what you want, see the
-                price as you go, and send it to me. Nothing is booked by doing it.
-              </p>
-            </div>
-            <Link
-              href="/build-your-collection"
-              className="shrink-0 bg-rose text-ivory text-[0.68rem] tracking-[0.2em] uppercase px-9 py-3.5 hover:bg-rose-dark transition-colors text-center"
-            >
-              Build your own
-            </Link>
-          </div>
         </div>
       </section>
 

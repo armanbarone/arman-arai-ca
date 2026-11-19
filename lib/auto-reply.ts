@@ -167,23 +167,10 @@ function bigButton(href: string, label: string, background: string, color: strin
   return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:4px 0 6px;"><tr><td align="center" bgcolor="${background}" style="background:${background};border-radius:7px;${edge}"><a href="${escapeHtml(href)}" style="display:block;padding:17px 20px;font-family:${SANS};font-size:14px;font-weight:bold;letter-spacing:.06em;text-transform:uppercase;line-height:1.3;color:${color};text-decoration:none;border-radius:7px;">${escapeHtml(label)}</a></td></tr></table>`;
 }
 
-/** A line of copy with a button beside it, which is what the owner asked for
- *  on 2026-11-18 for the custom-collection builder: "write 'build your own
- *  custom collection and send it to me' and put a button next to it". Two
- *  cells, so Outlook keeps them side by side, and .stack drops the button
- *  under the sentence on a phone. */
-function sideButton(href: string, text: string, label: string) {
-  return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="${C.panel}" style="background:${C.panel};border:1px solid ${C.rule};border-radius:10px;margin:4px 0 10px;">
-    <tr>
-      <td class="sb-text" valign="middle" style="padding:14px 8px 14px 18px;font-family:${SANS};font-size:14px;line-height:1.55;color:${C.ink};">${escapeHtml(text)}</td>
-      <td class="sb-cell" valign="middle" align="right" style="padding:12px 18px 12px 0;">
-        <table role="presentation" class="sb-inner" cellpadding="0" cellspacing="0" border="0" align="right"><tr>
-          <td align="center" bgcolor="${C.ink}" style="background:${C.ink};border-radius:7px;"><a href="${escapeHtml(href)}" style="display:block;padding:12px 16px;font-family:${SANS};font-size:12px;font-weight:bold;letter-spacing:.08em;text-transform:uppercase;line-height:1.2;white-space:nowrap;color:${C.onDark};text-decoration:none;border-radius:7px;">${escapeHtml(label)}</a></td>
-        </tr></table>
-      </td>
-    </tr>
-  </table>`;
-}
+/* A "build your own custom collection" line with a button beside it ran here
+   from 2026-11-18 to 2026-11-19, pointing at /build-your-collection. The owner
+   deleted the page and the invitation with it. Do not reinstate either: there
+   is no builder, and a button in this email pointing at one would 404. */
 
 /** Vertical space, as a table cell with a real height rather than a margin.
  *  Margins on block elements are ignored or collapsed by enough clients that
@@ -438,13 +425,12 @@ function opening(inquiry: Inquiry) {
 }
 
 /** The four numbered sections, as HTML. */
-function sections(inquiry: Inquiry, links: { guide: string; vendors: string; calendar: string; builder: string }) {
+function sections(inquiry: Inquiry, links: { guide: string; vendors: string; calendar: string }) {
   const first = pricingTiers()[0];
   return `
   ${sectionHeading("One", "Full pricing")}
   <p style="margin:0 0 10px;font-family:${SANS};font-size:15px;line-height:1.7;color:${C.body};">Every collection includes an engagement session, a next-day preview and the full gallery in three weeks.</p>
   ${priceTable("signature")}
-  ${sideButton(links.builder, "Build your own custom collection and send it to me.", "Build it")}
   <p style="margin:0 0 6px;font-family:${SANS};font-size:13px;line-height:1.6;color:${C.body};">Payment is in three parts: ${escapeHtml(TERMS.schedule.replace(/^Three payments: /, ""))}</p>
   ${travelBlock()}
   ${comparisonTable()}
@@ -484,7 +470,6 @@ export function render(inquiry: Inquiry) {
   const city = inquiry.market ? vendorCity(inquiry.market.slug) : undefined;
   const links = {
     guide: `${SITE.url}/wedding-guide`,
-    builder: `${SITE.url}/build-your-collection`,
     vendors: `${SITE.url}/preferred-vendors${city ? `#${city.slug}` : ""}`,
     calendar,
   };
@@ -515,9 +500,6 @@ export function render(inquiry: Inquiry) {
     .shell { padding:0 !important; }
     .h2 { font-size:24px !important; }
     .cmp td { font-size:12px !important; padding:9px 7px !important; word-break:break-word !important; }
-    .sb-text { display:block !important; width:100% !important; padding:16px 18px 0 !important; }
-    .sb-cell { display:block !important; width:100% !important; padding:12px 18px 16px !important; }
-    .sb-inner { width:100% !important; }
   }
 </style>
 </head>
@@ -578,7 +560,6 @@ export function render(inquiry: Inquiry) {
     APPROACH_TEXT,
     "ONE. FULL PRICING",
     pricingTiers().map((tier) => `${tier.name}, ${tier.hours} hours: ${money(tier.price)}`).join("\n"),
-    `Build your own custom collection and send it to me: ${links.builder}`,
     TERMS.schedule,
     TRAVEL_TEXT,
     COMPARISON_TEXT(),

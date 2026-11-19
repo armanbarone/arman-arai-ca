@@ -27,21 +27,61 @@ const twins = () => {
   return [html, text];
 };
 
-test("the email leads on the approach, in Arman's first person", () => {
+test("the email leads on the approach, in the owner's own words", () => {
   for (const body of twins()) {
     assert.match(body, /How I approach wedding photography/i);
     assert.match(body, /genuine and unhurried/i);
-    assert.match(body, /[Cc]andid and documentary/);
-    assert.match(body, /editorial portraits/i);
+    assert.match(body, /Showcase the love between you two/i);
+    /* His rewrite of 2026-11-18, which replaced "making art" and the
+       cinematic claim that used to follow it. */
+    assert.match(body, /not from an event photography perspective but rather a spiritual quest/i);
+    assert.match(body, /candid documentary storytelling and romantic, editorial artistry/i);
+    assert.match(body, /soulless/i);
+    assert.match(body, /colour, contrast and a film look/i);
+    assert.match(body, /go far beyond what we agree in the contract/i);
     assert.match(body, /living the day all over again/i);
-    /* His claim, kept in substance: cinematic work, and a handful of people in
-       North America shooting this way. */
-    assert.match(body, /cinematic/i);
-    assert.match(body, /handful of photographers in North America/);
+    /* The claim he dropped. It overstated the market; it is not to return. */
+    assert.doesNotMatch(body, /handful of photographers in North America/i);
     /* The detailed brief he sent was written from the couple's side ("we
        want"); this email is written from his. */
     assert.doesNotMatch(body, /\bwe want\b/i);
   }
+});
+
+test("the opening is his, and the date is never invented", () => {
+  for (const body of twins()) {
+    assert.match(body, /Congratulations, and thank you for the interest in my photography service/);
+    assert.match(body, /I will personally reply to you within an hour/);
+    assert.match(body, /an overview of my services and how I work/);
+  }
+  const undated = loader(doubles)("@/lib/auto-reply").render({ ...inquiry, weddingDate: "" });
+  for (const body of [undated.html, undated.text]) {
+    assert.match(body, /your wedding and I will personally reply/);
+  }
+});
+
+test("the albums are a highlight reel of what he may publish, not every frame", () => {
+  for (const body of twins()) {
+    assert.match(body, /Three complete weddings/i);
+    assert.match(body, /highlight reel of the albums I am permitted to publish/i);
+    /* The opposite claim, which ran until 2026-11-18, and was never true of a
+       published gallery. */
+    assert.doesNotMatch(body, /Not a highlight reel/i);
+    assert.doesNotMatch(body, /every frame I delivered/i);
+  }
+});
+
+test("the custom collection builder is offered, with a button, under the prices", () => {
+  const [html, text] = twins();
+  for (const body of [html, text]) {
+    assert.doesNotMatch(body, /Three collections, and only three/);
+    assert.match(body, /[Bb]uild your own custom collection and send it to me/);
+    assert.match(body, /https:\/\/www\.armanarai\.ca\/build-your-collection/);
+  }
+  /* A real button, inside section one, below the three collection cards. */
+  const one = html.slice(html.indexOf(">One</td>"), html.indexOf(">Two</td>"));
+  assert.match(one, /<a href="https:\/\/www\.armanarai\.ca\/build-your-collection"[^>]*>Build it<\/a>/);
+  assert.ok(one.indexOf("Build it") > one.indexOf("Most booked"), "the builder must sit below the collections");
 });
 
 test("travel is included and the two-day scout is promised, in both twins", () => {

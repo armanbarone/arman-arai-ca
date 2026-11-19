@@ -20,8 +20,9 @@ import { vendorCity } from "./vendors";
  *   3. Securing the date, by booking a call
  *   4. The preferred vendor list, at /preferred-vendors
  *
- * Plus three COMPLETE wedding albums, which is the part that does the selling:
- * every frame of a day, not a highlight reel.
+ * Plus three complete wedding albums, which is the part that does the selling:
+ * a highlight reel of the albums he is permitted to publish, three whole days
+ * rather than three best frames.
  *
  * Everything with a number in it is rendered from lib/site.ts, so a price
  * change reaches this email, the pricing page and the landing pages together.
@@ -166,6 +167,24 @@ function bigButton(href: string, label: string, background: string, color: strin
   return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:4px 0 6px;"><tr><td align="center" bgcolor="${background}" style="background:${background};border-radius:7px;${edge}"><a href="${escapeHtml(href)}" style="display:block;padding:17px 20px;font-family:${SANS};font-size:14px;font-weight:bold;letter-spacing:.06em;text-transform:uppercase;line-height:1.3;color:${color};text-decoration:none;border-radius:7px;">${escapeHtml(label)}</a></td></tr></table>`;
 }
 
+/** A line of copy with a button beside it, which is what the owner asked for
+ *  on 2026-11-18 for the custom-collection builder: "write 'build your own
+ *  custom collection and send it to me' and put a button next to it". Two
+ *  cells, so Outlook keeps them side by side, and .stack drops the button
+ *  under the sentence on a phone. */
+function sideButton(href: string, text: string, label: string) {
+  return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="${C.panel}" style="background:${C.panel};border:1px solid ${C.rule};border-radius:10px;margin:4px 0 10px;">
+    <tr>
+      <td class="sb-text" valign="middle" style="padding:15px 6px 15px 18px;font-family:${SANS};font-size:14px;line-height:1.55;color:${C.ink};">${escapeHtml(text)}</td>
+      <td class="sb-cell" width="142" valign="middle" align="right" style="width:142px;padding:12px 16px 12px 6px;">
+        <table role="presentation" class="sb-inner" cellpadding="0" cellspacing="0" border="0"><tr>
+          <td align="center" bgcolor="${C.ink}" style="background:${C.ink};border-radius:7px;"><a href="${escapeHtml(href)}" style="display:block;padding:13px 20px;font-family:${SANS};font-size:12px;font-weight:bold;letter-spacing:.1em;text-transform:uppercase;line-height:1.2;white-space:nowrap;color:${C.onDark};text-decoration:none;border-radius:7px;">${escapeHtml(label)}</a></td>
+        </tr></table>
+      </td>
+    </tr>
+  </table>`;
+}
+
 /** Vertical space, as a table cell with a real height rather than a margin.
  *  Margins on block elements are ignored or collapsed by enough clients that
  *  a heading set with one ends up touching the paragraph above it, which is
@@ -228,6 +247,14 @@ function row(inner: string, top = 30, bottom = 0) {
 /** The three complete weddings, side by side. A three-cell table rather than
  *  stacked images: it survives Outlook, and three full-width photographs
  *  would push everything below them off the first two screens. */
+/* Owner, 2026-11-18: these are "a highlight reel of the albums that I am
+   permitted to publish", not every frame of every day. The earlier claim
+   ("not a highlight reel... every frame I delivered") was both the opposite
+   and not true of a published gallery, and it is not to come back. */
+const ALBUMS_EYEBROW = "A highlight reel of the albums I am permitted to publish";
+const ALBUMS_INTRO =
+  "Three whole days rather than three best frames, from the quiet hour before anyone is dressed to the last of the dancing. It is the only honest way to judge a photographer, because it shows you the ordinary parts of a wedding as well as the best thirty seconds of it.";
+
 function albumsBlock() {
   const cells = ALBUMS.map((album) => `<td class="stack" width="33.3%" valign="top" style="padding:0 5px;">
       <a href="${SITE.url}/galleries/${album.slug}" style="text-decoration:none;color:${C.ink};">
@@ -236,9 +263,9 @@ function albumsBlock() {
         <p style="margin:0;font-family:${SANS};font-size:11px;line-height:1.5;color:${C.body};">${escapeHtml(album.where)}</p>
       </a>
     </td>`).join("");
-  return `${eyebrow("See a whole day, not a highlight reel")}
+  return `${eyebrow(ALBUMS_EYEBROW)}
   <p class="h2" style="margin:0 0 14px;font-family:${SERIF};font-weight:normal;font-size:28px;line-height:1.18;color:${C.ink};">Three complete weddings</p>
-  <p style="margin:0 0 16px;font-family:${SANS};font-size:15px;line-height:1.7;color:${C.body};">Not a highlight reel. These are three whole days, every frame I delivered, from the quiet hour before anyone is dressed to the last of the dancing. It is the only honest way to judge a photographer, because it shows you the ordinary parts of a day as well as the best thirty seconds of it.</p>
+  <p style="margin:0 0 16px;font-family:${SANS};font-size:15px;line-height:1.7;color:${C.body};">${escapeHtml(ALBUMS_INTRO)}</p>
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 6px;"><tr>${cells}</tr></table>`;
 }
 
@@ -247,20 +274,16 @@ function albumsBlock() {
    asked for them combined: the approach IS the argument, and splitting them
    made the email say the same thing twice.
  *
- * His sentence, which everything here serves: "creating art while the couple
- * are fully aware and not rushed." The detail under it is his too, written
- * from the couple's side: a day that feels genuine and unhurried, laughter,
- * happy tears, food, music, dancing, everyone under one roof, less time
- * worrying about the perfect shot and more time present with each other;
- * candid documentary mixed with romantic editorial portraits; effortless, a
- * little nostalgic, full of emotion; the big moments and also the quiet
- * glances, the spontaneous laughter, the family interactions and the details
- * that would otherwise go unnoticed; and the test at the end, which is looking
- * back years later and feeling like you are reliving the day.
+ * APPROACH_PARAS 2, 3 and 4 are the owner's own words, written by hand on
+ * 2026-11-18 and lightly punctuated, nothing more. They replaced "What I am
+ * doing while that happens is making art" and the cinematic claim that
+ * followed it, including "a handful of photographers in North America shoot
+ * this way", which is gone and not to be reinstated: the new argument is that
+ * others chase a timeless look and he shoots the bond, through colour,
+ * contrast and a film look. Paragraph 1 is his from 2026-11-17 and untouched.
  *
- * It is written in his first person, not the couple's "we want", and it keeps
- * the cinematic claim he asked for on 2026-11-15. It sits between the three
- * albums and the price, because it is what makes the price make sense.
+ * It sits between the three albums and the price, because it is what makes
+ * the price make sense.
  */
 function approachBlock() {
   return `${eyebrow("How I approach wedding photography")}
@@ -268,13 +291,14 @@ function approachBlock() {
   ${APPROACH_PARAS.map((text) => para(text)).join("")}`;
 }
 
-const APPROACH_TITLE = "Art, made while you are fully present and never rushed.";
+const APPROACH_TITLE = "Showcase the love between you two, and everything that happens around it.";
 const APPROACH_PARAS = [
   "Your day should feel genuine and unhurried. Laughter, happy tears, good food, music, dancing, everyone you love under one roof, and the two of you spending those hours with each other and your families instead of worrying about whether the perfect shot is being taken. I am there the whole time and almost none of it should feel like a photoshoot you have to perform in.",
-  "What I am doing while that happens is making art. Candid and documentary through the day, with romantic, editorial portraits where the light and the location earn them. The frames come back effortless, a little nostalgic, full of emotion: the vows and the first dance, and equally the quiet glances, the spontaneous laughter, the way your families are with each other, the details nobody else is looking at. That is cinematic work. It is a different craft from covering a wedding competently, and a handful of photographers in North America shoot this way. I am one of them.",
-  "The rest is effort. On every wedding I photograph I go further than the collection obliges me to, because there is only one thing I am really being hired for: that you open these pictures years from now and feel like you are living the day all over again.",
+  "How I approach weddings is not from an event photography perspective but rather a spiritual quest. Capturing the intimacy between two souls requires a thoughtful balance of candid documentary storytelling and romantic, editorial artistry. That is why my pictures look different from every other photographer out there. Others chase a \u201ctimeless\u201d (soulless) look. I capture the bond, the energy, the love and tension, and the spirit, through colour, contrast and a film look.",
+  "As a result, the frames show up like the examples you have seen: a little nostalgic, full of emotion. The vows and the first dance, and equally the quiet glances, the spontaneous laughter, the way your families are with each other, the details nobody else is looking at.",
+  "I always go far beyond what we agree in the contract, because there is only one thing I am really being hired for: that you open these pictures years from now and feel like you are living the day all over again, and maybe cry a bit.",
 ];
-const APPROACH_TEXT = ["HOW I APPROACH WEDDING PHOTOGRAPHY: ART, MADE WHILE YOU ARE FULLY PRESENT AND NEVER RUSHED", ...APPROACH_PARAS].join("\n");
+const APPROACH_TEXT = [`HOW I APPROACH WEDDING PHOTOGRAPHY: ${APPROACH_TITLE.toUpperCase()}`, ...APPROACH_PARAS].join("\n");
 
 function priceTable(fit?: string) {
   return pricingTiers().map((tier) => {
@@ -399,27 +423,28 @@ function detailsBlock(inquiry: Inquiry) {
   </div>`;
 }
 
-/** The opening paragraphs. Deliberately short: the four sections below carry
- *  the information, and a wall of text at the top gets skipped. */
+/** The opening paragraphs, written by the owner by hand on 2026-11-18 and
+ *  used as he wrote them. Deliberately short: the four sections below carry
+ *  the information, and a wall of text at the top gets skipped. The only
+ *  thing computed here is the date, which is omitted rather than guessed at
+ *  when the couple did not give one. Do not reinstate the longer version. */
 function opening(inquiry: Inquiry) {
   const when = whenPhrase(inquiry);
-  /* "in", not "at": the location field asks for a city or a venue, and on the
-     Canada-wide page most couples type a city, where "at Halifax" reads wrong. */
-  const about = [inquiry.location && `in ${inquiry.location}`, when && `on ${when}`].filter(Boolean).join(" ");
   return [
     `Hi ${inquiry.firstName || "there"},`,
-    `Congratulations, and thank you for writing. This is Arman. I have your inquiry about your wedding${about ? ` ${about}` : ""}, and I'll reply to you personally within 60 minutes.`,
-    "This email is the part you'd normally have to ask three times for, so you have it now rather than after a week of back and forth: how I work a wedding, what everything costs with travel included, how a date gets secured, and the other people I'd want on your day. Read it in whatever order you like.",
+    `Congratulations, and thank you for the interest in my photography service. I have your inquiry about your wedding${when ? ` on ${when}` : ""} and I will personally reply to you within an hour.`,
+    "This email is an overview of my services and how I work, so that you have a general idea of how I operate.",
   ];
 }
 
 /** The four numbered sections, as HTML. */
-function sections(inquiry: Inquiry, links: { guide: string; vendors: string; calendar: string }) {
+function sections(inquiry: Inquiry, links: { guide: string; vendors: string; calendar: string; builder: string }) {
   const first = pricingTiers()[0];
   return `
   ${sectionHeading("One", "Full pricing")}
-  <p style="margin:0 0 10px;font-family:${SANS};font-size:15px;line-height:1.7;color:${C.body};">Three collections, and only three. Every one includes an engagement session, a next-day preview and the full gallery in three weeks.</p>
+  <p style="margin:0 0 10px;font-family:${SANS};font-size:15px;line-height:1.7;color:${C.body};">Every collection includes an engagement session, a next-day preview and the full gallery in three weeks.</p>
   ${priceTable("signature")}
+  ${sideButton(links.builder, "Build your own custom collection and send it to me.", "Build it")}
   <p style="margin:0 0 6px;font-family:${SANS};font-size:13px;line-height:1.6;color:${C.body};">Payment is in three parts: ${escapeHtml(TERMS.schedule.replace(/^Three payments: /, ""))}</p>
   ${travelBlock()}
   ${comparisonTable()}
@@ -459,6 +484,7 @@ export function render(inquiry: Inquiry) {
   const city = inquiry.market ? vendorCity(inquiry.market.slug) : undefined;
   const links = {
     guide: `${SITE.url}/wedding-guide`,
+    builder: `${SITE.url}/build-your-collection`,
     vendors: `${SITE.url}/preferred-vendors${city ? `#${city.slug}` : ""}`,
     calendar,
   };
@@ -489,6 +515,9 @@ export function render(inquiry: Inquiry) {
     .shell { padding:0 !important; }
     .h2 { font-size:24px !important; }
     .cmp td { font-size:12px !important; padding:9px 7px !important; word-break:break-word !important; }
+    .sb-text { display:block !important; width:100% !important; padding:16px 18px 0 !important; }
+    .sb-cell { display:block !important; width:100% !important; padding:12px 18px 16px !important; }
+    .sb-inner { width:100% !important; }
   }
 </style>
 </head>
@@ -544,11 +573,12 @@ export function render(inquiry: Inquiry) {
   const text = [
     ...opening(inquiry),
     "THREE COMPLETE WEDDINGS",
-    "Not a highlight reel. Three whole days, every frame I delivered.",
+    `${ALBUMS_EYEBROW}. ${ALBUMS_INTRO}`,
     ...ALBUMS.map((album) => `${album.names}, ${album.where}: ${SITE.url}/galleries/${album.slug}`),
     APPROACH_TEXT,
     "ONE. FULL PRICING",
     pricingTiers().map((tier) => `${tier.name}, ${tier.hours} hours: ${money(tier.price)}`).join("\n"),
+    `Build your own custom collection and send it to me: ${links.builder}`,
     TERMS.schedule,
     TRAVEL_TEXT,
     COMPARISON_TEXT(),

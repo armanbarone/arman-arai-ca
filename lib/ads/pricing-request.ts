@@ -1,9 +1,13 @@
 /* The pricing-request ads pages: /wedding-photography/<city>-pricing.
  *
- * Three collections, and only three: Signature, Legacy and Photo + Film,
- * read from TIERS in lib/site.ts so a price change there reaches these pages,
- * the thank-you screen and the auto-reply email at once. Source: the owner,
- * 2026-09-28 ("there are only 3 packages: 3k, 4.2k and 5.9k").
+ * Three published collections: Signature, Legacy and Photo + Film, read from
+ * TIERS in lib/site.ts so a price change there reaches these pages, the
+ * thank-you screen and the auto-reply email at once. Source: the owner,
+ * 2026-09-28 ("there are only 3 packages: 3k, 4.2k and 5.9k"). They are the
+ * only published collections, but they are no longer a closed list: from
+ * 2026-11-18 a couple can assemble their own at /build-your-collection, from
+ * these same three and the published add-ons. Do not write "and only three"
+ * anywhere; the owner removed that line from the welcome email.
  *
  * The form collects a date for Arman's reply. Availability is not inferred
  * by the page or its automatic guide; only Arman confirms whether he is free.

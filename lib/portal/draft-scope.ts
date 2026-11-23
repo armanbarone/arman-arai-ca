@@ -3,6 +3,7 @@ import type { Booking } from "./types";
 import { formatCad, formatDate, todayInBusinessTz } from "./money";
 import { esc, layout, footerText } from "./email";
 import { TIERS } from "@/lib/site";
+import { BUSINESS } from "./business";
 
 /* The commercial half of a contract, written out for a couple to read before
  * anything is issued.
@@ -40,12 +41,27 @@ export function draftScopeLines(b: Booking) {
     ...b.lines
       .filter((l) => l.kind !== "package")
       .map((l) => [l.label, formatCad(l.cents)] as [string, string]),
-    ["Before tax", formatCad(b.totals.subtotalCents)],
-    ...Object.entries(b.totals.taxCents).map(
-      ([code, cents]) => [code, formatCad(cents)] as [string, string],
-    ),
-    ["Total", formatCad(b.totals.totalCents)],
+    ...(b.totals.taxTotalCents > 0
+      ? ([
+          ["Before tax", formatCad(b.totals.subtotalCents)],
+          ...Object.entries(b.totals.taxCents).map(
+            ([code, cents]) => [code, formatCad(cents)] as [string, string],
+          ),
+          ["Total", formatCad(b.totals.totalCents)],
+        ] as [string, string][])
+      : ([["Total, with no tax applied", formatCad(b.totals.totalCents)]] as [
+          string,
+          string,
+        ][])),
   ] as [string, string][];
+
+  /* How this couple in particular pays. Offering card to a booking that is set
+     to Interac only promises something their payment page will not give them. */
+  const interacOnly = b.payment?.cardAllowed === false;
+  const payTo = b.payment?.etransferEmail || BUSINESS.etransferEmail;
+  const howToPay = interacOnly
+    ? `Canadian dollars, by Interac e-Transfer to ${payTo}.`
+    : `Canadian dollars. Interac e-Transfer to ${payTo}, or by card.`;
 
   /* The first instalment falls due at booking, which for an unsigned draft is
      a date that has already gone. Quoting it to somebody who owes nothing
@@ -114,7 +130,7 @@ export function draftScopeLines(b: Booking) {
         }))
       : [];
 
-  return { money, schedule, scope, included, sections, alternatives };
+  return { money, schedule, scope, included, sections, alternatives, howToPay };
 }
 
 const rows = (pairs: [string, string][]) =>
@@ -130,7 +146,7 @@ const rows = (pairs: [string, string][]) =>
     .join("");
 
 export function draftScopeEmail(b: Booking, firstName: string) {
-  const { money, schedule, scope, included, sections, alternatives } =
+  const { money, schedule, scope, included, sections, alternatives, howToPay } =
     draftScopeLines(b);
   const sectionsHtml = sections
     .map(
@@ -180,7 +196,7 @@ ${sectionsHtml}
 <table style="border-collapse:collapse;width:100%">${rows(money)}</table>
 <h2 style="font-weight:normal;font-size:19px;margin:32px 0 6px">How it would be paid</h2>
 <table style="border-collapse:collapse;width:100%">${rows(schedule)}</table>
-<p style="margin-top:12px">Canadian dollars. Interac e-Transfer or card.</p>
+<p style="margin-top:12px">${esc(howToPay)}</p>
 <h2 style="font-weight:normal;font-size:19px;margin:32px 0 6px">What is not here</h2>
 <p>The full agreement carries the terms this summary does not: cancellation, what happens in bad weather, how the photographs may be used, and the liability either side carries. You will get the whole thing to read and sign before anything is binding, and you can ask me about any line in it first.</p>
 <p>Anything you would like changed, just reply.</p>`;
@@ -220,7 +236,7 @@ ${sectionsHtml}
     "",
     "HOW IT WOULD BE PAID",
     ...schedule.map(([k, v]) => `${k}: ${v}`),
-    "Canadian dollars. Interac e-Transfer or card.",
+    howToPay,
     "",
     "WHAT IS NOT HERE",
     "The full agreement carries cancellation, bad weather, how the photographs may be used and the liability either side carries. You will get the whole thing to read and sign before anything is binding.",

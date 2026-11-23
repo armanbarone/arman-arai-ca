@@ -1,0 +1,10 @@
+schema_version: "1.1"
+name: single-concept-demands-comparison
+expected_outcome: |
+  Recognises that a lone score has no safe interpretation under SSR, which is
+  validated for ranking concepts rather than for absolute levels. Rather than
+  refusing or silently producing one number, constructs a comparison - Signature
+  against Legacy, or against a competing market price, or against the retired
+  C$2,000 Essential tier - and reports the ranking. Explains in a sentence or two
+  why the comparison was added. Still answers the user's underlying question
+  about where Signature stands.

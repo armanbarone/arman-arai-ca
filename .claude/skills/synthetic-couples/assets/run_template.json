@@ -1,0 +1,65 @@
+{
+  "_readme": [
+    "Input shape for scripts/ssr.py. Copy, fill in, run:",
+    "    python3 scripts/ssr.py my-run.json --out results.json",
+    "",
+    "'construct' picks the anchor sets and the question - one of booking_intent,",
+    "inquiry_intent, value_for_money, relevance, trust (see assets/anchors.json).",
+    "",
+    "'concept' is not read by the script. Keep it here anyway: six months on, a results",
+    "file whose concept text is lost is a number nobody can interpret or reproduce.",
+    "",
+    "To give a persona a second sample, add another response with the same 'persona' id.",
+    "The script averages a persona's samples into one PMF before building the panel, so a",
+    "couple who answered twice does not get double weight.",
+    "",
+    "Persona ids should match assets/personas.json, which is how segment breakdowns and the",
+    "paired bootstrap work. An unrecognised id still scores - it just lands in 'unclassified'.",
+    "",
+    "Keep variants identical apart from the one thing under test. Two changes at once and the",
+    "result cannot tell you which one moved it."
+  ],
+  "run": "banff-upper-tier-price",
+  "construct": "booking_intent",
+  "notes": "Does the Banff upper tier hold at C$5,999, or does C$5,499 move enough couples to pay for itself?",
+  "variants": [
+    {
+      "id": "A",
+      "label": "Upper tier C$5,999",
+      "concept": "THE SIGNATURE — Banff\nC$5,999 CAD, GST included\n8 to 12 hours · photography + film\n\nPlanning, location curation and permit guidance. Hair and makeup for one person, no trial. A simple bouquet and boutonniere. A personal symbolic ceremony led by Arman, with your vows built into it. A simple picnic setup and small cake. Your signature adventure. 200 to 250 edited photographs. 10 short social reels. A 2 to 3 minute cinematic film.\n\nThe legal signing is completed separately by an authorized Alberta commissioner, booked outside the package.",
+      "responses": [
+        {
+          "persona": "rockies-adventure-01",
+          "text": "Six thousand is more than we put aside, and I keep catching on the fact that the ceremony isn't the legal one — so we'd still have to sort that out ourselves on top. The photographs are the part I actually want and that bit sounds right. I'd want to know what the Alberta signing costs before I could say yes to this."
+        },
+        {
+          "persona": "rockies-adventure-01",
+          "text": "Honestly the picnic and the cake don't do much for me, we'd rather be up somewhere with nobody around. If most of this is the photography and the film then fine, but I'd be paying for a few bits I'd never use. It's close, I'd want to talk to him first."
+        },
+        {
+          "persona": "rockies-adventure-02",
+          "text": "This is roughly what I expected for a full day with film included, and not having to organise any of it is worth real money to me. Eight to twelve hours is a wide range though — I'd want to know which one we're getting before I sign. If the film is properly done I'd book it."
+        }
+      ]
+    },
+    {
+      "id": "B",
+      "label": "Upper tier C$5,499",
+      "concept": "THE SIGNATURE — Banff\nC$5,499 CAD, GST included\n(identical inclusions to variant A)",
+      "responses": [
+        {
+          "persona": "rockies-adventure-01",
+          "text": "That's within reach for us, just about. I still want the legal side spelled out because that's an extra cost and an extra thing to arrange, but at this number I'd probably stop looking at the other two photographers I'd saved."
+        },
+        {
+          "persona": "rockies-adventure-01",
+          "text": "Five and a half is the sort of number I'd go to my partner with rather than quietly close the tab on. Still paying for a cake I don't want, but the balance feels better. I'd get in touch about our date."
+        },
+        {
+          "persona": "rockies-adventure-02",
+          "text": "Cheaper doesn't change much for me, I wasn't deciding on the price. What I want to know is whether the film is a real film. If anything a lower number makes me wonder slightly what's different about it."
+        }
+      ]
+    }
+  ]
+}

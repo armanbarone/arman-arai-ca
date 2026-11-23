@@ -1,0 +1,10 @@
+schema_version: "1.1"
+name: price-test-two-variants
+expected_outcome: |
+  Runs a two-variant SSR test (C$5,999 vs C$5,499) on a panel drawn from the
+  persona library, scores it with scripts/ssr.py, and reports mean intent,
+  top-2-box and the gap with its bootstrap interval for each variant. States
+  plainly whether the gap clears zero rather than reading a point estimate as a
+  result. Quotes specific couples' objections from the free text. Does not claim
+  a conversion rate or any absolute real-world forecast. Uses the real C$5,999
+  Banff upper-tier price and inclusions from the repository, not invented ones.

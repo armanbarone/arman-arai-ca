@@ -1,0 +1,188 @@
+{
+  "_readme": [
+    "Anchor statement sets for Semantic Similarity Rating (Maier et al. 2025, arXiv:2510.08338).",
+    "Each set is five statements forming a gradient from Likert 1 (intent improbable) to 5 (intent probable).",
+    "Index 0 = Likert 1, index 4 = Likert 5. A free-text response is embedded and compared to all five;",
+    "the resulting distributions are averaged across every set for the construct.",
+    "",
+    "Design principles, from the paper's Appendix C.1: keep them short, generic and domain-independent",
+    "so they apply to any concept; the lowest anchor expresses that the purchase is unlikely, the middle",
+    "anchor indifference or uncertainty, the highest anchor intent to purchase; the two intermediate",
+    "anchors sit semantically between their neighbours. Multiple sets exist because wording measurably",
+    "shifts the mapping, and averaging over phrasings is what stops any one set's idiom from driving",
+    "the result. The paper used six sets for purchase intent and three for a secondary construct.",
+    "",
+    "These sets are written from those principles and are NOT fitted to this business's real data.",
+    "See references/calibration.md for how to fit them once real inquiry outcomes exist."
+  ],
+  "constructs": {
+    "booking_intent": {
+      "question": "How likely are you to book this?",
+      "scale": "1 = definitely would not book, 5 = definitely would book",
+      "use_for": "prices, packages, inclusions, whole offers",
+      "sets": {
+        "plain": [
+          "I would not book this.",
+          "I probably would not book this.",
+          "I am not sure whether I would book this.",
+          "I would probably book this.",
+          "I would definitely book this."
+        ],
+        "conversational": [
+          "This isn't for us.",
+          "I doubt we would go for this.",
+          "I would have to think about it.",
+          "I think we would go for this.",
+          "We would book this in a heartbeat."
+        ],
+        "money": [
+          "I would not spend money on this.",
+          "I would struggle to justify paying for this.",
+          "I am undecided about whether this is worth the money.",
+          "I would be willing to pay for this.",
+          "I would happily pay for this."
+        ],
+        "decision": [
+          "I would pass on this.",
+          "I would most likely pass on this.",
+          "I might consider it and I might not.",
+          "I would likely go ahead with this.",
+          "I would go ahead with this without hesitating."
+        ],
+        "desire": [
+          "This does nothing for me.",
+          "This does not really appeal to me.",
+          "This is fine, but nothing more.",
+          "This really appeals to me.",
+          "This is exactly what we want."
+        ],
+        "survey_classic": [
+          "Definitely would not buy it.",
+          "Probably would not buy it.",
+          "Might or might not buy it.",
+          "Probably would buy it.",
+          "Definitely would buy it."
+        ]
+      }
+    },
+    "inquiry_intent": {
+      "question": "Would you reach out about this?",
+      "scale": "1 = definitely would not get in touch, 5 = definitely would get in touch",
+      "use_for": "landing pages, ads, hero sections, anything measured at the top of the funnel",
+      "sets": {
+        "plain": [
+          "I would not get in touch about this.",
+          "I probably would not get in touch about this.",
+          "I am not sure whether I would get in touch.",
+          "I would probably get in touch about this.",
+          "I would definitely get in touch about this."
+        ],
+        "browsing": [
+          "I would close this and keep looking.",
+          "I would most likely keep looking elsewhere.",
+          "I would save it and come back to it later.",
+          "I would send a message to ask about our date.",
+          "I would message right now to check our date."
+        ],
+        "effort": [
+          "This is not worth an email.",
+          "I doubt this is worth getting in touch about.",
+          "I might fill in the form at some point.",
+          "This is worth filling in the form for.",
+          "I would fill in the form straight away."
+        ],
+        "conversational": [
+          "I would scroll straight past this.",
+          "I would probably scroll past this.",
+          "I would show it to my partner and see.",
+          "I would show my partner and say we should ask.",
+          "I would tell my partner we have found the one."
+        ]
+      }
+    },
+    "value_for_money": {
+      "question": "Does this feel worth the money?",
+      "scale": "1 = very poor value, 5 = excellent value",
+      "use_for": "price changes where the offer itself is unchanged",
+      "sets": {
+        "plain": [
+          "This is very poor value for the money.",
+          "This is poor value for the money.",
+          "This is about average value for the money.",
+          "This is good value for the money.",
+          "This is excellent value for the money."
+        ],
+        "reaction": [
+          "This is wildly overpriced.",
+          "This costs more than it should.",
+          "The price seems about right for what it is.",
+          "This is well priced for what you get.",
+          "This is a lot more than I expected for the price."
+        ],
+        "justify": [
+          "I could never justify this cost.",
+          "I would find this cost hard to justify.",
+          "I could justify this cost if I had to.",
+          "I can easily justify this cost.",
+          "This would be an obvious use of the money."
+        ]
+      }
+    },
+    "relevance": {
+      "question": "Is this for couples like you?",
+      "scale": "1 = not at all for us, 5 = exactly for us",
+      "use_for": "positioning, targeting, which market or tier to push",
+      "sets": {
+        "plain": [
+          "This is not for couples like us at all.",
+          "This is probably not for couples like us.",
+          "This might be for couples like us.",
+          "This is for couples like us.",
+          "This is made for couples exactly like us."
+        ],
+        "recognition": [
+          "I do not see us anywhere in this.",
+          "I barely recognise us in this.",
+          "I can half picture us in this.",
+          "I can picture us in this.",
+          "I can see our own wedding in this."
+        ],
+        "fit": [
+          "This is aimed at someone else entirely.",
+          "This seems aimed at a different kind of couple.",
+          "This could suit us or it could not.",
+          "This suits what we are planning.",
+          "This is describing the day we already wanted."
+        ]
+      }
+    },
+    "trust": {
+      "question": "How much would you trust this person with your wedding day?",
+      "scale": "1 = would not trust them at all, 5 = would trust them completely",
+      "use_for": "about pages, reviews, credentials, entering a new market",
+      "sets": {
+        "plain": [
+          "I would not trust them with our wedding day.",
+          "I am not sure I would trust them with our wedding day.",
+          "I would need to know more before trusting them.",
+          "I would trust them with our wedding day.",
+          "I would trust them with our wedding day completely."
+        ],
+        "doubt": [
+          "Something about this feels off.",
+          "I have some doubts about this.",
+          "Nothing here worries me and nothing reassures me.",
+          "This feels safe and professional.",
+          "This feels like someone who has done this many times."
+        ],
+        "handover": [
+          "I would not hand our only wedding day to them.",
+          "I would be nervous handing our day to them.",
+          "I would want a call before deciding.",
+          "I would be comfortable handing them our day.",
+          "I would stop looking and hand them the day."
+        ]
+      }
+    }
+  }
+}

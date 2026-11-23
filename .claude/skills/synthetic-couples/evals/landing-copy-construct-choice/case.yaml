@@ -1,0 +1,9 @@
+schema_version: "1.1"
+name: landing-copy-construct-choice
+expected_outcome: |
+  Chooses the inquiry_intent construct rather than booking_intent, because the
+  thing under test is top-of-funnel copy and not the offer, and says why. Scores
+  both hero versions against the same panel. Answers the "who is it losing"
+  question from segment means and from the free-text responses of the couples who
+  scored low, naming the n behind any segment claim rather than over-reading a
+  split of two or three couples.

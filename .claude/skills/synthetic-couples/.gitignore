@@ -1,0 +1,3 @@
+# SSR embedding caches and scratch runs are local artifacts
+*.embcache.json
+runs/

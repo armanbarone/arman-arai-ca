@@ -63,7 +63,10 @@ export function cityMetadata(m: Market) {
   const title = m.titleQualifier
     ? `${m.city} Wedding Photographer — ${m.titleQualifier}`
     : `${m.city} Wedding Photographer`;
-  const priceLine = `Collections from ${money(ENTRY.price)}, the same figure here as in every other city. Travel quoted openly on top.`;
+  /* Travel is inside the collection price, which is what TRAVEL and the
+     pricing page say. This meta description told Google the opposite on every
+     city hub, which is the sort of place a stale price claim survives longest. */
+  const priceLine = `Collections from ${money(ENTRY.price)}, the same figure here as in every other city, travel included.`;
   return {
     title,
     description: `${m.angle}. Wedding photography in ${m.region}. ${priceLine}`,

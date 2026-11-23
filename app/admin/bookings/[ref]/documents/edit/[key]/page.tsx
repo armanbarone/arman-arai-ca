@@ -10,6 +10,35 @@ import {
 import NativeWeddingForm from "@/components/portal/NativeWeddingForm";
 import WeddingDocumentAdminActions from "@/components/portal/WeddingDocumentAdminActions";
 import WeddingDeletedDrafts from "@/components/portal/WeddingDeletedDrafts";
+const WITHDRAW_FIRST = "this version withdrawn first, using the button above";
+
+/**
+ * The next thing a human has to do, when what is missing is not the studio's
+ * to supply.
+ *
+ * Four of an agreement's required fields are the couple's own: where they get
+ * ready, where they marry, where they eat and how many guests. On a fresh
+ * draft they are always blank, because nobody has asked the couple yet, so the
+ * publish button is always shut and used to explain itself only by naming four
+ * fields as though the studio had forgotten to type them.
+ */
+function coupleStep(b: Awaited<ReturnType<typeof getBooking>>, key: string) {
+  if (!b || !["agreement", "proposal"].includes(key)) return undefined;
+  const intake = b.wedding?.intake;
+  const theirs = ["preparationLocation", "ceremonyLocation", "receptionLocation", "guestCount"];
+  const stillMissing = theirs.some((f) => !(b.fields[f] ?? "").trim());
+  if (!stillMissing) return undefined;
+  if (!intake || intake.status === "draft") {
+    const invited = b.events.some((e) => e.type === "portal_invite_sent");
+    return invited
+      ? "the couple to fill in their own details: the venue, ceremony and reception spaces and the guest count are theirs, and they have not submitted them yet"
+      : "the couple to fill in their own details, which they cannot do yet because their portal invitation has not been sent";
+  }
+  if (intake.status === "submitted")
+    return "your approval of the details the couple submitted, on their Contract details page";
+  return undefined;
+}
+
 export default async function Editor({
   params,
 }: {
@@ -101,11 +130,7 @@ export default async function Editor({
         draftId={draft?.id}
         initialDue={draft?.dueDate}
         canPublishChange={key !== "change" || !!draft?.amendment}
-        blockedReason={
-          issuedUnsigned
-            ? "this version withdrawn first, using the button above"
-            : undefined
-        }
+        blockedReason={issuedUnsigned ? WITHDRAW_FIRST : coupleStep(b, key)}
       />
     </>
   );

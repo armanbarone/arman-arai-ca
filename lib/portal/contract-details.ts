@@ -20,6 +20,20 @@ const person = z
   .object({
     legalName: short,
     preferredName: short,
+    /** A partner could be named here but never given an address, so nobody
+        could be added as a second signing party without the studio typing it
+        in. It is optional on the schema because partner one's email is their
+        login and is never taken from this form. */
+    email: z
+      .string()
+      .trim()
+      .toLowerCase()
+      .max(200)
+      .refine(
+        (e) => !e || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e),
+        "That is not an email address",
+      )
+      .default(""),
     phone: short,
     address: z.object({
       line1: short,
@@ -107,6 +121,7 @@ export function initialContractDetails(b: Booking): ContractDetails {
         people: b.clients.map((c) => ({
           legalName: c.legalName,
           preferredName: c.preferredName,
+          email: c.email,
           phone: c.phone,
           address: { ...c.address, line2: c.address.line2 || "" },
         })) as ContractDetails["people"],
@@ -147,6 +162,12 @@ export function missingContractDetails(
   ])
     if (!value) missing.push(label);
   v.people.forEach((p, i) => {
+    /* A partner who is named has to be reachable, or they cannot be asked to
+       sign and the agreement binds on one signature without anybody noticing. */
+    if (i > 0 && p.legalName.trim().length >= 3 && !p.email.trim())
+      missing.push(`partner ${i + 1}'s email address`);
+    if (i > 0 && p.email.trim() && p.email.trim() === v.people[0].email.trim())
+      missing.push(`a different email address for partner ${i + 1}`);
     if (!signers[i]) return;
     if (p.legalName.length < 3) missing.push(`partner ${i + 1}'s legal name`);
     if (p.phone.length < 7) missing.push(`partner ${i + 1}'s phone`);
@@ -192,7 +213,16 @@ export function applyContractDetails(b: Booking, v: ContractDetails) {
     ...v.people[i],
     address: { ...v.people[i].address },
     id: c.id,
-    email: c.email,
+    /* The first partner's email is the account they signed in with, so it is
+       never taken from a form they filled in while signed in as it. The
+       second partner has no account yet, which is exactly why this is the
+       place their address arrives from. */
+    email:
+      i === 0
+        ? c.email
+        : v.people[i].email && v.people[i].email !== v.people[0].email
+          ? v.people[i].email
+          : c.email,
   })) as [Client, Client];
   b.event = {
     ...b.event,

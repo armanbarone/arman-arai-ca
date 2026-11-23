@@ -271,10 +271,23 @@ export default function WeddingContractDetails({
             {v.people.map((p, i) => (
               <div key={i} className="wp-person-fields">
                 <h3>{i === 0 ? "Bride / partner 1" : "Groom / partner 2"}</h3>
-                <p className="wp-muted">{b.clients[i].email}</p>
+                {i === 0 ? (
+                  <p className="wp-muted">{b.clients[i].email}</p>
+                ) : (
+                  <p className="wp-muted">
+                    Their own email address, so they get their own sign-in and
+                    can sign the agreement themselves.
+                  </p>
+                )}
                 {[
                   ["legalName", "Full legal name"],
                   ["preferredName", "Preferred name and pronouns"],
+                  /* Partner one's email is the account they are signed in with
+                     and is shown above rather than edited. Partner two has no
+                     account yet, so this is where theirs arrives. */
+                  ...(i === 0
+                    ? ([] as [string, string][])
+                    : ([["email", "Email address"]] as [string, string][])),
                   ["phone", "Phone"],
                   ["address.line1", "Mailing street address"],
                   ["address.line2", "Apartment or unit (optional)"],

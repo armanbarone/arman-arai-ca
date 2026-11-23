@@ -374,6 +374,7 @@ export async function saveBookingAction(
       b.allocation = input.allocation;
       b.taxes = input.taxes;
       const totalBefore = b.totals.totalCents;
+      const dateBefore = b.event.date;
       b.totals = totals;
       b.fields = input.fields;
       b.internalNotes = input.internalNotes;
@@ -385,7 +386,9 @@ export async function saveBookingAction(
          schedule set by hand back to the default three instalments. */
       if (
         b.status === "draft" &&
-        (!b.schedule.length || totals.totalCents !== totalBefore)
+        (!b.schedule.length ||
+          totals.totalCents !== totalBefore ||
+          event.date !== dateBefore)
       )
         b.schedule = buildSchedule(b, todayInBusinessTz(), b.schedule);
       if (materialChanged)

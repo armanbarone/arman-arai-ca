@@ -202,11 +202,20 @@ export async function approveWeddingContractDetails(
       }
       if (changedProvince) b.taxes = defaultTaxesFor(v.province);
       const totalBefore = b.totals.totalCents;
+      const dateBefore = b.event.date;
       b.totals = computeTotals(b.lines, b.taxes);
       /* Only rebuild the schedule when the money actually moved. Rebuilding it
          unconditionally threw away a payment schedule set by hand, which is how
          a single agreed payment turned back into three instalments. */
-      if (b.totals.totalCents !== totalBefore || !b.schedule.length)
+      /* A couple who picks their own date is the ordinary case for a booking
+         created before the date was known. The instalments are keyed to the
+         wedding date, so they have to be rebuilt when it moves, not only when
+         the money does. */
+      if (
+        b.totals.totalCents !== totalBefore ||
+        b.event.date !== dateBefore ||
+        !b.schedule.length
+      )
         b.schedule = buildSchedule(b, todayInBusinessTz());
       b.status = "draft";
       if (clientAskedForAnotherCollection) {

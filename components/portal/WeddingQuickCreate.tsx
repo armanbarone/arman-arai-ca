@@ -58,26 +58,32 @@ export default function WeddingQuickCreate({
       setError("");
       /* The second partner is optional: left entirely blank there is no
          second party, rather than a placeholder standing in for one. */
-      const named = (c: { legalName?: string; email?: string }) =>
-        !!(c.legalName ?? "").trim() || !!(c.email ?? "").trim();
-      const wellFormed = (c: { legalName?: string; email?: string }) =>
-        (c.legalName ?? "").trim().length >= 3 &&
-        /^\S+@\S+\.\S+$/.test((c.email ?? "").trim());
+      /* The second partner may be named without an email: they are named on
+         the wedding and become a signing party once an address exists, which
+         is what the booking schema allows. This check demanded both and so
+         refused the very bookings that support was added for. An email with
+         nobody attached to it is still refused. */
+      const name = (c: { legalName?: string }) => (c.legalName ?? "").trim();
+      const mail = (c: { email?: string }) => (c.email ?? "").trim();
       const second = value.clients[1];
-      if (
-        !wellFormed(value.clients[0]) ||
-        (named(second) && !wellFormed(second)) ||
-        (named(second) &&
-          (value.clients[0].email ?? "").toLowerCase() ===
-            (second.email ?? "").toLowerCase()) ||
-        !value.event.date ||
-        !value.event.location
-      ) {
-        setError(
-          named(second)
-            ? "Enter both names, distinct emails, wedding date and municipality."
-            : "Enter the first partner's name and email, the wedding date and the municipality.",
-        );
+      const problem =
+        name(value.clients[0]).length < 3 ||
+        !/^\S+@\S+\.\S+$/.test(mail(value.clients[0]))
+          ? "Enter the first partner's full name and email address."
+          : mail(second) && name(second).length < 3
+            ? "Enter the name that goes with the second partner's email address."
+            : mail(second) && !/^\S+@\S+\.\S+$/.test(mail(second))
+              ? "The second partner's email address is not valid."
+              : mail(second) &&
+                  mail(second).toLowerCase() === mail(value.clients[0]).toLowerCase()
+                ? "Each partner needs their own email address."
+                : !value.event.date
+                  ? "Enter the wedding date."
+                  : !value.event.location
+                    ? "Enter the municipality."
+                    : "";
+      if (problem) {
+        setError(problem);
         return;
       }
       if (preview && context) {

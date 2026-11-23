@@ -52,10 +52,17 @@ export default function WeddingContractDetails({
   /* A studio quote is the agreed one, whatever an older saved form says. One
      couple's form had "signature" stored in it from when this section still
      showed the published collections as a menu. */
-  const normalise = (d: ContractDetails): ContractDetails =>
-    b.packageKey === "custom" && d.collectionKey !== "custom"
-      ? { ...d, collectionKey: "custom" }
-      : d;
+  const normalise = (d: ContractDetails): ContractDetails => {
+    let next = d;
+    if (b.packageKey === "custom" && d.collectionKey !== "custom")
+      next = { ...next, collectionKey: "custom" };
+    /* A saved form keeps whatever was in it, which for a booking quoted before
+       the couple picked a date is the studio's stand-in. Blank it, so the field
+       asks rather than tells. */
+    if (b.event.datePending && (next.date || next.serviceDates))
+      next = { ...next, date: "", serviceDates: "" };
+    return next;
+  };
   const [v, setV] = useState<ContractDetails>(() =>
     normalise(initialContractDetails(b)),
   ),

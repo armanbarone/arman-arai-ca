@@ -5,6 +5,7 @@ import {
   templateFor,
   resolveBlocks,
 } from "@/lib/portal/wedding";
+import { BUSINESS } from "@/lib/portal/business";
 import { useWeddingPreview } from "./WeddingPreviewProvider";
 import {
   collectionFor,
@@ -266,6 +267,44 @@ export default function BookingForm({
                 />
                 They have settled on this collection
               </label>
+              <label className="wp-checkbox" style={{ marginBottom: 12 }}>
+                <input
+                  type="checkbox"
+                  checked={b.payment?.cardAllowed === false}
+                  onChange={(e) =>
+                    update((d) => {
+                      d.payment = {
+                        ...d.payment,
+                        cardAllowed: e.target.checked ? false : undefined,
+                      };
+                    })
+                  }
+                />
+                Interac only, never offer card payment
+              </label>
+              <div style={{ marginBottom: 12 }}>
+                <label className={labelCls} htmlFor="etransfer-email">
+                  Interac e-Transfer address for this wedding
+                </label>
+                <input
+                  id="etransfer-email"
+                  className={inputCls}
+                  placeholder={BUSINESS.etransferEmail}
+                  value={b.payment?.etransferEmail ?? ""}
+                  onChange={(e) =>
+                    update((d) => {
+                      d.payment = {
+                        ...d.payment,
+                        etransferEmail: e.target.value.trim() || undefined,
+                      };
+                    })
+                  }
+                />
+                <small>
+                  Leave empty to use {BUSINESS.etransferEmail}. What is here is
+                  what the couple is told, and what prints on their invoice.
+                </small>
+              </div>
               <label className={labelCls}>Package name as printed</label>
               <input
                 className={inputCls}

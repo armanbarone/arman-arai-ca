@@ -177,6 +177,17 @@ export interface Booking {
    * only invites them to reopen it.
    */
   collectionChosen?: boolean;
+  /**
+   * How this wedding in particular is paid, where it differs from the studio
+   * default. Absent means the default: card alongside Interac, to the
+   * company's usual transfer address.
+   */
+  payment?: {
+    /** Where an Interac transfer for this wedding goes. */
+    etransferEmail?: string;
+    /** False to offer no card checkout at all, on any invoice. */
+    cardAllowed?: boolean;
+  };
   wedding?: import("./wedding").WeddingData;
   archivedAt?: string;
   archiveReason?: string;

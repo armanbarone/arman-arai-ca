@@ -152,6 +152,17 @@ const bookingSchema = z
     internalNotes: z.string().default(""),
     remindersPaused: z.boolean().default(false),
     collectionChosen: z.boolean().optional(),
+    payment: z
+      .object({
+        etransferEmail: z
+          .string()
+          .trim()
+          .toLowerCase()
+          .refine((e) => !e || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e), "That is not an email address")
+          .optional(),
+        cardAllowed: z.boolean().optional(),
+      })
+      .optional(),
   })
   .superRefine((b, ctx) => {
     if (b.clients[1].email && b.clients[0].email === b.clients[1].email)
@@ -253,6 +264,7 @@ export async function saveBookingAction(
         internalNotes: input.internalNotes,
         remindersPaused: input.remindersPaused,
         collectionChosen: input.collectionChosen,
+        payment: input.payment,
       };
       booking.schedule = buildSchedule(booking, todayInBusinessTz());
       ensureWedding(booking).intake = {
@@ -367,6 +379,7 @@ export async function saveBookingAction(
       b.internalNotes = input.internalNotes;
       b.remindersPaused = input.remindersPaused;
       b.collectionChosen = input.collectionChosen;
+      b.payment = input.payment;
       /* Rebuild the instalments only when the money moved. This used to run on
          every save, so editing a venue or a guest count silently put a payment
          schedule set by hand back to the default three instalments. */

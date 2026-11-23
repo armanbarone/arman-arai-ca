@@ -74,6 +74,7 @@ async function attachInvoice(
     location: b.event.location,
     packageName: b.packageName,
     cardEnabled,
+    etransferEmail: b.payment?.etransferEmail,
     basis: invoiceBasis(b, i.id),
     hash: "",
     sourceSha256: templateFor("invoice").sourceSha256,
@@ -237,7 +238,10 @@ export async function issueInvoiceOnExecution(
 
     // Card checkout only opens on a live Stripe account.
     const stripe = await paymentSetupStatus().catch(() => null);
-    const cardEnabled = !!stripe?.connected && stripe.mode === "live";
+    const cardEnabled =
+      before.payment?.cardAllowed !== false &&
+      !!stripe?.connected &&
+      stripe.mode === "live";
 
     let id = "";
     let number = "";
@@ -312,6 +316,11 @@ export async function issueWeddingInvoice(
   try {
     if (typeof description !== "string" || description.length > 2000)
       throw Error("Enter a short invoice description.");
+    const noCard = (await getBooking(ref))?.payment?.cardAllowed === false;
+    if (cardEnabled && noCard)
+      throw Error(
+        "This wedding is set to Interac only. Clear that on the booking before offering card payment.",
+      );
     if (cardEnabled) {
       const s = await paymentSetupStatus();
       if (!s.connected || s.mode !== "live")

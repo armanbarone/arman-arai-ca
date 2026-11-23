@@ -20,6 +20,8 @@ export type WeddingInvoice = {
   location: string;
   packageName: string;
   cardEnabled: boolean;
+  /** Where an Interac transfer for this invoice goes, when not the default. */
+  etransferEmail?: string;
   basis: string;
   hash: string;
   pdfKey?: string;

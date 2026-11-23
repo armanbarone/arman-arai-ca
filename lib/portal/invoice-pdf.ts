@@ -94,7 +94,7 @@ export async function renderInvoicePdf(
     `Open your private wedding portal to view the current balance${v.cardEnabled ? " and pay by card using Stripe" : ""}. The portal reflects payments received after this invoice was issued.`,
   );
   text(
-    `Interac e-Transfer: ${BUSINESS.etransferEmail}. Include ${v.number} in the transfer message. Interac receipts are confirmed by the studio.`,
+    `Interac e-Transfer: ${v.etransferEmail || BUSINESS.etransferEmail}. Include ${v.number} in the transfer message. Interac receipts are confirmed by the studio.`,
   );
   text(
     "This invoice follows the signed agreement and approved payment schedule. It does not add services or change contract terms.",

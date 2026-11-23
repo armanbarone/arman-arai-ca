@@ -161,7 +161,7 @@ export default function WeddingPayments({
                   overflowWrap: "anywhere",
                 }}
               >
-                {BUSINESS.etransferEmail}
+                {b.payment?.etransferEmail || BUSINESS.etransferEmail}
               </p>
               <p>
                 Include the instalment reference in the message. Your balance

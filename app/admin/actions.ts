@@ -122,6 +122,7 @@ const bookingSchema = z
       location: z.string().trim().min(2, "Location is required"),
       province: z.enum(provinceCodes),
       ceremonyType: z.enum(["legal", "symbolic"]),
+      datePending: z.boolean().optional(),
     }),
     lines: z
       .array(

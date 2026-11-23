@@ -125,8 +125,8 @@ export function initialContractDetails(b: Booking): ContractDetails {
           phone: c.phone,
           address: { ...c.address, line2: c.address.line2 || "" },
         })) as ContractDetails["people"],
-        date: b.event.date,
-        serviceDates: b.event.serviceDates,
+        date: b.event.datePending ? "" : b.event.date,
+        serviceDates: b.event.datePending ? "" : b.event.serviceDates,
         municipality: b.event.location,
         province: b.event.province,
         eventVenue: b.fields.eventVenue || "",
@@ -226,6 +226,7 @@ export function applyContractDetails(b: Booking, v: ContractDetails) {
   })) as [Client, Client];
   b.event = {
     ...b.event,
+    datePending: undefined,
     date: v.date,
     serviceDates: v.serviceDates || v.date,
     location: v.municipality,

@@ -334,6 +334,17 @@ export default function WeddingContractDetails({
             Add the venue name and full address. If you are not using a
             location, write “Not applicable”.
           </p>
+          {/* A booking quoted before the couple had picked a date carries a
+              stand-in, which would otherwise sit in this field looking like a
+              decision they had already made. */}
+          {b.event.datePending && (
+            <div className="wp-message">
+              <strong>Your wedding date is yours to choose.</strong> Nothing has
+              been booked on a date yet. Put the date you want below, and it
+              becomes the date on your agreement and the date your payments are
+              counted back from.
+            </div>
+          )}
           <div className="wp-form-grid" style={{ marginTop: 22 }}>
             {input("date", "Wedding date", "date", true)}
             {input("serviceDates", "All service dates (if more than one)")}

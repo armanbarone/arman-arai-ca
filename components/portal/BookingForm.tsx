@@ -305,6 +305,18 @@ export default function BookingForm({
                   what the couple is told, and what prints on their invoice.
                 </small>
               </div>
+              <label className="wp-checkbox" style={{ marginBottom: 12 }}>
+                <input
+                  type="checkbox"
+                  checked={!!b.event?.datePending}
+                  onChange={(e) =>
+                    update((d) => {
+                      d.event!.datePending = e.target.checked || undefined;
+                    })
+                  }
+                />
+                The date below is a placeholder; the couple chooses their own
+              </label>
               <label className={labelCls}>Package name as printed</label>
               <input
                 className={inputCls}

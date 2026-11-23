@@ -150,6 +150,14 @@ export interface Booking {
     province: string;
     timezone: string;
     ceremonyType: "legal" | "symbolic";
+    /**
+     * True while the date on this booking is a placeholder the couple has not
+     * chosen yet. A booking cannot exist without a date, so one quoted before
+     * the couple has picked theirs carries a stand-in; this says so, and their
+     * own form asks them for the real one instead of showing them the stand-in
+     * already filled in.
+     */
+    datePending?: boolean;
   };
   lines: PriceLine[];
   allocation: AllocationLine[];

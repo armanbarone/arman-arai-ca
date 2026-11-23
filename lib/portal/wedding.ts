@@ -232,6 +232,8 @@ export function seedFields(
     else if (/^email for notices/.test(s)) fields[f.id] = BUSINESS.email;
     else if (/^telephone$/.test(s)) fields[f.id] = BUSINESS.phone;
     else if (/gst hst number/.test(s)) fields[f.id] = BUSINESS.gstHstNumber;
+    else if (/bc corporation number/.test(s))
+      fields[f.id] = BUSINESS.corporationNumber;
     else if (/pst qst number/.test(s))
       fields[f.id] =
         b.taxes

@@ -5,6 +5,8 @@ export const BUSINESS = {
   legalName: "Arasaka Inc.",
   tradeName: "Arman Arai",
   businessNumber: "767392145",
+  /** BC incorporation number. Printed on invoices and seeded into agreements. */
+  corporationNumber: "A0117635",
   gstHstNumber: "767392145RT0001",
   address: {
     line1: "1529 West Pender St",

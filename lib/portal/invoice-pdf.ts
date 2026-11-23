@@ -51,6 +51,7 @@ export async function renderInvoicePdf(
   text(BUSINESS.legalName + " operating as " + BUSINESS.tradeName);
   text(BUSINESS_ADDRESS_ONE_LINE);
   text(BUSINESS.email + " | " + BUSINESS.phone);
+  text("BC corporation number " + BUSINESS.corporationNumber);
   d.moveDown(0.5);
   text(sample ? "SAMPLE INVOICE - NOT A PAYMENT REQUEST" : "INVOICE", 20, true);
   text(v.number, 13, true);

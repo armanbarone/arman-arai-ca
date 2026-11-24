@@ -1,7 +1,6 @@
 import { SITE, TERMS, type Tier } from "./site";
 import { weddingCalendarUrl } from "./wedding-booking";
 import { pricingMarket, pricingTiers, longDate, weekdayOf, type PricingMarket } from "./ads/pricing-request";
-import { vendorCity } from "./vendors";
 
 /* The first email a couple gets, from any form on either site.
  *
@@ -11,14 +10,14 @@ import { vendorCity } from "./vendors";
  * The Claude call that used to compose a personal note here, its brief in
  * lib/auto-reply-brief.ts, and the per-inquiry /guide/<id> page it linked to
  * are all gone: the personal reply is the one Arman sends himself, within the
- * hour, and this email exists to answer the four things every couple asks
+ * hour, and this email exists to answer the things every couple asks
  * before that reply lands.
  *
- * Those four, in his order:
- *   1. Full pricing
+ * Those three, in his order (it was four until 2026-11-23, when he took the
+ * preferred vendor list out of this email):
+ *   1. Full pricing, Legacy and Photo + Film only
  *   2. The welcome guide, at /wedding-guide
- *   3. Securing the date, by booking a call
- *   4. The preferred vendor list, at /preferred-vendors
+ *   3. A call, booked from the calendar link
  *
  * Plus three complete wedding albums, which is the part that does the selling:
  * a highlight reel of the albums he is permitted to publish, three whole days
@@ -53,11 +52,6 @@ export type Inquiry = {
 /* The couple gets the email about half a minute after pressing the button,
    not the instant they press it (owner, 2026-10-01). */
 const SEND_DELAY_MS = 30_000;
-
-/* Owner, 2026-10-14, asked for this line verbatim and chose to keep it fixed
-   rather than shifting it to "tomorrow" late at night. It is one constant so
-   the time can be changed in a single place. */
-const TONIGHT_CALL = "I'm available for a quick call at 7:30 PM tonight";
 
 /** The three complete weddings the email leads with. Slugs exist in
  *  lib/galleries.ts; the frames are chosen by eye, because the stored `cover`
@@ -287,8 +281,17 @@ const APPROACH_PARAS = [
 ];
 const APPROACH_TEXT = [`HOW I APPROACH WEDDING PHOTOGRAPHY: ${APPROACH_TITLE.toUpperCase()}`, ...APPROACH_PARAS].join("\n");
 
+/* The collections the EMAIL shows. Signature was taken out of it on
+   2026-11-23 (owner: "for full-pricing, take out signature package
+   entirely"), and Photo + Film is what he says he books most. Signature is
+   still sold: it is on /pricing, in the wedding guide and in the ads funnel,
+   and it is still ENTRY for every "from" figure on the site. This filter is
+   about this email only, so do not push it down into pricingTiers(). */
+const EMAIL_TIERS = ["complete", "photo-film"];
+const MOST_BOOKED = "photo-film";
+
 function priceTable(fit?: string) {
-  return pricingTiers().map((tier) => {
+  return pricingTiers().filter((tier) => EMAIL_TIERS.includes(tier.slug)).map((tier) => {
     const picked = fit === tier.slug;
     const background = picked ? C.panel : C.card;
     return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="${background}" style="background:${background};border:1px solid ${picked ? C.bronze : C.rule};border-radius:10px;margin:0 0 9px;">
@@ -302,32 +305,6 @@ function priceTable(fit?: string) {
     </table>`;
   }).join("");
 }
-
-/* "My price against everybody else" (owner, 2026-11-15).
- *
- * The right-hand column is what C$3,000 buys from a Canadian wedding
- * photographer in 2026 according to the published pricing guides, checked
- * across several of them on 2026-11-15: Bridebook's Canadian photography and
- * videography guides, Bark's Canadian videography prices, Candid Studios'
- * 2026 pricing statistics, Ruah Creative House on film pricing, and Imagen's
- * delivery-turnaround guide. They disagree on exact averages, so nothing here
- * is printed as a statistic: every cell is a range or a "usually", which is
- * what the sources actually support. No competitor is named, and the left
- * column is read from TIERS so it can never drift from the real collection.
- *
- * If you widen a claim here, source it first. An email that overstates the
- * market is the one thing in this sequence a couple can catch out.
- */
-const MARKET_ROWS: [string, (tier: Tier) => string, string][] = [
-  ["Hours on the day", (tier) => tier.coverage, "6 to 8, charged by the hour beyond that"],
-  ["Edited images", (tier) => tier.images, "300 to 600, sometimes web-size only"],
-  ["First look at them", (tier) => tier.preview, "a handful of favourites within a few days"],
-  ["Full gallery", (tier) => tier.delivery, "4 to 8 weeks, and 8 to 12 in peak season"],
-  ["Engagement session", (tier) => tier.engagement, "an add-on, priced separately"],
-  ["A film of your day", (tier) => tier.film, "not offered; a separate videographer is usually C$2,000 to C$4,000"],
-  ["Real 35mm film", (tier) => tier.rolls, "not offered"],
-  ["Vertical reels", () => "Cut from the day, in the first week", "rarely offered"],
-];
 
 /* Travel, under the prices (owner, 2026-11-17): travel cost is INCLUDED in the
  * collections, he arrives two days before the wedding to scout, and delays are
@@ -362,40 +339,6 @@ const TRAVEL_PARAS = [
 ];
 const TRAVEL_TEXT = ["TRAVEL IS INCLUDED, AND I ARRIVE TWO DAYS EARLY", ...TRAVEL_PARAS].join("\n");
 
-function comparisonTable() {
-  const tier = pricingTiers()[0];
-  /* A template literal, not a plain string: it carries tokens. */
-  const cell = `padding:11px 10px;border-bottom:1px solid ${C.rule};font-family:${SANS};font-size:13px;line-height:1.55;vertical-align:top;`;
-  const rows = MARKET_ROWS.map(([label, mine, theirs]) => `<tr>
-      <td style="${cell}color:${C.body};width:27%;">${escapeHtml(label)}</td>
-      <td bgcolor="${C.panel}" style="${cell}color:${C.ink};width:36%;background:${C.panel};">${escapeHtml(mine(tier))}</td>
-      <td style="${cell}color:${C.body};width:37%;">${escapeHtml(theirs)}</td>
-    </tr>`).join("");
-  return `${subTitle("The same money, a different list.", 26)}
-  <p style="margin:0 0 12px;font-family:${SANS};font-size:14px;line-height:1.6;color:${C.body};">What ${money(tier.price)} usually buys from a wedding photographer in Canada, against what it buys here. The right-hand column is drawn from the published Canadian pricing guides for 2026, not from one studio.</p>
-  <table role="presentation" class="cmp" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;margin:0 0 10px;">
-    <tr>
-      <td bgcolor="${C.ink}" style="padding:9px 10px;background:${C.ink};border-radius:6px 0 0 0;"></td>
-      <td bgcolor="${C.ink}" style="padding:9px 10px;background:${C.ink};font-family:${SANS};font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:${C.onDark};">${escapeHtml(tier.name)} · ${money(tier.price)}</td>
-      <td bgcolor="${C.ink}" style="padding:9px 10px;background:${C.ink};font-family:${SANS};font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:${C.onDarkMuted};border-radius:0 6px 0 0;">Typical at this price</td>
-    </tr>
-    ${rows}
-  </table>
-  <p style="margin:0 0 6px;font-family:${SANS};font-size:13px;line-height:1.6;color:${C.body};">Legacy and Photo + Film widen the same gap: a second photographer, a printed album, and in Photo + Film a filmmaker beside me for all twelve hours rather than a second vendor you book and brief yourself.</p>
-  <p style="margin:0 0 6px;font-family:${SANS};font-size:13px;line-height:1.6;color:${C.body};">Prices in CAD, before tax.</p>`;
-}
-
-const COMPARISON_TEXT = () => {
-  const tier = pricingTiers()[0];
-  return [
-    "THE SAME MONEY, A DIFFERENT LIST",
-    `What ${money(tier.price)} usually buys from a wedding photographer in Canada, against what it buys here, from the published Canadian pricing guides for 2026.`,
-    ...MARKET_ROWS.map(([label, mine, theirs]) => `${label} - mine: ${mine(tier)}. Typical: ${theirs}.`),
-    "Legacy and Photo + Film widen the same gap: a second photographer, a printed album, and in Photo + Film a filmmaker beside me for all twelve hours.",
-    "Prices in CAD, before tax.",
-  ].join("\n");
-};
-
 /** What the couple sent, played back so the email reads as an answer to them
  *  and so they can see I read it. Their own contact details stay out. */
 function detailsBlock(inquiry: Inquiry) {
@@ -424,36 +367,37 @@ function opening(inquiry: Inquiry) {
   ];
 }
 
-/** The four numbered sections, as HTML. */
-function sections(inquiry: Inquiry, links: { guide: string; vendors: string; calendar: string }) {
-  const first = pricingTiers()[0];
+/** The three numbered sections, as HTML. */
+function sections(inquiry: Inquiry, links: { guide: string; calendar: string }) {
   return `
   ${sectionHeading("One", "Full pricing")}
   <p style="margin:0 0 10px;font-family:${SANS};font-size:15px;line-height:1.7;color:${C.body};">Every collection includes an engagement session, a next-day preview and the full gallery in three weeks.</p>
-  ${priceTable("signature")}
-  <p style="margin:0 0 6px;font-family:${SANS};font-size:13px;line-height:1.6;color:${C.body};">Payment is in three parts: ${escapeHtml(TERMS.schedule.replace(/^Three payments: /, ""))}</p>
+  ${priceTable(MOST_BOOKED)}
   ${travelBlock()}
-  ${comparisonTable()}
 
   ${sectionHeading("Two", "Your welcome guide")}
   <p style="margin:0 0 16px;font-family:${SANS};font-size:15px;line-height:1.7;color:${C.body};">How I actually work a wedding day: where I am during the getting-ready, how family photographs get done in twenty minutes instead of an hour, what happens if it rains, and what you get back and when. It takes about ten minutes to read and it will save you a dozen questions.</p>
   ${bigButton(links.guide, "Open the wedding guide", C.bronze, C.card)}
 
-  ${sectionHeading("Three", "Securing your date")}
-  <p style="margin:0 0 10px;font-family:${SANS};font-size:15px;line-height:1.7;color:${C.body};">${escapeHtml(TERMS.retainer)}, once the contract is signed, and not before. I photograph one wedding at a time and the summer and early autumn dates are the first to go, so the sooner we speak, the more of the calendar is still open to you. The fastest way there is a short call, where you can ask me the things people don't put in an email.</p>
-  <p style="margin:0 0 16px;font-family:${SANS};font-size:15px;line-height:1.65;color:${C.ink};"><strong>${escapeHtml(TONIGHT_CALL)}</strong>, or pick any time that suits you both.</p>
-  ${bigButton(links.calendar, "Book your free 30-minute call", C.ink, C.onDark)}
-
-  ${sectionHeading("Four", "My preferred vendors")}
-  <p style="margin:0 0 16px;font-family:${SANS};font-size:15px;line-height:1.7;color:${C.body};">The planners, florists, hair and makeup artists, DJs, bands and officiants I'd be glad to see on your day, by city. Nobody on it paid to be there and there are no referral fees in either direction. If you want, I'll make the introductions myself with your date in the subject line.</p>
-  ${bigButton(links.vendors, "See the vendor list", C.panel, C.ink)}`;
+  ${sectionHeading("Three", THIRD_TITLE)}
+  ${bigButton(links.calendar, "Book your free 30-minute call", C.ink, C.onDark)}`;
 }
+
+/* Section three's heading, as the owner wrote it on 2026-11-23, replacing
+   "Securing your date". The paragraphs under it went with the old heading:
+   the deposit terms, the one-wedding-at-a-time scarcity line and the 7:30 PM
+   call offer are all out, and the button is the whole section now. */
+const THIRD_TITLE = "Let's hop on a call and talk face to face";
 
 /* The 48-hour date hold that lived here was removed on 2026-11-17 at the
    owner's instruction, and replaced by approachBlock(). Do not reintroduce it
    anywhere in this email: the deposit is what secures a date now, and a hold
    window that is promised in writing and not actually operated is worse than
-   no hold at all. */
+   no hold at all.
+
+   The preferred vendor list was section four until 2026-11-23, when the owner
+   took it out of this email. /preferred-vendors is still a live page; it is
+   simply not sold here. */
 
 const NEXT_STEPS = [
   "I read your inquiry properly and reply myself, within 60 minutes.",
@@ -467,10 +411,8 @@ export function render(inquiry: Inquiry) {
     page: inquiry.page,
     prefill: { name: [inquiry.firstName, inquiry.lastName].filter(Boolean).join(" "), email: inquiry.email },
   });
-  const city = inquiry.market ? vendorCity(inquiry.market.slug) : undefined;
   const links = {
     guide: `${SITE.url}/wedding-guide`,
-    vendors: `${SITE.url}/preferred-vendors${city ? `#${city.slug}` : ""}`,
     calendar,
   };
   const whatsapp = `https://wa.me/${SITE.phoneE164.replace(/\D/g, "")}?text=${encodeURIComponent(
@@ -559,13 +501,10 @@ export function render(inquiry: Inquiry) {
     ...ALBUMS.map((album) => `${album.names}, ${album.where}: ${SITE.url}/galleries/${album.slug}`),
     APPROACH_TEXT,
     "ONE. FULL PRICING",
-    pricingTiers().map((tier) => `${tier.name}, ${tier.hours} hours: ${money(tier.price)}`).join("\n"),
-    TERMS.schedule,
+    pricingTiers().filter((tier) => EMAIL_TIERS.includes(tier.slug)).map((tier) => `${tier.name}, ${tier.hours} hours: ${money(tier.price)}`).join("\n"),
     TRAVEL_TEXT,
-    COMPARISON_TEXT(),
     `TWO. YOUR WELCOME GUIDE\nHow I work a wedding day, start to finish: ${links.guide}`,
-    `THREE. SECURING YOUR DATE\n${TERMS.retainer}, once the contract is signed, and not before. I photograph one wedding at a time and the summer and early autumn dates are the first to go. ${TONIGHT_CALL}, or pick any time: ${links.calendar}`,
-    `FOUR. MY PREFERRED VENDORS\nPlanners, florists, hair and makeup, music and officiants, by city: ${links.vendors}`,
+    `THREE. ${THIRD_TITLE.toUpperCase()}\n${links.calendar}`,
     `WHAT HAPPENS NEXT\n${NEXT_STEPS.map((step, n) => `${n + 1}. ${step}`).join("\n")}`,
     `Message me on WhatsApp: ${whatsapp}`,
     `Your inquiry: ${[whenPhrase(inquiry) || "Date to be decided", inquiry.location || "Venue to be decided", inquiry.message].filter(Boolean).join(" · ")}`,

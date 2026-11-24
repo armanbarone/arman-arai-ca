@@ -109,25 +109,81 @@ test("travel is included and the two-day scout is promised, in both twins", () =
   }
 });
 
-test("the 48-hour date hold is gone and the deposit is what secures a date", () => {
+test("no date hold, and no payment terms at all", () => {
   for (const body of twins()) {
     /* Not a bare /48/: the album thumbnails are 480px tall. */
     assert.doesNotMatch(body, /48[- ]hour/i);
-    assert.doesNotMatch(body, /48 hours/);
     assert.doesNotMatch(body, /hold your date/i);
-    assert.match(body, /30% deposit secures your date/i);
-    /* Three payments again from 2026-11-17. The email must not imply two. */
-    assert.match(body, /35% due 60 days before the wedding/);
+    /* The owner took the payment schedule out of this email on 2026-11-23.
+       It is still the real schedule, stated on /pricing, in the wedding guide
+       and in the contract; it is simply not said here. */
+    assert.doesNotMatch(body, /Payment is in three parts/i);
+    assert.doesNotMatch(body, /35% due 60 days/);
+    assert.doesNotMatch(body, /deposit secures your date/i);
+    assert.doesNotMatch(body, /non-refundable/i);
   }
 });
 
-test("prices come from lib/site.ts, and tax is all that is left of the small print", () => {
+test("Signature is out of the pricing, and Photo + Film is the most booked", () => {
   const { TIERS } = loader(doubles)("@/lib/site");
+  const signature = TIERS.find((t) => t.slug === "signature");
+  const shown = TIERS.filter((t) => t.slug !== "signature");
   for (const body of twins()) {
-    for (const tier of TIERS) assert.match(body, new RegExp(`C\\$${tier.price.toLocaleString("en-CA")}`));
-    assert.match(body, /Prices in CAD, before tax\./);
+    /* Owner, 2026-11-23. Signature is still sold everywhere else on the site;
+       it is out of this email only. */
+    assert.doesNotMatch(body, /Signature/);
+    assert.doesNotMatch(body, new RegExp(`C\\$${signature.price.toLocaleString("en-CA")}`));
+    for (const tier of shown) assert.match(body, new RegExp(`C\\$${tier.price.toLocaleString("en-CA")}`));
+  }
+  /* And the pill sits on Photo + Film, not on the cheaper card. */
+  const [html] = twins();
+  const pill = html.indexOf("Most booked");
+  assert.ok(pill > 0, "no most-booked pill");
+  assert.ok(
+    html.lastIndexOf("Photo + Film", pill) > html.lastIndexOf("Legacy", pill),
+    "the most-booked pill is not on Photo + Film",
+  );
+});
+
+test("the comparison table has moved to the wedding guide", () => {
+  for (const body of twins()) {
+    assert.doesNotMatch(body, /The same money, a different list/i);
+    assert.doesNotMatch(body, /Typical at this price/i);
+  }
+  /* And it is actually there, priced from the entry collection. */
+  const { marketComparisonHtml } = loader(doubles)("@/lib/market-comparison");
+  const { ENTRY } = loader(doubles)("@/lib/site");
+  const guide = marketComparisonHtml();
+  assert.match(guide, /The same money, a different list/);
+  assert.match(guide, new RegExp(`C\\$${ENTRY.price.toLocaleString("en-CA")}`));
+  assert.match(guide, /Typical at this price/);
+});
+
+test("the preferred vendor list is not sold in this email", () => {
+  for (const body of twins()) {
+    assert.doesNotMatch(body, /preferred-vendors/);
+    assert.doesNotMatch(body, /vendor list/i);
+    assert.doesNotMatch(body, /florists/i);
   }
 });
+
+test("section three is his heading and the button, with nothing in between", () => {
+  const [html, text] = twins();
+  /* The apostrophe is escaped in the HTML twin and bare in the text one. */
+  const HEADING = /Let(?:'|&#39;)s hop on a call and talk face to face/i;
+  for (const body of [html, text]) {
+    assert.match(body, HEADING);
+    assert.doesNotMatch(body, /Securing your date/i);
+    assert.doesNotMatch(body, /7:30 PM/);
+    assert.doesNotMatch(body, /one wedding at a time/i);
+  }
+  const three = html.slice(html.indexOf(">Three</td>"));
+  const heading = three.search(HEADING);
+  const button = three.indexOf("Book your free 30-minute call");
+  assert.ok(button > heading, "the call button must follow the heading");
+  assert.doesNotMatch(three.slice(heading, button), /<p[^>]*>[A-Za-z]/, "copy crept back under the heading");
+});
+
 
 test("the email paints its own background, so a dark inbox cannot supply one", () => {
   const [html] = twins();
@@ -163,7 +219,7 @@ test("section numbers cannot break across two lines on a phone", () => {
      here: the number cell carried a 34px width hint, which is narrower than
      THREE at 12px with .2em tracking, and the mobile styles broke words in
      every cell in the email. */
-  for (const number of ["One", "Two", "Three", "Four"]) {
+  for (const number of ["One", "Two", "Three"]) {
     const cell = html.match(new RegExp(`<td[^>]*>${number}</td>`));
     assert.ok(cell, `no cell for ${number}`);
     assert.match(cell[0], /white-space:nowrap/);
@@ -195,7 +251,8 @@ test("every numbered section is pushed clear of the one above it", () => {
   /* The owner read TWO and THREE as "literally touching the rest of the
      body". Margins are not enough: enough clients drop them that the space
      has to be a cell with a real height. */
-  for (const number of ["One", "Two", "Three", "Four"]) {
+  assert.doesNotMatch(html, />Four</, "there is no fourth section any more");
+  for (const number of ["One", "Two", "Three"]) {
     const before = html.slice(0, html.indexOf(`>${number}</td>`));
     assert.match(before.slice(-420), /height="40"[^>]*style="height:40px/, `no spacer above ${number}`);
   }

@@ -1,4 +1,10 @@
 // Standalone wedding guide, written in Arman's voice.
+//
+// One interpolation, added 2026-11-23: the market comparison the owner moved
+// here out of the welcome email. Everything else in this file is literal, so
+// a stray ${ in the copy would now be read as a template expression.
+import { marketComparisonHtml } from "@/lib/market-comparison";
+
 const guideHtml = /* html */ `<!doctype html>
 <html lang="en">
 <head>
@@ -69,6 +75,7 @@ const guideHtml = /* html */ `<!doctype html>
   <div class="collection-cards" id="collection-cards"></div>
   <p class="price-note">All prices are in CAD, before applicable sales tax. Travel is included; optional additions are not. Collections and inclusions checked against <a href="https://www.armanarai.ca/pricing" target="_blank" rel="noopener">the pricing page</a> on 14 October 2026.</p>
   <details class="comparison"><summary>Compare every inclusion <span>+</span></summary><div class="table-scroll"><table id="comparison-table"><caption class="visually-hidden">Wedding collection inclusions</caption></table></div></details>
+  ${marketComparisonHtml()}
   <div class="included-note"><p class="eyebrow">In every collection</p><p>A 60-minute engagement session. Edited high-resolution photographs with print permission. Real film, processed and scanned. Vertical social reels in the first week. Film prints handed to guests on the night. Your full photo gallery in three weeks.</p></div>
   <div class="travel-note"><span class="compass">↗</span><div><p class="eyebrow">Travel included</p><h3>Wherever it is, the price is the price.</h3><p>The flights, the drive and the nights are inside the collection price, anywhere in Canada. There's no mileage line and nothing added at the end. I arrive two days before the wedding to scout your venue in the light it'll actually have, which is also how a delayed flight stays well away from your day.</p></div></div>
   <div class="additions"><div><p class="eyebrow">Make it yours</p><h3>A little extra?<br><em>Your call.</em></h3><p>More time, more film, an album for your parents. Choose the things you want and you'll see the starting subtotal below.</p></div><div id="addon-groups"></div></div>

@@ -323,21 +323,21 @@ function travelBlock() {
   return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="${C.panel}" style="background:${C.panel};border:1px solid ${C.rule};border-radius:10px;margin:18px 0 4px;">
     <tr>
       <td width="4" bgcolor="${C.bronze}" style="width:4px;background:${C.bronze};font-size:0;line-height:0;">&nbsp;</td>
-      <td style="padding:20px 22px 8px;">
+      <td style="padding:18px 22px 14px;">
         ${eyebrow("Travel")}
         ${subTitle(TRAVEL_TITLE)}
-        ${TRAVEL_PARAS.map((text) => para(text, 14)).join("")}
       </td>
     </tr>
   </table>`;
 }
 
+/* The headline alone, since 2026-11-24: the owner cut the two paragraphs
+   that used to sit under it ("the travel part only needs a headline not a
+   gigantic explanation"). The explanation still exists, in the travel
+   section of the wedding guide, which this email links to. Do not restore
+   it here. */
 const TRAVEL_TITLE = "Travel is included, and I arrive two days early.";
-const TRAVEL_PARAS = [
-  "The collection price is the whole price wherever in Canada you are marrying. Flights, the ground travel and the nights are already inside the figures above. There is no mileage line, no out-of-town surcharge, and nothing that turns up on an invoice later.",
-  "I get there two days before the wedding. That gives me a full day at your venue in the real light, walking your ceremony spot and your portrait locations and building the timeline around what is actually there rather than around photographs of it. It also means the travel risk is mine and never yours: a cancelled flight or a day of weather is absorbed two days out, long before anyone is getting dressed.",
-];
-const TRAVEL_TEXT = ["TRAVEL IS INCLUDED, AND I ARRIVE TWO DAYS EARLY", ...TRAVEL_PARAS].join("\n");
+const TRAVEL_TEXT = "TRAVEL IS INCLUDED, AND I ARRIVE TWO DAYS EARLY";
 
 /** What the couple sent, played back so the email reads as an answer to them
  *  and so they can see I read it. Their own contact details stay out. */

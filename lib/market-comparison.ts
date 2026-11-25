@@ -37,23 +37,34 @@ const money = (amount: number) => `C$${amount.toLocaleString("en-CA")}`;
 const escapeHtml = (value: string) =>
   value.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!);
 
-/** The comparison as a block for the wedding guide, in the guide's own
- *  classes so it needs no CSS of its own. The tier it compares against is
- *  the entry collection, read from lib/site.ts, so the heading figure and
- *  the left-hand column cannot drift from the real price. */
+/** The comparison as a block for the wedding guide, in the classes of the
+ *  design the owner uploaded on 2026-11-24. It is .market-table rather than
+ *  the guide's .comparison because that one is hidden on a phone, where the
+ *  collection cards repeat it; nothing repeats this one, so each row carries
+ *  data-label and stacks instead. The tier it compares against is the entry
+ *  collection, read from lib/site.ts, so neither the heading figure nor the
+ *  left-hand column can drift from the real price. */
 export function marketComparisonHtml(tier: Tier = ENTRY) {
+  const mine = `${escapeHtml(tier.name)} · ${money(tier.price)}`;
+  const theirs = "Typical at this price";
+  /* The stacked phone layout prints data-label on every single row, so the
+     labels there are the short ones. The price is in the paragraph above the
+     table, and repeating it eight times reads like a receipt. */
   const rows = MARKET_ROWS.map(
-    ([label, mine, theirs]) =>
-      `<tr><th scope="row">${escapeHtml(label)}</th><td>${escapeHtml(mine(tier))}</td><td>${escapeHtml(theirs)}</td></tr>`,
+    ([label, ours, others]) =>
+      `<tr><th scope="row">${escapeHtml(label)}</th>` +
+      `<td data-label="${escapeHtml(tier.name)}">${escapeHtml(ours(tier))}</td>` +
+      `<td data-label="Typical">${escapeHtml(others)}</td></tr>`,
   ).join("");
   return `<div class="market-compare">
-  <p class="eyebrow">My price against everybody else's</p>
-  <h3>${escapeHtml(MARKET_TITLE)}</h3>
-  <p>What ${money(tier.price)} usually buys from a wedding photographer in Canada, against what it buys here. The right-hand column is drawn from the published Canadian pricing guides for 2026, not from one studio.</p>
-  <div class="table-scroll"><table><caption class="visually-hidden">${escapeHtml(tier.name)} against the typical Canadian collection at the same price</caption>
-    <thead><tr><th scope="col"></th><th scope="col">${escapeHtml(tier.name)} · ${money(tier.price)}</th><th scope="col">Typical at this price</th></tr></thead>
-    <tbody>${rows}</tbody>
-  </table></div>
-  <p class="small-text">Legacy and Photo + Film widen the same gap: a second photographer, a printed album, and in Photo + Film a filmmaker beside me for all twelve hours rather than a second vendor you book and brief yourself. Prices in CAD, before tax.</p>
-</div>`;
+          <p class="eyebrow">My price against everybody else&#39;s</p>
+          <h3>${escapeHtml(MARKET_TITLE)}</h3>
+          <p>What ${money(tier.price)} usually buys from a wedding photographer in Canada, against what it buys here. The right-hand column is drawn from the published Canadian pricing guides for 2026, not from one studio.</p>
+          <table class="market-table">
+            <caption class="visually-hidden">${escapeHtml(tier.name)} against the typical Canadian collection at the same price</caption>
+            <thead><tr><th scope="col">Inclusion</th><th scope="col">${mine}</th><th scope="col">${theirs}</th></tr></thead>
+            <tbody>${rows}</tbody>
+          </table>
+          <p class="small-print">Legacy and Photo + Film widen the same gap: a second photographer, a printed album, and in Photo + Film a filmmaker beside me for all twelve hours rather than a second vendor you book and brief yourself. Prices in CAD, before tax.</p>
+        </div>`;
 }

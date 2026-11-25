@@ -97,13 +97,18 @@ test("every link in the email points at a page that still exists", () => {
   }
 });
 
-test("travel is included and the two-day scout is promised, in both twins", () => {
+test("travel is a headline and nothing under it, in both twins", () => {
   for (const body of twins()) {
     assert.match(body, /Travel is included/i);
-    assert.match(body, /two days before the wedding/i);
-    assert.match(body, /no out-of-town surcharge/i);
+    assert.match(body, /arrive two days early/i);
+    /* The owner cut the two paragraphs on 2026-11-24: "the travel part only
+       needs a headline not a gigantic explanation". The explanation lives in
+       the travel section of the wedding guide, which this email links to. */
+    assert.doesNotMatch(body, /no out-of-town surcharge/i);
+    assert.doesNotMatch(body, /mileage line/i);
+    assert.doesNotMatch(body, /the travel risk is mine/i);
     /* Nothing may suggest a travel fee still lands later: the whole point of
-       the section is the couple who are nervous about hiring out of town. */
+       the line is the couple who are nervous about hiring out of town. */
     assert.doesNotMatch(body, /quoted separately/i);
     assert.doesNotMatch(body, /travel fee/i);
   }

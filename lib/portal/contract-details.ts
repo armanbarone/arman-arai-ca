@@ -110,8 +110,12 @@ export function collectionBookingFields(
     previewDate: datePlusDays(eventDate, 1),
     socialDate: datePlusDays(eventDate, 7),
     finalDeliveryDate: datePlusDays(eventDate, 21),
-    featureFilmDeliveryDate:
-      t.slug === "photo-film" ? datePlusDays(eventDate, 70) : "",
+    /* Every collection includes a film, so every one of them owes a date for
+       it. This was computed for Photo + Film alone, which left the agreement's
+       required "Highlight film, supply or completion date" blank on every
+       Signature and Legacy contract. One blank required field holds the
+       publish button shut, and this was the field, every time. */
+    featureFilmDeliveryDate: t.film ? datePlusDays(eventDate, 70) : "",
   };
 }
 export function initialContractDetails(b: Booking): ContractDetails {

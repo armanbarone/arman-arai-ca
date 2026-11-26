@@ -255,13 +255,16 @@ function albumsBlock() {
    asked for them combined: the approach IS the argument, and splitting them
    made the email say the same thing twice.
  *
- * APPROACH_PARAS 2, 3 and 4 are the owner's own words, written by hand on
- * 2026-11-18 and lightly punctuated, nothing more. They replaced "What I am
- * doing while that happens is making art" and the cinematic claim that
- * followed it, including "a handful of photographers in North America shoot
- * this way", which is gone and not to be reinstated: the new argument is that
- * others chase a timeless look and he shoots the bond, through colour,
- * contrast and a film look. Paragraph 1 is his from 2026-11-17 and untouched.
+ * Every word of it is the owner's own, pasted on 2026-11-25 to replace the
+ * four paragraphs he wrote on 2026-11-18. Two spellings were corrected
+ * ("cliche" and "essense") and the apostrophes and the quotes around
+ * "timeless" were curled; nothing else was touched, and nothing may be added.
+ * What went out with those paragraphs is gone and is not to be reinstated:
+ * "Showcase the love between you two", the unhurried day, "making art", and
+ * "a handful of photographers in North America shoot this way", which
+ * overstated the market. The argument now runs the other way round: the
+ * timeless look is slop anyone can repeat, and what he sells instead is the
+ * bond, through colour, contrast and a film look.
  *
  * It sits between the three albums and the price, because it is what makes
  * the price make sense.
@@ -272,22 +275,25 @@ function approachBlock() {
   ${APPROACH_PARAS.map((text) => para(text)).join("")}`;
 }
 
-const APPROACH_TITLE = "Showcase the love between you two, and everything that happens around it.";
+const APPROACH_TITLE = "How I portray couples as lovers";
 const APPROACH_PARAS = [
-  "Your day should feel genuine and unhurried. Laughter, happy tears, good food, music, dancing, everyone you love under one roof, and the two of you spending those hours with each other and your families instead of worrying about whether the perfect shot is being taken. I am there the whole time and almost none of it should feel like a photoshoot you have to perform in.",
-  "How I approach weddings is not from an event photography perspective but rather a spiritual quest. Capturing the intimacy between two souls requires a thoughtful balance of candid documentary storytelling and romantic, editorial artistry. That is why my pictures look different from every other photographer out there. Others chase a \u201ctimeless\u201d (soulless) look. I capture the bond, the energy, the love and tension, and the spirit, through colour, contrast and a film look.",
-  "As a result, the frames show up like the examples you have seen: a little nostalgic, full of emotion. The vows and the first dance, and equally the quiet glances, the spontaneous laughter, the way your families are with each other, the details nobody else is looking at.",
-  "I always go far beyond what we agree in the contract, because there is only one thing I am really being hired for: that you open these pictures years from now and feel like you are living the day all over again, and maybe cry a bit.",
+  "My philosophy in photography is simple: Don\u2019t be clich\u00e9. Wedding photographs are mostly about looking pretty. This comes at a cost and that is the pictures don\u2019t have any feel to them. You can scroll past 1000 wedding images on people\u2019s profiles and don\u2019t feel any emotions. This \u201ctimeless\u201d look everybody is chasing is the same slop that can be repeated by anyone regardless of their experience. Why bother with an expensive photographer when you can get your cousin with a smartphone to replicate those images?",
+  "How is my work so different then? Because I approach weddings as a spiritual quest rather than an event photography. Capturing the intimacy between two souls requires a thoughtful balance of candid documentary storytelling and romantic, editorial artistry.",
+  "In essence, I capture the bond, the energy, the love and tension, and the spirit, through colour, contrast and a film look.",
 ];
-const APPROACH_TEXT = [`HOW I APPROACH WEDDING PHOTOGRAPHY: ${APPROACH_TITLE.toUpperCase()}`, ...APPROACH_PARAS].join("\n");
+/* One blank line between paragraphs in the plain-text twin, not one newline
+   (owner, 2026-11-25: "make sure to put space in between sentences/
+   paragraphs"). The HTML twin gets its spacing from para()'s margin. */
+const APPROACH_TEXT = [`HOW I APPROACH WEDDING PHOTOGRAPHY: ${APPROACH_TITLE.toUpperCase()}`, ...APPROACH_PARAS].join("\n\n");
 
-/* The collections the EMAIL shows. Signature was taken out of it on
-   2026-11-23 (owner: "for full-pricing, take out signature package
-   entirely"), and Photo + Film is what he says he books most. Signature is
-   still sold: it is on /pricing, in the wedding guide and in the ads funnel,
-   and it is still ENTRY for every "from" figure on the site. This filter is
-   about this email only, so do not push it down into pricingTiers(). */
-const EMAIL_TIERS = ["complete", "photo-film"];
+/* The collections the EMAIL shows, which is all three again. Signature came
+   out on 2026-11-23 ("for full-pricing, take out signature package
+   entirely") and went back in on 2026-11-25 ("put back the signature 3000
+   dollar into packages"), so the filter is now a no-op and is kept only
+   because he has moved this twice. Photo + Film carries the most-booked pill
+   either way: it is what he says he books most, and the cheapest card is not
+   the one to flag. */
+const EMAIL_TIERS = ["signature", "complete", "photo-film"];
 const MOST_BOOKED = "photo-film";
 
 function priceTable(fit?: string) {
@@ -307,10 +313,10 @@ function priceTable(fit?: string) {
 }
 
 /* Travel, under the prices (owner, 2026-11-17): travel cost is INCLUDED in the
- * collections, he arrives two days before the wedding to scout, and delays are
- * already absorbed by that schedule. The stated purpose is to settle the one
- * fear a national landing page creates, which is hiring somebody from out of
- * town.
+ * collections. The stated purpose is to settle the one fear a national landing
+ * page creates, which is hiring somebody from out of town. The scouting trip
+ * two days before the wedding is a real part of that, but it is no longer said
+ * here; see TRAVEL_TITLE below.
  *
  * The rest of the site now says the same thing: lib/site.ts TRAVEL is the
  * source, and /pricing, /faq, the terms of service, llms.txt, the wedding
@@ -333,11 +339,13 @@ function travelBlock() {
 
 /* The headline alone, since 2026-11-24: the owner cut the two paragraphs
    that used to sit under it ("the travel part only needs a headline not a
-   gigantic explanation"). The explanation still exists, in the travel
-   section of the wedding guide, which this email links to. Do not restore
-   it here. */
-const TRAVEL_TITLE = "Travel is included, and I arrive two days early.";
-const TRAVEL_TEXT = "TRAVEL IS INCLUDED, AND I ARRIVE TWO DAYS EARLY";
+   gigantic explanation"), and on 2026-11-25 he cut the scouting trip out of
+   the headline too ("take out 'I arrive two days early' in the travel
+   segment"). Both facts are still true and both are still stated, in the
+   travel section of the wedding guide, which this email links to. Neither
+   belongs here. */
+const TRAVEL_TITLE = "Travel is included.";
+const TRAVEL_TEXT = "TRAVEL IS INCLUDED";
 
 /** What the couple sent, played back so the email reads as an answer to them
  *  and so they can see I read it. Their own contact details stay out. */

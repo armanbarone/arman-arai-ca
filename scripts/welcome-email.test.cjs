@@ -30,22 +30,36 @@ const twins = () => {
 test("the email leads on the approach, in the owner's own words", () => {
   for (const body of twins()) {
     assert.match(body, /How I approach wedding photography/i);
-    assert.match(body, /genuine and unhurried/i);
-    assert.match(body, /Showcase the love between you two/i);
-    /* His rewrite of 2026-11-18, which replaced "making art" and the
-       cinematic claim that used to follow it. */
-    assert.match(body, /not from an event photography perspective but rather a spiritual quest/i);
+    assert.match(body, /How I portray couples as lovers/i);
+    /* His rewrite of 2026-11-25, pasted whole. */
+    assert.match(body, /My philosophy in photography is simple/i);
+    assert.match(body, /the same slop that can be repeated by anyone/i);
+    assert.match(body, /your cousin with a smartphone/i);
+    assert.match(body, /spiritual quest rather than an event photography/i);
     assert.match(body, /candid documentary storytelling and romantic, editorial artistry/i);
-    assert.match(body, /soulless/i);
     assert.match(body, /colour, contrast and a film look/i);
-    assert.match(body, /go far beyond what we agree in the contract/i);
-    assert.match(body, /living the day all over again/i);
-    /* The claim he dropped. It overstated the market; it is not to return. */
+    /* And the two spellings that were corrected on the way in stay corrected. */
+    assert.doesNotMatch(body, /essense/i);
+    assert.doesNotMatch(body, /\bcliche\b/i);
+    /* What the rewrite replaced. None of it is to come back. */
+    assert.doesNotMatch(body, /Showcase the love between you two/i);
+    assert.doesNotMatch(body, /genuine and unhurried/i);
+    assert.doesNotMatch(body, /go far beyond what we agree in the contract/i);
+    assert.doesNotMatch(body, /living the day all over again/i);
     assert.doesNotMatch(body, /handful of photographers in North America/i);
     /* The detailed brief he sent was written from the couple's side ("we
        want"); this email is written from his. */
     assert.doesNotMatch(body, /\bwe want\b/i);
   }
+});
+
+test("the plain-text twin leaves a blank line between paragraphs", () => {
+  const [, text] = twins();
+  /* Owner, 2026-11-25: "make sure to put space in between sentences/
+     paragraphs". The approach paragraphs used to be joined by one newline,
+     which in a mail client reads as one block. */
+  assert.match(text, /looking pretty[^]*?\n\n[^]*?How is my work so different/);
+  assert.match(text, /editorial artistry\.\n\nIn essence/);
 });
 
 test("the opening is his, and the date is never invented", () => {
@@ -100,10 +114,15 @@ test("every link in the email points at a page that still exists", () => {
 test("travel is a headline and nothing under it, in both twins", () => {
   for (const body of twins()) {
     assert.match(body, /Travel is included/i);
-    assert.match(body, /arrive two days early/i);
-    /* The owner cut the two paragraphs on 2026-11-24: "the travel part only
-       needs a headline not a gigantic explanation". The explanation lives in
-       the travel section of the wedding guide, which this email links to. */
+    /* The owner cut the two paragraphs on 2026-11-24 ("the travel part only
+       needs a headline not a gigantic explanation") and the scouting trip out
+       of the headline on 2026-11-25 ("take out 'I arrive two days early'").
+       Both facts live in the travel section of the wedding guide, which this
+       email links to, and the guide's own test holds them there. */
+    assert.doesNotMatch(body, /two days early/i);
+    /* The scouting trip itself is still in "What happens next", which is a
+       different segment and is the one he did not touch. */
+    assert.match(body, /at your venue two days before the wedding/i);
     assert.doesNotMatch(body, /no out-of-town surcharge/i);
     assert.doesNotMatch(body, /mileage line/i);
     assert.doesNotMatch(body, /the travel risk is mine/i);
@@ -129,18 +148,18 @@ test("no date hold, and no payment terms at all", () => {
   }
 });
 
-test("Signature is out of the pricing, and Photo + Film is the most booked", () => {
+test("all three collections are priced, and Photo + Film is the most booked", () => {
   const { TIERS } = loader(doubles)("@/lib/site");
-  const signature = TIERS.find((t) => t.slug === "signature");
-  const shown = TIERS.filter((t) => t.slug !== "signature");
   for (const body of twins()) {
-    /* Owner, 2026-11-23. Signature is still sold everywhere else on the site;
-       it is out of this email only. */
-    assert.doesNotMatch(body, /Signature/);
-    assert.doesNotMatch(body, new RegExp(`C\\$${signature.price.toLocaleString("en-CA")}`));
-    for (const tier of shown) assert.match(body, new RegExp(`C\\$${tier.price.toLocaleString("en-CA")}`));
+    /* Signature came out on 2026-11-23 and went back in on 2026-11-25
+       ("put back the signature 3000 dollar into packages"), so the email
+       prices every collection the site sells. */
+    for (const tier of TIERS) {
+      assert.match(body, new RegExp(`C\\$${tier.price.toLocaleString("en-CA")}`), `${tier.name} is not priced`);
+      assert.ok(body.includes(tier.name), `${tier.name} is missing`);
+    }
   }
-  /* And the pill sits on Photo + Film, not on the cheaper card. */
+  /* And the pill sits on Photo + Film, not on either cheaper card. */
   const [html] = twins();
   const pill = html.indexOf("Most booked");
   assert.ok(pill > 0, "no most-booked pill");
@@ -148,6 +167,11 @@ test("Signature is out of the pricing, and Photo + Film is the most booked", () 
     html.lastIndexOf("Photo + Film", pill) > html.lastIndexOf("Legacy", pill),
     "the most-booked pill is not on Photo + Film",
   );
+  assert.ok(
+    html.lastIndexOf("Photo + Film", pill) > html.lastIndexOf("Signature", pill),
+    "the most-booked pill is not on Photo + Film",
+  );
+  assert.equal(html.split("Most booked").length - 1, 1, "more than one most-booked pill");
 });
 
 test("the comparison table has moved to the wedding guide", () => {

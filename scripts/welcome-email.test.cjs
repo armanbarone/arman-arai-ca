@@ -65,23 +65,42 @@ test("the plain-text twin leaves a blank line between paragraphs", () => {
 test("the opening is his, and the date is never invented", () => {
   for (const body of twins()) {
     assert.match(body, /Congratulations, and thank you for the interest in my photography service/);
-    assert.match(body, /I will personally reply to you within an hour/);
-    assert.match(body, /an overview of my services and how I work/);
+    assert.match(body, /I have your inquiry and I will personally reply within an hour/);
+    assert.match(body, /an overview of how I work, so please take 2 minutes/);
+    assert.match(body, /see the album samples/);
+    /* He cut the date out of the opening on 2026-11-25. It must not creep
+       back into the greeting, with or without a date to print. */
+    assert.doesNotMatch(body, /inquiry about your wedding/i);
+    assert.doesNotMatch(body, /an overview of my services/i);
   }
+  /* And a couple who gave no date still gets the same two sentences, with no
+     gap, no "to be decided" and nothing invented. */
   const undated = loader(doubles)("@/lib/auto-reply").render({ ...inquiry, weddingDate: "" });
   for (const body of [undated.html, undated.text]) {
-    assert.match(body, /your wedding and I will personally reply/);
+    assert.match(body, /I have your inquiry and I will personally reply within an hour/);
   }
 });
 
-test("the albums are a highlight reel of what he may publish, not every frame", () => {
+test("the albums are samples of what he may publish, not every frame", () => {
   for (const body of twins()) {
-    assert.match(body, /Three complete weddings/i);
-    assert.match(body, /highlight reel of the albums I am permitted to publish/i);
+    /* His headline, 2026-11-25. */
+    assert.match(body, /Samples of my work as much as I am allowed to share/i);
+    assert.doesNotMatch(body, /Three complete weddings/i);
     /* The opposite claim, which ran until 2026-11-18, and was never true of a
        published gallery. */
     assert.doesNotMatch(body, /Not a highlight reel/i);
     assert.doesNotMatch(body, /every frame I delivered/i);
+  }
+});
+
+test("there is no WhatsApp button, in either twin", () => {
+  /* Owner, 2026-11-25: "nobody msgs me on whatsapp btw so take out that
+     button". The phone number stays in the footer; the panel and its link
+     are gone and are not to come back. */
+  for (const body of twins()) {
+    assert.doesNotMatch(body, /whatsapp/i);
+    assert.doesNotMatch(body, /wa\.me/i);
+    assert.doesNotMatch(body, /rather not wait for my email/i);
   }
 });
 

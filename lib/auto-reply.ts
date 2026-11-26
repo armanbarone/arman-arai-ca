@@ -53,7 +53,7 @@ export type Inquiry = {
    not the instant they press it (owner, 2026-10-01). */
 const SEND_DELAY_MS = 30_000;
 
-/** The three complete weddings the email leads with. Slugs exist in
+/** The three album samples the email leads with. Slugs exist in
  *  lib/galleries.ts; the frames are chosen by eye, because the stored `cover`
  *  on all three is an abstract (a doorway, a dessert table, an arch) that does
  *  not read as a wedding at thumbnail size in an inbox. */
@@ -105,7 +105,6 @@ const C = {
   bronzeDeep: "#5F4728",
   onDark: "#E8E0D0",
   onDarkMuted: "#A79784",
-  whatsapp: "#25D366",
 };
 const SERIF = "Georgia,'Times New Roman',serif";
 const SANS = "Arial,Helvetica,sans-serif";
@@ -225,14 +224,19 @@ function row(inner: string, top = 30, bottom = 0) {
   return `<tr><td class="px" style="padding:${top}px 34px ${bottom}px;">${inner}</td></tr>`;
 }
 
-/** The three complete weddings, side by side. A three-cell table rather than
+/** The three album samples, side by side. A three-cell table rather than
  *  stacked images: it survives Outlook, and three full-width photographs
  *  would push everything below them off the first two screens. */
 /* Owner, 2026-11-18: these are "a highlight reel of the albums that I am
    permitted to publish", not every frame of every day. The earlier claim
    ("not a highlight reel... every frame I delivered") was both the opposite
-   and not true of a published gallery, and it is not to come back. */
-const ALBUMS_EYEBROW = "A highlight reel of the albums I am permitted to publish";
+   and not true of a published gallery, and it is not to come back.
+   On 2026-11-25 he moved that same point into the headline, in his words:
+   "Samples of my work as much as I am allowed to share". The eyebrow is a
+   label now rather than a second statement of it, because the two together
+   said the permission thing twice in four lines. */
+const ALBUMS_EYEBROW = "Album samples";
+const ALBUMS_TITLE = "Samples of my work as much as I am allowed to share";
 const ALBUMS_INTRO =
   "Three whole days rather than three best frames, from the quiet hour before anyone is dressed to the last of the dancing. It is the only honest way to judge a photographer, because it shows you the ordinary parts of a wedding as well as the best thirty seconds of it.";
 
@@ -245,7 +249,7 @@ function albumsBlock() {
       </a>
     </td>`).join("");
   return `${eyebrow(ALBUMS_EYEBROW)}
-  <p class="h2" style="margin:0 0 14px;font-family:${SERIF};font-weight:normal;font-size:28px;line-height:1.18;color:${C.ink};">Three complete weddings</p>
+  <p class="h2" style="margin:0 0 14px;font-family:${SERIF};font-weight:normal;font-size:28px;line-height:1.18;color:${C.ink};">${escapeHtml(ALBUMS_TITLE)}</p>
   <p style="margin:0 0 16px;font-family:${SANS};font-size:15px;line-height:1.7;color:${C.body};">${escapeHtml(ALBUMS_INTRO)}</p>
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 6px;"><tr>${cells}</tr></table>`;
 }
@@ -362,16 +366,17 @@ function detailsBlock(inquiry: Inquiry) {
 }
 
 /** The opening paragraphs, written by the owner by hand on 2026-11-18 and
- *  used as he wrote them. Deliberately short: the four sections below carry
- *  the information, and a wall of text at the top gets skipped. The only
- *  thing computed here is the date, which is omitted rather than guessed at
- *  when the couple did not give one. Do not reinstate the longer version. */
+ *  shortened again by him on 2026-11-25. Used as he wrote them. Deliberately
+ *  short: the four sections below carry the information, and a wall of text
+ *  at the top gets skipped. Nothing is computed here at all now. The wedding
+ *  date used to be in the second sentence; he took it out, and it is still
+ *  played back to the couple in the "Your inquiry" box a few lines down, so
+ *  do not put it back here. Do not reinstate the longer version. */
 function opening(inquiry: Inquiry) {
-  const when = whenPhrase(inquiry);
   return [
     `Hi ${inquiry.firstName || "there"},`,
-    `Congratulations, and thank you for the interest in my photography service. I have your inquiry about your wedding${when ? ` on ${when}` : ""} and I will personally reply to you within an hour.`,
-    "This email is an overview of my services and how I work, so that you have a general idea of how I operate.",
+    "Congratulations, and thank you for the interest in my photography service. I have your inquiry and I will personally reply within an hour.",
+    "This email is an overview of how I work, so please take 2 minutes and read through it and see the album samples.",
   ];
 }
 
@@ -423,10 +428,6 @@ export function render(inquiry: Inquiry) {
     guide: `${SITE.url}/wedding-guide`,
     calendar,
   };
-  const whatsapp = `https://wa.me/${SITE.phoneE164.replace(/\D/g, "")}?text=${encodeURIComponent(
-    `Hi Arman, it's ${inquiry.firstName}. I just sent you an inquiry about our wedding.`,
-  )}`;
-
   /* One column, 600px, every block a table row. The head carries the
      colour-scheme metas and the only media query, which stacks the three
      albums and tightens the comparison table on a phone. */
@@ -454,7 +455,7 @@ export function render(inquiry: Inquiry) {
 </style>
 </head>
 <body style="margin:0;padding:0;background:${C.page};">
-<div style="display:none;max-height:0;overflow:hidden;opacity:0;mso-hide:all;">Your full pricing, three complete weddings, and how I work a wedding day. I reply personally within 60 minutes.</div>
+<div style="display:none;max-height:0;overflow:hidden;opacity:0;mso-hide:all;">Your full pricing, samples of my work, and how I work a wedding day. I reply personally within 60 minutes.</div>
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="${C.page}" style="background:${C.page};">
   <tr>
     <td align="center" class="shell" style="padding:24px 10px 30px;">
@@ -480,12 +481,6 @@ export function render(inquiry: Inquiry) {
               <td valign="top" style="padding:0 0 11px;font-family:${SANS};font-size:15px;line-height:1.6;color:${C.body};">${escapeHtml(step)}</td>
             </tr>`).join("")}
           </table>`, 34)}
-        ${row(`<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="${C.panel}" style="background:${C.panel};border:1px solid ${C.rule};border-radius:10px;">
-          <tr><td style="padding:18px 20px 10px;">
-            ${para("If you'd rather not wait for my email, message me. I answer WhatsApp faster than anything else.", 14)}
-            ${bigButton(whatsapp, "Message me on WhatsApp", C.whatsapp, "#07320F")}
-          </td></tr>
-        </table>`, 26)}
         ${row(`<p style="margin:0;font-family:${SERIF};font-size:19px;color:${C.ink};">Arman</p>`, 30, 30)}
 
         <tr>
@@ -504,7 +499,7 @@ export function render(inquiry: Inquiry) {
 
   const text = [
     ...opening(inquiry),
-    "THREE COMPLETE WEDDINGS",
+    ALBUMS_TITLE.toUpperCase(),
     `${ALBUMS_EYEBROW}. ${ALBUMS_INTRO}`,
     ...ALBUMS.map((album) => `${album.names}, ${album.where}: ${SITE.url}/galleries/${album.slug}`),
     APPROACH_TEXT,
@@ -514,7 +509,6 @@ export function render(inquiry: Inquiry) {
     `TWO. YOUR WELCOME GUIDE\nHow I work a wedding day, start to finish: ${links.guide}`,
     `THREE. ${THIRD_TITLE.toUpperCase()}\n${links.calendar}`,
     `WHAT HAPPENS NEXT\n${NEXT_STEPS.map((step, n) => `${n + 1}. ${step}`).join("\n")}`,
-    `Message me on WhatsApp: ${whatsapp}`,
     `Your inquiry: ${[whenPhrase(inquiry) || "Date to be decided", inquiry.location || "Venue to be decided", inquiry.message].filter(Boolean).join(" · ")}`,
     "Arman",
     `Arman Arai · Wedding photography · ${SITE.domain} · ${SITE.phone}`,
